@@ -20,6 +20,7 @@ import com.afollestad.aesthetic.views.AestheticActionMenuItemView;
 import com.afollestad.aesthetic.views.AestheticButton;
 import com.afollestad.aesthetic.views.AestheticCheckBox;
 import com.afollestad.aesthetic.views.AestheticEditText;
+import com.afollestad.aesthetic.views.AestheticFab;
 import com.afollestad.aesthetic.views.AestheticListView;
 import com.afollestad.aesthetic.views.AestheticProgressBar;
 import com.afollestad.aesthetic.views.AestheticRadioButton;
@@ -182,6 +183,9 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       case "android.support.v4.view.ViewPager":
         view = new AestheticViewPager(context, attrs);
         break;
+      case "android.support.design.widget.FloatingActionButton":
+        view = new AestheticFab(context, attrs);
+        break;
 
         //      case "android.support.v7.widget.AppCompatAutoCompleteTextView":
         //      case "AutoCompleteTextView":
@@ -201,9 +205,6 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         //        break;
         //      case "android.support.v7.widget.AppCompatSpinner":
         //        view = new ATESpinner(context, attrs, keyContext);
-        //        break;
-        //      case "android.support.design.widget.FloatingActionButton":
-        //        view = new ATEFloatingActionButton(context, attrs, keyContext);
         //        break;
 
         //      case "android.support.v4.widget.DrawerLayout":
