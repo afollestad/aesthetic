@@ -235,7 +235,7 @@ public class Aesthetic {
 
   @CheckResult
   public Aesthetic accentColor(@ColorInt int color) {
-    editor.putInt(KEY_ACCENT_COLOR, color);
+    editor.putInt(KEY_ACCENT_COLOR, color).commit();
     return this;
   }
 
@@ -330,7 +330,7 @@ public class Aesthetic {
 
   @CheckResult
   public Aesthetic windowBgColor(@ColorInt int color) {
-    editor.putInt(KEY_WINDOW_BG_COLOR, color);
+    editor.putInt(KEY_WINDOW_BG_COLOR, color).commit();
     return this;
   }
 
@@ -409,7 +409,7 @@ public class Aesthetic {
 
   @CheckResult
   public Aesthetic tabLayoutIndicatorMode(@AutoSwitchMode int mode) {
-    editor.putInt(KEY_TAB_LAYOUT_INDICATOR_MODE, mode);
+    editor.putInt(KEY_TAB_LAYOUT_INDICATOR_MODE, mode).commit();
     return this;
   }
 
@@ -422,7 +422,7 @@ public class Aesthetic {
 
   @CheckResult
   public Aesthetic tabLayoutBgMode(@AutoSwitchMode int mode) {
-    editor.putInt(KEY_TAB_LAYOUT_BG_MODE, mode);
+    editor.putInt(KEY_TAB_LAYOUT_BG_MODE, mode).commit();
     return this;
   }
 
