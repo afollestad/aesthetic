@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import com.afollestad.aesthetic.Aesthetic;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
@@ -18,8 +19,6 @@ import static com.afollestad.aesthetic.Util.isColorLight;
 @SuppressWarnings("RestrictedApi")
 public class AestheticActionMenuItemView extends ActionMenuItemView {
 
-  private int iconColor;
-  private Drawable ogIcon;
   private Drawable icon;
   private Subscription subscription;
 
@@ -35,20 +34,22 @@ public class AestheticActionMenuItemView extends ActionMenuItemView {
     super(context, attrs, defStyle);
   }
 
-  private void invalidateColors(int color) {
-    this.iconColor = isColorLight(color) ? Color.BLACK : Color.WHITE;
-    if (ogIcon != null) {
-      setIcon(ogIcon);
-    }
-  }
-
   @Override
-  public void setIcon(Drawable icon) {
-    if (ogIcon != icon) {
-      ogIcon = icon;
-    }
-    this.icon = createTintedDrawable(ogIcon, iconColor);
-    super.setIcon(this.icon);
+  public void setIcon(final Drawable icon) {
+    // We need to retrieve the color again here.
+    // For some reason, without this, a transparent color is used and the icon disappears
+    // when the overflow menu opens.
+    Aesthetic.get()
+        .primaryColor()
+        .observeOn(AndroidSchedulers.mainThread())
+        .take(1)
+        .subscribe(
+            color -> {
+              int iconColor = isColorLight(color) ? Color.BLACK : Color.WHITE;
+              this.icon = createTintedDrawable(icon, iconColor);
+              super.setIcon(this.icon);
+            },
+            onErrorLogAndRethrow());
   }
 
   @Override
@@ -58,7 +59,13 @@ public class AestheticActionMenuItemView extends ActionMenuItemView {
         Aesthetic.get()
             .primaryColor()
             .compose(distinctToMainThread())
-            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
+            .subscribe(
+                color -> {
+                  if (icon != null) {
+                    setIcon(icon);
+                  }
+                },
+                onErrorLogAndRethrow());
   }
 
   @Override
