@@ -68,9 +68,9 @@ public class MainActivity extends AestheticActivity {
   @OnClick(R.id.switch_theme)
   public void onThemeChange(SwitchCompat switchCompat) {
     if (switchCompat.isChecked()) {
-      Aesthetic.get().activityTheme(R.style.AppThemeDark).apply();
+      Aesthetic.get().activityTheme(R.style.AppThemeDark).isDark(true).apply();
     } else {
-      Aesthetic.get().activityTheme(R.style.AppTheme).apply();
+      Aesthetic.get().activityTheme(R.style.AppTheme).isDark(false).apply();
     }
   }
 
