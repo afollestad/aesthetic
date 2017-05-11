@@ -68,9 +68,24 @@ public class MainFragment extends Fragment {
     }
   }
 
-  @OnClick({R.id.btn_red, R.id.btn_purple, R.id.btn_blue, R.id.btn_green, R.id.btn_white})
+  @OnClick({
+    R.id.btn_black,
+    R.id.btn_red,
+    R.id.btn_purple,
+    R.id.btn_blue,
+    R.id.btn_green,
+    R.id.btn_white
+  })
   public void onClickButton(View view) {
     switch (view.getId()) {
+      case R.id.btn_black:
+        Aesthetic.get()
+            .primaryColorRes(R.color.text_color_primary)
+            .accentColorRes(R.color.md_purple)
+            .statusBarColorAuto()
+            .navBarColorAuto()
+            .apply();
+        break;
       case R.id.btn_red:
         Aesthetic.get()
             .primaryColorRes(R.color.md_red)

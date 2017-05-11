@@ -24,38 +24,45 @@
         android:text="@string/dark_theme"/>
 
       <Button
+        android:id="@+id/btn_black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/content_inset_quarter"
+        android:text="@string/black"/>
+
+      <Button
         android:id="@+id/btn_red"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/content_inset_half"
+        android:layout_marginTop="@dimen/content_inset_quarter"
         android:text="@string/red"/>
 
       <Button
         android:id="@+id/btn_purple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/content_inset_half"
+        android:layout_marginTop="@dimen/content_inset_quarter"
         android:text="@string/purple"/>
 
       <Button
         android:id="@+id/btn_blue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/content_inset_half"
+        android:layout_marginTop="@dimen/content_inset_quarter"
         android:text="@string/blue"/>
 
       <Button
         android:id="@+id/btn_green"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/content_inset_half"
+        android:layout_marginTop="@dimen/content_inset_quarter"
         android:text="@string/green"/>
 
       <Button
         android:id="@+id/btn_white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/content_inset_half"
+        android:layout_marginTop="@dimen/content_inset_quarter"
         android:text="@string/white"/>
 
       <TextView
