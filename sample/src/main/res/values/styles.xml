@@ -1,7 +1,7 @@
 <resources>
 
-  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"/>
+  <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
 
-  <style name="AppThemeDark" parent="Theme.AppCompat"/>
+  <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar"/>
 
 </resources>

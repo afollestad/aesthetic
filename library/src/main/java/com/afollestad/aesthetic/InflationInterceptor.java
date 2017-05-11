@@ -30,6 +30,7 @@ import com.afollestad.aesthetic.views.AestheticSeekBar;
 import com.afollestad.aesthetic.views.AestheticSpinner;
 import com.afollestad.aesthetic.views.AestheticSwitch;
 import com.afollestad.aesthetic.views.AestheticSwitchCompat;
+import com.afollestad.aesthetic.views.AestheticTabLayout;
 import com.afollestad.aesthetic.views.AestheticTextInputLayout;
 import com.afollestad.aesthetic.views.AestheticTextView;
 import com.afollestad.aesthetic.views.AestheticToolbar;
@@ -194,6 +195,9 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       case "android.support.design.widget.TextInputLayout":
         view = new AestheticTextInputLayout(context, attrs);
         break;
+      case "android.support.design.widget.TabLayout":
+        view = new AestheticTabLayout(context, attrs);
+        break;
 
         //      case "android.support.v7.widget.AppCompatAutoCompleteTextView":
         //      case "AutoCompleteTextView":
@@ -213,9 +217,6 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         //        break;
         //      case NavigationViewProcessor.MAIN_CLASS:
         //        view = new ATENavigationView(context, attrs, keyContext);
-        //        break;
-        //      case TabLayoutTagProcessor.MAIN_CLASS:
-        //        view = new ATETabLayout(context, attrs, keyContext);
         //        break;
 
         //      case "android.support.design.widget.CoordinatorLayout":

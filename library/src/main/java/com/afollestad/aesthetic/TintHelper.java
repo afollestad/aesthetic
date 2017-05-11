@@ -459,7 +459,7 @@ public class TintHelper {
   // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary because Drawables with the same resource have shared states otherwise.
   @CheckResult
   @Nullable
-  static Drawable createTintedDrawable(@Nullable Drawable drawable, @NonNull ColorStateList sl) {
+  public static Drawable createTintedDrawable(@Nullable Drawable drawable, @NonNull ColorStateList sl) {
     if (drawable == null) return null;
     drawable = DrawableCompat.wrap(drawable.mutate());
     DrawableCompat.setTintList(drawable, sl);

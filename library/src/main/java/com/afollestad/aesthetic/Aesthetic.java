@@ -43,6 +43,8 @@ public class Aesthetic {
   private static final String KEY_STATUS_BAR_COLOR = "status_bar_color";
   private static final String KEY_NAV_BAR_COLOR = "nav_bar_color";
   private static final String KEY_LIGHT_STATUS_MODE = "light_status_mode";
+  private static final String KEY_TAB_LAYOUT_BG_MODE = "tab_layout_bg_mode";
+  private static final String KEY_TAB_LAYOUT_INDICATOR_MODE = "tab_layout_indicator_mode";
 
   @SuppressLint("StaticFieldLeak")
   private static Aesthetic instance;
@@ -403,6 +405,30 @@ public class Aesthetic {
   @CheckResult
   public Observable<Integer> lightStatusBarMode() {
     return rxPrefs.getInteger(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO).asObservable();
+  }
+
+  @CheckResult
+  public Aesthetic tabLayoutIndicatorMode(@AutoSwitchMode int mode) {
+    editor.putInt(KEY_TAB_LAYOUT_INDICATOR_MODE, mode);
+    return this;
+  }
+
+  @CheckResult
+  public Observable<Integer> tabLayoutIndicatorMode() {
+    return rxPrefs
+        .getInteger(KEY_TAB_LAYOUT_INDICATOR_MODE, TabLayoutIndicatorMode.ACCENT)
+        .asObservable();
+  }
+
+  @CheckResult
+  public Aesthetic tabLayoutBgMode(@AutoSwitchMode int mode) {
+    editor.putInt(KEY_TAB_LAYOUT_BG_MODE, mode);
+    return this;
+  }
+
+  @CheckResult
+  public Observable<Integer> tabLayoutBgMode() {
+    return rxPrefs.getInteger(KEY_TAB_LAYOUT_BG_MODE, TabLayoutBgMode.PRIMARY).asObservable();
   }
 
   public void apply() {
