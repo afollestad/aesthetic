@@ -11,7 +11,7 @@ import com.afollestad.aesthetic.TabLayoutBgMode;
 import com.afollestad.aesthetic.TabLayoutIndicatorMode;
 
 import rx.Observable;
-import rx.subscriptions.CompositeSubscription;
+import rx.Subscription;
 
 import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
@@ -22,7 +22,7 @@ import static com.afollestad.aesthetic.Util.isColorLight;
 public class AestheticTabLayout extends TabLayout {
 
   private static final float UNFOCUSED_ALPHA = 0.5f;
-  private CompositeSubscription subs;
+  private Subscription subscription;
 
   public AestheticTabLayout(Context context) {
     super(context);
@@ -120,7 +120,7 @@ public class AestheticTabLayout extends TabLayout {
                         .subscribe(
                             color -> {
                               int iconTextColor = isColorLight(color) ? Color.BLACK : Color.WHITE;
-                              setTabTextColors(adjustAlpha(color, UNFOCUSED_ALPHA), iconTextColor);
+                              setTabTextColors(adjustAlpha(iconTextColor, UNFOCUSED_ALPHA), iconTextColor);
                               setSelectedTabIndicatorColor(iconTextColor);
                               invalidateIcons(iconTextColor);
                             },
@@ -135,34 +135,25 @@ public class AestheticTabLayout extends TabLayout {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    subs = new CompositeSubscription();
-    subs.add(
-        Aesthetic.get()
-            .tabLayoutBgMode()
-            .compose(distinctToMainThread())
-            .subscribe(ignored -> invalidateBackground(), onErrorLogAndRethrow()));
-    subs.add(
-        Aesthetic.get()
-            .tabLayoutIndicatorMode()
-            .compose(distinctToMainThread())
-            .subscribe(ignored -> invalidateIndicator(), onErrorLogAndRethrow()));
-    subs.add(
+    subscription =
         Observable.merge(
                 Aesthetic.get().primaryColor(),
                 Aesthetic.get().accentColor(),
-                Aesthetic.get().windowBgColor())
+                Aesthetic.get().windowBgColor(),
+                Aesthetic.get().tabLayoutBgMode(),
+                Aesthetic.get().tabLayoutIndicatorMode())
             .compose(distinctToMainThread())
             .subscribe(
                 color -> {
                   invalidateBackground();
                   invalidateIndicator();
                 },
-                onErrorLogAndRethrow()));
+                onErrorLogAndRethrow());
   }
 
   @Override
   protected void onDetachedFromWindow() {
-    subs.unsubscribe();
+    subscription.unsubscribe();
     super.onDetachedFromWindow();
   }
 }
