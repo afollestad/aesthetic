@@ -2,9 +2,7 @@ package com.afollestad.aestheticsample;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,13 +11,14 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.afollestad.aesthetic.Aesthetic;
+import com.afollestad.aesthetic.AestheticActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AestheticActivity {
 
   private Unbinder unbinder;
 
@@ -31,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    Aesthetic.attach(this);
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     unbinder = ButterKnife.bind(this);
@@ -62,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         new ArrayAdapter<>(
             this,
             R.layout.list_item_spinner,
-            new String[] {"One", "Two", "Three", "Four", "Five", "Six"});
+            new String[]{"One", "Two", "Three", "Four", "Five", "Six"});
     spinnerAdapter.setDropDownViewResource(R.layout.list_item_spinner_dropdown);
     spinnerView.setAdapter(spinnerAdapter);
   }
@@ -138,20 +136,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   @Override
-  protected void onResume() {
-    super.onResume();
-    Aesthetic.resume(this);
-  }
-
-  @Override
-  protected void onPause() {
-    super.onPause();
-    Aesthetic.pause();
-  }
-
-  @Override
   protected void onDestroy() {
-    Aesthetic.destroy();
     unbinder.unbind();
     super.onDestroy();
   }
