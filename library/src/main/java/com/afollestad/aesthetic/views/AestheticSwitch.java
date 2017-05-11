@@ -18,7 +18,6 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 public class AestheticSwitch extends Switch {
 
   private int color;
-  private int textColor;
   private boolean isDark;
   private CompositeSubscription subs;
 

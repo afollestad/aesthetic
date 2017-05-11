@@ -20,13 +20,17 @@ import com.afollestad.aesthetic.views.AestheticActionMenuItemView;
 import com.afollestad.aesthetic.views.AestheticButton;
 import com.afollestad.aesthetic.views.AestheticCheckBox;
 import com.afollestad.aesthetic.views.AestheticEditText;
+import com.afollestad.aesthetic.views.AestheticListView;
 import com.afollestad.aesthetic.views.AestheticProgressBar;
 import com.afollestad.aesthetic.views.AestheticRadioButton;
+import com.afollestad.aesthetic.views.AestheticRecyclerView;
+import com.afollestad.aesthetic.views.AestheticScrollView;
 import com.afollestad.aesthetic.views.AestheticSeekBar;
 import com.afollestad.aesthetic.views.AestheticSwitch;
 import com.afollestad.aesthetic.views.AestheticSwitchCompat;
 import com.afollestad.aesthetic.views.AestheticTextView;
 import com.afollestad.aesthetic.views.AestheticToolbar;
+import com.afollestad.aesthetic.views.AestheticViewPager;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -163,6 +167,21 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       case "android.support.v7.view.menu.ActionMenuItemView":
         view = new AestheticActionMenuItemView(context, attrs);
         break;
+      case "android.support.v7.widget.RecyclerView":
+        view = new AestheticRecyclerView(context, attrs);
+        break;
+      case "android.support.v4.widget.NestedScrollView":
+        view = new AestheticScrollView(context, attrs);
+        break;
+      case "ListView":
+        view = new AestheticListView(context, attrs);
+        break;
+      case "ScrollView":
+        view = new AestheticScrollView(context, attrs);
+        break;
+      case "android.support.v4.view.ViewPager":
+        view = new AestheticViewPager(context, attrs);
+        break;
 
         //      case "android.support.v7.widget.AppCompatAutoCompleteTextView":
         //      case "AutoCompleteTextView":
@@ -176,12 +195,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         //            new ATEMultiAutoCompleteTextView(
         //                context, attrs, keyContext, parent != null && parent instanceof TextInputLayout);
         //        break;
-        //      case "ListView":
-        //        view = new ATEListView(context, attrs, keyContext);
-        //        break;
-        //      case "ScrollView":
-        //        view = new ATEScrollView(context, attrs, keyContext);
-        //        break;
+
         //      case "Spinner":
         //        view = new ATEStockSpinner(context, attrs, keyContext);
         //        break;
@@ -191,12 +205,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         //      case "android.support.design.widget.FloatingActionButton":
         //        view = new ATEFloatingActionButton(context, attrs, keyContext);
         //        break;
-        //      case EdgeGlowTagProcessor.RECYCLERVIEW_CLASS:
-        //        view = new ATERecyclerView(context, attrs, keyContext);
-        //        break;
-        //      case EdgeGlowTagProcessor.NESTEDSCROLLVIEW_CLASS:
-        //        view = new ATENestedScrollView(context, attrs, keyContext);
-        //        break;
+
         //      case "android.support.v4.widget.DrawerLayout":
         //        view = new ATEDrawerLayout(context, attrs, keyContext);
         //        break;
@@ -206,9 +215,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         //      case TabLayoutTagProcessor.MAIN_CLASS:
         //        view = new ATETabLayout(context, attrs, keyContext);
         //        break;
-        //      case EdgeGlowTagProcessor.VIEWPAGER_CLASS:
-        //        view = new ATEViewPager(context, attrs, keyContext);
-        //        break;
+
         //      case "android.support.design.widget.CoordinatorLayout":
         //        view = new ATECoordinatorLayout(context, attrs, keyContext);
         //        break;

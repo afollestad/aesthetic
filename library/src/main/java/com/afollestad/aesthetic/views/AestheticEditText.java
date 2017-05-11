@@ -52,6 +52,16 @@ public class AestheticEditText extends AppCompatEditText {
             .accentColor()
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
+    subs.add(
+        Aesthetic.get()
+            .isDark()
+            .compose(distinctToMainThread())
+            .subscribe(
+                isDark -> {
+                  this.isDark = isDark;
+                  invalidateColors(color);
+                },
+                onErrorLogAndRethrow()));
   }
 
   @Override

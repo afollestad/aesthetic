@@ -11,6 +11,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -30,7 +31,10 @@ import android.widget.TextView;
 
 import java.lang.reflect.Field;
 
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+
 /** @author Aidan Follestad (afollestad) */
+@RestrictTo(LIBRARY_GROUP)
 public class TintHelper {
 
   @SuppressLint("PrivateResource")
