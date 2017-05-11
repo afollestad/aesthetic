@@ -1,0 +1,12 @@
+<resources>
+  <string name="app_name">aesthetic</string>
+  <string name="blue">Blue</string>
+  <string name="red">Red</string>
+  <string name="purple">Purple</string>
+  <string name="green">Green</string>
+  <string name="white">White</string>
+  <string name="hello_world">Hello, world!</string>
+  <string name="lorem_ipsum">Lorem ipsum dolor sit amet, sed massa wisi, id nisl, sed vitae nec. Id wisi, sodales interdum auctor. Vestibulum sed.</string>
+  <string name="dark_theme">Dark theme</string>
+  <string name="info">Info</string>
+</resources>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/content_inset">
+
+    <android.support.v7.widget.SwitchCompat
+      android:id="@+id/switch_theme"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/dark_theme"/>
+
+    <Button
+      android:id="@+id/btn_red"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/content_inset_half"
+      android:text="@string/red"/>
+
+    <Button
+      android:id="@+id/btn_purple"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/content_inset_half"
+      android:text="@string/purple"/>
+
+    <Button
+      android:id="@+id/btn_blue"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/content_inset_half"
+      android:text="@string/blue"/>
+
+    <Button
+      android:id="@+id/btn_green"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/content_inset_half"
+      android:text="@string/green"/>
+
+    <Button
+      android:id="@+id/btn_white"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/content_inset_half"
+      android:text="@string/white"/>
+
+    <TextView
+      android:id="@+id/title_textview"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/content_inset"
+      android:text="@string/hello_world"
+      android:textSize="@dimen/text_size_title"/>
+
+    <TextView
+      android:id="@+id/body_textview"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/lorem_ipsum"
+      android:textSize="@dimen/text_size_body"/>
+
+    <EditText
+      android:id="@+id/input"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/content_inset"
+      android:hint="@string/hello_world"
+      android:inputType="text|textAutoComplete"/>
+
+    <SeekBar
+      android:id="@+id/seeker"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="-4dp"
+      android:layout_marginRight="-4dp"
+      android:layout_marginTop="@dimen/content_inset"/>
+
+    <ProgressBar
+      android:id="@+id/progress_bar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginTop="@dimen/content_inset"/>
+
+  </LinearLayout>
+
+</ScrollView>
