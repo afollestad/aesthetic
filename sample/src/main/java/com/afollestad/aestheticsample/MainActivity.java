@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.afollestad.aesthetic.Aesthetic;
@@ -23,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
   @BindView(R.id.switch_theme)
   SwitchCompat switchThemeView;
+
+  @BindView(R.id.spinner)
+  Spinner spinnerView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,14 @@ public class MainActivity extends AppCompatActivity {
           .apply();
     }
     Aesthetic.get().isDark().take(1).subscribe(isDark -> switchThemeView.setChecked(isDark));
+
+    ArrayAdapter<String> spinnerAdapter =
+        new ArrayAdapter<>(
+            this,
+            R.layout.list_item_spinner,
+            new String[] {"One", "Two", "Three", "Four", "Five", "Six"});
+    spinnerAdapter.setDropDownViewResource(R.layout.list_item_spinner_dropdown);
+    spinnerView.setAdapter(spinnerAdapter);
   }
 
   @OnClick(R.id.switch_theme)

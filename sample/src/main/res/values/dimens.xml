@@ -4,4 +4,5 @@
   <dimen name="content_inset_half">8dp</dimen>
   <dimen name="text_size_title">24sp</dimen>
   <dimen name="text_size_body">16sp</dimen>
+  <dimen name="button_height">56dp</dimen>
 </resources>

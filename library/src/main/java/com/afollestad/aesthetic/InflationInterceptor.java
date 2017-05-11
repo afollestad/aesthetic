@@ -27,6 +27,7 @@ import com.afollestad.aesthetic.views.AestheticRadioButton;
 import com.afollestad.aesthetic.views.AestheticRecyclerView;
 import com.afollestad.aesthetic.views.AestheticScrollView;
 import com.afollestad.aesthetic.views.AestheticSeekBar;
+import com.afollestad.aesthetic.views.AestheticSpinner;
 import com.afollestad.aesthetic.views.AestheticSwitch;
 import com.afollestad.aesthetic.views.AestheticSwitchCompat;
 import com.afollestad.aesthetic.views.AestheticTextView;
@@ -186,6 +187,10 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       case "android.support.design.widget.FloatingActionButton":
         view = new AestheticFab(context, attrs);
         break;
+      case "Spinner":
+      case "android.support.v7.widget.AppCompatSpinner":
+        view = new AestheticSpinner(context, attrs);
+        break;
 
         //      case "android.support.v7.widget.AppCompatAutoCompleteTextView":
         //      case "AutoCompleteTextView":
@@ -198,13 +203,6 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         //        view =
         //            new ATEMultiAutoCompleteTextView(
         //                context, attrs, keyContext, parent != null && parent instanceof TextInputLayout);
-        //        break;
-
-        //      case "Spinner":
-        //        view = new ATEStockSpinner(context, attrs, keyContext);
-        //        break;
-        //      case "android.support.v7.widget.AppCompatSpinner":
-        //        view = new ATESpinner(context, attrs, keyContext);
         //        break;
 
         //      case "android.support.v4.widget.DrawerLayout":
@@ -268,15 +266,15 @@ final class InflationInterceptor implements LayoutInflaterFactory {
             ta.recycle();
           }
 
-          Object[] mConstructorArgs;
+          Object[] constructorArgs;
           try {
-            mConstructorArgs = (Object[]) constructorArgsField.get(layoutInflater);
+            constructorArgs = (Object[]) constructorArgsField.get(layoutInflater);
           } catch (IllegalAccessException e) {
             throw new RuntimeException("Failed to retrieve the mConstructorArgsField field.", e);
           }
 
-          final Object lastContext = mConstructorArgs[0];
-          mConstructorArgs[0] = viewContext;
+          final Object lastContext = constructorArgs[0];
+          constructorArgs[0] = viewContext;
           try {
             if (-1 == name.indexOf('.')) {
               view = (View) onCreateViewMethod.invoke(layoutInflater, parent, name, attrs);
@@ -287,7 +285,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
             LOG("Failed to inflate %s: %s", name, e.getMessage());
             e.printStackTrace();
           } finally {
-            mConstructorArgs[0] = lastContext;
+            constructorArgs[0] = lastContext;
           }
         } catch (Throwable t) {
           throw new RuntimeException(
