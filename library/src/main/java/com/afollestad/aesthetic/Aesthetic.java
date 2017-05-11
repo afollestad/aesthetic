@@ -96,24 +96,6 @@ public class Aesthetic {
     }
   }
 
-  private void invalidateStatusBar() {
-    final int color =
-        prefs.getInt(KEY_STATUS_BAR_COLOR, resolveColor(context, R.attr.colorPrimaryDark));
-    Util.setStatusBarColorCompat(context, color);
-    final int mode = prefs.getInt(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO);
-    switch (mode) {
-      case AutoSwitchMode.OFF:
-        setLightStatusBarCompat(context, false);
-        break;
-      case AutoSwitchMode.ON:
-        setLightStatusBarCompat(context, true);
-        break;
-      default:
-        setLightStatusBarCompat(context, Util.isColorLight(color));
-        break;
-    }
-  }
-
   /** Should be called in onResume() of each Activity. */
   public static void resume(@NonNull AppCompatActivity activity) {
     if (instance == null) {
@@ -177,14 +159,32 @@ public class Aesthetic {
     }
   }
 
-  //
-  /////// GETTERS AND SETTERS OF THEME PROPERTIES
-  //
-
   public static boolean isFirstTime() {
     boolean firstTime = instance.prefs.getBoolean(KEY_FIRST_TIME, true);
     instance.editor.putBoolean(KEY_FIRST_TIME, false).commit();
     return firstTime;
+  }
+
+  //
+  /////// GETTERS AND SETTERS OF THEME PROPERTIES
+  //
+
+  private void invalidateStatusBar() {
+    final int color =
+        prefs.getInt(KEY_STATUS_BAR_COLOR, resolveColor(context, R.attr.colorPrimaryDark));
+    Util.setStatusBarColorCompat(context, color);
+    final int mode = prefs.getInt(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO);
+    switch (mode) {
+      case AutoSwitchMode.OFF:
+        setLightStatusBarCompat(context, false);
+        break;
+      case AutoSwitchMode.ON:
+        setLightStatusBarCompat(context, true);
+        break;
+      default:
+        setLightStatusBarCompat(context, Util.isColorLight(color));
+        break;
+    }
   }
 
   @CheckResult

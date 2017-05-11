@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import com.afollestad.aesthetic.Aesthetic;
-import com.afollestad.aesthetic.EdgeGlowUtil;
 
 import rx.Subscription;
 

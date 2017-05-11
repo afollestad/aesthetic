@@ -421,7 +421,8 @@ public class TintHelper {
     }
   }
 
-  public static void setTint(@NonNull SwitchCompat switchView, @ColorInt int color, boolean useDarker) {
+  public static void setTint(
+      @NonNull SwitchCompat switchView, @ColorInt int color, boolean useDarker) {
     if (switchView.getTrackDrawable() != null) {
       switchView.setTrackDrawable(
           modifySwitchDrawable(

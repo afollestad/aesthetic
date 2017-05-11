@@ -6,7 +6,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 
 import com.afollestad.aesthetic.Aesthetic;
-import com.afollestad.aesthetic.EdgeGlowUtil;
 
 import rx.Subscription;
 

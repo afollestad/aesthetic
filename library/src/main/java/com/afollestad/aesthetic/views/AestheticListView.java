@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.widget.ListView;
 
 import com.afollestad.aesthetic.Aesthetic;
-import com.afollestad.aesthetic.EdgeGlowUtil;
 
 import rx.Subscription;
 

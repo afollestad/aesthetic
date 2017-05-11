@@ -147,7 +147,7 @@ public class Util {
   }
 
   @ColorInt
-  static int adjustAlpha(
+  public static int adjustAlpha(
       @ColorInt int color, @SuppressWarnings("SameParameterValue") float factor) {
     int alpha = Math.round(Color.alpha(color) * factor);
     int red = Color.red(color);

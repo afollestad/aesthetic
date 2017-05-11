@@ -81,6 +81,19 @@
         android:hint="@string/hello_world"
         android:inputType="text|textAutoComplete"/>
 
+      <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/content_inset">
+
+        <android.support.design.widget.TextInputEditText
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/text_input_layout"/>
+
+      </android.support.design.widget.TextInputLayout>
+
       <SeekBar
         android:id="@+id/seeker"
         android:layout_width="match_parent"

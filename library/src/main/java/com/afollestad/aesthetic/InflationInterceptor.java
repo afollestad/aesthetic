@@ -30,6 +30,7 @@ import com.afollestad.aesthetic.views.AestheticSeekBar;
 import com.afollestad.aesthetic.views.AestheticSpinner;
 import com.afollestad.aesthetic.views.AestheticSwitch;
 import com.afollestad.aesthetic.views.AestheticSwitchCompat;
+import com.afollestad.aesthetic.views.AestheticTextInputLayout;
 import com.afollestad.aesthetic.views.AestheticTextView;
 import com.afollestad.aesthetic.views.AestheticToolbar;
 import com.afollestad.aesthetic.views.AestheticViewPager;
@@ -44,24 +45,13 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 final class InflationInterceptor implements LayoutInflaterFactory {
 
   private static final boolean LOGGING_ENABLED = true;
-
-  private static void LOG(String msg, Object... args) {
-    //noinspection PointlessBooleanExpression
-    if (!LOGGING_ENABLED) return;
-    if (args != null) {
-      Log.d("InflationInterceptor", String.format(msg, args));
-    } else {
-      Log.d("InflationInterceptor", msg);
-    }
-  }
-
-  private final AppCompatActivity keyContext;
-  @NonNull private final LayoutInflater layoutInflater;
-  @Nullable private AppCompatDelegate delegate;
   private static Method onCreateViewMethod;
   private static Method createViewMethod;
   private static Field constructorArgsField;
   private static int[] ATTRS_THEME;
+  private final AppCompatActivity keyContext;
+  @NonNull private final LayoutInflater layoutInflater;
+  @Nullable private AppCompatDelegate delegate;
 
   InflationInterceptor(
       @Nullable AppCompatActivity keyContext,
@@ -110,6 +100,16 @@ final class InflationInterceptor implements LayoutInflaterFactory {
     onCreateViewMethod.setAccessible(true);
     createViewMethod.setAccessible(true);
     constructorArgsField.setAccessible(true);
+  }
+
+  private static void LOG(String msg, Object... args) {
+    //noinspection PointlessBooleanExpression
+    if (!LOGGING_ENABLED) return;
+    if (args != null) {
+      Log.d("InflationInterceptor", String.format(msg, args));
+    } else {
+      Log.d("InflationInterceptor", msg);
+    }
   }
 
   private boolean isBlackListedForApply(String name) {
@@ -190,6 +190,9 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       case "Spinner":
       case "android.support.v7.widget.AppCompatSpinner":
         view = new AestheticSpinner(context, attrs);
+        break;
+      case "android.support.design.widget.TextInputLayout":
+        view = new AestheticTextInputLayout(context, attrs);
         break;
 
         //      case "android.support.v7.widget.AppCompatAutoCompleteTextView":

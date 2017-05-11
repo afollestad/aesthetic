@@ -1,4 +1,4 @@
-package com.afollestad.aesthetic;
+package com.afollestad.aesthetic.views;
 
 import android.annotation.TargetApi;
 import android.graphics.PorterDuff;
@@ -17,20 +17,30 @@ import android.widget.AbsListView;
 import android.widget.EdgeEffect;
 import android.widget.ScrollView;
 
+import com.afollestad.aesthetic.BuildConfig;
+
 import java.lang.reflect.Field;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 @RestrictTo(LIBRARY_GROUP)
-public final class EdgeGlowUtil {
-
-  private EdgeGlowUtil() {}
-
-  // Invalidation methods
+final class EdgeGlowUtil {
 
   private static Field EDGE_GLOW_FIELD_EDGE;
   private static Field EDGE_GLOW_FIELD_GLOW;
   private static Field EDGE_EFFECT_COMPAT_FIELD_EDGE_EFFECT;
+  private static Field SCROLL_VIEW_FIELD_EDGE_GLOW_TOP;
+  private static Field SCROLL_VIEW_FIELD_EDGE_GLOW_BOTTOM;
+  private static Field NESTED_SCROLL_VIEW_FIELD_EDGE_GLOW_TOP;
+  private static Field NESTED_SCROLL_VIEW_FIELD_EDGE_GLOW_BOTTOM;
+  private static Field LIST_VIEW_FIELD_EDGE_GLOW_TOP;
+  private static Field LIST_VIEW_FIELD_EDGE_GLOW_BOTTOM;
+  private static Field RECYCLER_VIEW_FIELD_EDGE_GLOW_TOP;
+  private static Field RECYCLER_VIEW_FIELD_EDGE_GLOW_LEFT;
+  private static Field RECYCLER_VIEW_FIELD_EDGE_GLOW_RIGHT;
+  private static Field RECYCLER_VIEW_FIELD_EDGE_GLOW_BOTTOM;
+  private static Field VIEW_PAGER_FIELD_EDGE_GLOW_LEFT;
+  private static Field VIEW_PAGER_FIELD_EDGE_GLOW_RIGHT;
 
   private static void invalidateEdgeEffectFields() {
     if (EDGE_GLOW_FIELD_EDGE != null
@@ -71,9 +81,6 @@ public final class EdgeGlowUtil {
     EDGE_EFFECT_COMPAT_FIELD_EDGE_EFFECT = efc;
   }
 
-  private static Field SCROLL_VIEW_FIELD_EDGE_GLOW_TOP;
-  private static Field SCROLL_VIEW_FIELD_EDGE_GLOW_BOTTOM;
-
   private static void invalidateScrollViewFields() {
     if (SCROLL_VIEW_FIELD_EDGE_GLOW_TOP != null && SCROLL_VIEW_FIELD_EDGE_GLOW_BOTTOM != null) {
       SCROLL_VIEW_FIELD_EDGE_GLOW_TOP.setAccessible(true);
@@ -94,9 +101,6 @@ public final class EdgeGlowUtil {
       }
     }
   }
-
-  private static Field NESTED_SCROLL_VIEW_FIELD_EDGE_GLOW_TOP;
-  private static Field NESTED_SCROLL_VIEW_FIELD_EDGE_GLOW_BOTTOM;
 
   private static void invalidateNestedScrollViewFields() {
     if (NESTED_SCROLL_VIEW_FIELD_EDGE_GLOW_TOP != null
@@ -120,9 +124,6 @@ public final class EdgeGlowUtil {
     }
   }
 
-  private static Field LIST_VIEW_FIELD_EDGE_GLOW_TOP;
-  private static Field LIST_VIEW_FIELD_EDGE_GLOW_BOTTOM;
-
   private static void invalidateListViewFields() {
     if (LIST_VIEW_FIELD_EDGE_GLOW_TOP != null && LIST_VIEW_FIELD_EDGE_GLOW_BOTTOM != null) {
       LIST_VIEW_FIELD_EDGE_GLOW_TOP.setAccessible(true);
@@ -143,11 +144,6 @@ public final class EdgeGlowUtil {
       }
     }
   }
-
-  private static Field RECYCLER_VIEW_FIELD_EDGE_GLOW_TOP;
-  private static Field RECYCLER_VIEW_FIELD_EDGE_GLOW_LEFT;
-  private static Field RECYCLER_VIEW_FIELD_EDGE_GLOW_RIGHT;
-  private static Field RECYCLER_VIEW_FIELD_EDGE_GLOW_BOTTOM;
 
   private static void invalidateRecyclerViewFields() {
     if (RECYCLER_VIEW_FIELD_EDGE_GLOW_TOP != null
@@ -183,9 +179,6 @@ public final class EdgeGlowUtil {
     }
   }
 
-  private static Field VIEW_PAGER_FIELD_EDGE_GLOW_LEFT;
-  private static Field VIEW_PAGER_FIELD_EDGE_GLOW_RIGHT;
-
   private static void invalidateViewPagerFields() {
     if (VIEW_PAGER_FIELD_EDGE_GLOW_LEFT != null && VIEW_PAGER_FIELD_EDGE_GLOW_RIGHT != null) {
       VIEW_PAGER_FIELD_EDGE_GLOW_LEFT.setAccessible(true);
@@ -220,7 +213,7 @@ public final class EdgeGlowUtil {
       throw new IllegalArgumentException("Cannot set an edge glow to " + view.getClass().getName());
   }
 
-  public static void setEdgeGlowColor(@NonNull ScrollView scrollView, @ColorInt int color) {
+  static void setEdgeGlowColor(@NonNull ScrollView scrollView, @ColorInt int color) {
     invalidateScrollViewFields();
     try {
       Object ee;
@@ -233,7 +226,7 @@ public final class EdgeGlowUtil {
     }
   }
 
-  public static void setEdgeGlowColor(@NonNull NestedScrollView scrollView, @ColorInt int color) {
+  static void setEdgeGlowColor(@NonNull NestedScrollView scrollView, @ColorInt int color) {
     invalidateNestedScrollViewFields();
     try {
       Object ee;
@@ -246,7 +239,7 @@ public final class EdgeGlowUtil {
     }
   }
 
-  public static void setEdgeGlowColor(@NonNull AbsListView listView, @ColorInt int color) {
+  static void setEdgeGlowColor(@NonNull AbsListView listView, @ColorInt int color) {
     invalidateListViewFields();
     try {
       Object ee;
@@ -259,7 +252,7 @@ public final class EdgeGlowUtil {
     }
   }
 
-  public static void setEdgeGlowColor(
+  static void setEdgeGlowColor(
       @NonNull RecyclerView scrollView,
       final @ColorInt int color,
       @Nullable RecyclerView.OnScrollListener scrollListener) {
@@ -291,7 +284,7 @@ public final class EdgeGlowUtil {
     }
   }
 
-  public static void setEdgeGlowColor(@NonNull ViewPager pager, @ColorInt int color) {
+  static void setEdgeGlowColor(@NonNull ViewPager pager, @ColorInt int color) {
     invalidateViewPagerFields();
     try {
       Object ee;
