@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     Aesthetic.attach(this);
-    Log.d("MainActivity", "onCreate");
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     unbinder = ButterKnife.bind(this);
@@ -41,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+    // If we haven't set any defaults, do that now
     if (Aesthetic.isFirstTime()) {
       Aesthetic.get()
           .activityTheme(R.style.AppTheme)
@@ -53,8 +53,11 @@ public class MainActivity extends AppCompatActivity {
           .primaryTextColor(Color.BLACK)
           .apply();
     }
+
+    // Update the dark theme switch to the last saved isDark value.
     Aesthetic.get().isDark().take(1).subscribe(isDark -> switchThemeView.setChecked(isDark));
 
+    // Further view setup
     ArrayAdapter<String> spinnerAdapter =
         new ArrayAdapter<>(
             this,
