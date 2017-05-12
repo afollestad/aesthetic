@@ -22,6 +22,7 @@ import com.afollestad.aesthetic.views.AestheticCheckBox;
 import com.afollestad.aesthetic.views.AestheticEditText;
 import com.afollestad.aesthetic.views.AestheticFab;
 import com.afollestad.aesthetic.views.AestheticListView;
+import com.afollestad.aesthetic.views.AestheticNestedScrollView;
 import com.afollestad.aesthetic.views.AestheticProgressBar;
 import com.afollestad.aesthetic.views.AestheticRadioButton;
 import com.afollestad.aesthetic.views.AestheticRecyclerView;
@@ -174,7 +175,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         view = new AestheticRecyclerView(context, attrs);
         break;
       case "android.support.v4.widget.NestedScrollView":
-        view = new AestheticScrollView(context, attrs);
+        view = new AestheticNestedScrollView(context, attrs);
         break;
       case "ListView":
         view = new AestheticListView(context, attrs);

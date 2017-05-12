@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.TabLayout;
 import android.util.AttributeSet;
 
@@ -12,12 +13,15 @@ import com.afollestad.aesthetic.TabLayoutIndicatorMode;
 
 import rx.Subscription;
 
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
 import static com.afollestad.aesthetic.Util.adjustAlpha;
 import static com.afollestad.aesthetic.Util.isColorLight;
 
+/** @author Aidan Follestad (afollestad) */
+@RestrictTo(LIBRARY_GROUP)
 public class AestheticTabLayout extends TabLayout {
 
   private static final float UNFOCUSED_ALPHA = 0.5f;

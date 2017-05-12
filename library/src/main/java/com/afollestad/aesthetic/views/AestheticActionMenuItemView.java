@@ -18,6 +18,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
 import static com.afollestad.aesthetic.Util.isColorLight;
 
+/** @author Aidan Follestad (afollestad) */
 @SuppressWarnings("RestrictedApi")
 @RestrictTo(LIBRARY_GROUP)
 public class AestheticActionMenuItemView extends ActionMenuItemView {

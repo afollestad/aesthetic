@@ -9,6 +9,7 @@ import static com.afollestad.aesthetic.AutoSwitchMode.OFF;
 import static com.afollestad.aesthetic.AutoSwitchMode.ON;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
+/** @author Aidan Follestad (afollestad) */
 @Retention(SOURCE)
 @IntDef(value = {OFF, ON, AUTO})
 public @interface AutoSwitchMode {

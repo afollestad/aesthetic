@@ -9,6 +9,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +32,7 @@ public class Aesthetic {
 
   private static final String PREFS_NAME = "[aesthetic-prefs]";
   private static final String KEY_FIRST_TIME = "first_time";
-  private static final String KEY_ACTIVITY_THEME = "activity_theme";
+  private static final String KEY_ACTIVITY_THEME = "activity_theme_%s";
   private static final String KEY_IS_DARK = "is_dark";
   private static final String KEY_PRIMARY_COLOR = "primary_color";
   private static final String KEY_ACCENT_COLOR = "accent_color";
@@ -64,6 +65,19 @@ public class Aesthetic {
     rxPrefs = RxSharedPreferences.create(prefs);
   }
 
+  private static String key(@Nullable AppCompatActivity activity) {
+    String key;
+    if (activity instanceof AestheticKeyProvider) {
+      key = ((AestheticKeyProvider) activity).key();
+    } else {
+      key = "default";
+    }
+    if (key == null) {
+      key = "default";
+    }
+    return key;
+  }
+
   /** Should be called before super.onCreate() in each Activity. */
   @NonNull
   public static Aesthetic attach(@NonNull AppCompatActivity activity) {
@@ -72,7 +86,8 @@ public class Aesthetic {
     }
     LayoutInflater li = activity.getLayoutInflater();
     Util.setInflaterFactory(li, activity);
-    instance.lastActivityTheme = instance.prefs.getInt(KEY_ACTIVITY_THEME, 0);
+    String activityThemeKey = String.format(KEY_ACTIVITY_THEME, key(activity));
+    instance.lastActivityTheme = instance.prefs.getInt(activityThemeKey, 0);
     if (instance.lastActivityTheme != 0) {
       activity.setTheme(instance.lastActivityTheme);
     }
@@ -191,14 +206,16 @@ public class Aesthetic {
 
   @CheckResult
   public Aesthetic activityTheme(@StyleRes int theme) {
-    editor.putInt(KEY_ACTIVITY_THEME, theme);
+    String key = String.format(KEY_ACTIVITY_THEME, key(context));
+    editor.putInt(key, theme);
     return this;
   }
 
   @CheckResult
   public Observable<Integer> activityTheme() {
+    String key = String.format(KEY_ACTIVITY_THEME, key(context));
     return rxPrefs
-        .getInteger(KEY_ACTIVITY_THEME, 0)
+        .getInteger(key, 0)
         .asObservable()
         .filter(next -> next != 0 && next != lastActivityTheme);
   }

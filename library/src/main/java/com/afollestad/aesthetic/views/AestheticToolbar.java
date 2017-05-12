@@ -19,6 +19,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
 import static com.afollestad.aesthetic.Util.setOverflowButtonColor;
 
+/** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)
 public class AestheticToolbar extends Toolbar {
 

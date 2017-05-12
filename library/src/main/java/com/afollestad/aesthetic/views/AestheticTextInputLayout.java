@@ -15,6 +15,7 @@ import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.adjustAlpha;
 
+/** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)
 public class AestheticTextInputLayout extends TextInputLayout {
 

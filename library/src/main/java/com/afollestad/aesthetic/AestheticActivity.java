@@ -4,7 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-public class AestheticActivity extends AppCompatActivity {
+/** @author Aidan Follestad (afollestad) */
+public class AestheticActivity extends AppCompatActivity implements AestheticKeyProvider {
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,5 +23,11 @@ public class AestheticActivity extends AppCompatActivity {
   protected void onPause() {
     Aesthetic.pause();
     super.onPause();
+  }
+
+  @Nullable
+  @Override
+  public String key() {
+    return null;
   }
 }

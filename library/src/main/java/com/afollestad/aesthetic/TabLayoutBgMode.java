@@ -8,6 +8,7 @@ import static com.afollestad.aesthetic.TabLayoutBgMode.ACCENT;
 import static com.afollestad.aesthetic.TabLayoutBgMode.PRIMARY;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
+/** @author Aidan Follestad (afollestad) */
 @Retention(SOURCE)
 @IntDef(value = {PRIMARY, ACCENT})
 public @interface TabLayoutBgMode {
