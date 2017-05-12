@@ -26,6 +26,7 @@
       android:layout_height="match_parent"
       android:gravity="center"
       android:text="@string/hello_world"
+      android:textColor="?colorAccent"
       android:textSize="@dimen/text_size_huge"/>
 
 

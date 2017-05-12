@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/content_inset"
         android:text="@string/hello_world"
-        android:textColor="?android:textColorPrimary"
+        android:textColor="?colorAccent"
         android:textSize="@dimen/text_size_title"/>
 
       <TextView
