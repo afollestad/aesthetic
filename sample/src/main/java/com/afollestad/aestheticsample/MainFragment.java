@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.afollestad.aesthetic.Aesthetic;
+import com.afollestad.aesthetic.BottomNavBgMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -84,6 +85,7 @@ public class MainFragment extends Fragment {
             .accentColorRes(R.color.md_purple)
             .statusBarColorAuto()
             .navBarColorAuto()
+            .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
             .apply();
         break;
       case R.id.btn_red:
@@ -92,6 +94,7 @@ public class MainFragment extends Fragment {
             .accentColorRes(R.color.md_blue_grey)
             .statusBarColorAuto()
             .navBarColorAuto()
+            .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
             .apply();
         break;
       case R.id.btn_purple:
@@ -100,6 +103,7 @@ public class MainFragment extends Fragment {
             .accentColorRes(R.color.md_lime)
             .statusBarColorAuto()
             .navBarColorAuto()
+            .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
             .apply();
         break;
       case R.id.btn_blue:
@@ -108,6 +112,7 @@ public class MainFragment extends Fragment {
             .accentColorRes(R.color.md_pink)
             .statusBarColorAuto()
             .navBarColorAuto()
+            .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
             .apply();
         break;
       case R.id.btn_green:
@@ -116,6 +121,7 @@ public class MainFragment extends Fragment {
             .accentColorRes(R.color.md_blue_grey)
             .statusBarColorAuto()
             .navBarColorAuto()
+            .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
             .apply();
         break;
       case R.id.btn_white:
@@ -124,6 +130,7 @@ public class MainFragment extends Fragment {
             .accentColorRes(R.color.md_blue)
             .statusBarColorAuto()
             .navBarColorAuto()
+            .bottomNavBgMode(BottomNavBgMode.PRIMARY)
             .apply();
         break;
     }

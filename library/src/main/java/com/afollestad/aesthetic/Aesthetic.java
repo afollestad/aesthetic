@@ -49,6 +49,8 @@ public class Aesthetic {
   private static final String KEY_TAB_LAYOUT_BG_MODE = "tab_layout_bg_mode";
   private static final String KEY_TAB_LAYOUT_INDICATOR_MODE = "tab_layout_indicator_mode";
   private static final String KEY_NAV_VIEW_MODE = "nav_view_mode";
+  private static final String KEY_BOTTOM_NAV_BG_MODE = "bottom_nav_bg_mode";
+  private static final String KEY_BOTTOM_NAV_ICONTEXT_MODE = "bottom_nav_icontext_mode";
 
   @SuppressLint("StaticFieldLeak")
   private static Aesthetic instance;
@@ -472,6 +474,32 @@ public class Aesthetic {
   public Observable<Integer> navViewMode() {
     return rxPrefs
         .getInteger(KEY_NAV_VIEW_MODE, NavigationViewMode.SELECTED_PRIMARY)
+        .asObservable();
+  }
+
+  @CheckResult
+  public Aesthetic bottomNavBgMode(@BottomNavBgMode int mode) {
+    editor.putInt(KEY_BOTTOM_NAV_BG_MODE, mode).commit();
+    return this;
+  }
+
+  @CheckResult
+  public Observable<Integer> bottomNavBgMode() {
+    return rxPrefs
+        .getInteger(KEY_BOTTOM_NAV_BG_MODE, BottomNavBgMode.BLACK_WHITE_AUTO)
+        .asObservable();
+  }
+
+  @CheckResult
+  public Aesthetic bottomNavIconTextMode(@BottomNavIconTextMode int mode) {
+    editor.putInt(KEY_BOTTOM_NAV_ICONTEXT_MODE, mode).commit();
+    return this;
+  }
+
+  @CheckResult
+  public Observable<Integer> bottomNavIconTextMode() {
+    return rxPrefs
+        .getInteger(KEY_BOTTOM_NAV_ICONTEXT_MODE, BottomNavIconTextMode.SELECTED_ACCENT)
         .asObservable();
   }
 

@@ -25,6 +25,10 @@
       android:name=".DrawerActivity"
       android:windowSoftInputMode="stateAlwaysHidden"/>
 
+    <activity
+      android:name=".BottomNavActivity"
+      android:windowSoftInputMode="stateAlwaysHidden"/>
+
   </application>
 
 </manifest>

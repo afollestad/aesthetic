@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 
 import com.afollestad.aesthetic.Aesthetic;
 import com.afollestad.aesthetic.AestheticActivity;
+import com.afollestad.aesthetic.BottomNavBgMode;
+import com.afollestad.aesthetic.BottomNavIconTextMode;
 import com.afollestad.aesthetic.NavigationViewMode;
 
 import butterknife.BindView;
@@ -47,6 +49,8 @@ public class MainActivity extends AestheticActivity {
           .navBarColorAuto()
           .primaryTextColor(Color.BLACK)
           .navViewMode(NavigationViewMode.SELECTED_ACCENT)
+          .bottomNavBgMode(BottomNavBgMode.PRIMARY)
+          .bottomNavIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
           .apply();
     }
 

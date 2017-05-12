@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.afollestad.aesthetic.views.AestheticActionMenuItemView;
+import com.afollestad.aesthetic.views.AestheticBottomNavigationView;
 import com.afollestad.aesthetic.views.AestheticButton;
 import com.afollestad.aesthetic.views.AestheticCheckBox;
 import com.afollestad.aesthetic.views.AestheticEditText;
@@ -215,6 +216,9 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         break;
       case "android.support.design.widget.NavigationView":
         view = new AestheticNavigationView(context, attrs);
+        break;
+      case "android.support.design.widget.BottomNavigationView":
+        view = new AestheticBottomNavigationView(context, attrs);
         break;
 
         //      case "android.support.v7.widget.AppCompatAutoCompleteTextView":

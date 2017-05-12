@@ -45,5 +45,7 @@ public class SecondaryFragment extends Fragment {
   public void onClickCoordinatorlayout() {}
 
   @OnClick(R.id.bottom_tabs)
-  public void onClickBottomTabs() {}
+  public void onClickBottomTabs() {
+    startActivity(new Intent(getActivity(), BottomNavActivity.class));
+  }
 }
