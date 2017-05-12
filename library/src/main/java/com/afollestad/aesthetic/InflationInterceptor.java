@@ -21,11 +21,14 @@ import com.afollestad.aesthetic.views.AestheticButton;
 import com.afollestad.aesthetic.views.AestheticCheckBox;
 import com.afollestad.aesthetic.views.AestheticEditText;
 import com.afollestad.aesthetic.views.AestheticFab;
+import com.afollestad.aesthetic.views.AestheticFrameLayout;
+import com.afollestad.aesthetic.views.AestheticLinearLayout;
 import com.afollestad.aesthetic.views.AestheticListView;
 import com.afollestad.aesthetic.views.AestheticNestedScrollView;
 import com.afollestad.aesthetic.views.AestheticProgressBar;
 import com.afollestad.aesthetic.views.AestheticRadioButton;
 import com.afollestad.aesthetic.views.AestheticRecyclerView;
+import com.afollestad.aesthetic.views.AestheticRelativeLayout;
 import com.afollestad.aesthetic.views.AestheticScrollView;
 import com.afollestad.aesthetic.views.AestheticSeekBar;
 import com.afollestad.aesthetic.views.AestheticSpinner;
@@ -127,6 +130,16 @@ final class InflationInterceptor implements LayoutInflaterFactory {
     View view = null;
 
     switch (name) {
+      case "LinearLayout":
+        view = new AestheticLinearLayout(context, attrs);
+        break;
+      case "FrameLayout":
+        view = new AestheticFrameLayout(context, attrs);
+        break;
+      case "RelativeLayout":
+        view = new AestheticRelativeLayout(context, attrs);
+        break;
+
       case "android.support.v7.widget.AppCompatTextView":
       case "TextView":
         view = new AestheticTextView(context, attrs);

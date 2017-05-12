@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <group android:id="@+id/group1">
+
+    <item
+      android:id="@+id/item_one"
+      android:icon="@drawable/ic_announcement"
+      android:title="@string/one"/>
+
+    <item
+      android:id="@+id/item_two"
+      android:icon="@drawable/ic_archive"
+      android:title="@string/two"/>
+
+    <item
+      android:id="@+id/item_three"
+      android:icon="@drawable/ic_attach_money"
+      android:title="@string/three"/>
+
+  </group>
+
+  <group android:id="@+id/group2">
+
+    <item
+      android:id="@+id/item_four"
+      android:icon="@drawable/ic_backup"
+      android:title="@string/four"/>
+
+    <item
+      android:id="@+id/item_five"
+      android:icon="@drawable/ic_book"
+      android:title="@string/five"/>
+
+    <item
+      android:id="@+id/item_six"
+      android:icon="@drawable/ic_watch"
+      android:title="@string/six"/>
+
+  </group>
+
+</menu>

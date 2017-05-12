@@ -13,4 +13,15 @@
   <string name="other">Other</string>
   <string name="main">Main</string>
   <string name="black">Black</string>
+  <string name="drawer_layout">Drawer Layout</string>
+  <string name="coordinator_layout">Coordinator Layout</string>
+  <string name="bottom_tabs">Bottom Tabs</string>
+  <string name="one">One</string>
+  <string name="two">Two</string>
+  <string name="three">Three</string>
+  <string name="four">Four</string>
+  <string name="five">Five</string>
+  <string name="six">Six</string>
+  <string name="open_drawer">Open Drawer</string>
+  <string name="close_drawer">Close Drawer</string>
 </resources>

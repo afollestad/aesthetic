@@ -50,7 +50,7 @@ public class AestheticToolbar extends Toolbar {
 
   @Override
   public void setNavigationIcon(@Nullable Drawable icon) {
-    super.setNavigationIcon(createTintedDrawable(getNavigationIcon(), titleIconColor));
+    super.setNavigationIcon(createTintedDrawable(icon, titleIconColor));
   }
 
   @Override

@@ -1,6 +1,7 @@
 package com.afollestad.aesthetic.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.RestrictTo;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
@@ -19,6 +20,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 public class AestheticTextView extends AppCompatTextView {
 
   private Subscription subscription;
+  private int textColorResId;
 
   public AestheticTextView(Context context) {
     super(context);
@@ -26,28 +28,28 @@ public class AestheticTextView extends AppCompatTextView {
 
   public AestheticTextView(Context context, AttributeSet attrs) {
     super(context, attrs);
+    init(context, attrs);
   }
 
   public AestheticTextView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    init(context, attrs);
+  }
+
+  private void init(Context context, AttributeSet attrs) {
+    if (attrs != null) {
+      int[] attrsArray = new int[] {android.R.attr.textColor};
+      TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
+      textColorResId = ta.getResourceId(0, 0);
+      ta.recycle();
+    }
   }
 
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    String idName;
-    try {
-      idName = getResources().getResourceName(getId());
-    } catch (Exception e) {
-      idName = null;
-    }
-
-    // TODO when to use inverse colors?
-
-    Observable<Integer> obs;
-    if (idName == null || idName.contains("title") || idName.contains("header")) {
-      obs = Aesthetic.get().primaryTextColor();
-    } else {
+    Observable<Integer> obs = ViewUtil.getObservableForResId(getContext(), textColorResId);
+    if (obs == null) {
       obs = Aesthetic.get().secondaryTextColor();
     }
     subscription =

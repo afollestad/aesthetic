@@ -11,6 +11,7 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.FloatRange;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -84,6 +85,16 @@ public class Util {
     TypedArray a = context.getTheme().obtainStyledAttributes(new int[] {attr});
     try {
       return a.getColor(0, fallback);
+    } finally {
+      a.recycle();
+    }
+  }
+
+  @IdRes
+  public static int resolveResId(Context context, @AttrRes int attr, int fallback) {
+    TypedArray a = context.getTheme().obtainStyledAttributes(new int[] {attr});
+    try {
+      return a.getResourceId(0, fallback);
     } finally {
       a.recycle();
     }
@@ -195,7 +206,7 @@ public class Util {
         1
             - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color))
                 / 255;
-    return darkness < 0.5;
+    return darkness < 0.4;
   }
 
   // optional convenience method, this can be called when we have information about the background color and want to consider it
