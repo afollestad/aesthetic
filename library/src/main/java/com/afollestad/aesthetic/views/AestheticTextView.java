@@ -48,10 +48,9 @@ public class AestheticTextView extends AppCompatTextView {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    Observable<Integer> obs = ViewUtil.getObservableForResId(getContext(), textColorResId);
-    if (obs == null) {
-      obs = Aesthetic.get().secondaryTextColor();
-    }
+    Observable<Integer> obs =
+        ViewUtil.getObservableForResId(
+            getContext(), textColorResId, Aesthetic.get().secondaryTextColor());
     subscription =
         obs.compose(distinctToMainThread()).subscribe(this::setTextColor, onErrorLogAndRethrow());
   }

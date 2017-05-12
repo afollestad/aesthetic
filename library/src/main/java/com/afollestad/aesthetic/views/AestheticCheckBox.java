@@ -1,6 +1,7 @@
 package com.afollestad.aesthetic.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.RestrictTo;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
@@ -8,6 +9,7 @@ import android.util.AttributeSet;
 import com.afollestad.aesthetic.Aesthetic;
 import com.afollestad.aesthetic.TintHelper;
 
+import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
@@ -18,9 +20,8 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 @RestrictTo(LIBRARY_GROUP)
 public class AestheticCheckBox extends AppCompatCheckBox {
 
-  private int color;
-  private boolean isDark;
-  private CompositeSubscription subs;
+  private CompositeSubscription subscriptions;
+  private int backgroundResId;
 
   public AestheticCheckBox(Context context) {
     super(context);
@@ -28,36 +29,40 @@ public class AestheticCheckBox extends AppCompatCheckBox {
 
   public AestheticCheckBox(Context context, AttributeSet attrs) {
     super(context, attrs);
+    init(context, attrs);
   }
 
   public AestheticCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    init(context, attrs);
   }
 
-  private void invalidateColors(int color) {
-    this.color = color;
-    TintHelper.setTint(this, color, isDark);
+  private void init(Context context, AttributeSet attrs) {
+    if (attrs != null) {
+      int[] attrsArray = new int[] {android.R.attr.background};
+      TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
+      backgroundResId = ta.getResourceId(0, 0);
+      ta.recycle();
+    }
+  }
+
+  private void invalidateColors(ColorIsDarkState state) {
+    TintHelper.setTint(this, state.color, state.isDark);
   }
 
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    subs = new CompositeSubscription();
-    subs.add(
-        Aesthetic.get()
-            .accentColor()
+    subscriptions = new CompositeSubscription();
+    subscriptions.add(
+        Observable.combineLatest(
+                ViewUtil.getObservableForResId(
+                    getContext(), backgroundResId, Aesthetic.get().accentColor()),
+                Aesthetic.get().isDark(),
+                ColorIsDarkState::create)
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
-    subs.add(
-        Aesthetic.get()
-            .isDark()
-            .compose(distinctToMainThread())
-            .subscribe(
-                isDark -> {
-                  this.isDark = isDark;
-                  invalidateColors(color);
-                }));
-    subs.add(
+    subscriptions.add(
         Aesthetic.get()
             .primaryTextColor()
             .compose(distinctToMainThread())
@@ -66,7 +71,7 @@ public class AestheticCheckBox extends AppCompatCheckBox {
 
   @Override
   protected void onDetachedFromWindow() {
-    subs.unsubscribe();
+    subscriptions.unsubscribe();
     super.onDetachedFromWindow();
   }
 }

@@ -19,8 +19,11 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 class ViewUtil {
 
   @Nullable
-  static Observable<Integer> getObservableForResId(@NonNull Context context, @IdRes int resId) {
-    if (resId == Util.resolveResId(context, R.attr.colorPrimary, 0)) {
+  static Observable<Integer> getObservableForResId(
+      @NonNull Context context, @IdRes int resId, @Nullable Observable<Integer> fallback) {
+    if (resId == 0) {
+      return fallback;
+    } else if (resId == Util.resolveResId(context, R.attr.colorPrimary, 0)) {
       return Aesthetic.get().primaryColor();
     } else if (resId == Util.resolveResId(context, R.attr.colorPrimaryDark, 0)) {
       return Aesthetic.get().statusBarColor();
@@ -37,6 +40,6 @@ class ViewUtil {
     } else if (resId == Util.resolveResId(context, android.R.attr.textColorSecondaryInverse, 0)) {
       return Aesthetic.get().secondaryTextInverseColor();
     }
-    return null;
+    return fallback;
   }
 }

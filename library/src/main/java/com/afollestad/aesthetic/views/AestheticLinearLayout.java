@@ -43,7 +43,7 @@ public class AestheticLinearLayout extends LinearLayout {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    Observable<Integer> obs = ViewUtil.getObservableForResId(getContext(), backgroundResId);
+    Observable<Integer> obs = ViewUtil.getObservableForResId(getContext(), backgroundResId, null);
     if (obs != null) {
       bgSubscription =
           obs.compose(distinctToMainThread())

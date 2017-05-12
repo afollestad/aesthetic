@@ -30,7 +30,6 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
 
   private Subscription modesSubscription;
   private CompositeSubscription colorSubscriptions;
-  private State lastState;
   private int lastTextIconColor;
 
   public AestheticBottomNavigationView(Context context) {
@@ -92,7 +91,6 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
   }
 
   private void onState(State state) {
-    lastState = state;
     if (colorSubscriptions != null) {
       colorSubscriptions.unsubscribe();
     }
