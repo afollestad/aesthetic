@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.afollestad.aesthetic.Aesthetic;
 import com.afollestad.aesthetic.AestheticActivity;
+import com.afollestad.aesthetic.NavigationViewMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +46,7 @@ public class MainActivity extends AestheticActivity {
           .statusBarColorAuto()
           .navBarColorAuto()
           .primaryTextColor(Color.BLACK)
+          .navViewMode(NavigationViewMode.SELECTED_ACCENT)
           .apply();
     }
 

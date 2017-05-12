@@ -3,6 +3,7 @@ package com.afollestad.aestheticsample;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,9 @@ public class DrawerActivity extends AestheticActivity {
   @BindView(R.id.drawer_layout)
   DrawerLayout drawerLayout;
 
+  @BindView(R.id.navigation_view)
+  NavigationView navigationView;
+
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -40,6 +44,8 @@ public class DrawerActivity extends AestheticActivity {
     //noinspection ConstantConditions
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setHomeButtonEnabled(true);
+
+    navigationView.post(() -> navigationView.setCheckedItem(R.id.item_three));
   }
 
   @Override

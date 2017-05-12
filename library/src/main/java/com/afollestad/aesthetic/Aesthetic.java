@@ -12,8 +12,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import com.f2prateek.rx.preferences.RxSharedPreferences;
 
@@ -46,6 +48,7 @@ public class Aesthetic {
   private static final String KEY_LIGHT_STATUS_MODE = "light_status_mode";
   private static final String KEY_TAB_LAYOUT_BG_MODE = "tab_layout_bg_mode";
   private static final String KEY_TAB_LAYOUT_INDICATOR_MODE = "tab_layout_indicator_mode";
+  private static final String KEY_NAV_VIEW_MODE = "nav_view_mode";
 
   @SuppressLint("StaticFieldLeak")
   private static Aesthetic instance;
@@ -189,7 +192,18 @@ public class Aesthetic {
   private void invalidateStatusBar() {
     final int color =
         prefs.getInt(KEY_STATUS_BAR_COLOR, resolveColor(context, R.attr.colorPrimaryDark));
-    Util.setStatusBarColorCompat(context, color);
+
+    ViewGroup rootView = Util.getRootView(context);
+    if (rootView instanceof DrawerLayout) {
+      // Color is set to DrawerLayout, Activity gets transparent status bar
+      setLightStatusBarCompat(context, false);
+      Util.setStatusBarColorCompat(
+          context, ContextCompat.getColor(context, android.R.color.transparent));
+      ((DrawerLayout) rootView).setStatusBarBackgroundColor(color);
+    } else {
+      Util.setStatusBarColorCompat(context, color);
+    }
+
     final int mode = prefs.getInt(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO);
     switch (mode) {
       case AutoSwitchMode.OFF:
@@ -446,6 +460,19 @@ public class Aesthetic {
   @CheckResult
   public Observable<Integer> tabLayoutBgMode() {
     return rxPrefs.getInteger(KEY_TAB_LAYOUT_BG_MODE, TabLayoutBgMode.PRIMARY).asObservable();
+  }
+
+  @CheckResult
+  public Aesthetic navViewMode(@NavigationViewMode int mode) {
+    editor.putInt(KEY_NAV_VIEW_MODE, mode).commit();
+    return this;
+  }
+
+  @CheckResult
+  public Observable<Integer> navViewMode() {
+    return rxPrefs
+        .getInteger(KEY_NAV_VIEW_MODE, NavigationViewMode.SELECTED_PRIMARY)
+        .asObservable();
   }
 
   public void apply() {

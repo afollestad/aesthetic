@@ -24,6 +24,7 @@ import com.afollestad.aesthetic.views.AestheticFab;
 import com.afollestad.aesthetic.views.AestheticFrameLayout;
 import com.afollestad.aesthetic.views.AestheticLinearLayout;
 import com.afollestad.aesthetic.views.AestheticListView;
+import com.afollestad.aesthetic.views.AestheticNavigationView;
 import com.afollestad.aesthetic.views.AestheticNestedScrollView;
 import com.afollestad.aesthetic.views.AestheticProgressBar;
 import com.afollestad.aesthetic.views.AestheticRadioButton;
@@ -212,6 +213,9 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       case "android.support.design.widget.TabLayout":
         view = new AestheticTabLayout(context, attrs);
         break;
+      case "android.support.design.widget.NavigationView":
+        view = new AestheticNavigationView(context, attrs);
+        break;
 
         //      case "android.support.v7.widget.AppCompatAutoCompleteTextView":
         //      case "AutoCompleteTextView":
@@ -224,13 +228,6 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         //        view =
         //            new ATEMultiAutoCompleteTextView(
         //                context, attrs, keyContext, parent != null && parent instanceof TextInputLayout);
-        //        break;
-
-        //      case "android.support.v4.widget.DrawerLayout":
-        //        view = new ATEDrawerLayout(context, attrs, keyContext);
-        //        break;
-        //      case NavigationViewProcessor.MAIN_CLASS:
-        //        view = new ATENavigationView(context, attrs, keyContext);
         //        break;
 
         //      case "android.support.design.widget.CoordinatorLayout":

@@ -1,6 +1,7 @@
 package com.afollestad.aesthetic;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -25,6 +26,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -254,5 +256,10 @@ public class Util {
       Log.d("Aesthetic", "Unable to get Toolbar from " + ab.getClass().getName());
       return null;
     }
+  }
+
+  @NonNull
+  static ViewGroup getRootView(@NonNull Activity activity) {
+    return (ViewGroup) ((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0);
   }
 }
