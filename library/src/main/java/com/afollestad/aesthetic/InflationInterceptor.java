@@ -1,7 +1,6 @@
 package com.afollestad.aesthetic;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -340,14 +339,6 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         }
       }
     }
-
-    Resources res = context.getResources();
-    //noinspection ResourceType
-    String idName =
-        view != null && view.getId() != 0 && view.getId() != 0xffffffff
-            ? " " + res.getResourceName(view.getId()) + " "
-            : "";
-    LOG("%s inflated to ->%s%s", name, idName, view != null ? view.getClass().getName() : "(null)");
 
     return view;
   }
