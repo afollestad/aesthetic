@@ -18,7 +18,6 @@ import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.afollestad.aesthetic.Aesthetic;
@@ -101,19 +100,7 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
     if (menu == null) {
       menu = toolbar.getMenu();
     }
-    if (menu != null && menu.size() > 0) {
-      for (int i = 0; i < menu.size(); i++) {
-        final MenuItem item = menu.getItem(i);
-        // We must iterate through the toolbar.getMenu() too, to keep the tint when resuming the paused activity.
-        if (item.getIcon() != null) {
-          item.setIcon(TintHelper.createTintedDrawable(item.getIcon(), color));
-        }
-        // TODO Search view theming
-        //        if (item.getActionView() != null && (item.getActionView() instanceof android.widget.SearchView || item.getActionView() instanceof android.support.v7.widget.SearchView)) {
-        //          SearchViewTintUtil.setSearchViewContentColor(item.getActionView(), color);
-        //        }
-      }
-    }
+    ViewUtil.tintToolbarMenu(toolbar, menu, color);
   }
 
   @Override
