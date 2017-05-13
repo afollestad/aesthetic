@@ -151,10 +151,9 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
 
   @SuppressWarnings("unchecked")
   public static void tintMenu(
-      @NonNull Toolbar toolbar, @Nullable Menu menu, final @ColorInt int color) {
+      @NonNull AestheticToolbar toolbar, @Nullable Menu menu, final @ColorInt int color) {
     if (toolbar.getNavigationIcon() != null) {
-      toolbar.setNavigationIcon(
-          TintHelper.createTintedDrawable(toolbar.getNavigationIcon(), color));
+      toolbar.setNavigationIcon(toolbar.getNavigationIcon(), color);
     }
     Util.setOverflowButtonColor(toolbar, color);
 

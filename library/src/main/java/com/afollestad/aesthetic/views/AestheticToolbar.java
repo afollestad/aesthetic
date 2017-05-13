@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v7.widget.Toolbar;
@@ -77,6 +78,10 @@ public class AestheticToolbar extends Toolbar {
   @Override
   public void setNavigationIcon(@Nullable Drawable icon) {
     super.setNavigationIcon(createTintedDrawable(icon, titleIconColor));
+  }
+
+  public void setNavigationIcon(@Nullable Drawable icon, @ColorInt int color) {
+    super.setNavigationIcon(createTintedDrawable(icon, color));
   }
 
   @Override
