@@ -233,8 +233,6 @@ being used with a dark theme or light theme.
 **When `activityTheme` is changed, `apply()` will recreate the visible `Activity`. This is the ONLY 
 property which requires a recreate.**
 
----
-
 ### Window Background
 
 Aside from changing the entire base theme of an `Activity`, you can also change just the window background:
@@ -244,8 +242,6 @@ Aesthetic.get()
     .windowBgColorRes(R.color.window_background_gray)
     .apply();
 ```
-
----
 
 ### View Backgrounds
 
