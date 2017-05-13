@@ -44,7 +44,7 @@ public class Aesthetic {
   private static final String KEY_SECONDARY_TEXT_INVERSE_COLOR = "secondary_text_inverse";
   private static final String KEY_WINDOW_BG_COLOR = "window_bg_color";
   private static final String KEY_STATUS_BAR_COLOR = "status_bar_color_%s";
-  private static final String KEY_NAV_BAR_COLOR = "nav_bar_color";
+  private static final String KEY_NAV_BAR_COLOR = "nav_bar_color_%S";
   private static final String KEY_LIGHT_STATUS_MODE = "light_status_mode";
   private static final String KEY_TAB_LAYOUT_BG_MODE = "tab_layout_bg_mode";
   private static final String KEY_TAB_LAYOUT_INDICATOR_MODE = "tab_layout_indicator_mode";
@@ -409,7 +409,8 @@ public class Aesthetic {
 
   @CheckResult
   public Aesthetic navBarColor(@ColorInt int color) {
-    editor.putInt(KEY_NAV_BAR_COLOR, color);
+    String key = String.format(KEY_NAV_BAR_COLOR, key(context));
+    editor.putInt(key, color);
     return this;
   }
 
@@ -421,13 +422,15 @@ public class Aesthetic {
   @CheckResult
   public Aesthetic navBarColorAuto() {
     int color = prefs.getInt(KEY_PRIMARY_COLOR, resolveColor(context, R.attr.colorPrimary));
-    editor.putInt(KEY_NAV_BAR_COLOR, isColorLight(color) ? Color.BLACK : color);
+    String key = String.format(KEY_NAV_BAR_COLOR, key(context));
+    editor.putInt(key, isColorLight(color) ? Color.BLACK : color);
     return this;
   }
 
   @CheckResult
   public Observable<Integer> navBarColor() {
-    return rxPrefs.getInteger(KEY_NAV_BAR_COLOR, Color.BLACK).asObservable();
+    String key = String.format(KEY_NAV_BAR_COLOR, key(context));
+    return rxPrefs.getInteger(key, Color.BLACK).asObservable();
   }
 
   @CheckResult
