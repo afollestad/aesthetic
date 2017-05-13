@@ -108,7 +108,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="-4dp"
         android:layout_marginRight="-4dp"
-        android:layout_marginTop="@dimen/content_inset"/>
+        android:layout_marginTop="@dimen/content_inset"
+        android:max="100"
+        android:progress="50"/>
 
       <Spinner
         android:id="@+id/spinner"
@@ -122,6 +124,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/content_inset"/>
+
+      <Button
+        android:id="@+id/btn_disabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/content_inset"
+        android:enabled="false"
+        android:text="@string/disabled_button"/>
 
     </LinearLayout>
 

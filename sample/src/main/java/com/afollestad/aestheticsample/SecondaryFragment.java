@@ -42,7 +42,9 @@ public class SecondaryFragment extends Fragment {
   }
 
   @OnClick(R.id.coordinator_layout)
-  public void onClickCoordinatorlayout() {}
+  public void onClickCoordinatorlayout() {
+    startActivity(new Intent(getActivity(), CoordinatorLayoutActivity.class));
+  }
 
   @OnClick(R.id.bottom_tabs)
   public void onClickBottomTabs() {

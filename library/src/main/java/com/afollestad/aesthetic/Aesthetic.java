@@ -43,7 +43,7 @@ public class Aesthetic {
   private static final String KEY_PRIMARY_TEXT_INVERSE_COLOR = "primary_text_inverse";
   private static final String KEY_SECONDARY_TEXT_INVERSE_COLOR = "secondary_text_inverse";
   private static final String KEY_WINDOW_BG_COLOR = "window_bg_color";
-  private static final String KEY_STATUS_BAR_COLOR = "status_bar_color";
+  private static final String KEY_STATUS_BAR_COLOR = "status_bar_color_%s";
   private static final String KEY_NAV_BAR_COLOR = "nav_bar_color";
   private static final String KEY_LIGHT_STATUS_MODE = "light_status_mode";
   private static final String KEY_TAB_LAYOUT_BG_MODE = "tab_layout_bg_mode";
@@ -192,8 +192,8 @@ public class Aesthetic {
   //
 
   private void invalidateStatusBar() {
-    final int color =
-        prefs.getInt(KEY_STATUS_BAR_COLOR, resolveColor(context, R.attr.colorPrimaryDark));
+    String key = String.format(KEY_STATUS_BAR_COLOR, key(context));
+    final int color = prefs.getInt(key, resolveColor(context, R.attr.colorPrimaryDark));
 
     ViewGroup rootView = Util.getRootView(context);
     if (rootView instanceof DrawerLayout) {
@@ -381,7 +381,8 @@ public class Aesthetic {
 
   @CheckResult
   public Aesthetic statusBarColor(@ColorInt int color) {
-    editor.putInt(KEY_STATUS_BAR_COLOR, color);
+    String key = String.format(KEY_STATUS_BAR_COLOR, key(context));
+    editor.putInt(key, color);
     return this;
   }
 
@@ -392,8 +393,9 @@ public class Aesthetic {
 
   @CheckResult
   public Aesthetic statusBarColorAuto() {
+    String key = String.format(KEY_STATUS_BAR_COLOR, key(context));
     editor.putInt(
-        KEY_STATUS_BAR_COLOR,
+        key,
         Util.darkenColor(
             prefs.getInt(KEY_PRIMARY_COLOR, resolveColor(context, R.attr.colorPrimary))));
     return this;
@@ -401,9 +403,8 @@ public class Aesthetic {
 
   @CheckResult
   public Observable<Integer> statusBarColor() {
-    return rxPrefs
-        .getInteger(KEY_STATUS_BAR_COLOR, resolveColor(context, R.attr.colorPrimaryDark))
-        .asObservable();
+    String key = String.format(KEY_STATUS_BAR_COLOR, key(context));
+    return rxPrefs.getInteger(key, resolveColor(context, R.attr.colorPrimaryDark)).asObservable();
   }
 
   @CheckResult

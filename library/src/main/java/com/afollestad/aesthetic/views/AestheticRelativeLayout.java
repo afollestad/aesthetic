@@ -3,15 +3,19 @@ package com.afollestad.aesthetic.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
 import rx.Observable;
 import rx.Subscription;
 
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
+/** @author Aidan Follestad (afollestad) */
+@RestrictTo(LIBRARY_GROUP)
 public class AestheticRelativeLayout extends RelativeLayout {
 
   private Subscription bgSubscription;

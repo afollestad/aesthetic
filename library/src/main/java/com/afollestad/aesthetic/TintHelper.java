@@ -459,14 +459,15 @@ public class TintHelper {
   // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary because Drawables with the same resource have shared states otherwise.
   @CheckResult
   @Nullable
-  public static Drawable createTintedDrawable(@Nullable Drawable drawable, @NonNull ColorStateList sl) {
+  public static Drawable createTintedDrawable(
+      @Nullable Drawable drawable, @NonNull ColorStateList sl) {
     if (drawable == null) return null;
     drawable = DrawableCompat.wrap(drawable.mutate());
     DrawableCompat.setTintList(drawable, sl);
     return drawable;
   }
 
-  static void setCursorTint(@NonNull EditText editText, @ColorInt int color) {
+  public static void setCursorTint(@NonNull EditText editText, @ColorInt int color) {
     try {
       Field fCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
       fCursorDrawableRes.setAccessible(true);

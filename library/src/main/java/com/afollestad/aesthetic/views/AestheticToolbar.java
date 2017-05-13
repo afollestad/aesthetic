@@ -12,7 +12,9 @@ import android.util.AttributeSet;
 import com.afollestad.aesthetic.Aesthetic;
 import com.afollestad.aesthetic.Util;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.subjects.PublishSubject;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 import static com.afollestad.aesthetic.Rx.distinctToMainThread;
@@ -27,9 +29,11 @@ public class AestheticToolbar extends Toolbar {
   private int titleIconColor;
   private int backgroundResId;
   private Subscription subscription;
+  private PublishSubject<Integer> onColorUpdated;
 
   public AestheticToolbar(Context context) {
     super(context);
+    init(context, null);
   }
 
   public AestheticToolbar(Context context, @Nullable AttributeSet attrs) {
@@ -43,6 +47,10 @@ public class AestheticToolbar extends Toolbar {
   }
 
   private void init(Context context, AttributeSet attrs) {
+    onColorUpdated = PublishSubject.create();
+    if (context == null) {
+      return;
+    }
     if (attrs != null) {
       int[] attrsArray = new int[] {android.R.attr.background};
       TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
@@ -59,6 +67,11 @@ public class AestheticToolbar extends Toolbar {
     if (getNavigationIcon() != null) {
       setNavigationIcon(getNavigationIcon());
     }
+    onColorUpdated.onNext(color);
+  }
+
+  public Observable<Integer> colorUpdated() {
+    return onColorUpdated.asObservable();
   }
 
   @Override
@@ -79,6 +92,7 @@ public class AestheticToolbar extends Toolbar {
 
   @Override
   protected void onDetachedFromWindow() {
+    onColorUpdated = null;
     subscription.unsubscribe();
     super.onDetachedFromWindow();
   }

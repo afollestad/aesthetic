@@ -44,24 +44,6 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
     super(context, attrs, defStyleAttr);
   }
 
-  private static class State {
-
-    @BottomNavBgMode private int bgMode;
-    @BottomNavIconTextMode private int iconTextMode;
-    private boolean isDark;
-
-    private State(int bgMode, int iconTextMode, boolean isDark) {
-      this.bgMode = bgMode;
-      this.iconTextMode = iconTextMode;
-      this.isDark = isDark;
-    }
-
-    static State create(
-        @BottomNavBgMode int bgMode, @BottomNavIconTextMode int iconTextMode, boolean isDark) {
-      return new State(bgMode, iconTextMode, isDark);
-    }
-  }
-
   private void invalidateIconTextColor(int backgroundColor, int selectedColor) {
     int baseColor = Util.isColorLight(backgroundColor) ? Color.BLACK : Color.WHITE;
     int unselectedIconTextColor = Util.adjustAlpha(baseColor, .87f);
@@ -172,5 +154,23 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
     modesSubscription.unsubscribe();
     colorSubscriptions.unsubscribe();
     super.onDetachedFromWindow();
+  }
+
+  private static class State {
+
+    @BottomNavBgMode private int bgMode;
+    @BottomNavIconTextMode private int iconTextMode;
+    private boolean isDark;
+
+    private State(int bgMode, int iconTextMode, boolean isDark) {
+      this.bgMode = bgMode;
+      this.iconTextMode = iconTextMode;
+      this.isDark = isDark;
+    }
+
+    static State create(
+        @BottomNavBgMode int bgMode, @BottomNavIconTextMode int iconTextMode, boolean isDark) {
+      return new State(bgMode, iconTextMode, isDark);
+    }
   }
 }

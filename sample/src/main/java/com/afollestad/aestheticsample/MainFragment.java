@@ -50,7 +50,14 @@ public class MainFragment extends Fragment {
         new ArrayAdapter<>(
             getContext(),
             R.layout.list_item_spinner,
-            new String[] {"One", "Two", "Three", "Four", "Five", "Six"});
+            new String[] {
+              "Spinner One",
+              "Spinner Two",
+              "Spinner Three",
+              "Spinner Four",
+              "Spinner Five",
+              "Spinner Six"
+            });
     spinnerAdapter.setDropDownViewResource(R.layout.list_item_spinner_dropdown);
     spinnerView.setAdapter(spinnerAdapter);
   }

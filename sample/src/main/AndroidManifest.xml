@@ -29,6 +29,10 @@
       android:name=".BottomNavActivity"
       android:windowSoftInputMode="stateAlwaysHidden"/>
 
+    <activity
+      android:name=".CoordinatorLayoutActivity"
+      android:windowSoftInputMode="stateAlwaysHidden"/>
+
   </application>
 
 </manifest>

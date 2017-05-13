@@ -6,11 +6,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 /** @author Aidan Follestad (afollestad) */
-public class MainPagerAdapter extends FragmentStatePagerAdapter {
+class MainPagerAdapter extends FragmentStatePagerAdapter {
 
   private final Context context;
 
-  public MainPagerAdapter(Context context, FragmentManager fm) {
+  MainPagerAdapter(Context context, FragmentManager fm) {
     super(fm);
     this.context = context;
   }

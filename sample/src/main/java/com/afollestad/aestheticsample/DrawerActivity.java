@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+/** @author Aidan Follestad (afollestad) */
 public class DrawerActivity extends AestheticActivity {
 
   private Unbinder unbinder;

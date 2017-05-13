@@ -20,10 +20,13 @@ import com.afollestad.aesthetic.views.AestheticActionMenuItemView;
 import com.afollestad.aesthetic.views.AestheticBottomNavigationView;
 import com.afollestad.aesthetic.views.AestheticButton;
 import com.afollestad.aesthetic.views.AestheticCheckBox;
+import com.afollestad.aesthetic.views.AestheticCoordinatorLayout;
 import com.afollestad.aesthetic.views.AestheticDrawerLayout;
 import com.afollestad.aesthetic.views.AestheticEditText;
 import com.afollestad.aesthetic.views.AestheticFab;
 import com.afollestad.aesthetic.views.AestheticFrameLayout;
+import com.afollestad.aesthetic.views.AestheticImageButton;
+import com.afollestad.aesthetic.views.AestheticImageView;
 import com.afollestad.aesthetic.views.AestheticLinearLayout;
 import com.afollestad.aesthetic.views.AestheticListView;
 import com.afollestad.aesthetic.views.AestheticNavigationView;
@@ -142,6 +145,14 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       case "RelativeLayout":
         view = new AestheticRelativeLayout(context, attrs);
         break;
+      case "ImageView":
+      case "android.support.v7.widget.AppCompatImageView":
+        view = new AestheticImageView(context, attrs);
+        break;
+      case "ImageButton":
+      case "android.support.v7.widget.AppCompatImageButton":
+        view = new AestheticImageButton(context, attrs);
+        break;
 
       case "android.support.v4.widget.DrawerLayout":
         view = new AestheticDrawerLayout(context, attrs);
@@ -227,6 +238,9 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         break;
       case "android.support.design.widget.FloatingActionButton":
         view = new AestheticFab(context, attrs);
+        break;
+      case "android.support.design.widget.CoordinatorLayout":
+        view = new AestheticCoordinatorLayout(context, attrs);
         break;
 
         //      case "android.support.v7.widget.AppCompatAutoCompleteTextView":
