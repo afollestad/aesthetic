@@ -290,7 +290,11 @@ When your `Activity` has a `DrawerLayout` at its root, your status bar color wil
 `DrawerLayout` instead of the `Activity`, and the `Activity`'s status bar color will be made 
 transparent per the Material Design guidelines (so that the drawer goes behind the status bar).
  
-If you use `NavigationView`, it will be themed automatically, also. You can customize behavior:
+If you use `NavigationView`, it will be themed automatically, also. 
+
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/drawer_layout.png" />
+
+You can customize behavior:
 
 
 ```java
@@ -349,6 +353,8 @@ what is more visible over the set background color.*
 # Bottom Navigation
 
 Bottom Navigation Views from the Design Support library are automatically themed.
+
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/bottom_tabs.png" />
 
 You can customize background theming behavior:
 
