@@ -133,7 +133,6 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
   private void invalidateColors() {
     final int maxOffset = appBarLayout.getMeasuredHeight() - toolbar.getMeasuredHeight();
     final float ratio = (float) lastOffset / (float) maxOffset;
-    Log.d("AestheticScroll", "Offset: " + lastOffset + ", max: " + maxOffset + ", ratio: " + ratio);
 
     final int colorViewColor = ((ColorDrawable) colorView.getBackground()).getColor();
     final int blendedColor = Util.blendColors(colorViewColor, toolbarColor, ratio);
