@@ -21,7 +21,7 @@ public class CoordinatorLayoutActivity extends AestheticActivity {
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_coordinatorlayout);
+    setContentView(R.layout.activity_collapsing_appbar);
     unbinder = ButterKnife.bind(this);
 
     toolbar.inflateMenu(R.menu.coordinatorlayout);

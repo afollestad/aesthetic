@@ -445,7 +445,7 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Aesthetic tabLayoutIndicatorMode(@AutoSwitchMode int mode) {
+  public Aesthetic tabLayoutIndicatorMode(@TabLayoutIndicatorMode int mode) {
     editor.putInt(KEY_TAB_LAYOUT_INDICATOR_MODE, mode).commit();
     return this;
   }
@@ -458,7 +458,7 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Aesthetic tabLayoutBgMode(@AutoSwitchMode int mode) {
+  public Aesthetic tabLayoutBgMode(@TabLayoutBgMode int mode) {
     editor.putInt(KEY_TAB_LAYOUT_BG_MODE, mode).commit();
     return this;
   }
