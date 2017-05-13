@@ -61,7 +61,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
   private static int[] ATTRS_THEME;
   private final AppCompatActivity keyContext;
   @NonNull private final LayoutInflater layoutInflater;
-  @Nullable private AppCompatDelegate delegate;
+  @Nullable private final AppCompatDelegate delegate;
 
   InflationInterceptor(
       @Nullable AppCompatActivity keyContext,

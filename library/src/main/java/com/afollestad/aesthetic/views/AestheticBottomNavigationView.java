@@ -158,9 +158,9 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
 
   private static class State {
 
-    @BottomNavBgMode private int bgMode;
-    @BottomNavIconTextMode private int iconTextMode;
-    private boolean isDark;
+    @BottomNavBgMode private final int bgMode;
+    @BottomNavIconTextMode private final int iconTextMode;
+    private final boolean isDark;
 
     private State(int bgMode, int iconTextMode, boolean isDark) {
       this.bgMode = bgMode;

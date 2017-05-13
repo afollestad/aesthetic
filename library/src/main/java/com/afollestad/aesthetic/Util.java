@@ -102,48 +102,48 @@ public class Util {
     }
   }
 
-  static ColorStateList resolveActionTextColorStateList(
-      Context context, @AttrRes int colorAttr, ColorStateList fallback) {
-    TypedArray a = context.getTheme().obtainStyledAttributes(new int[] {colorAttr});
-    try {
-      final TypedValue value = a.peekValue(0);
-      if (value == null) {
-        return fallback;
-      }
-      if (value.type >= TypedValue.TYPE_FIRST_COLOR_INT
-          && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
-        return getActionTextStateList(context, value.data);
-      } else {
-        final ColorStateList stateList = a.getColorStateList(0);
-        if (stateList != null) {
-          return stateList;
-        } else {
-          return fallback;
-        }
-      }
-    } finally {
-      a.recycle();
-    }
-  }
+//  static ColorStateList resolveActionTextColorStateList(
+//      Context context, @AttrRes int colorAttr, ColorStateList fallback) {
+//    TypedArray a = context.getTheme().obtainStyledAttributes(new int[] {colorAttr});
+//    try {
+//      final TypedValue value = a.peekValue(0);
+//      if (value == null) {
+//        return fallback;
+//      }
+//      if (value.type >= TypedValue.TYPE_FIRST_COLOR_INT
+//          && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+//        return getActionTextStateList(context, value.data);
+//      } else {
+//        final ColorStateList stateList = a.getColorStateList(0);
+//        if (stateList != null) {
+//          return stateList;
+//        } else {
+//          return fallback;
+//        }
+//      }
+//    } finally {
+//      a.recycle();
+//    }
+//  }
 
   // Get the specified color resource, creating a ColorStateList if the resource
   // points to a color value.
-  static ColorStateList getActionTextColorStateList(Context context, @ColorRes int colorId) {
-    final TypedValue value = new TypedValue();
-    context.getResources().getValue(colorId, value, true);
-    if (value.type >= TypedValue.TYPE_FIRST_COLOR_INT
-        && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
-      return getActionTextStateList(context, value.data);
-    } else {
-
-      if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
-        //noinspection deprecation
-        return context.getResources().getColorStateList(colorId);
-      } else {
-        return context.getColorStateList(colorId);
-      }
-    }
-  }
+//  static ColorStateList getActionTextColorStateList(Context context, @ColorRes int colorId) {
+//    final TypedValue value = new TypedValue();
+//    context.getResources().getValue(colorId, value, true);
+//    if (value.type >= TypedValue.TYPE_FIRST_COLOR_INT
+//        && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+//      return getActionTextStateList(context, value.data);
+//    } else {
+//
+//      if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+//        //noinspection deprecation
+//        return context.getResources().getColorStateList(colorId);
+//      } else {
+//        return context.getColorStateList(colorId);
+//      }
+//    }
+//  }
 
   static ColorStateList getActionTextStateList(Context context, int newPrimaryColor) {
     final int fallBackButtonColor = resolveColor(context, android.R.attr.textColorPrimary);
@@ -221,13 +221,13 @@ public class Util {
     return isColorLight(color);
   }
 
-  @ColorInt
-  static int invertColor(@ColorInt int color) {
-    final int r = 255 - Color.red(color);
-    final int g = 255 - Color.green(color);
-    final int b = 255 - Color.blue(color);
-    return Color.argb(Color.alpha(color), r, g, b);
-  }
+//  @ColorInt
+//  static int invertColor(@ColorInt int color) {
+//    final int r = 255 - Color.red(color);
+//    final int g = 255 - Color.green(color);
+//    final int b = 255 - Color.blue(color);
+//    return Color.argb(Color.alpha(color), r, g, b);
+//  }
 
   static void setLightStatusBarCompat(@NonNull AppCompatActivity activity, boolean lightMode) {
     final View view = activity.getWindow().getDecorView();
@@ -242,21 +242,21 @@ public class Util {
     }
   }
 
-  @Nullable
-  static Toolbar getSupportActionBarView(@Nullable ActionBar ab) {
-    if (ab == null) return null;
-    try {
-      Field field = ab.getClass().getDeclaredField("mDecorToolbar");
-      field.setAccessible(true);
-      ToolbarWidgetWrapper wrapper = (ToolbarWidgetWrapper) field.get(ab);
-      field = ToolbarWidgetWrapper.class.getDeclaredField("mToolbar");
-      field.setAccessible(true);
-      return (Toolbar) field.get(wrapper);
-    } catch (Throwable t) {
-      Log.d("Aesthetic", "Unable to get Toolbar from " + ab.getClass().getName());
-      return null;
-    }
-  }
+//  @Nullable
+//  static Toolbar getSupportActionBarView(@Nullable ActionBar ab) {
+//    if (ab == null) return null;
+//    try {
+//      Field field = ab.getClass().getDeclaredField("mDecorToolbar");
+//      field.setAccessible(true);
+//      ToolbarWidgetWrapper wrapper = (ToolbarWidgetWrapper) field.get(ab);
+//      field = ToolbarWidgetWrapper.class.getDeclaredField("mToolbar");
+//      field.setAccessible(true);
+//      return (Toolbar) field.get(wrapper);
+//    } catch (Throwable t) {
+//      Log.d("Aesthetic", "Unable to get Toolbar from " + ab.getClass().getName());
+//      return null;
+//    }
+//  }
 
   @NonNull
   static ViewGroup getRootView(@NonNull Activity activity) {

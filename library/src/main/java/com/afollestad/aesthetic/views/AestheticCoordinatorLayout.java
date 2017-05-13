@@ -17,7 +17,6 @@ import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -149,7 +148,7 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
   }
 
   @SuppressWarnings("unchecked")
-  public static void tintMenu(
+  private static void tintMenu(
       @NonNull AestheticToolbar toolbar, @Nullable Menu menu, final @ColorInt int color) {
     if (toolbar.getNavigationIcon() != null) {
       toolbar.setNavigationIcon(toolbar.getNavigationIcon(), color);

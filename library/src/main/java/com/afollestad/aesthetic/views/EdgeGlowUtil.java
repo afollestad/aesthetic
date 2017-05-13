@@ -12,7 +12,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.EdgeEffectCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.AbsListView;
 import android.widget.EdgeEffect;
 import android.widget.ScrollView;
@@ -202,17 +201,6 @@ final class EdgeGlowUtil {
   }
 
   // Setter methods
-
-  // TODO this code probably won't compile if these imported classes are not in the class path.
-  public static void setEdgeGlowColorAuto(@NonNull View view, @ColorInt int color) {
-    if (view instanceof ScrollView) setEdgeGlowColor((ScrollView) view, color);
-    else if (view instanceof NestedScrollView) setEdgeGlowColor((NestedScrollView) view, color);
-    else if (view instanceof AbsListView) setEdgeGlowColor((AbsListView) view, color);
-    else if (view instanceof RecyclerView) setEdgeGlowColor((RecyclerView) view, color, null);
-    else if (view instanceof ViewPager) setEdgeGlowColor((ViewPager) view, color);
-    else
-      throw new IllegalArgumentException("Cannot set an edge glow to " + view.getClass().getName());
-  }
 
   static void setEdgeGlowColor(@NonNull ScrollView scrollView, @ColorInt int color) {
     invalidateScrollViewFields();

@@ -70,6 +70,7 @@ public class AestheticDrawerLayout extends DrawerLayout {
     invalidateColor(color);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public void setDrawerListener(DrawerListener listener) {
     super.setDrawerListener(listener);
