@@ -17,7 +17,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/content_inset_quarter"
-    android:text="@string/coordinator_layout"/>
+    android:text="@string/collapsing_toolbar_layout"/>
 
   <Button
     android:id="@+id/bottom_tabs"

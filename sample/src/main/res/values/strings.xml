@@ -43,7 +43,7 @@
   <string name="main">Main</string>
   <string name="black">Black</string>
   <string name="drawer_layout">Drawer Layout</string>
-  <string name="coordinator_layout">Coordinator Layout</string>
+  <string name="collapsing_toolbar_layout">Collapsing Toolbar Layout</string>
   <string name="bottom_tabs">Bottom Tabs</string>
   <string name="one">One</string>
   <string name="two">Two</string>
