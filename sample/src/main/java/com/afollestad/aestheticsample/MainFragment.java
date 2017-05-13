@@ -12,6 +12,7 @@ import android.widget.Spinner;
 
 import com.afollestad.aesthetic.Aesthetic;
 import com.afollestad.aesthetic.BottomNavBgMode;
+import com.afollestad.aesthetic.BottomNavIconTextMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,13 +64,15 @@ public class MainFragment extends Fragment {
   @OnClick(R.id.switch_theme)
   public void onThemeChange(SwitchCompat switchCompat) {
     if (switchCompat.isChecked()) {
-      Aesthetic.get().activityTheme(R.style.AppThemeDark)
+      Aesthetic.get()
+          .activityTheme(R.style.AppThemeDark)
           .isDark(true)
           .primaryTextColorRes(R.color.text_color_primary_dark)
           .secondaryTextColorRes(R.color.text_color_secondary_dark)
           .apply();
     } else {
-      Aesthetic.get().activityTheme(R.style.AppTheme)
+      Aesthetic.get()
+          .activityTheme(R.style.AppTheme)
           .isDark(false)
           .primaryTextColorRes(R.color.text_color_primary)
           .secondaryTextColorRes(R.color.text_color_secondary)
@@ -94,15 +97,17 @@ public class MainFragment extends Fragment {
             .statusBarColorAuto()
             .navBarColorAuto()
             .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
+            .bottomNavIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
             .apply();
         break;
       case R.id.btn_red:
         Aesthetic.get()
             .primaryColorRes(R.color.md_red)
-            .accentColorRes(R.color.md_blue_grey)
+            .accentColorRes(R.color.md_amber)
             .statusBarColorAuto()
             .navBarColorAuto()
             .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
+            .bottomNavIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
             .apply();
         break;
       case R.id.btn_purple:
@@ -112,6 +117,7 @@ public class MainFragment extends Fragment {
             .statusBarColorAuto()
             .navBarColorAuto()
             .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
+            .bottomNavIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
             .apply();
         break;
       case R.id.btn_blue:
@@ -121,15 +127,17 @@ public class MainFragment extends Fragment {
             .statusBarColorAuto()
             .navBarColorAuto()
             .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
+            .bottomNavIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
             .apply();
         break;
       case R.id.btn_green:
         Aesthetic.get()
             .primaryColorRes(R.color.md_green)
-            .accentColorRes(R.color.md_blue_grey)
+            .accentColorRes(R.color.md_amber)
             .statusBarColorAuto()
             .navBarColorAuto()
             .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
+            .bottomNavIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
             .apply();
         break;
       case R.id.btn_white:
@@ -139,6 +147,7 @@ public class MainFragment extends Fragment {
             .statusBarColorAuto()
             .navBarColorAuto()
             .bottomNavBgMode(BottomNavBgMode.PRIMARY)
+            .bottomNavIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
             .apply();
         break;
     }

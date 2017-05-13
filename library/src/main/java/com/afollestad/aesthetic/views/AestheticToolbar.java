@@ -1,6 +1,7 @@
 package com.afollestad.aesthetic.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import static com.afollestad.aesthetic.Util.setOverflowButtonColor;
 public class AestheticToolbar extends Toolbar {
 
   private int titleIconColor;
+  private int backgroundResId;
   private Subscription subscription;
 
   public AestheticToolbar(Context context) {
@@ -32,10 +34,21 @@ public class AestheticToolbar extends Toolbar {
 
   public AestheticToolbar(Context context, @Nullable AttributeSet attrs) {
     super(context, attrs);
+    init(context, attrs);
   }
 
   public AestheticToolbar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    init(context, attrs);
+  }
+
+  private void init(Context context, AttributeSet attrs) {
+    if (attrs != null) {
+      int[] attrsArray = new int[] {android.R.attr.background};
+      TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
+      backgroundResId = ta.getResourceId(0, 0);
+      ta.recycle();
+    }
   }
 
   private void invalidateColors(int color) {
@@ -56,9 +69,10 @@ public class AestheticToolbar extends Toolbar {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
+    //noinspection ConstantConditions
     subscription =
-        Aesthetic.get()
-            .primaryColor()
+        ViewUtil.getObservableForResId(
+                getContext(), backgroundResId, Aesthetic.get().primaryColor())
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColors, onErrorLogAndRethrow());
   }

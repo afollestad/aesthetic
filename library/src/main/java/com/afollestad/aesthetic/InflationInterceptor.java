@@ -20,6 +20,7 @@ import com.afollestad.aesthetic.views.AestheticActionMenuItemView;
 import com.afollestad.aesthetic.views.AestheticBottomNavigationView;
 import com.afollestad.aesthetic.views.AestheticButton;
 import com.afollestad.aesthetic.views.AestheticCheckBox;
+import com.afollestad.aesthetic.views.AestheticDrawerLayout;
 import com.afollestad.aesthetic.views.AestheticEditText;
 import com.afollestad.aesthetic.views.AestheticFab;
 import com.afollestad.aesthetic.views.AestheticFrameLayout;
@@ -142,6 +143,14 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         view = new AestheticRelativeLayout(context, attrs);
         break;
 
+      case "android.support.v4.widget.DrawerLayout":
+        view = new AestheticDrawerLayout(context, attrs);
+        break;
+      case "Toolbar":
+      case "android.support.v7.widget.Toolbar":
+        view = new AestheticToolbar(context, attrs);
+        break;
+
       case "android.support.v7.widget.AppCompatTextView":
       case "TextView":
         view = new AestheticTextView(context, attrs);
@@ -149,10 +158,6 @@ final class InflationInterceptor implements LayoutInflaterFactory {
           // This is for a toast message
           view = null;
         }
-        break;
-      case "Toolbar":
-      case "android.support.v7.widget.Toolbar":
-        view = new AestheticToolbar(context, attrs);
         break;
       case "Button":
       case "android.support.v7.widget.AppCompatButton":
@@ -186,6 +191,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       case "android.support.v7.view.menu.ActionMenuItemView":
         view = new AestheticActionMenuItemView(context, attrs);
         break;
+
       case "android.support.v7.widget.RecyclerView":
         view = new AestheticRecyclerView(context, attrs);
         break;
@@ -201,13 +207,12 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       case "android.support.v4.view.ViewPager":
         view = new AestheticViewPager(context, attrs);
         break;
-      case "android.support.design.widget.FloatingActionButton":
-        view = new AestheticFab(context, attrs);
-        break;
+
       case "Spinner":
       case "android.support.v7.widget.AppCompatSpinner":
         view = new AestheticSpinner(context, attrs);
         break;
+
       case "android.support.design.widget.TextInputLayout":
         view = new AestheticTextInputLayout(context, attrs);
         break;
@@ -219,6 +224,9 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         break;
       case "android.support.design.widget.BottomNavigationView":
         view = new AestheticBottomNavigationView(context, attrs);
+        break;
+      case "android.support.design.widget.FloatingActionButton":
+        view = new AestheticFab(context, attrs);
         break;
 
         //      case "android.support.v7.widget.AppCompatAutoCompleteTextView":
@@ -243,6 +251,11 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         //      case "CheckedTextView":
         //        view = new ATECheckedTextView(context, attrs, keyContext);
         //        break;
+    }
+
+    if (view != null && view.getTag() != null && view.getTag().equals("aesthetic_ignore")) {
+      // Set view back to null so we can let AppCompat handle this view instead.
+      view = null;
     }
 
     if (view == null) {
