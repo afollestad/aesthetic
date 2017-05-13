@@ -23,8 +23,8 @@ Aesthetic is an easy to use, fast, Rx-powered theme engine for Android applicati
     5. [Activity Styles](https://github.com/afollestad/aesthetic#activity-styles)
     6. [Window Background](https://github.com/afollestad/aesthetic#window-background)
     7. [View Backgrounds](https://github.com/afollestad/aesthetic#view-backgrounds)
-4. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
-5. [Tab Layouts](https://github.com/afollestad/aesthetic#tab-layouts)
+4. [Tab Layouts](https://github.com/afollestad/aesthetic#tab-layouts)
+5. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
 6. [Bottom Navigation](https://github.com/afollestad/aesthetic#bottom-navigation)
 7. [Collapsible Toolbar Layouts](https://github.com/afollestad/aesthetic#collapsible-toolbar-layouts)
 
@@ -126,8 +126,8 @@ Aesthetic.get()
 ```
 
 You use `Aesthetic.get()` to retrieve the current attached `Aesthetic` instance, set theme properties, 
-and `apply()` theme. **This will trigger color changes in the visible screen without recreating it, and 
-the properties will be persisted automatically.**
+and `apply()` theme. **This will trigger color changes in the visible Activity WITHOUT recreating it. 
+The set theme properties will also be persisted automatically.**
 
 ---
 
@@ -223,20 +223,25 @@ Take this layout:
 </LinearLayout>
 ```
 
-The first `TextView` will use whatever value you set to `primaryTextColorRes` automatically. The 
-second `TextView` will use whatever value you set to `secondaryTextColorRes` automatically. Aesthetic
-handles swapping stock attributes with your dynamic values during view inflation. **By default, 
-TextView's will use the secondary text color.**
+The first `TextView` uses the stock Android framework attribute `?android:textColorPrimary`, this library 
+ will see that and automatically swap it out with whatever value you set to `primaryTextColor`. 
+ The second `TextView` also uses a stock framework attribute, `?android:textColorSecondary`. It will 
+ be swapped out with whatever you set to `secondaryTextColor` in this library. **If you do not specify a 
+ `textColor` attribute at all, TextView's will use the secondary text color as a default.**
 
-You can do the same for the text color and hint text color on `EditText`'s. **By default, the text 
+You can set the text color and hint text color on `EditText`'s too. **By default, the text 
 color will match your primary text color, and the hint text color will match your secondary text 
 color.**
+
+In addition to the two stock attributes above, these are some other attributes that are auto swappable: 
+`?colorPrimary`, `?colorPrimaryDark`, `?colorAccent`, `?android:windowBackground`, 
+`?android:textColorPrimaryInverse`, `?android:textColorSecondaryInverse`.
 
 ---
 
 ### Activity Styles
 
-Aesthetic allows you to change the actual styles.xml theme applied to Activity's:
+Aesthetic allows you to change the actual styles.xml theme applied to Activities:
 
 ```java
 // Apply an overall light theme
@@ -256,8 +261,8 @@ Aesthetic.get()
 with a `Switch` widget, the unchecked state is either light gray or dark gray based on whether it's 
 being used with a dark theme or light theme.
 
-**When `activityTheme` is changed, `apply()` will recreate the visible `Activity`. This is the ONLY 
-property which requires a recreate.**
+**When the `activityTheme` property is changed, `apply()` WILL recreate the visible `Activity`. 
+This is the ONLY property which requires a recreate.**
 
 ---
 
@@ -296,38 +301,10 @@ You could also use: `?colorPrimary`, `?colorPrimaryDark`, `?android:windowBackgr
 
 ---
 
-# Drawer Layouts
-
-When your `Activity` has a `DrawerLayout` at its root, your status bar color will get set to the 
-`DrawerLayout` instead of the `Activity`, and the `Activity`'s status bar color will be made 
-transparent per the Material Design guidelines (so that the drawer goes behind the status bar).
- 
-If you use `NavigationView`, it will be themed automatically, also. 
-
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/drawer_layout.png" />
-
-You can customize behavior:
-
-
-```java
-// Checked nav drawer item will use your set primary color
-Aesthetic.get()
-    .navViewMode(NavigationViewMode.SELECTED_PRIMARY)
-    .apply();
-
-// Checked nav drawer item will use your set accent color
-Aesthetic.get()
-    .navViewMode(NavigationViewMode.SELECTED_ACCENT)
-    .apply();
-```
-
-In addition, unselected nav drawer items will be shades of white or black based on the set `isDark` value.
-
----
-
 # Tab Layouts
 
-Tab Layouts from the Design Support library are automatically themed. 
+Tab Layouts from the Design Support library are automatically themed. The main screen in the 
+ sample project is an example of this, you see the two tabs under the toolbar at the top.
 
 You can customize background theming behavior:
 
@@ -359,6 +336,35 @@ Aesthetic.get()
 
 *The color of icons and text in your tab layout will automatically be white or black, depending on 
 what is more visible over the set background color.*
+
+---
+
+# Drawer Layouts
+
+When your `Activity` has a `DrawerLayout` at its root, your status bar color will get set to the 
+`DrawerLayout` instead of the `Activity`, and the `Activity`'s status bar color will be made 
+transparent per the Material Design guidelines (so that the drawer goes behind the status bar).
+ 
+If you use `NavigationView`, it will be themed automatically, also. 
+
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/drawer_layout.png" />
+
+You can customize behavior:
+
+
+```java
+// Checked nav drawer item will use your set primary color
+Aesthetic.get()
+    .navViewMode(NavigationViewMode.SELECTED_PRIMARY)
+    .apply();
+
+// Checked nav drawer item will use your set accent color
+Aesthetic.get()
+    .navViewMode(NavigationViewMode.SELECTED_ACCENT)
+    .apply();
+```
+
+In addition, unselected nav drawer items will be shades of white or black based on the set `isDark` value.
 
 ---
 
