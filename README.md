@@ -13,8 +13,9 @@ Aesthetic is an easy to use, fast, Rx-powered theme engine for Android applicati
 
 # Table of Contents
 
-1. [Integration](https://github.com/afollestad/aesthetic#integration)
-2. [Basics](https://github.com/afollestad/aesthetic#basics) 
+1. [Gradle Dependency](https://github.com/afollestad/aesthetic#gradle-dependency)
+2. [Integration](https://github.com/afollestad/aesthetic#integration)
+3. [Basics](https://github.com/afollestad/aesthetic#basics) 
     1. [Basic Theme Colors](https://github.com/afollestad/aesthetic#basic-theme-colors)
     2. [Status Bar](https://github.com/afollestad/aesthetic#status-bar)
     3. [Navigation Bar](https://github.com/afollestad/aesthetic#navigation-bar)
@@ -22,10 +23,26 @@ Aesthetic is an easy to use, fast, Rx-powered theme engine for Android applicati
     5. [Activity Styles](https://github.com/afollestad/aesthetic#activity-styles)
     6. [Window Background](https://github.com/afollestad/aesthetic#window-background)
     7. [View Backgrounds](https://github.com/afollestad/aesthetic#view-backgrounds)
-3. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
-4. [Tab Layouts](https://github.com/afollestad/aesthetic#tab-layouts)
-5. [Bottom Navigation](https://github.com/afollestad/aesthetic#bottom-navigation)
-6. [Collapsible Toolbar Layouts](https://github.com/afollestad/aesthetic#collapsible-toolbar-layouts)
+4. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
+5. [Tab Layouts](https://github.com/afollestad/aesthetic#tab-layouts)
+6. [Bottom Navigation](https://github.com/afollestad/aesthetic#bottom-navigation)
+7. [Collapsible Toolbar Layouts](https://github.com/afollestad/aesthetic#collapsible-toolbar-layouts)
+
+---
+
+# Gradle Dependency
+
+The Gradle dependency is available via [jCenter](https://bintray.com/drummer-aidan/maven/assent/view).
+jCenter is the default Maven repository used by Android Studio.
+
+Add this to your module's `build.gradle` file:
+
+```gradle
+dependencies {
+    // ... other dependencies
+    compile 'com.afollestad:assent:0.0.1'
+}
+```
 
 ---
 
