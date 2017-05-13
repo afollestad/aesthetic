@@ -45,7 +45,7 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
   private AestheticToolbar toolbar;
   private CollapsingToolbarLayout collapsingToolbarLayout;
   private int toolbarColor;
-  private int lastOffset;
+  private int lastOffset = -1;
 
   public AestheticCoordinatorLayout(Context context) {
     super(context);
@@ -123,6 +123,9 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
 
   @Override
   public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+    if (lastOffset == Math.abs(verticalOffset)) {
+      return;
+    }
     lastOffset = Math.abs(verticalOffset);
     invalidateColors();
   }
