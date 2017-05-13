@@ -1,21 +1,22 @@
 apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
+apply from: '../dependencies.gradle'
 
 ext {
     PUBLISH_GROUP_ID = 'com.afollestad'
     PUBLISH_ARTIFACT_ID = 'aesthetic'
-    PUBLISH_VERSION = '0.0.2'
+    PUBLISH_VERSION = versions.publishVersion
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 25
-        versionCode 1
-        versionName "0.0.2"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.compileSdk
+        versionCode versions.publishVersionCode
+        versionName versions.publishVersion
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -36,13 +37,16 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'io.reactivex:rxjava:1.2.1'
-    compile 'io.reactivex:rxandroid:1.2.1'
-    compile 'com.f2prateek.rx.preferences:rx-preferences:1.0.2'
-    compile 'com.android.support:design:25.3.1'
-    compile 'me.zhanghai.android.materialprogressbar:library:1.4.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:' + versions.supportLib
+    compile 'com.android.support:design:' + versions.supportLib
+    compile 'com.android.support:recyclerview-v7:' + versions.supportLib
+
+    compile 'io.reactivex:rxjava:' + versions.rxJava
+    compile 'io.reactivex:rxandroid:' + versions.rxAndroid
+    compile 'com.f2prateek.rx.preferences:rx-preferences:' + versions.rxPrefs
+
+    compile 'me.zhanghai.android.materialprogressbar:library:' + versions.mdProgressBar
+
 }
 
 apply from: 'https://raw.githubusercontent.com/afollestad/aidanfollestad.com/master/android-lib-release.gradle'

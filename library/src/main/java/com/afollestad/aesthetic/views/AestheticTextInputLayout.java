@@ -50,6 +50,7 @@ public class AestheticTextInputLayout extends TextInputLayout {
   private void invalidateColors(ColorIsDarkState state) {
     TextInputLayoutUtil.setAccent(this, state.color);
     TintHelper.setTintAuto(getEditText(), state.color, true, state.isDark);
+    TintHelper.setCursorTint(getEditText(), state.color);
   }
 
   @Override

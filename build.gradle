@@ -1,10 +1,14 @@
+apply from: './dependencies.gradle'
+
 buildscript {
+    apply from: './dependencies.gradle'
+
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
-        classpath 'me.tatarka:gradle-retrolambda:3.6.1'
+        classpath 'com.android.tools.build:gradle:' + versions.gradlePlugin
+        classpath 'me.tatarka:gradle-retrolambda:' + versions.retroLambda
     }
 }
 

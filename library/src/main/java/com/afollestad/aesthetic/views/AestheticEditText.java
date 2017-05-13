@@ -22,6 +22,8 @@ public class AestheticEditText extends AppCompatEditText {
 
   private CompositeSubscription subscriptions;
   private int backgroundResId;
+  private int textColorResId;
+  private int textColorHintResId;
 
   public AestheticEditText(Context context) {
     super(context);
@@ -39,9 +41,14 @@ public class AestheticEditText extends AppCompatEditText {
 
   private void init(Context context, AttributeSet attrs) {
     if (attrs != null) {
-      int[] attrsArray = new int[] {android.R.attr.background};
+      int[] attrsArray =
+          new int[] {
+            android.R.attr.background, android.R.attr.textColor, android.R.attr.textColorHint
+          };
       TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
       backgroundResId = ta.getResourceId(0, 0);
+      textColorResId = ta.getResourceId(1, 0);
+      textColorHintResId = ta.getResourceId(2, 0);
       ta.recycle();
     }
   }
@@ -51,6 +58,7 @@ public class AestheticEditText extends AppCompatEditText {
     TintHelper.setCursorTint(this, state.color);
   }
 
+  @SuppressWarnings("ConstantConditions")
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
@@ -64,10 +72,15 @@ public class AestheticEditText extends AppCompatEditText {
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
     subscriptions.add(
-        Aesthetic.get()
-            .primaryTextColor()
+        ViewUtil.getObservableForResId(
+                getContext(), textColorResId, Aesthetic.get().primaryTextColor())
             .compose(distinctToMainThread())
-            .subscribe(this::setTextColor));
+            .subscribe(this::setTextColor, onErrorLogAndRethrow()));
+    subscriptions.add(
+        ViewUtil.getObservableForResId(
+                getContext(), textColorHintResId, Aesthetic.get().secondaryTextColor())
+            .compose(distinctToMainThread())
+            .subscribe(this::setTextColor, onErrorLogAndRethrow()));
   }
 
   @Override

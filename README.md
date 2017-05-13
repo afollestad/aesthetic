@@ -40,7 +40,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
     // ... other dependencies
-    compile 'com.afollestad:aesthetic:0.0.2'
+    compile 'com.afollestad:aesthetic:0.0.3'
 }
 ```
 
@@ -129,6 +129,8 @@ You use `Aesthetic.get()` to retrieve the current attached `Aesthetic` instance,
 and `apply()` theme. **This will trigger color changes in the visible screen without recreating it, and 
 the properties will be persisted automatically.**
 
+---
+
 ### Status Bar
 
 The status bar is the bar on the top of your screen that shows notifications, the time, etc. (I'm 
@@ -159,6 +161,8 @@ Aesthetic.get()
     .apply();
 ```
 
+---
+
 ### Navigation Bar
 
 By default, the navigation bar on the bottom of your screen is black. You can set it to any color 
@@ -178,6 +182,8 @@ Aesthetic.get()
     .apply();
 ```
 
+---
+
 ### Text Colors
 
 You can customize text colors which are used on `TextView`'s, `EditText`'s, etc.
@@ -194,7 +200,6 @@ Aesthetic.get()
 Take this layout:
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
@@ -220,10 +225,14 @@ Take this layout:
 
 The first `TextView` will use whatever value you set to `primaryTextColorRes` automatically. The 
 second `TextView` will use whatever value you set to `secondaryTextColorRes` automatically. Aesthetic
-handles swapping stock attributes with your dynamic values during view inflation.
+handles swapping stock attributes with your dynamic values during view inflation. **By default, 
+TextView's will use the secondary text color.**
 
-For `EditText`'s, the primary text color is always used as the *text color*, while the secondary text 
-color is always used for the *hint text color*.
+You can do the same for the text color and hint text color on `EditText`'s. **By default, the text 
+color will match your primary text color, and the hint text color will match your secondary text 
+color.**
+
+---
 
 ### Activity Styles
 
@@ -250,6 +259,8 @@ being used with a dark theme or light theme.
 **When `activityTheme` is changed, `apply()` will recreate the visible `Activity`. This is the ONLY 
 property which requires a recreate.**
 
+---
+
 ### Window Background
 
 Aside from changing the entire base theme of an `Activity`, you can also change just the window background:
@@ -260,13 +271,14 @@ Aesthetic.get()
     .apply();
 ```
 
+---
+
 ### View Backgrounds
 
 When you set stock or AppCompat attributes to the background of certain views, Aesthetic will
 swap out the attribute with your dynamic theme colors at inflation time:
 
 ```java
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"

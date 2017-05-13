@@ -1,0 +1,16 @@
+ext.versions = [
+        minSdk            : 16,
+        compileSdk        : 25,
+        buildTools        : '25.0.3',
+        publishVersion    : '0.0.3',
+        publishVersionCode: 3,
+        gradlePlugin      : '2.3.2',
+
+        retroLambda       : '3.6.1',
+        supportLib        : '25.3.1',
+        mdProgressBar     : '1.4.1',
+        butterKnife       : '8.5.1',
+        rxJava            : '1.2.1',
+        rxAndroid         : '1.2.1',
+        rxPrefs           : '1.0.2'
+]
