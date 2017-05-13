@@ -340,6 +340,8 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       }
     }
 
+    LOG("Inflated: %s", view.getClass().getName());
+
     return view;
   }
 }

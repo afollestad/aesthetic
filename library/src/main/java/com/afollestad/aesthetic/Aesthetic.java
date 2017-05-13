@@ -130,6 +130,13 @@ public class Aesthetic {
     instance.subs = new CompositeSubscription();
     instance.subs.add(
         instance
+            .primaryColor()
+            .compose(distinctToMainThread())
+            .subscribe(
+                color -> Util.setTaskDescriptionColor(instance.context, color),
+                onErrorLogAndRethrow()));
+    instance.subs.add(
+        instance
             .activityTheme()
             .compose(distinctToMainThread())
             .subscribe(
@@ -139,7 +146,8 @@ public class Aesthetic {
                   }
                   instance.lastActivityTheme = themeId;
                   instance.context.recreate();
-                }));
+                },
+                onErrorLogAndRethrow()));
     instance.subs.add(
         instance
             .statusBarColor()

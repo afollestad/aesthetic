@@ -58,6 +58,64 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
     super(context, attrs, defStyleAttr);
   }
 
+  @SuppressWarnings("unchecked")
+  private static void tintMenu(
+      @NonNull AestheticToolbar toolbar, @Nullable Menu menu, final @ColorInt int color) {
+    if (toolbar.getNavigationIcon() != null) {
+      toolbar.setNavigationIcon(toolbar.getNavigationIcon(), color);
+    }
+    Util.setOverflowButtonColor(toolbar, color);
+
+    try {
+      final Field field = Toolbar.class.getDeclaredField("mCollapseIcon");
+      field.setAccessible(true);
+      Drawable collapseIcon = (Drawable) field.get(toolbar);
+      if (collapseIcon != null) {
+        field.set(toolbar, TintHelper.createTintedDrawable(collapseIcon, color));
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    final PorterDuffColorFilter colorFilter =
+        new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
+    for (int i = 0; i < toolbar.getChildCount(); i++) {
+      final View v = toolbar.getChildAt(i);
+      // We can't iterate through the toolbar.getMenu() here, because we need the ActionMenuItemView.
+      if (v instanceof ActionMenuView) {
+        for (int j = 0; j < ((ActionMenuView) v).getChildCount(); j++) {
+          final View innerView = ((ActionMenuView) v).getChildAt(j);
+          if (innerView instanceof ActionMenuItemView) {
+            int drawablesCount = ((ActionMenuItemView) innerView).getCompoundDrawables().length;
+            for (int k = 0; k < drawablesCount; k++) {
+              if (((ActionMenuItemView) innerView).getCompoundDrawables()[k] != null) {
+                ((ActionMenuItemView) innerView)
+                    .getCompoundDrawables()[k].setColorFilter(colorFilter);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (menu == null) {
+      menu = toolbar.getMenu();
+    }
+    if (menu != null && menu.size() > 0) {
+      for (int i = 0; i < menu.size(); i++) {
+        final MenuItem item = menu.getItem(i);
+        // We must iterate through the toolbar.getMenu() too, to keep the tint when resuming the paused activity.
+        if (item.getIcon() != null) {
+          item.setIcon(TintHelper.createTintedDrawable(item.getIcon(), color));
+        }
+        // TODO Search view theming
+        //        if (item.getActionView() != null && (item.getActionView() instanceof android.widget.SearchView || item.getActionView() instanceof android.support.v7.widget.SearchView)) {
+        //          SearchViewTintUtil.setSearchViewContentColor(item.getActionView(), color);
+        //        }
+      }
+    }
+  }
+
   @Override
   public void onAttachedToWindow() {
     super.onAttachedToWindow();
@@ -145,63 +203,5 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
     collapsingToolbarLayout.setExpandedTitleColor(expandedTitleColor);
 
     tintMenu(toolbar, toolbar.getMenu(), blendedTitleColor);
-  }
-
-  @SuppressWarnings("unchecked")
-  private static void tintMenu(
-      @NonNull AestheticToolbar toolbar, @Nullable Menu menu, final @ColorInt int color) {
-    if (toolbar.getNavigationIcon() != null) {
-      toolbar.setNavigationIcon(toolbar.getNavigationIcon(), color);
-    }
-    Util.setOverflowButtonColor(toolbar, color);
-
-    try {
-      final Field field = Toolbar.class.getDeclaredField("mCollapseIcon");
-      field.setAccessible(true);
-      Drawable collapseIcon = (Drawable) field.get(toolbar);
-      if (collapseIcon != null) {
-        field.set(toolbar, TintHelper.createTintedDrawable(collapseIcon, color));
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    final PorterDuffColorFilter colorFilter =
-        new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
-    for (int i = 0; i < toolbar.getChildCount(); i++) {
-      final View v = toolbar.getChildAt(i);
-      // We can't iterate through the toolbar.getMenu() here, because we need the ActionMenuItemView.
-      if (v instanceof ActionMenuView) {
-        for (int j = 0; j < ((ActionMenuView) v).getChildCount(); j++) {
-          final View innerView = ((ActionMenuView) v).getChildAt(j);
-          if (innerView instanceof ActionMenuItemView) {
-            int drawablesCount = ((ActionMenuItemView) innerView).getCompoundDrawables().length;
-            for (int k = 0; k < drawablesCount; k++) {
-              if (((ActionMenuItemView) innerView).getCompoundDrawables()[k] != null) {
-                ((ActionMenuItemView) innerView)
-                    .getCompoundDrawables()[k].setColorFilter(colorFilter);
-              }
-            }
-          }
-        }
-      }
-    }
-
-    if (menu == null) {
-      menu = toolbar.getMenu();
-    }
-    if (menu != null && menu.size() > 0) {
-      for (int i = 0; i < menu.size(); i++) {
-        final MenuItem item = menu.getItem(i);
-        // We must iterate through the toolbar.getMenu() too, to keep the tint when resuming the paused activity.
-        if (item.getIcon() != null) {
-          item.setIcon(TintHelper.createTintedDrawable(item.getIcon(), color));
-        }
-        // TODO Search view theming
-        //        if (item.getActionView() != null && (item.getActionView() instanceof android.widget.SearchView || item.getActionView() instanceof android.support.v7.widget.SearchView)) {
-        //          SearchViewTintUtil.setSearchViewContentColor(item.getActionView(), color);
-        //        }
-      }
-    }
   }
 }

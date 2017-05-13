@@ -54,5 +54,7 @@
   <string name="open_drawer">Open Drawer</string>
   <string name="close_drawer">Close Drawer</string>
   <string name="disabled_button">Disabled Button</string>
+  <string name="search">Search</string>
+  <string name="search_view_example">Search view example…</string>
 
 </resources>
