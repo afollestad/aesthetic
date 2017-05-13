@@ -7,25 +7,25 @@ Aesthetic is an easy to use, fast, Rx-powered theme engine for Android applicati
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b085aa9e67d441bd960f1c6abce5764c)](https://www.codacy.com/app/drummeraidan_50/aesthetic?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=afollestad/aesthetic&amp;utm_campaign=Badge_Grade)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/showcase.png" width="600" />
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/showcase.png" />
 
 ---
 
 # Table of Contents
 
-1. Integration
-2. Basics 
-    1. Basic Theme Colors
-    2. Status Bar
-    3. Navigation Bar
-    4. Text Colors
-    5. Activity Styles
-    6. Window Background
-    7. View Backgrounds
-3. Drawer Layouts
-4. Tab Layouts
-5. Bottom Navigation
-6. Collapsible Toolbar Layouts
+1. [Integration](https://github.com/afollestad/aesthetic#integration)
+2. [Basics](https://github.com/afollestad/aesthetic#basics) 
+    1. [Basic Theme Colors](https://github.com/afollestad/aesthetic#basic-theme-colors)
+    2. [Status Bar](https://github.com/afollestad/aesthetic#status-bar)
+    3. [Navigation Bar](https://github.com/afollestad/aesthetic#navigation-bar)
+    4. [Text Colors](https://github.com/afollestad/aesthetic#text-colors)
+    5. [Activity Styles](https://github.com/afollestad/aesthetic#activity-styles)
+    6. [Window Background](https://github.com/afollestad/aesthetic#window-background)
+    7. [View Backgrounds](https://github.com/afollestad/aesthetic#view-backgrounds)
+3. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
+4. [Tab Layouts](https://github.com/afollestad/aesthetic#tab-layouts)
+5. [Bottom Navigation](https://github.com/afollestad/aesthetic#bottom-navigation)
+6. [Collapsible Toolbar Layouts](https://github.com/afollestad/aesthetic#collapsible-toolbar-layouts)
 
 ---
 
@@ -109,8 +109,8 @@ Aesthetic.get()
 ```
 
 You use `Aesthetic.get()` to retrieve the current attached `Aesthetic` instance, set theme properties, 
-and `apply()` theme. This will trigger color changes in the visible screen without recreating it, and 
-the properties will be persisted automatically.
+and `apply()` theme. **This will trigger color changes in the visible screen without recreating it, and 
+the properties will be persisted automatically.**
 
 ### Status Bar
 
@@ -230,7 +230,8 @@ Aesthetic.get()
 with a `Switch` widget, the unchecked state is either light gray or dark gray based on whether it's 
 being used with a dark theme or light theme.
 
-When `activityTheme` is changed, `apply()` will recreate the visible `Activity`.
+**When `activityTheme` is changed, `apply()` will recreate the visible `Activity`. This is the ONLY 
+property which requires a recreate.**
 
 ---
 
@@ -387,7 +388,7 @@ Aesthetic.get()
 
 Collapsible Toolbar Layouts are automatically themed, as seen in the sample project.
 
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/collapsing_appbar.png" width="400" />
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/collapsing_appbar.png" width="600" />
 
 In the sample layout, we automatically set the accent color to the expanded view. The collapsed toolbar 
 color will match whatever color your toolbar uses, which is the primary theme color by default. You'll 
