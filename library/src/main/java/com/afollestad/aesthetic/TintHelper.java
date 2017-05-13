@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.TintableBackgroundView;
@@ -185,8 +186,12 @@ public class TintHelper {
       } else if (view.getBackground() != null) {
         Drawable drawable = view.getBackground();
         if (drawable != null) {
-          drawable = createTintedDrawable(drawable, color);
-          Util.setBackgroundCompat(view, drawable);
+          if (view instanceof TextInputEditText) {
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+          } else {
+            drawable = createTintedDrawable(drawable, color);
+            Util.setBackgroundCompat(view, drawable);
+          }
         }
       }
     }

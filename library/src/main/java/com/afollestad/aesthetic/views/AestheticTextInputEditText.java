@@ -3,35 +3,37 @@ package com.afollestad.aesthetic.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.RestrictTo;
-import android.support.design.widget.TextInputLayout;
+import android.support.design.widget.TextInputEditText;
 import android.util.AttributeSet;
 
 import com.afollestad.aesthetic.Aesthetic;
+import com.afollestad.aesthetic.TintHelper;
 
+import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
-import static com.afollestad.aesthetic.Util.adjustAlpha;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)
-public class AestheticTextInputLayout extends TextInputLayout {
+public class AestheticTextInputEditText extends TextInputEditText {
 
   private CompositeSubscription subs;
   private int backgroundResId;
+  private ColorIsDarkState lastState;
 
-  public AestheticTextInputLayout(Context context) {
+  public AestheticTextInputEditText(Context context) {
     super(context);
   }
 
-  public AestheticTextInputLayout(Context context, AttributeSet attrs) {
+  public AestheticTextInputEditText(Context context, AttributeSet attrs) {
     super(context, attrs);
     init(context, attrs);
   }
 
-  public AestheticTextInputLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+  public AestheticTextInputEditText(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     init(context, attrs);
   }
@@ -45,24 +47,32 @@ public class AestheticTextInputLayout extends TextInputLayout {
     }
   }
 
-  private void invalidateColors(int color) {
-    TextInputLayoutUtil.setAccent(this, color);
+  private void invalidateColors(ColorIsDarkState state) {
+    this.lastState = state;
+    TintHelper.setTintAuto(this, state.color, true, state.isDark);
+    TintHelper.setCursorTint(this, state.color);
   }
 
-  @SuppressWarnings("ConstantConditions")
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
     subs = new CompositeSubscription();
     subs.add(
         Aesthetic.get()
+            .primaryTextColor()
+            .compose(distinctToMainThread())
+            .subscribe(this::setTextColor, onErrorLogAndRethrow()));
+    subs.add(
+        Aesthetic.get()
             .secondaryTextColor()
             .compose(distinctToMainThread())
-            .subscribe(
-                color -> TextInputLayoutUtil.setHint(this, adjustAlpha(color, 0.7f)),
-                onErrorLogAndRethrow()));
+            .subscribe(this::setHintTextColor, onErrorLogAndRethrow()));
     subs.add(
-        ViewUtil.getObservableForResId(getContext(), backgroundResId, Aesthetic.get().accentColor())
+        Observable.combineLatest(
+                ViewUtil.getObservableForResId(
+                    getContext(), backgroundResId, Aesthetic.get().accentColor()),
+                Aesthetic.get().isDark(),
+                ColorIsDarkState::create)
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
   }
@@ -71,5 +81,13 @@ public class AestheticTextInputLayout extends TextInputLayout {
   protected void onDetachedFromWindow() {
     subs.unsubscribe();
     super.onDetachedFromWindow();
+  }
+
+  @Override
+  public void refreshDrawableState() {
+    super.refreshDrawableState();
+    if (lastState != null) {
+      post(() -> invalidateColors(lastState));
+    }
   }
 }

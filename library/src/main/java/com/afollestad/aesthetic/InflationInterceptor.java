@@ -40,6 +40,7 @@ import com.afollestad.aesthetic.views.AestheticSpinner;
 import com.afollestad.aesthetic.views.AestheticSwitch;
 import com.afollestad.aesthetic.views.AestheticSwitchCompat;
 import com.afollestad.aesthetic.views.AestheticTabLayout;
+import com.afollestad.aesthetic.views.AestheticTextInputEditText;
 import com.afollestad.aesthetic.views.AestheticTextInputLayout;
 import com.afollestad.aesthetic.views.AestheticTextView;
 import com.afollestad.aesthetic.views.AestheticToolbar;
@@ -226,6 +227,10 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       case "android.support.design.widget.TextInputLayout":
         view = new AestheticTextInputLayout(context, attrs);
         break;
+      case "android.support.design.widget.TextInputEditText":
+        view = new AestheticTextInputEditText(context, attrs);
+        break;
+
       case "android.support.design.widget.TabLayout":
         view = new AestheticTabLayout(context, attrs);
         break;

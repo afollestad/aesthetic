@@ -140,7 +140,7 @@ public class MainFragment extends Fragment {
       case R.id.btn_green:
         Aesthetic.get()
             .primaryColorRes(R.color.md_green)
-            .accentColorRes(R.color.md_amber)
+            .accentColorRes(R.color.md_blue_grey)
             .statusBarColorAuto()
             .navBarColorAuto()
             .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
