@@ -141,21 +141,25 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
               onErrorLogAndRethrow());
     }
 
-    statusBarColorSubscription =
-        Aesthetic.get()
-            .statusBarColor()
-            .compose(distinctToMainThread())
-            .subscribe(
-                color -> {
-                  collapsingToolbarLayout.setContentScrimColor(color);
-                  collapsingToolbarLayout.setStatusBarScrimColor(color);
-                },
-                onErrorLogAndRethrow());
+    if (collapsingToolbarLayout != null) {
+      statusBarColorSubscription =
+          Aesthetic.get()
+              .statusBarColor()
+              .compose(distinctToMainThread())
+              .subscribe(
+                  color -> {
+                    collapsingToolbarLayout.setContentScrimColor(color);
+                    collapsingToolbarLayout.setStatusBarScrimColor(color);
+                  },
+                  onErrorLogAndRethrow());
+    }
   }
 
   @Override
   public void onDetachedFromWindow() {
-    statusBarColorSubscription.unsubscribe();
+    if (statusBarColorSubscription != null) {
+      statusBarColorSubscription.unsubscribe();
+    }
     this.appBarLayout.removeOnOffsetChangedListener(this);
     this.appBarLayout = null;
     this.toolbar = null;
