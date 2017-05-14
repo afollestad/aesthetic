@@ -108,23 +108,21 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
     super.onAttachedToWindow();
 
     // Find the toolbar and color view used to blend the scroll transition
-    if (getChildCount() > 0) {
-      if (getChildAt(0) instanceof AppBarLayout) {
-        appBarLayout = (AppBarLayout) getChildAt(0);
-        if (appBarLayout.getChildCount() > 0
-            && appBarLayout.getChildAt(0) instanceof CollapsingToolbarLayout) {
-          collapsingToolbarLayout = (CollapsingToolbarLayout) appBarLayout.getChildAt(0);
-          for (int i = 0; i < collapsingToolbarLayout.getChildCount(); i++) {
-            if (this.toolbar != null && this.colorView != null) {
-              break;
-            }
-            View child = collapsingToolbarLayout.getChildAt(i);
-            if (child instanceof AestheticToolbar) {
-              this.toolbar = (AestheticToolbar) child;
-            } else if (child.getBackground() != null
-                && child.getBackground() instanceof ColorDrawable) {
-              this.colorView = child;
-            }
+    if (getChildCount() > 0 && getChildAt(0) instanceof AppBarLayout) {
+      appBarLayout = (AppBarLayout) getChildAt(0);
+      if (appBarLayout.getChildCount() > 0
+          && appBarLayout.getChildAt(0) instanceof CollapsingToolbarLayout) {
+        collapsingToolbarLayout = (CollapsingToolbarLayout) appBarLayout.getChildAt(0);
+        for (int i = 0; i < collapsingToolbarLayout.getChildCount(); i++) {
+          if (this.toolbar != null && this.colorView != null) {
+            break;
+          }
+          View child = collapsingToolbarLayout.getChildAt(i);
+          if (child instanceof AestheticToolbar) {
+            this.toolbar = (AestheticToolbar) child;
+          } else if (child.getBackground() != null
+              && child.getBackground() instanceof ColorDrawable) {
+            this.colorView = child;
           }
         }
       }

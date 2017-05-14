@@ -55,11 +55,10 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 @RestrictTo(LIBRARY_GROUP)
 final class InflationInterceptor implements LayoutInflaterFactory {
 
-  private static final boolean LOGGING_ENABLED = true;
-  private static Method onCreateViewMethod;
-  private static Method createViewMethod;
-  private static Field constructorArgsField;
-  private static int[] ATTRS_THEME;
+  private final Method onCreateViewMethod;
+  private final Method createViewMethod;
+  private final Field constructorArgsField;
+  private int[] ATTRS_THEME;
   private final AppCompatActivity keyContext;
   @NonNull private final LayoutInflater layoutInflater;
   @Nullable private final AppCompatDelegate delegate;
@@ -71,51 +70,50 @@ final class InflationInterceptor implements LayoutInflaterFactory {
     this.keyContext = keyContext;
     layoutInflater = li;
     this.delegate = delegate;
-    if (onCreateViewMethod == null) {
-      try {
-        onCreateViewMethod =
-            LayoutInflater.class.getDeclaredMethod(
-                "onCreateView", View.class, String.class, AttributeSet.class);
-      } catch (NoSuchMethodException e) {
-        throw new RuntimeException("Failed to retrieve the onCreateView method.", e);
-      }
+
+    try {
+      onCreateViewMethod =
+          LayoutInflater.class.getDeclaredMethod(
+              "onCreateView", View.class, String.class, AttributeSet.class);
+    } catch (NoSuchMethodException e) {
+      throw new IllegalStateException("Failed to retrieve the onCreateView method.", e);
     }
-    if (createViewMethod == null) {
-      try {
-        createViewMethod =
-            LayoutInflater.class.getDeclaredMethod(
-                "createView", String.class, String.class, AttributeSet.class);
-      } catch (NoSuchMethodException e) {
-        throw new RuntimeException("Failed to retrieve the createView method.", e);
-      }
+
+    try {
+      createViewMethod =
+          LayoutInflater.class.getDeclaredMethod(
+              "createView", String.class, String.class, AttributeSet.class);
+    } catch (NoSuchMethodException e) {
+      throw new IllegalStateException("Failed to retrieve the createView method.", e);
     }
-    if (constructorArgsField == null) {
-      try {
-        constructorArgsField = LayoutInflater.class.getDeclaredField("mConstructorArgs");
-      } catch (NoSuchFieldException e) {
-        throw new RuntimeException("Failed to retrieve the mConstructorArgs field.", e);
-      }
+
+    try {
+      constructorArgsField = LayoutInflater.class.getDeclaredField("mConstructorArgs");
+    } catch (NoSuchFieldException e) {
+      throw new IllegalStateException("Failed to retrieve the mConstructorArgs field.", e);
     }
-    if (ATTRS_THEME == null) {
-      try {
-        final Field attrsThemeField = LayoutInflater.class.getDeclaredField("ATTRS_THEME");
-        attrsThemeField.setAccessible(true);
-        ATTRS_THEME = (int[]) attrsThemeField.get(null);
-      } catch (Throwable t) {
-        t.printStackTrace();
-        Log.d(
-            "InflationInterceptor",
-            "Failed to get the value of static field ATTRS_THEME: " + t.getMessage());
-      }
+
+    try {
+      final Field attrsThemeField = LayoutInflater.class.getDeclaredField("ATTRS_THEME");
+      attrsThemeField.setAccessible(true);
+      ATTRS_THEME = (int[]) attrsThemeField.get(null);
+    } catch (Throwable t) {
+      t.printStackTrace();
+      Log.d(
+          "InflationInterceptor",
+          "Failed to get the value of static field ATTRS_THEME: " + t.getMessage());
     }
+
     onCreateViewMethod.setAccessible(true);
     createViewMethod.setAccessible(true);
     constructorArgsField.setAccessible(true);
   }
 
-  private static void LOG(String msg, Object... args) {
+  private static void log(String msg, Object... args) {
     //noinspection PointlessBooleanExpression
-    if (!LOGGING_ENABLED) return;
+    if (!BuildConfig.DEBUG) {
+      return;
+    }
     if (args != null) {
       Log.d("InflationInterceptor", String.format(msg, args));
     } else {
@@ -124,11 +122,11 @@ final class InflationInterceptor implements LayoutInflaterFactory {
   }
 
   private boolean isBlackListedForApply(String name) {
-    return name.equals("android.support.design.internal.NavigationMenuItemView")
-        || name.equals("ViewStub")
-        || name.equals("fragment")
-        || name.equals("include")
-        || name.equals("android.support.design.internal.NavigationMenuItemView");
+    return "android.support.design.internal.NavigationMenuItemView".equals(name)
+        || "ViewStub".equals(name)
+        || "fragment".equals(name)
+        || "include".equals(name)
+        || "android.support.design.internal.NavigationMenuItemView".equals(name);
   }
 
   @Override
@@ -271,7 +269,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         //        break;
     }
 
-    if (view != null && view.getTag() != null && view.getTag().equals("aesthetic_ignore")) {
+    if (view != null && view.getTag() != null && ":aesthetic_ignore".equals(view.getTag())) {
       // Set view back to null so we can let AppCompat handle this view instead.
       view = null;
     }
@@ -320,7 +318,8 @@ final class InflationInterceptor implements LayoutInflaterFactory {
           try {
             constructorArgs = (Object[]) constructorArgsField.get(layoutInflater);
           } catch (IllegalAccessException e) {
-            throw new RuntimeException("Failed to retrieve the mConstructorArgsField field.", e);
+            throw new IllegalStateException(
+                "Failed to retrieve the mConstructorArgsField field.", e);
           }
 
           final Object lastContext = constructorArgs[0];
@@ -332,7 +331,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
               view = (View) createViewMethod.invoke(layoutInflater, name, null, attrs);
             }
           } catch (Exception e) {
-            LOG("Failed to inflate %s: %s", name, e.getMessage());
+            log("Failed to inflate %s: %s", name, e.getMessage());
             e.printStackTrace();
           } finally {
             constructorArgs[0] = lastContext;
@@ -345,7 +344,9 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       }
     }
 
-    LOG("Inflated: %s", view.getClass().getName());
+    if (view != null) {
+      log("Inflated %s", view.getClass().getName());
+    }
 
     return view;
   }

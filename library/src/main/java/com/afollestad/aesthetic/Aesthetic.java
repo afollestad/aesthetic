@@ -223,7 +223,7 @@ public class Aesthetic {
         setLightStatusBarCompat(context, true);
         break;
       default:
-        setLightStatusBarCompat(context, Util.isColorLight(color));
+        setLightStatusBarCompat(context, isColorLight(color));
         break;
     }
   }

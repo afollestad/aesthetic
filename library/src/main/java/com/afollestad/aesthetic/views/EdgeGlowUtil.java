@@ -52,7 +52,8 @@ final class EdgeGlowUtil {
       return;
     }
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-      Field edge = null, glow = null;
+      Field edge = null;
+      Field glow = null;
       for (Field f : EdgeEffect.class.getDeclaredFields()) {
         switch (f.getName()) {
           case "mEdge":
@@ -218,8 +219,7 @@ final class EdgeGlowUtil {
   static void setEdgeGlowColor(@NonNull NestedScrollView scrollView, @ColorInt int color) {
     invalidateNestedScrollViewFields();
     try {
-      Object ee;
-      ee = NESTED_SCROLL_VIEW_FIELD_EDGE_GLOW_TOP.get(scrollView);
+      Object ee = NESTED_SCROLL_VIEW_FIELD_EDGE_GLOW_TOP.get(scrollView);
       setEffectColor(ee, color);
       ee = NESTED_SCROLL_VIEW_FIELD_EDGE_GLOW_BOTTOM.get(scrollView);
       setEffectColor(ee, color);
@@ -231,8 +231,7 @@ final class EdgeGlowUtil {
   static void setEdgeGlowColor(@NonNull AbsListView listView, @ColorInt int color) {
     invalidateListViewFields();
     try {
-      Object ee;
-      ee = LIST_VIEW_FIELD_EDGE_GLOW_TOP.get(listView);
+      Object ee = LIST_VIEW_FIELD_EDGE_GLOW_TOP.get(listView);
       setEffectColor(ee, color);
       ee = LIST_VIEW_FIELD_EDGE_GLOW_BOTTOM.get(listView);
       setEffectColor(ee, color);
@@ -259,8 +258,7 @@ final class EdgeGlowUtil {
       scrollView.addOnScrollListener(scrollListener);
     }
     try {
-      Object ee;
-      ee = RECYCLER_VIEW_FIELD_EDGE_GLOW_TOP.get(scrollView);
+      Object ee = RECYCLER_VIEW_FIELD_EDGE_GLOW_TOP.get(scrollView);
       setEffectColor(ee, color);
       ee = RECYCLER_VIEW_FIELD_EDGE_GLOW_BOTTOM.get(scrollView);
       setEffectColor(ee, color);
@@ -276,8 +274,7 @@ final class EdgeGlowUtil {
   static void setEdgeGlowColor(@NonNull ViewPager pager, @ColorInt int color) {
     invalidateViewPagerFields();
     try {
-      Object ee;
-      ee = VIEW_PAGER_FIELD_EDGE_GLOW_LEFT.get(pager);
+      Object ee = VIEW_PAGER_FIELD_EDGE_GLOW_LEFT.get(pager);
       setEffectColor(ee, color);
       ee = VIEW_PAGER_FIELD_EDGE_GLOW_RIGHT.get(pager);
       setEffectColor(ee, color);

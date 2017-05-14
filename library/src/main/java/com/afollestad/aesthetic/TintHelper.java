@@ -141,28 +141,38 @@ public class TintHelper {
   }
 
   @SuppressWarnings("deprecation")
+  @SuppressLint("PrivateResource")
   public static void setTintAuto(
       final @NonNull View view,
       final @ColorInt int color,
       boolean background,
       final boolean isDark) {
     if (!background) {
-      if (view instanceof RadioButton) setTint((RadioButton) view, color, isDark);
-      else if (view instanceof SeekBar) setTint((SeekBar) view, color, isDark);
-      else if (view instanceof ProgressBar) setTint((ProgressBar) view, color);
-      else if (view instanceof EditText) setTint((EditText) view, color, isDark);
-      else if (view instanceof CheckBox) setTint((CheckBox) view, color, isDark);
-      else if (view instanceof ImageView) setTint((ImageView) view, color);
-      else if (view instanceof Switch) setTint((Switch) view, color, isDark);
-      else if (view instanceof SwitchCompat) setTint((SwitchCompat) view, color, isDark);
-      else background = true;
+      if (view instanceof RadioButton) {
+        setTint((RadioButton) view, color, isDark);
+      } else if (view instanceof SeekBar) {
+        setTint((SeekBar) view, color, isDark);
+      } else if (view instanceof ProgressBar) {
+        setTint((ProgressBar) view, color);
+      } else if (view instanceof EditText) {
+        setTint((EditText) view, color, isDark);
+      } else if (view instanceof CheckBox) {
+        setTint((CheckBox) view, color, isDark);
+      } else if (view instanceof ImageView) {
+        setTint((ImageView) view, color);
+      } else if (view instanceof Switch) {
+        setTint((Switch) view, color, isDark);
+      } else if (view instanceof SwitchCompat) {
+        setTint((SwitchCompat) view, color, isDark);
+      } else {
+        background = true;
+      }
 
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
           && !background
           && view.getBackground() instanceof RippleDrawable) {
         // Ripples for the above views (e.g. when you tap and hold a switch or checkbox)
         RippleDrawable rd = (RippleDrawable) view.getBackground();
-        @SuppressLint("PrivateResource")
         final int unchecked =
             ContextCompat.getColor(
                 view.getContext(),

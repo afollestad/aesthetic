@@ -23,6 +23,7 @@ Aesthetic is an easy to use, fast, Rx-powered theme engine for Android applicati
     5. [Activity Styles](https://github.com/afollestad/aesthetic#activity-styles)
     6. [Window Background](https://github.com/afollestad/aesthetic#window-background)
     7. [View Backgrounds](https://github.com/afollestad/aesthetic#view-backgrounds)
+    8. [Ignoring Views](https://github.com/afollestad/aesthetic#ignoring-views)
 4. [Tab Layouts](https://github.com/afollestad/aesthetic#tab-layouts)
 5. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
 6. [Bottom Navigation](https://github.com/afollestad/aesthetic#bottom-navigation)
@@ -298,6 +299,12 @@ background to whatever `accentColor` you have set.
 You could also use: `?colorPrimary`, `?colorPrimaryDark`, `?android:windowBackground`, 
 `?android:textColorPrimary`, `?android:textColorPrimaryInverse`, 
 `?android:textColorSecondary`, `?android:textColorSecondaryInverse`.
+
+---
+
+### Ignoring Views
+
+You can make this library ignore views from being themed by setting the view's tag to `:aesthetic_ignore`.
 
 ---
 
