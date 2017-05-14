@@ -9,6 +9,8 @@ Aesthetic is an easy to use, fast, Rx-powered theme engine for Android applicati
 
 <img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/showcase1.png" />
 
+You can download <a href="https://raw.githubusercontent.com/afollestad/aesthetic/master/sample.apk">APK of the sample project</a>. 
+
 ---
 
 # Table of Contents
