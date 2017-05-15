@@ -4,22 +4,31 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
-import com.google.auto.value.AutoValue;
-
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)
-@AutoValue
-abstract class BgIconColorState {
+final class BgIconColorState {
+
+  private final int bgColor;
+  private final ActiveInactiveColors iconTitleColor;
+
+  private BgIconColorState(int bgColor, ActiveInactiveColors iconTitleColor) {
+    this.bgColor = bgColor;
+    this.iconTitleColor = iconTitleColor;
+  }
 
   static BgIconColorState create(int color, ActiveInactiveColors iconTitleColors) {
-    return new AutoValue_BgIconColorState(color, iconTitleColors);
+    return new BgIconColorState(color, iconTitleColors);
   }
 
   @ColorInt
-  abstract int bgColor();
+  int bgColor() {
+    return bgColor;
+  }
 
   @Nullable
-  abstract ActiveInactiveColors iconTitleColor();
+  ActiveInactiveColors iconTitleColor() {
+    return iconTitleColor;
+  }
 }

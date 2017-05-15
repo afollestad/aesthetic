@@ -48,9 +48,6 @@ dependencies {
     compile 'com.f2prateek.rx.preferences:rx-preferences:' + versions.rxPrefs
 
     compile 'me.zhanghai.android.materialprogressbar:library:' + versions.mdProgressBar
-
-    compile 'com.google.auto.value:auto-value:' + versions.autoValue
-    annotationProcessor 'com.google.auto.value:auto-value:' + versions.autoValue
 }
 
 apply from: 'https://raw.githubusercontent.com/afollestad/aidanfollestad.com/master/android-lib-release.gradle'
