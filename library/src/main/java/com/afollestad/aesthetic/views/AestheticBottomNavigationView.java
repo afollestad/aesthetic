@@ -45,7 +45,10 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
   }
 
   private void invalidateIconTextColor(int backgroundColor, int selectedColor) {
-    int baseColor = Util.isColorLight(backgroundColor) ? Color.BLACK : Color.WHITE;
+    int baseColor =
+        ContextCompat.getColor(
+            getContext(),
+            Util.isColorLight(backgroundColor) ? R.color.ate_icon_light : R.color.ate_icon_dark);
     int unselectedIconTextColor = Util.adjustAlpha(baseColor, .87f);
     ColorStateList iconColor =
         new ColorStateList(

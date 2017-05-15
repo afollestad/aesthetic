@@ -1,7 +1,7 @@
 package com.afollestad.aesthetic.views;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.RestrictTo;
 import android.support.v7.view.menu.ActionMenuItemView;
@@ -16,7 +16,6 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
-import static com.afollestad.aesthetic.Util.isColorLight;
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressWarnings("RestrictedApi")
@@ -44,16 +43,15 @@ public class AestheticActionMenuItemView extends ActionMenuItemView {
     // For some reason, without this, a transparent color is used and the icon disappears
     // when the overflow menu opens.
     Aesthetic.get()
-        .primaryColor()
+        .iconTitleColor()
         .observeOn(AndroidSchedulers.mainThread())
         .take(1)
-        .subscribe(
-            color -> {
-              int iconColor = isColorLight(color) ? Color.BLACK : Color.WHITE;
-              this.icon = createTintedDrawable(icon, iconColor);
-              super.setIcon(this.icon);
-            },
-            onErrorLogAndRethrow());
+        .subscribe(color -> setIcon(icon, color.toEnabledSl()), onErrorLogAndRethrow());
+  }
+
+  public void setIcon(final Drawable icon, ColorStateList colors) {
+    this.icon = icon;
+    super.setIcon(createTintedDrawable(icon, colors));
   }
 
   @Override
@@ -61,12 +59,12 @@ public class AestheticActionMenuItemView extends ActionMenuItemView {
     super.onAttachedToWindow();
     subscription =
         Aesthetic.get()
-            .primaryColor()
+            .iconTitleColor()
             .compose(distinctToMainThread())
             .subscribe(
-                color -> {
+                colors -> {
                   if (icon != null) {
-                    setIcon(icon);
+                    setIcon(icon, colors.toEnabledSl());
                   }
                 },
                 onErrorLogAndRethrow());

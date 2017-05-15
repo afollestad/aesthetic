@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.afollestad.aesthetic.views.ActiveInactiveColors;
 import com.f2prateek.rx.preferences.RxSharedPreferences;
 
 import rx.Observable;
@@ -53,6 +54,8 @@ public class Aesthetic {
   private static final String KEY_BOTTOM_NAV_BG_MODE = "bottom_nav_bg_mode";
   private static final String KEY_BOTTOM_NAV_ICONTEXT_MODE = "bottom_nav_icontext_mode";
   private static final String KEY_CARD_VIEW_BG_COLOR = "card_view_bg_color";
+  private static final String KEY_ICON_TITLE_ACTIVE_COLOR = "icon_title_active_color";
+  private static final String KEY_ICON_TITLE_INACTIVE_COLOR = "icon_title_inactive_color";
 
   @SuppressLint("StaticFieldLeak")
   private static Aesthetic instance;
@@ -91,6 +94,7 @@ public class Aesthetic {
     if (instance == null) {
       instance = new Aesthetic(activity);
     }
+    instance.context = activity;
     LayoutInflater li = activity.getLayoutInflater();
     Util.setInflaterFactory(li, activity);
     String activityThemeKey = String.format(KEY_ACTIVITY_THEME, key(activity));
@@ -122,8 +126,6 @@ public class Aesthetic {
         && instance.context.getClass().getName().equals(activity.getClass().getName())) {
       Log.d("Aesthetic", "Pause " + instance.context.getClass().getName());
       instance.context = null;
-      instance.prefs = null;
-      instance.rxPrefs = null;
     }
   }
 
@@ -533,6 +535,53 @@ public class Aesthetic {
   @CheckResult
   public Aesthetic cardViewBgColorRes(@ColorRes int color) {
     return cardViewBgColor(ContextCompat.getColor(context, color));
+  }
+
+  @CheckResult
+  public Observable<ActiveInactiveColors> iconTitleColor() {
+    return isDark()
+        .take(1)
+        .flatMap(
+            isDark ->
+                Observable.zip(
+                    rxPrefs
+                        .getInteger(
+                            KEY_ICON_TITLE_ACTIVE_COLOR,
+                            ContextCompat.getColor(
+                                context, isDark ? R.color.ate_icon_dark : R.color.ate_icon_light))
+                        .asObservable(),
+                    rxPrefs
+                        .getInteger(
+                            KEY_ICON_TITLE_INACTIVE_COLOR,
+                            ContextCompat.getColor(
+                                context,
+                                isDark
+                                    ? R.color.ate_icon_dark_inactive
+                                    : R.color.ate_icon_light_inactive))
+                        .asObservable(),
+                    ActiveInactiveColors::create));
+  }
+
+  @CheckResult
+  public Aesthetic iconTitleActiveColor(@ColorInt int color) {
+    editor.putInt(KEY_ICON_TITLE_ACTIVE_COLOR, color);
+    return this;
+  }
+
+  @CheckResult
+  public Aesthetic iconTitleActiveColorRes(@ColorRes int color) {
+    return iconTitleActiveColor(ContextCompat.getColor(context, color));
+  }
+
+  @CheckResult
+  public Aesthetic iconTitleInactiveColor(@ColorInt int color) {
+    editor.putInt(KEY_ICON_TITLE_INACTIVE_COLOR, color);
+    return this;
+  }
+
+  @CheckResult
+  public Aesthetic iconTitleInactiveColorRes(@ColorRes int color) {
+    return iconTitleActiveColor(ContextCompat.getColor(context, color));
   }
 
   public void apply() {

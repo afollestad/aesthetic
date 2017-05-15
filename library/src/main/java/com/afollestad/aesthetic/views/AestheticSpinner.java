@@ -47,7 +47,7 @@ public class AestheticSpinner extends AppCompatSpinner {
   }
 
   private void invalidateColors(ColorIsDarkState state) {
-    TintHelper.setTintAuto(this, state.color, true, state.isDark);
+    TintHelper.setTintAuto(this, state.color(), true, state.isDark());
   }
 
   @Override

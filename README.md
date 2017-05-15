@@ -23,10 +23,11 @@ You can download an <a href="https://raw.githubusercontent.com/afollestad/aesthe
     3. [Status Bar](https://github.com/afollestad/aesthetic#status-bar)
     4. [Navigation Bar](https://github.com/afollestad/aesthetic#navigation-bar)
     5. [Text Colors](https://github.com/afollestad/aesthetic#text-colors)
-    6. [Activity Styles](https://github.com/afollestad/aesthetic#activity-styles)
-    7. [Window Background](https://github.com/afollestad/aesthetic#window-background)
-    8. [View Backgrounds](https://github.com/afollestad/aesthetic#view-backgrounds)
-    9. [Ignoring Views](https://github.com/afollestad/aesthetic#ignoring-views)
+    6. [Icon and Title Colors](https://github.com/afollestad/aesthetic#icon-and-title-colors)
+    7. [Activity Styles](https://github.com/afollestad/aesthetic#activity-styles)
+    8. [Window Background](https://github.com/afollestad/aesthetic#window-background)
+    9. [View Backgrounds](https://github.com/afollestad/aesthetic#view-backgrounds)
+    10. [Ignoring Views](https://github.com/afollestad/aesthetic#ignoring-views)
 4. [Tab Layouts](https://github.com/afollestad/aesthetic#tab-layouts)
 5. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
 6. [Bottom Navigation](https://github.com/afollestad/aesthetic#bottom-navigation)
@@ -261,6 +262,26 @@ color.**
 In addition to the two stock attributes above, these are some other attributes that are auto swappable: 
 `?colorPrimary`, `?colorPrimaryDark`, `?colorAccent`, `?android:windowBackground`, 
 `?android:textColorPrimaryInverse`, `?android:textColorSecondaryInverse`.
+
+---
+
+### Icon and Title Colors
+
+You can modify the "icon and title" colors which are used in various places. A main example is on 
+toolbars. The color of the toolbar title and the menu icons are taken from this theme value. **By 
+default, the Material Design guideline colors are used, when isDark() is true and when it's false.**
+
+```java
+Aesthetic.get()
+    .iconTitleActiveColorRes(R.color.md_black)
+    .iconTitleInactiveColorRes(R.color.md_dark_gray)
+    .apply();
+```
+
+The getter for these methods are combined into one: `Observable<ActiveInactiveColors> iconTitleColor()`.
+
+Another example of where this is used is the text color for Tab Layout tabs. There are others that 
+you will see if you change these values and observe differences.
 
 ---
 

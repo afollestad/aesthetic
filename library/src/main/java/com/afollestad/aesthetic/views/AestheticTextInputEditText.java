@@ -49,8 +49,8 @@ public class AestheticTextInputEditText extends TextInputEditText {
 
   private void invalidateColors(ColorIsDarkState state) {
     this.lastState = state;
-    TintHelper.setTintAuto(this, state.color, true, state.isDark);
-    TintHelper.setCursorTint(this, state.color);
+    TintHelper.setTintAuto(this, state.color(), true, state.isDark());
+    TintHelper.setCursorTint(this, state.color());
   }
 
   @Override

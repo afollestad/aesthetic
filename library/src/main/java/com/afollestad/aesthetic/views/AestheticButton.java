@@ -50,15 +50,15 @@ public class AestheticButton extends AppCompatButton {
   }
 
   private void invalidateColors(ColorIsDarkState state) {
-    TintHelper.setTintAuto(this, state.color, true, state.isDark);
+    TintHelper.setTintAuto(this, state.color(), true, state.isDark());
     ColorStateList textColorSl =
         new ColorStateList(
             new int[][] {
               new int[] {android.R.attr.state_enabled}, new int[] {-android.R.attr.state_enabled}
             },
             new int[] {
-              Util.isColorLight(state.color) ? Color.BLACK : Color.WHITE,
-              state.isDark ? Color.WHITE : Color.BLACK
+              Util.isColorLight(state.color()) ? Color.BLACK : Color.WHITE,
+              state.isDark() ? Color.WHITE : Color.BLACK
             });
     setTextColor(textColorSl);
   }

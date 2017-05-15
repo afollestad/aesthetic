@@ -52,8 +52,8 @@ public class AestheticFab extends FloatingActionButton {
   }
 
   private void invalidateColors(ColorIsDarkState state) {
-    TintHelper.setTintAuto(this, state.color, true, state.isDark);
-    iconColor = Util.isColorLight(state.color) ? Color.BLACK : Color.WHITE;
+    TintHelper.setTintAuto(this, state.color(), true, state.isDark());
+    iconColor = Util.isColorLight(state.color()) ? Color.BLACK : Color.WHITE;
     setImageDrawable(getDrawable());
   }
 

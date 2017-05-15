@@ -54,8 +54,8 @@ public class AestheticEditText extends AppCompatEditText {
   }
 
   private void invalidateColors(ColorIsDarkState state) {
-    TintHelper.setTintAuto(this, state.color, true, state.isDark);
-    TintHelper.setCursorTint(this, state.color);
+    TintHelper.setTintAuto(this, state.color(), true, state.isDark());
+    TintHelper.setCursorTint(this, state.color());
   }
 
   @SuppressWarnings("ConstantConditions")

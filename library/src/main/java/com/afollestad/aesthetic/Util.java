@@ -143,19 +143,19 @@ public class Util {
   //    }
   //  }
 
-  static ColorStateList getActionTextStateList(Context context, int newPrimaryColor) {
-    final int fallBackButtonColor = resolveColor(context, android.R.attr.textColorPrimary);
-    if (newPrimaryColor == 0) {
-      newPrimaryColor = fallBackButtonColor;
-    }
-    int[][] states =
-        new int[][] {
-          new int[] {-android.R.attr.state_enabled}, // disabled
-          new int[] {} // enabled
-        };
-    int[] colors = new int[] {adjustAlpha(newPrimaryColor, 0.4f), newPrimaryColor};
-    return new ColorStateList(states, colors);
-  }
+//  static ColorStateList getActionTextStateList(Context context, int newPrimaryColor) {
+//    final int fallBackButtonColor = resolveColor(context, android.R.attr.textColorPrimary);
+//    if (newPrimaryColor == 0) {
+//      newPrimaryColor = fallBackButtonColor;
+//    }
+//    int[][] states =
+//        new int[][] {
+//          new int[] {-android.R.attr.state_enabled}, // disabled
+//          new int[] {} // enabled
+//        };
+//    int[] colors = new int[] {adjustAlpha(newPrimaryColor, 0.4f), newPrimaryColor};
+//    return new ColorStateList(states, colors);
+//  }
 
   @ColorInt
   public static int adjustAlpha(

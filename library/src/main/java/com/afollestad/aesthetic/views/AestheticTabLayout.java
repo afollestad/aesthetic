@@ -2,7 +2,6 @@ package com.afollestad.aesthetic.views;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.support.annotation.ColorInt;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TabLayout;
@@ -18,7 +17,6 @@ import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
 import static com.afollestad.aesthetic.Util.adjustAlpha;
-import static com.afollestad.aesthetic.Util.isColorLight;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)
@@ -60,9 +58,16 @@ public class AestheticTabLayout extends TabLayout {
   @Override
   public void setBackgroundColor(@ColorInt int color) {
     super.setBackgroundColor(color);
-    int iconTextColor = isColorLight(color) ? Color.BLACK : Color.WHITE;
-    setIconsColor(iconTextColor);
-    setTabTextColors(adjustAlpha(iconTextColor, UNFOCUSED_ALPHA), iconTextColor);
+    Aesthetic.get()
+        .iconTitleColor()
+        .take(1)
+        .subscribe(
+            activeInactiveColors -> {
+              setIconsColor(activeInactiveColors.activeColor());
+              setTabTextColors(
+                  adjustAlpha(activeInactiveColors.inactiveColor(), UNFOCUSED_ALPHA),
+                  activeInactiveColors.activeColor());
+            });
   }
 
   @Override

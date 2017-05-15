@@ -2,12 +2,10 @@ package com.afollestad.aesthetic.views;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -59,14 +57,14 @@ class ViewUtil {
   }
 
   static void tintToolbarMenu(
-      @NonNull Toolbar toolbar, @NonNull Menu menu, @ColorInt int titleIconColor) {
+      @NonNull Toolbar toolbar, @NonNull Menu menu, ActiveInactiveColors titleIconColors) {
     // The collapse icon displays when action views are expanded (e.g. SearchView)
     try {
       final Field field = Toolbar.class.getDeclaredField("mCollapseIcon");
       field.setAccessible(true);
       Drawable collapseIcon = (Drawable) field.get(toolbar);
       if (collapseIcon != null)
-        field.set(toolbar, TintHelper.createTintedDrawable(collapseIcon, titleIconColor));
+        field.set(toolbar, createTintedDrawable(collapseIcon, titleIconColors.toEnabledSl()));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -75,53 +73,53 @@ class ViewUtil {
     for (int i = 0; i < menu.size(); i++) {
       MenuItem item = menu.getItem(i);
       if (item.getActionView() instanceof SearchView) {
-        themeSearchView(titleIconColor, (SearchView) item.getActionView());
+        themeSearchView(titleIconColors, (SearchView) item.getActionView());
       }
     }
   }
 
-  private static void themeSearchView(int tintColor, SearchView view) {
+  private static void themeSearchView(ActiveInactiveColors tintColors, SearchView view) {
     final Class<?> cls = view.getClass();
     try {
       final Field mSearchSrcTextViewField = cls.getDeclaredField("mSearchSrcTextView");
       mSearchSrcTextViewField.setAccessible(true);
       final EditText mSearchSrcTextView = (EditText) mSearchSrcTextViewField.get(view);
-      mSearchSrcTextView.setTextColor(tintColor);
-      mSearchSrcTextView.setHintTextColor(
-          ContextCompat.getColor(
-              view.getContext(),
-              isColorLight(tintColor)
-                  ? R.color.ate_text_disabled_dark
-                  : R.color.ate_text_disabled_light));
-      TintHelper.setCursorTint(mSearchSrcTextView, tintColor);
+      mSearchSrcTextView.setTextColor(tintColors.activeColor());
+      mSearchSrcTextView.setHintTextColor(tintColors.inactiveColor());
+      TintHelper.setCursorTint(mSearchSrcTextView, tintColors.activeColor());
 
       Field field = cls.getDeclaredField("mSearchButton");
-      tintImageView(view, field, tintColor);
+      tintImageView(view, field, tintColors);
       field = cls.getDeclaredField("mGoButton");
-      tintImageView(view, field, tintColor);
+      tintImageView(view, field, tintColors);
       field = cls.getDeclaredField("mCloseButton");
-      tintImageView(view, field, tintColor);
+      tintImageView(view, field, tintColors);
       field = cls.getDeclaredField("mVoiceButton");
-      tintImageView(view, field, tintColor);
+      tintImageView(view, field, tintColors);
 
       field = cls.getDeclaredField("mSearchPlate");
       field.setAccessible(true);
-      TintHelper.setTintAuto((View) field.get(view), tintColor, true, !isColorLight(tintColor));
+      TintHelper.setTintAuto(
+          (View) field.get(view),
+          tintColors.activeColor(),
+          true,
+          !isColorLight(tintColors.activeColor()));
 
       field = cls.getDeclaredField("mSearchHintIcon");
       field.setAccessible(true);
-      field.set(view, createTintedDrawable((Drawable) field.get(view), tintColor));
+      field.set(view, createTintedDrawable((Drawable) field.get(view), tintColors.toEnabledSl()));
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  private static void tintImageView(Object target, Field field, int tintColor) throws Exception {
+  private static void tintImageView(Object target, Field field, ActiveInactiveColors tintColors)
+      throws Exception {
     field.setAccessible(true);
     final ImageView imageView = (ImageView) field.get(target);
     if (imageView.getDrawable() != null) {
       imageView.setImageDrawable(
-          TintHelper.createTintedDrawable(imageView.getDrawable(), tintColor));
+          createTintedDrawable(imageView.getDrawable(), tintColors.toEnabledSl()));
     }
   }
 }

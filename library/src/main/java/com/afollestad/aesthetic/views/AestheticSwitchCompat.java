@@ -47,7 +47,7 @@ public class AestheticSwitchCompat extends SwitchCompat {
   }
 
   private void invalidateColors(ColorIsDarkState state) {
-    TintHelper.setTint(this, state.color, state.isDark);
+    TintHelper.setTint(this, state.color(), state.isDark());
   }
 
   @Override

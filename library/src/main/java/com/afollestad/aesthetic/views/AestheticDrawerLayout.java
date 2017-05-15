@@ -1,7 +1,6 @@
 package com.afollestad.aesthetic.views;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.v4.widget.DrawerLayout;
@@ -10,7 +9,6 @@ import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.util.AttributeSet;
 
 import com.afollestad.aesthetic.Aesthetic;
-import com.afollestad.aesthetic.Util;
 
 import rx.Subscription;
 
@@ -22,7 +20,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 @RestrictTo(LIBRARY_GROUP)
 public class AestheticDrawerLayout extends DrawerLayout {
 
-  private int color;
+  private ActiveInactiveColors lastState;
   private DrawerArrowDrawable arrowDrawable;
   private Subscription subscription;
 
@@ -38,10 +36,13 @@ public class AestheticDrawerLayout extends DrawerLayout {
     super(context, attrs, defStyle);
   }
 
-  private void invalidateColor(int color) {
-    this.color = Util.isColorLight(color) ? Color.BLACK : Color.WHITE;
+  private void invalidateColor(ActiveInactiveColors colors) {
+    if (colors == null) {
+      return;
+    }
+    this.lastState = colors;
     if (this.arrowDrawable != null) {
-      this.arrowDrawable.setColor(this.color);
+      this.arrowDrawable.setColor(lastState.activeColor());
     }
   }
 
@@ -50,7 +51,7 @@ public class AestheticDrawerLayout extends DrawerLayout {
     super.onAttachedToWindow();
     subscription =
         Aesthetic.get()
-            .primaryColor()
+            .iconTitleColor()
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColor, onErrorLogAndRethrow());
   }
@@ -67,7 +68,7 @@ public class AestheticDrawerLayout extends DrawerLayout {
     if (listener instanceof ActionBarDrawerToggle) {
       this.arrowDrawable = ((ActionBarDrawerToggle) listener).getDrawerArrowDrawable();
     }
-    invalidateColor(color);
+    invalidateColor(lastState);
   }
 
   @SuppressWarnings("deprecation")
@@ -77,6 +78,6 @@ public class AestheticDrawerLayout extends DrawerLayout {
     if (listener instanceof ActionBarDrawerToggle) {
       this.arrowDrawable = ((ActionBarDrawerToggle) listener).getDrawerArrowDrawable();
     }
-    invalidateColor(color);
+    invalidateColor(lastState);
   }
 }

@@ -6,13 +6,13 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.util.Pair;
 import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +26,7 @@ import com.afollestad.aesthetic.Util;
 
 import java.lang.reflect.Field;
 
+import rx.Observable;
 import rx.Subscription;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
@@ -37,12 +38,15 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 public class AestheticCoordinatorLayout extends CoordinatorLayout
     implements AppBarLayout.OnOffsetChangedListener {
 
+  private Subscription toolbarColorSubscription;
   private Subscription statusBarColorSubscription;
   private AppBarLayout appBarLayout;
   private View colorView;
   private AestheticToolbar toolbar;
   private CollapsingToolbarLayout collapsingToolbarLayout;
+
   private int toolbarColor;
+  private ActiveInactiveColors iconTextColors;
   private int lastOffset = -1;
 
   public AestheticCoordinatorLayout(Context context) {
@@ -59,25 +63,25 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
 
   @SuppressWarnings("unchecked")
   private static void tintMenu(
-      @NonNull AestheticToolbar toolbar, @Nullable Menu menu, final @ColorInt int color) {
+      @NonNull AestheticToolbar toolbar, @Nullable Menu menu, final ActiveInactiveColors colors) {
     if (toolbar.getNavigationIcon() != null) {
-      toolbar.setNavigationIcon(toolbar.getNavigationIcon(), color);
+      toolbar.setNavigationIcon(toolbar.getNavigationIcon(), colors.activeColor());
     }
-    Util.setOverflowButtonColor(toolbar, color);
+    Util.setOverflowButtonColor(toolbar, colors.activeColor());
 
     try {
       final Field field = Toolbar.class.getDeclaredField("mCollapseIcon");
       field.setAccessible(true);
       Drawable collapseIcon = (Drawable) field.get(toolbar);
       if (collapseIcon != null) {
-        field.set(toolbar, TintHelper.createTintedDrawable(collapseIcon, color));
+        field.set(toolbar, TintHelper.createTintedDrawable(collapseIcon, colors.toEnabledSl()));
       }
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     final PorterDuffColorFilter colorFilter =
-        new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
+        new PorterDuffColorFilter(colors.activeColor(), PorterDuff.Mode.SRC_IN);
     for (int i = 0; i < toolbar.getChildCount(); i++) {
       final View v = toolbar.getChildAt(i);
       // We can't iterate through the toolbar.getMenu() here, because we need the ActionMenuItemView.
@@ -100,7 +104,7 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
     if (menu == null) {
       menu = toolbar.getMenu();
     }
-    ViewUtil.tintToolbarMenu(toolbar, menu, color);
+    ViewUtil.tintToolbarMenu(toolbar, menu, colors);
   }
 
   @Override
@@ -130,15 +134,17 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
 
     if (toolbar != null && colorView != null) {
       this.appBarLayout.addOnOffsetChangedListener(this);
-      toolbar
-          .colorUpdated()
-          .compose(distinctToMainThread())
-          .subscribe(
-              color -> {
-                toolbarColor = color;
-                invalidateColors();
-              },
-              onErrorLogAndRethrow());
+      toolbarColorSubscription =
+          Observable.combineLatest(
+                  toolbar.colorUpdated(), Aesthetic.get().iconTitleColor(), Pair::create)
+              .compose(distinctToMainThread())
+              .subscribe(
+                  result -> {
+                    toolbarColor = result.first;
+                    iconTextColors = result.second;
+                    invalidateColors();
+                  },
+                  onErrorLogAndRethrow());
     }
 
     if (collapsingToolbarLayout != null) {
@@ -177,12 +183,16 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
   }
 
   private void invalidateColors() {
+    if (iconTextColors == null) {
+      return;
+    }
+
     final int maxOffset = appBarLayout.getMeasuredHeight() - toolbar.getMeasuredHeight();
     final float ratio = (float) lastOffset / (float) maxOffset;
 
     final int colorViewColor = ((ColorDrawable) colorView.getBackground()).getColor();
     final int blendedColor = Util.blendColors(colorViewColor, toolbarColor, ratio);
-    final int collapsedTitleColor = Util.isColorLight(toolbarColor) ? Color.BLACK : Color.WHITE;
+    final int collapsedTitleColor = iconTextColors.activeColor();
     final int expandedTitleColor = Util.isColorLight(colorViewColor) ? Color.BLACK : Color.WHITE;
     final int blendedTitleColor = Util.blendColors(expandedTitleColor, collapsedTitleColor, ratio);
 
@@ -191,6 +201,9 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
     collapsingToolbarLayout.setCollapsedTitleTextColor(collapsedTitleColor);
     collapsingToolbarLayout.setExpandedTitleColor(expandedTitleColor);
 
-    tintMenu(toolbar, toolbar.getMenu(), blendedTitleColor);
+    tintMenu(
+        toolbar,
+        toolbar.getMenu(),
+        ActiveInactiveColors.create(blendedTitleColor, Util.adjustAlpha(blendedColor, 0.7f)));
   }
 }

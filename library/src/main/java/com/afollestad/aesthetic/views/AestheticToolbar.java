@@ -2,7 +2,6 @@ package com.afollestad.aesthetic.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
@@ -20,15 +19,14 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
-import static com.afollestad.aesthetic.Util.isColorLight;
 import static com.afollestad.aesthetic.Util.setOverflowButtonColor;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)
 public class AestheticToolbar extends Toolbar {
 
-  private int titleIconColor;
   private int backgroundResId;
+  private BgIconColorState lastState;
   private Subscription subscription;
   private PublishSubject<Integer> onColorUpdated;
 
@@ -60,16 +58,16 @@ public class AestheticToolbar extends Toolbar {
     }
   }
 
-  private void invalidateColors(int color) {
-    setBackgroundColor(color);
-    this.titleIconColor = isColorLight(color) ? Color.BLACK : Color.WHITE;
-    setTitleTextColor(titleIconColor);
-    setOverflowButtonColor(this, titleIconColor);
+  private void invalidateColors(BgIconColorState state) {
+    lastState = state;
+    setBackgroundColor(state.bgColor());
+    setTitleTextColor(state.iconTitleColor().activeColor());
+    setOverflowButtonColor(this, state.iconTitleColor().activeColor());
     if (getNavigationIcon() != null) {
       setNavigationIcon(getNavigationIcon());
     }
-    onColorUpdated.onNext(color);
-    ViewUtil.tintToolbarMenu(this, getMenu(), titleIconColor);
+    onColorUpdated.onNext(state.bgColor());
+    ViewUtil.tintToolbarMenu(this, getMenu(), state.iconTitleColor());
   }
 
   public Observable<Integer> colorUpdated() {
@@ -78,10 +76,18 @@ public class AestheticToolbar extends Toolbar {
 
   @Override
   public void setNavigationIcon(@Nullable Drawable icon) {
-    super.setNavigationIcon(createTintedDrawable(icon, titleIconColor));
+    if (lastState == null) {
+      super.setNavigationIcon(icon);
+      return;
+    }
+    super.setNavigationIcon(createTintedDrawable(icon, lastState.iconTitleColor().toEnabledSl()));
   }
 
   public void setNavigationIcon(@Nullable Drawable icon, @ColorInt int color) {
+    if (lastState == null) {
+      super.setNavigationIcon(icon);
+      return;
+    }
     super.setNavigationIcon(createTintedDrawable(icon, color));
   }
 
@@ -90,14 +96,18 @@ public class AestheticToolbar extends Toolbar {
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
     subscription =
-        ViewUtil.getObservableForResId(
-                getContext(), backgroundResId, Aesthetic.get().primaryColor())
+        Observable.combineLatest(
+                ViewUtil.getObservableForResId(
+                    getContext(), backgroundResId, Aesthetic.get().primaryColor()),
+                Aesthetic.get().iconTitleColor(),
+                BgIconColorState::create)
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColors, onErrorLogAndRethrow());
   }
 
   @Override
   protected void onDetachedFromWindow() {
+    lastState = null;
     onColorUpdated = null;
     subscription.unsubscribe();
     super.onDetachedFromWindow();

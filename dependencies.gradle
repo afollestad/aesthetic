@@ -12,5 +12,7 @@ ext.versions = [
         butterKnife       : '8.5.1',
         rxJava            : '1.2.1',
         rxAndroid         : '1.2.1',
-        rxPrefs           : '1.0.2'
+        rxPrefs           : '1.0.2',
+
+        autoValue         : '1.2'
 ]
