@@ -26,12 +26,12 @@ You can download an <a href="https://raw.githubusercontent.com/afollestad/aesthe
     6. [Icon and Title Colors](https://github.com/afollestad/aesthetic#icon-and-title-colors)
     7. [Activity Styles](https://github.com/afollestad/aesthetic#activity-styles)
     8. [Window Background](https://github.com/afollestad/aesthetic#window-background)
-    9. [View Backgrounds](https://github.com/afollestad/aesthetic#view-backgrounds)
-    10. [Ignoring Views](https://github.com/afollestad/aesthetic#ignoring-views)
-4. [Tab Layouts](https://github.com/afollestad/aesthetic#tab-layouts)
-5. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
-6. [Bottom Navigation](https://github.com/afollestad/aesthetic#bottom-navigation)
-7. [Collapsible Toolbar Layouts](https://github.com/afollestad/aesthetic#collapsible-toolbar-layouts)
+4. [View Backgrounds](https://github.com/afollestad/aesthetic#view-backgrounds)
+5. [Ignoring Views](https://github.com/afollestad/aesthetic#ignoring-views)
+6. [Tab Layouts](https://github.com/afollestad/aesthetic#tab-layouts)
+7. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
+8. [Bottom Navigation](https://github.com/afollestad/aesthetic#bottom-navigation)
+9. [Collapsible Toolbar Layouts](https://github.com/afollestad/aesthetic#collapsible-toolbar-layouts)
 
 ---
 
@@ -93,7 +93,7 @@ public class AestheticActivity extends AppCompatActivity {
 
   @Override
   protected void onPause() {
-    Aesthetic.pause();
+    Aesthetic.pause(this);
     super.onPause();
   }
 }
@@ -324,7 +324,7 @@ Aesthetic.get()
 
 ---
 
-### View Backgrounds
+# View Backgrounds
 
 When you set stock or AppCompat attributes to the background of certain views, Aesthetic will
 swap out the attribute with your dynamic theme colors at inflation time:
@@ -347,7 +347,7 @@ You could also use: `?colorPrimary`, `?colorPrimaryDark`, `?android:windowBackgr
 
 ---
 
-### Ignoring Views
+# Ignoring Views
 
 You can make this library ignore views from being themed by setting the view's tag to `:aesthetic_ignore`.
 
