@@ -35,7 +35,7 @@ You can download an <a href="https://raw.githubusercontent.com/afollestad/aesthe
 
 # Gradle Dependency
 
-The Gradle dependency is available via [jCenter](https://bintray.com/drummer-aidan/maven/assent/view).
+The Gradle dependency is available via [jCenter](https://bintray.com/drummer-aidan/maven/aesthetic/view).
 jCenter is the default Maven repository used by Android Studio.
 
 Add this to your module's `build.gradle` file:
