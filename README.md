@@ -138,10 +138,10 @@ Aesthetic.get()
     });
 ```
 
-`primaryColor()` returns an RxJava `Observable`. `.take(1)` here retrieves the latest value, and 
-automatically unsubscribes so you don't continue to receive updates to the primary color.
+`primaryColor()` returns an RxJava `Observable<Integer>`. `take(1)` here retrieves the latest value, and 
+automatically unsubscribes so you don't continue to receive updates when the primary color changes.
 
-If you were to leave `.take(1)` out, you need to manage the subscription. You will continue to receive 
+If you were to leave `take(1)` out, you need to manage the subscription. You will continue to receive 
 updates every time the primary color is changed, until you unsubscribe.
 
 ```java
