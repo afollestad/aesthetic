@@ -364,12 +364,14 @@ You can customize background theming behavior:
 ```java
 // The background of the tab layout will match your primary theme color. This is the default.
 Aesthetic.get()
-    .tabLayoutBackgroundMode(TabLayoutBgMode.PRIMARY)
+    .tabLayoutBackgroundMode(
+        TabLayoutBgMode.PRIMARY)
     .apply();
 
 // The background of the tab layout will match your accent theme color.
 Aesthetic.get()
-    .tabLayoutBackgroundMode(TabLayoutBgMode.ACCENT)
+    .tabLayoutBackgroundMode(
+        TabLayoutBgMode.ACCENT)
     .apply();
 ```
 
@@ -378,12 +380,14 @@ And indicator (underline) theming behavior:
 ```java
 // The selected tab underline will match your primary theme color.
 Aesthetic.get()
-    .tabLayoutIndicatorMode(TabLayoutIndicatorMode.PRIMARY)
+    .tabLayoutIndicatorMode(
+        TabLayoutIndicatorMode.PRIMARY)
     .apply();
 
 // The selected tab underline will match your accent theme color. This is the default.
 Aesthetic.get()
-    .tabLayoutIndicatorMode(TabLayoutIndicatorMode.ACCENT)
+    .tabLayoutIndicatorMode(
+        TabLayoutIndicatorMode.ACCENT)
     .apply();
 ```
 
@@ -408,12 +412,14 @@ You can customize behavior:
 ```java
 // Checked nav drawer item will use your set primary color
 Aesthetic.get()
-    .navigationViewMode(NavigationViewMode.SELECTED_PRIMARY)
+    .navigationViewMode(
+        NavigationViewMode.SELECTED_PRIMARY)
     .apply();
 
 // Checked nav drawer item will use your set accent color
 Aesthetic.get()
-    .navigationViewMode(NavigationViewMode.SELECTED_ACCENT)
+    .navigationViewMode(
+        NavigationViewMode.SELECTED_ACCENT)
     .apply();
 ```
 
@@ -432,23 +438,27 @@ You can customize background theming behavior:
 ```java
 // The background of the bottom tabs will match your primary theme color.
 Aesthetic.get()
-    .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
+    .bottomNavigationBackgroundMode(
+        BottomNavBgMode.PRIMARY)
     .apply();
 
 // The background of the bottom tabs will match your status bar theme color.
 Aesthetic.get()
-    .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
+    .bottomNavigationBackgroundMode(
+        BottomNavBgMode.PRIMARY_DARK)
     .apply();
 
 // The background of the bottom tabs will match your accent theme color.
 Aesthetic.get()
-    .bottomNavigationBackgroundMode(BottomNavBgMode.ACCENT)
+    .bottomNavigationBackgroundMode(
+        BottomNavBgMode.ACCENT)
     .apply();
 
 // The background of the bottom tabs will be dark gray or white depending on the isDark() property.
 // This is the default.
 Aesthetic.get()
-    .bottomNavigationBackgroundMode(BottomNavBgMode.BLACK_WHITE_AUTO)
+    .bottomNavigationBackgroundMode(
+        BottomNavBgMode.BLACK_WHITE_AUTO)
     .apply();
 ```
 
@@ -457,18 +467,21 @@ You can also customize icon/text theming behavior:
 ```java
 // The selected tab icon/text color will match your primary theme color.
 Aesthetic.get()
-    .bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_PRIMARY)
+    .bottomNavigationIconTextMode(
+        BottomNavIconTextMode.SELECTED_PRIMARY)
     .apply();
 
 // The selected tab icon/text color will match your accent theme color. This is the default.
 Aesthetic.get()
-    .bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
+    .bottomNavigationIconTextMode(
+        BottomNavIconTextMode.SELECTED_ACCENT)
     .apply();
 
 // The selected tab icon/text color will be black or white depending on which is more visible 
 // over the background of the bottom tabs.
 Aesthetic.get()
-    .bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+    .bottomNavigationIconTextMode(
+        BottomNavIconTextMode.BLACK_WHITE_AUTO)
     .apply();
 ```
 
