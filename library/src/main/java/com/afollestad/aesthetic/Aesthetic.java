@@ -141,7 +141,7 @@ public class Aesthetic {
     instance.subs = new CompositeSubscription();
     instance.subs.add(
         instance
-            .primaryColor()
+            .colorPrimary()
             .compose(distinctToMainThread())
             .subscribe(
                 color -> Util.setTaskDescriptionColor(instance.context, color),
@@ -161,18 +161,18 @@ public class Aesthetic {
                 onErrorLogAndRethrow()));
     instance.subs.add(
         instance
-            .statusBarColor()
+            .colorStatusBar()
             .compose(distinctToMainThread())
             .subscribe(color -> instance.invalidateStatusBar(), onErrorLogAndRethrow()));
     instance.subs.add(
         instance
-            .navBarColor()
+            .colorNavigationBar()
             .compose(distinctToMainThread())
             .subscribe(
                 color -> setNavBarColorCompat(instance.context, color), onErrorLogAndRethrow()));
     instance.subs.add(
         instance
-            .windowBgColor()
+            .colorWindowBackground()
             .compose(distinctToMainThread())
             .subscribe(
                 color ->
@@ -252,73 +252,73 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Aesthetic primaryColor(@ColorInt int color) {
+  public Aesthetic colorPrimary(@ColorInt int color) {
     // needs to be committed immediately so that for statusBarColorAuto() and other auto methods
     editor.putInt(KEY_PRIMARY_COLOR, color).commit();
     return this;
   }
 
   @CheckResult
-  public Aesthetic primaryColorRes(@ColorRes int color) {
-    return primaryColor(ContextCompat.getColor(context, color));
+  public Aesthetic colorPrimaryRes(@ColorRes int color) {
+    return colorPrimary(ContextCompat.getColor(context, color));
   }
 
   @CheckResult
-  public Observable<Integer> primaryColor() {
+  public Observable<Integer> colorPrimary() {
     return rxPrefs
         .getInteger(KEY_PRIMARY_COLOR, resolveColor(context, R.attr.colorPrimary))
         .asObservable();
   }
 
   @CheckResult
-  public Aesthetic accentColor(@ColorInt int color) {
+  public Aesthetic colorAccent(@ColorInt int color) {
     editor.putInt(KEY_ACCENT_COLOR, color).commit();
     return this;
   }
 
   @CheckResult
-  public Aesthetic accentColorRes(@ColorRes int color) {
-    return accentColor(ContextCompat.getColor(context, color));
+  public Aesthetic colorAccentRes(@ColorRes int color) {
+    return colorAccent(ContextCompat.getColor(context, color));
   }
 
   @CheckResult
-  public Observable<Integer> accentColor() {
+  public Observable<Integer> colorAccent() {
     return rxPrefs
         .getInteger(KEY_ACCENT_COLOR, resolveColor(context, R.attr.colorAccent))
         .asObservable();
   }
 
   @CheckResult
-  public Aesthetic primaryTextColor(@ColorInt int color) {
+  public Aesthetic textColorPrimary(@ColorInt int color) {
     editor.putInt(KEY_PRIMARY_TEXT_COLOR, color);
     return this;
   }
 
   @CheckResult
-  public Aesthetic primaryTextColorRes(@ColorRes int color) {
-    return primaryTextColor(ContextCompat.getColor(context, color));
+  public Aesthetic textColorPrimaryRes(@ColorRes int color) {
+    return textColorPrimary(ContextCompat.getColor(context, color));
   }
 
   @CheckResult
-  public Observable<Integer> primaryTextColor() {
+  public Observable<Integer> textColorPrimary() {
     return rxPrefs
         .getInteger(KEY_PRIMARY_TEXT_COLOR, resolveColor(context, android.R.attr.textColorPrimary))
         .asObservable();
   }
 
   @CheckResult
-  public Aesthetic secondaryTextColor(@ColorInt int color) {
+  public Aesthetic textColorSecondary(@ColorInt int color) {
     editor.putInt(KEY_SECONDARY_TEXT_COLOR, color);
     return this;
   }
 
   @CheckResult
-  public Aesthetic secondaryTextColorRes(@ColorRes int color) {
-    return secondaryTextColor(ContextCompat.getColor(context, color));
+  public Aesthetic textColorSecondaryRes(@ColorRes int color) {
+    return textColorSecondary(ContextCompat.getColor(context, color));
   }
 
   @CheckResult
-  public Observable<Integer> secondaryTextColor() {
+  public Observable<Integer> textColorSecondary() {
     return rxPrefs
         .getInteger(
             KEY_SECONDARY_TEXT_COLOR, resolveColor(context, android.R.attr.textColorSecondary))
@@ -326,18 +326,18 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Aesthetic primaryTextInverseColor(@ColorInt int color) {
+  public Aesthetic textColorPrimaryInverse(@ColorInt int color) {
     editor.putInt(KEY_PRIMARY_TEXT_INVERSE_COLOR, color);
     return this;
   }
 
   @CheckResult
-  public Aesthetic primaryTextColorInverseRes(@ColorRes int color) {
-    return primaryTextInverseColor(ContextCompat.getColor(context, color));
+  public Aesthetic textColorPrimaryInverseRes(@ColorRes int color) {
+    return textColorPrimaryInverse(ContextCompat.getColor(context, color));
   }
 
   @CheckResult
-  public Observable<Integer> primaryTextInverseColor() {
+  public Observable<Integer> textColorPrimaryInverse() {
     return rxPrefs
         .getInteger(
             KEY_PRIMARY_TEXT_INVERSE_COLOR,
@@ -346,18 +346,18 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Aesthetic secondaryTextInverseColor(@ColorInt int color) {
+  public Aesthetic textColorSecondaryInverse(@ColorInt int color) {
     editor.putInt(KEY_SECONDARY_TEXT_INVERSE_COLOR, color);
     return this;
   }
 
   @CheckResult
-  public Aesthetic secondaryTextInverseColorRes(@ColorRes int color) {
-    return secondaryTextInverseColor(ContextCompat.getColor(context, color));
+  public Aesthetic textColorSecondaryInverseRes(@ColorRes int color) {
+    return textColorSecondaryInverse(ContextCompat.getColor(context, color));
   }
 
   @CheckResult
-  public Observable<Integer> secondaryTextInverseColor() {
+  public Observable<Integer> textColorSecondaryInverse() {
     return rxPrefs
         .getInteger(
             KEY_SECONDARY_TEXT_INVERSE_COLOR,
@@ -366,37 +366,37 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Aesthetic windowBgColor(@ColorInt int color) {
+  public Aesthetic colorWindowBackground(@ColorInt int color) {
     editor.putInt(KEY_WINDOW_BG_COLOR, color).commit();
     return this;
   }
 
   @CheckResult
-  public Aesthetic windowBgColorRes(@ColorRes int color) {
-    return windowBgColor(ContextCompat.getColor(context, color));
+  public Aesthetic colorWindowBackgroundRes(@ColorRes int color) {
+    return colorWindowBackground(ContextCompat.getColor(context, color));
   }
 
   @CheckResult
-  public Observable<Integer> windowBgColor() {
+  public Observable<Integer> colorWindowBackground() {
     return rxPrefs
         .getInteger(KEY_WINDOW_BG_COLOR, resolveColor(context, android.R.attr.windowBackground))
         .asObservable();
   }
 
   @CheckResult
-  public Aesthetic statusBarColor(@ColorInt int color) {
+  public Aesthetic colorStatusBar(@ColorInt int color) {
     String key = String.format(KEY_STATUS_BAR_COLOR, key(context));
     editor.putInt(key, color);
     return this;
   }
 
   @CheckResult
-  public Aesthetic statusBarColorRes(@ColorRes int color) {
-    return statusBarColor(ContextCompat.getColor(context, color));
+  public Aesthetic colorStatusBarRes(@ColorRes int color) {
+    return colorStatusBar(ContextCompat.getColor(context, color));
   }
 
   @CheckResult
-  public Aesthetic statusBarColorAuto() {
+  public Aesthetic colorStatusBarAuto() {
     String key = String.format(KEY_STATUS_BAR_COLOR, key(context));
     editor.putInt(
         key,
@@ -406,25 +406,25 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Observable<Integer> statusBarColor() {
+  public Observable<Integer> colorStatusBar() {
     String key = String.format(KEY_STATUS_BAR_COLOR, key(context));
     return rxPrefs.getInteger(key, resolveColor(context, R.attr.colorPrimaryDark)).asObservable();
   }
 
   @CheckResult
-  public Aesthetic navBarColor(@ColorInt int color) {
+  public Aesthetic colorNavigationBar(@ColorInt int color) {
     String key = String.format(KEY_NAV_BAR_COLOR, key(context));
     editor.putInt(key, color);
     return this;
   }
 
   @CheckResult
-  public Aesthetic navBarColorRes(@ColorRes int color) {
-    return navBarColor(ContextCompat.getColor(context, color));
+  public Aesthetic colorNavigationBarRes(@ColorRes int color) {
+    return colorNavigationBar(ContextCompat.getColor(context, color));
   }
 
   @CheckResult
-  public Aesthetic navBarColorAuto() {
+  public Aesthetic colorNavigationBarAuto() {
     int color = prefs.getInt(KEY_PRIMARY_COLOR, resolveColor(context, R.attr.colorPrimary));
     String key = String.format(KEY_NAV_BAR_COLOR, key(context));
     editor.putInt(key, isColorLight(color) ? Color.BLACK : color);
@@ -432,7 +432,7 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Observable<Integer> navBarColor() {
+  public Observable<Integer> colorNavigationBar() {
     String key = String.format(KEY_NAV_BAR_COLOR, key(context));
     return rxPrefs.getInteger(key, Color.BLACK).asObservable();
   }
@@ -462,57 +462,57 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Aesthetic tabLayoutBgMode(@TabLayoutBgMode int mode) {
+  public Aesthetic tabLayoutBackgroundMode(@TabLayoutBgMode int mode) {
     editor.putInt(KEY_TAB_LAYOUT_BG_MODE, mode).commit();
     return this;
   }
 
   @CheckResult
-  public Observable<Integer> tabLayoutBgMode() {
+  public Observable<Integer> tabLayoutBackgroundMode() {
     return rxPrefs.getInteger(KEY_TAB_LAYOUT_BG_MODE, TabLayoutBgMode.PRIMARY).asObservable();
   }
 
   @CheckResult
-  public Aesthetic navViewMode(@NavigationViewMode int mode) {
+  public Aesthetic navigationViewMode(@NavigationViewMode int mode) {
     editor.putInt(KEY_NAV_VIEW_MODE, mode).commit();
     return this;
   }
 
   @CheckResult
-  public Observable<Integer> navViewMode() {
+  public Observable<Integer> navigationViewMode() {
     return rxPrefs
         .getInteger(KEY_NAV_VIEW_MODE, NavigationViewMode.SELECTED_PRIMARY)
         .asObservable();
   }
 
   @CheckResult
-  public Aesthetic bottomNavBgMode(@BottomNavBgMode int mode) {
+  public Aesthetic bottomNavigationBackgroundMode(@BottomNavBgMode int mode) {
     editor.putInt(KEY_BOTTOM_NAV_BG_MODE, mode).commit();
     return this;
   }
 
   @CheckResult
-  public Observable<Integer> bottomNavBgMode() {
+  public Observable<Integer> bottomNavigationBackgroundMode() {
     return rxPrefs
         .getInteger(KEY_BOTTOM_NAV_BG_MODE, BottomNavBgMode.BLACK_WHITE_AUTO)
         .asObservable();
   }
 
   @CheckResult
-  public Aesthetic bottomNavIconTextMode(@BottomNavIconTextMode int mode) {
+  public Aesthetic bottomNavigationIconTextMode(@BottomNavIconTextMode int mode) {
     editor.putInt(KEY_BOTTOM_NAV_ICONTEXT_MODE, mode).commit();
     return this;
   }
 
   @CheckResult
-  public Observable<Integer> bottomNavIconTextMode() {
+  public Observable<Integer> bottomNavigationIconTextMode() {
     return rxPrefs
         .getInteger(KEY_BOTTOM_NAV_ICONTEXT_MODE, BottomNavIconTextMode.SELECTED_ACCENT)
         .asObservable();
   }
 
   @CheckResult
-  public Observable<Integer> cardViewBgColor() {
+  public Observable<Integer> colorCardViewBackground() {
     return isDark()
         .take(1)
         .flatMap(
@@ -527,18 +527,18 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Aesthetic cardViewBgColor(@ColorInt int color) {
+  public Aesthetic colorCardViewBackground(@ColorInt int color) {
     editor.putInt(KEY_CARD_VIEW_BG_COLOR, color);
     return this;
   }
 
   @CheckResult
-  public Aesthetic cardViewBgColorRes(@ColorRes int color) {
-    return cardViewBgColor(ContextCompat.getColor(context, color));
+  public Aesthetic colorCardViewBackgroundRes(@ColorRes int color) {
+    return colorCardViewBackground(ContextCompat.getColor(context, color));
   }
 
   @CheckResult
-  public Observable<ActiveInactiveColors> iconTitleColor() {
+  public Observable<ActiveInactiveColors> colorIconTitle() {
     return isDark()
         .take(1)
         .flatMap(
@@ -563,25 +563,25 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Aesthetic iconTitleActiveColor(@ColorInt int color) {
+  public Aesthetic colorIconTitleActive(@ColorInt int color) {
     editor.putInt(KEY_ICON_TITLE_ACTIVE_COLOR, color);
     return this;
   }
 
   @CheckResult
-  public Aesthetic iconTitleActiveColorRes(@ColorRes int color) {
-    return iconTitleActiveColor(ContextCompat.getColor(context, color));
+  public Aesthetic colorIconTitleActiveRes(@ColorRes int color) {
+    return colorIconTitleActive(ContextCompat.getColor(context, color));
   }
 
   @CheckResult
-  public Aesthetic iconTitleInactiveColor(@ColorInt int color) {
+  public Aesthetic colorIconTitleInactive(@ColorInt int color) {
     editor.putInt(KEY_ICON_TITLE_INACTIVE_COLOR, color);
     return this;
   }
 
   @CheckResult
-  public Aesthetic iconTitleInactiveColorRes(@ColorRes int color) {
-    return iconTitleActiveColor(ContextCompat.getColor(context, color));
+  public Aesthetic colorIconTitleInactiveRes(@ColorRes int color) {
+    return colorIconTitleActive(ContextCompat.getColor(context, color));
   }
 
   public void apply() {

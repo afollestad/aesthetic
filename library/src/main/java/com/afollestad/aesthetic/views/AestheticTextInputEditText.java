@@ -59,18 +59,18 @@ public class AestheticTextInputEditText extends TextInputEditText {
     subs = new CompositeSubscription();
     subs.add(
         Aesthetic.get()
-            .primaryTextColor()
+            .textColorPrimary()
             .compose(distinctToMainThread())
             .subscribe(this::setTextColor, onErrorLogAndRethrow()));
     subs.add(
         Aesthetic.get()
-            .secondaryTextColor()
+            .textColorSecondary()
             .compose(distinctToMainThread())
             .subscribe(this::setHintTextColor, onErrorLogAndRethrow()));
     subs.add(
         Observable.combineLatest(
                 ViewUtil.getObservableForResId(
-                    getContext(), backgroundResId, Aesthetic.get().accentColor()),
+                    getContext(), backgroundResId, Aesthetic.get().colorAccent()),
                 Aesthetic.get().isDark(),
                 ColorIsDarkState::create)
             .compose(distinctToMainThread())

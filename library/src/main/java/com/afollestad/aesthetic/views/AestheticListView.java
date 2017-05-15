@@ -40,7 +40,7 @@ public class AestheticListView extends ListView {
     super.onAttachedToWindow();
     subscription =
         Aesthetic.get()
-            .accentColor()
+            .colorAccent()
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColors, onErrorLogAndRethrow());
   }

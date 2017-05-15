@@ -57,14 +57,14 @@ public class AestheticRadioButton extends AppCompatRadioButton {
     subscriptions.add(
         Observable.combineLatest(
                 ViewUtil.getObservableForResId(
-                    getContext(), backgroundResId, Aesthetic.get().accentColor()),
+                    getContext(), backgroundResId, Aesthetic.get().colorAccent()),
                 Aesthetic.get().isDark(),
                 ColorIsDarkState::create)
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
     subscriptions.add(
         Aesthetic.get()
-            .primaryTextColor()
+            .textColorPrimary()
             .compose(distinctToMainThread())
             .subscribe(this::setTextColor));
   }

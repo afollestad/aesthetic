@@ -74,15 +74,15 @@ public class MainFragment extends Fragment {
       Aesthetic.get()
           .activityTheme(R.style.AppThemeDark)
           .isDark(true)
-          .primaryTextColorRes(R.color.text_color_primary_dark)
-          .secondaryTextColorRes(R.color.text_color_secondary_dark)
+          .textColorPrimaryRes(R.color.text_color_primary_dark)
+          .textColorSecondaryRes(R.color.text_color_secondary_dark)
           .apply();
     } else {
       Aesthetic.get()
           .activityTheme(R.style.AppTheme)
           .isDark(false)
-          .primaryTextColorRes(R.color.text_color_primary)
-          .secondaryTextColorRes(R.color.text_color_secondary)
+          .textColorPrimaryRes(R.color.text_color_primary)
+          .textColorSecondaryRes(R.color.text_color_secondary)
           .apply();
     }
   }
@@ -99,62 +99,62 @@ public class MainFragment extends Fragment {
     switch (view.getId()) {
       case R.id.btn_black:
         Aesthetic.get()
-            .primaryColorRes(R.color.text_color_primary)
-            .accentColorRes(R.color.md_purple)
-            .statusBarColorAuto()
-            .navBarColorAuto()
-            .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
-            .bottomNavIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+            .colorPrimaryRes(R.color.text_color_primary)
+            .colorAccentRes(R.color.md_purple)
+            .colorStatusBarAuto()
+            .colorNavigationBarAuto()
+            .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
+            .bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
             .apply();
         break;
       case R.id.btn_red:
         Aesthetic.get()
-            .primaryColorRes(R.color.md_red)
-            .accentColorRes(R.color.md_amber)
-            .statusBarColorAuto()
-            .navBarColorAuto()
-            .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
-            .bottomNavIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+            .colorPrimaryRes(R.color.md_red)
+            .colorAccentRes(R.color.md_amber)
+            .colorStatusBarAuto()
+            .colorNavigationBarAuto()
+            .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
+            .bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
             .apply();
         break;
       case R.id.btn_purple:
         Aesthetic.get()
-            .primaryColorRes(R.color.md_purple)
-            .accentColorRes(R.color.md_lime)
-            .statusBarColorAuto()
-            .navBarColorAuto()
-            .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
-            .bottomNavIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+            .colorPrimaryRes(R.color.md_purple)
+            .colorAccentRes(R.color.md_lime)
+            .colorStatusBarAuto()
+            .colorNavigationBarAuto()
+            .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
+            .bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
             .apply();
         break;
       case R.id.btn_blue:
         Aesthetic.get()
-            .primaryColorRes(R.color.md_blue)
-            .accentColorRes(R.color.md_pink)
-            .statusBarColorAuto()
-            .navBarColorAuto()
-            .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
-            .bottomNavIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+            .colorPrimaryRes(R.color.md_blue)
+            .colorAccentRes(R.color.md_pink)
+            .colorStatusBarAuto()
+            .colorNavigationBarAuto()
+            .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
+            .bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
             .apply();
         break;
       case R.id.btn_green:
         Aesthetic.get()
-            .primaryColorRes(R.color.md_green)
-            .accentColorRes(R.color.md_blue_grey)
-            .statusBarColorAuto()
-            .navBarColorAuto()
-            .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
-            .bottomNavIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+            .colorPrimaryRes(R.color.md_green)
+            .colorAccentRes(R.color.md_blue_grey)
+            .colorStatusBarAuto()
+            .colorNavigationBarAuto()
+            .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
+            .bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
             .apply();
         break;
       case R.id.btn_white:
         Aesthetic.get()
-            .primaryColorRes(R.color.md_white)
-            .accentColorRes(R.color.md_blue)
-            .statusBarColorAuto()
-            .navBarColorAuto()
-            .bottomNavBgMode(BottomNavBgMode.PRIMARY)
-            .bottomNavIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
+            .colorPrimaryRes(R.color.md_white)
+            .colorAccentRes(R.color.md_blue)
+            .colorStatusBarAuto()
+            .colorNavigationBarAuto()
+            .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
+            .bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
             .apply();
         break;
     }

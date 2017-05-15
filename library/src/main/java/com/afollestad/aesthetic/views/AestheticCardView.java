@@ -56,7 +56,7 @@ public class AestheticCardView extends CardView {
     super.onAttachedToWindow();
     Observable<Integer> obs =
         ViewUtil.getObservableForResId(
-            getContext(), backgroundResId, Aesthetic.get().cardViewBgColor());
+            getContext(), backgroundResId, Aesthetic.get().colorCardViewBackground());
     if (obs != null) {
       bgSubscription =
           obs.compose(distinctToMainThread())

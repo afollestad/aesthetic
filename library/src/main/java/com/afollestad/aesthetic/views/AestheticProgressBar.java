@@ -41,7 +41,7 @@ public class AestheticProgressBar extends MaterialProgressBar {
     super.onAttachedToWindow();
     subscription =
         Aesthetic.get()
-            .accentColor()
+            .colorAccent()
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColors, onErrorLogAndRethrow());
   }

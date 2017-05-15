@@ -56,13 +56,13 @@ public class AestheticTextInputLayout extends TextInputLayout {
     subs = new CompositeSubscription();
     subs.add(
         Aesthetic.get()
-            .secondaryTextColor()
+            .textColorSecondary()
             .compose(distinctToMainThread())
             .subscribe(
                 color -> TextInputLayoutUtil.setHint(this, adjustAlpha(color, 0.7f)),
                 onErrorLogAndRethrow()));
     subs.add(
-        ViewUtil.getObservableForResId(getContext(), backgroundResId, Aesthetic.get().accentColor())
+        ViewUtil.getObservableForResId(getContext(), backgroundResId, Aesthetic.get().colorAccent())
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
   }

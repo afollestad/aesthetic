@@ -66,19 +66,19 @@ public class AestheticEditText extends AppCompatEditText {
     subscriptions.add(
         Observable.combineLatest(
                 ViewUtil.getObservableForResId(
-                    getContext(), backgroundResId, Aesthetic.get().accentColor()),
+                    getContext(), backgroundResId, Aesthetic.get().colorAccent()),
                 Aesthetic.get().isDark(),
                 ColorIsDarkState::create)
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
     subscriptions.add(
         ViewUtil.getObservableForResId(
-                getContext(), textColorResId, Aesthetic.get().primaryTextColor())
+                getContext(), textColorResId, Aesthetic.get().textColorPrimary())
             .compose(distinctToMainThread())
             .subscribe(this::setTextColor, onErrorLogAndRethrow()));
     subscriptions.add(
         ViewUtil.getObservableForResId(
-                getContext(), textColorHintResId, Aesthetic.get().secondaryTextColor())
+                getContext(), textColorHintResId, Aesthetic.get().textColorSecondary())
             .compose(distinctToMainThread())
             .subscribe(this::setTextColor, onErrorLogAndRethrow()));
   }

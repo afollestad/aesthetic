@@ -136,7 +136,7 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
       this.appBarLayout.addOnOffsetChangedListener(this);
       toolbarColorSubscription =
           Observable.combineLatest(
-                  toolbar.colorUpdated(), Aesthetic.get().iconTitleColor(), Pair::create)
+                  toolbar.colorUpdated(), Aesthetic.get().colorIconTitle(), Pair::create)
               .compose(distinctToMainThread())
               .subscribe(
                   result -> {
@@ -150,7 +150,7 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
     if (collapsingToolbarLayout != null) {
       statusBarColorSubscription =
           Aesthetic.get()
-              .statusBarColor()
+              .colorStatusBar()
               .compose(distinctToMainThread())
               .subscribe(
                   color -> {

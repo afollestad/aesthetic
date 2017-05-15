@@ -85,14 +85,14 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
       case BottomNavIconTextMode.SELECTED_PRIMARY:
         colorSubscriptions.add(
             Aesthetic.get()
-                .primaryColor()
+                .colorPrimary()
                 .compose(distinctToMainThread())
                 .subscribe(color -> lastTextIconColor = color, onErrorLogAndRethrow()));
         break;
       case BottomNavIconTextMode.SELECTED_ACCENT:
         colorSubscriptions.add(
             Aesthetic.get()
-                .accentColor()
+                .colorAccent()
                 .compose(distinctToMainThread())
                 .subscribe(color -> lastTextIconColor = color, onErrorLogAndRethrow()));
         break;
@@ -108,21 +108,21 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
       case BottomNavBgMode.PRIMARY:
         colorSubscriptions.add(
             Aesthetic.get()
-                .primaryColor()
+                .colorPrimary()
                 .compose(distinctToMainThread())
                 .subscribe(this::setBackgroundColor, onErrorLogAndRethrow()));
         break;
       case BottomNavBgMode.PRIMARY_DARK:
         colorSubscriptions.add(
             Aesthetic.get()
-                .statusBarColor()
+                .colorStatusBar()
                 .compose(distinctToMainThread())
                 .subscribe(this::setBackgroundColor, onErrorLogAndRethrow()));
         break;
       case BottomNavBgMode.ACCENT:
         colorSubscriptions.add(
             Aesthetic.get()
-                .accentColor()
+                .colorAccent()
                 .compose(distinctToMainThread())
                 .subscribe(this::setBackgroundColor, onErrorLogAndRethrow()));
         break;
@@ -144,8 +144,8 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
     super.onAttachedToWindow();
     modesSubscription =
         Observable.combineLatest(
-                Aesthetic.get().bottomNavBgMode(),
-                Aesthetic.get().bottomNavIconTextMode(),
+                Aesthetic.get().bottomNavigationBackgroundMode(),
+                Aesthetic.get().bottomNavigationIconTextMode(),
                 Aesthetic.get().isDark(),
                 State::create)
             .compose(distinctToMainThread())

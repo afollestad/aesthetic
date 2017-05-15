@@ -98,8 +98,8 @@ public class AestheticToolbar extends Toolbar {
     subscription =
         Observable.combineLatest(
                 ViewUtil.getObservableForResId(
-                    getContext(), backgroundResId, Aesthetic.get().primaryColor()),
-                Aesthetic.get().iconTitleColor(),
+                    getContext(), backgroundResId, Aesthetic.get().colorPrimary()),
+                Aesthetic.get().colorIconTitle(),
                 BgIconColorState::create)
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColors, onErrorLogAndRethrow());

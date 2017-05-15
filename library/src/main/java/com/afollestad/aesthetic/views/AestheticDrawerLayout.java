@@ -51,7 +51,7 @@ public class AestheticDrawerLayout extends DrawerLayout {
     super.onAttachedToWindow();
     subscription =
         Aesthetic.get()
-            .iconTitleColor()
+            .colorIconTitle()
             .compose(distinctToMainThread())
             .subscribe(this::invalidateColor, onErrorLogAndRethrow());
   }

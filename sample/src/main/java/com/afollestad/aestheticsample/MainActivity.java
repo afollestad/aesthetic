@@ -48,16 +48,16 @@ public class MainActivity extends AestheticActivity {
     if (Aesthetic.isFirstTime()) {
       Aesthetic.get()
           .activityTheme(R.style.AppTheme)
-          .primaryTextColorRes(R.color.text_color_primary)
-          .secondaryTextColorRes(R.color.text_color_secondary)
-          .primaryColorRes(R.color.md_white)
-          .accentColorRes(R.color.md_blue)
-          .statusBarColorAuto()
-          .navBarColorAuto()
-          .primaryTextColor(Color.BLACK)
-          .navViewMode(NavigationViewMode.SELECTED_ACCENT)
-          .bottomNavBgMode(BottomNavBgMode.PRIMARY)
-          .bottomNavIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
+          .textColorPrimaryRes(R.color.text_color_primary)
+          .textColorSecondaryRes(R.color.text_color_secondary)
+          .colorPrimaryRes(R.color.md_white)
+          .colorAccentRes(R.color.md_blue)
+          .colorStatusBarAuto()
+          .colorNavigationBarAuto()
+          .textColorPrimary(Color.BLACK)
+          .navigationViewMode(NavigationViewMode.SELECTED_ACCENT)
+          .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
+          .bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
           .apply();
     }
 

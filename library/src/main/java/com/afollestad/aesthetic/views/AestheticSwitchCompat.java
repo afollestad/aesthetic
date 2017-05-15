@@ -56,7 +56,7 @@ public class AestheticSwitchCompat extends SwitchCompat {
     subscription =
         Observable.combineLatest(
                 ViewUtil.getObservableForResId(
-                    getContext(), backgroundResId, Aesthetic.get().accentColor()),
+                    getContext(), backgroundResId, Aesthetic.get().colorAccent()),
                 Aesthetic.get().isDark(),
                 ColorIsDarkState::create)
             .compose(distinctToMainThread())

@@ -43,7 +43,7 @@ public class AestheticActionMenuItemView extends ActionMenuItemView {
     // For some reason, without this, a transparent color is used and the icon disappears
     // when the overflow menu opens.
     Aesthetic.get()
-        .iconTitleColor()
+        .colorIconTitle()
         .observeOn(AndroidSchedulers.mainThread())
         .take(1)
         .subscribe(color -> setIcon(icon, color.toEnabledSl()), onErrorLogAndRethrow());
@@ -59,7 +59,7 @@ public class AestheticActionMenuItemView extends ActionMenuItemView {
     super.onAttachedToWindow();
     subscription =
         Aesthetic.get()
-            .iconTitleColor()
+            .colorIconTitle()
             .compose(distinctToMainThread())
             .subscribe(
                 colors -> {

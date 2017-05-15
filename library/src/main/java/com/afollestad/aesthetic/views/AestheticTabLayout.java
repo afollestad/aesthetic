@@ -59,7 +59,7 @@ public class AestheticTabLayout extends TabLayout {
   public void setBackgroundColor(@ColorInt int color) {
     super.setBackgroundColor(color);
     Aesthetic.get()
-        .iconTitleColor()
+        .colorIconTitle()
         .take(1)
         .subscribe(
             activeInactiveColors -> {
@@ -76,7 +76,7 @@ public class AestheticTabLayout extends TabLayout {
 
     bgModeSubscription =
         Aesthetic.get()
-            .tabLayoutBgMode()
+            .tabLayoutBackgroundMode()
             .compose(distinctToMainThread())
             .subscribe(
                 mode -> {
@@ -87,14 +87,14 @@ public class AestheticTabLayout extends TabLayout {
                     case TabLayoutIndicatorMode.PRIMARY:
                       bgColorSubscription =
                           Aesthetic.get()
-                              .primaryColor()
+                              .colorPrimary()
                               .compose(distinctToMainThread())
                               .subscribe(this::setBackgroundColor, onErrorLogAndRethrow());
                       break;
                     case TabLayoutIndicatorMode.ACCENT:
                       bgColorSubscription =
                           Aesthetic.get()
-                              .accentColor()
+                              .colorAccent()
                               .compose(distinctToMainThread())
                               .subscribe(this::setBackgroundColor, onErrorLogAndRethrow());
                       break;
@@ -117,7 +117,7 @@ public class AestheticTabLayout extends TabLayout {
                     case TabLayoutIndicatorMode.PRIMARY:
                       indicatorColorSubscription =
                           Aesthetic.get()
-                              .primaryColor()
+                              .colorPrimary()
                               .compose(distinctToMainThread())
                               .subscribe(
                                   this::setSelectedTabIndicatorColor, onErrorLogAndRethrow());
@@ -125,7 +125,7 @@ public class AestheticTabLayout extends TabLayout {
                     case TabLayoutIndicatorMode.ACCENT:
                       indicatorColorSubscription =
                           Aesthetic.get()
-                              .accentColor()
+                              .colorAccent()
                               .compose(distinctToMainThread())
                               .subscribe(
                                   this::setSelectedTabIndicatorColor, onErrorLogAndRethrow());

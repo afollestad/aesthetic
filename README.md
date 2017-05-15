@@ -46,7 +46,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
     // ... other dependencies
-    compile 'com.afollestad:aesthetic:0.0.6'
+    compile 'com.afollestad:aesthetic:0.1.0'
 }
 ```
 
@@ -113,8 +113,8 @@ see the primary color on things such as `Toolbar`'s, and the accent color on wid
 
 ```java
 Aesthetic.get()
-    .primaryColorRes(R.color.md_indigo)
-    .accentColorRes(R.color.md_yellow)
+    .colorPrimaryRes(R.color.md_indigo)
+    .colorAccentRes(R.color.md_yellow)
     .apply();
 ```
 
@@ -131,14 +131,14 @@ primary theme color:
 
 ```java
 Aesthetic.get()
-    .primaryColor()
+    .colorPrimary()
     .take(1)
     .subscribe(color -> {
       // Use color (and integer)
     });
 ```
 
-`primaryColor()` returns an RxJava `Observable<Integer>`. `take(1)` here retrieves the latest value, and 
+`colorPrimary()` returns an RxJava `Observable<Integer>`. `take(1)` here retrieves the latest value, and 
 automatically unsubscribes so you don't continue to receive updates when the primary color changes.
 
 If you were to leave `take(1)` out, you need to manage the subscription. You will continue to receive 
@@ -147,7 +147,7 @@ updates every time the primary color is changed, until you unsubscribe.
 ```java
 Subscription subscription = 
   Aesthetic.get()
-      .primaryColor()
+      .colorPrimary()
       .subscribe(color -> {
         // Use color (and integer)
       });
@@ -166,7 +166,7 @@ sure you're aware of that). Per the Material Design guidelines, the status bar c
 
 ```java
 Aesthetic.get()
-    .statusBarColor(R.color.md_indigo_dark)
+    .colorStatusBar(R.color.md_indigo_dark)
     .apply();
 ```
 
@@ -174,7 +174,7 @@ Or you can have it automatically generated from the primary color (**you need to
 
 ```java
 Aesthetic.get()
-    .statusBarColorAuto()
+    .colorStatusBarAuto()
     .apply();
 ```
 
@@ -197,7 +197,7 @@ you wish, although generally it should be the same as your primary color if not 
 
 ```java
 Aesthetic.get()
-    .navBarColor(R.color.md_indigo)
+    .colorNavigationBarRes(R.color.md_indigo)
     .apply();
 ```
 
@@ -205,7 +205,7 @@ You can automatically set it to the primary color, also (**you need to set the p
 
 ```java
 Aesthetic.get()
-    .navBarColorAuto()
+    .colorNavigationBarAuto()
     .apply();
 ```
 
@@ -217,10 +217,10 @@ You can customize text colors which are used on `TextView`'s, `EditText`'s, etc.
 
 ```java
 Aesthetic.get()
-    .primaryTextColorRes(android.R.color.black)
-    .primaryTextColorInverseRes(android.R.color.white)
-    .secondaryTextColorRes(R.color.dark_gray)
-    .secondaryTextInverseColorRes(R.color.lesser_white)
+    .textColorPrimaryRes(android.R.color.black)
+    .textColorPrimaryInverseRes(android.R.color.white)
+    .textColorSecondaryRes(R.color.dark_gray)
+    .textColorSecondaryInverseRes(R.color.lesser_white)
     .apply();
 ```
 
@@ -251,9 +251,9 @@ Take this layout:
 ```
 
 The first `TextView` uses the stock Android framework attribute `?android:textColorPrimary`, this library 
- will see that and automatically swap it out with whatever value you set to `primaryTextColor`. 
+ will see that and automatically swap it out with whatever value you set to `textColorPrimary`. 
  The second `TextView` also uses a stock framework attribute, `?android:textColorSecondary`. It will 
- be swapped out with whatever you set to `secondaryTextColor` in this library. **If you do not specify a 
+ be swapped out with whatever you set to `textColorSecondary` in this library. **If you do not specify a 
  `textColor` attribute at all, TextView's will use the secondary text color as a default.**
 
 You can set the text color and hint text color on `EditText`'s too. **By default, the text 
@@ -274,12 +274,12 @@ default, the Material Design guideline colors are used, when isDark() is true an
 
 ```java
 Aesthetic.get()
-    .iconTitleActiveColorRes(R.color.md_black)
-    .iconTitleInactiveColorRes(R.color.md_dark_gray)
+    .colorIconTitleActiveRes(R.color.md_black)
+    .colorIconTitleInactiveRes(R.color.md_dark_gray)
     .apply();
 ```
 
-The getter for these methods are combined into one: `Observable<ActiveInactiveColors> iconTitleColor()`.
+The getter for these methods are combined into one: `Observable<ActiveInactiveColors> colorIconTitle()`.
 
 Another example of where this is used is the text color for Tab Layout tabs. There are others that 
 you will see if you change these values and observe differences.
@@ -319,7 +319,7 @@ Aside from changing the entire base theme of an `Activity`, you can also change 
 
 ```java
 Aesthetic.get()
-    .windowBgColorRes(R.color.window_background_gray)
+    .colorWindowBackgroundRes(R.color.window_background_gray)
     .apply();
 ```
 
@@ -364,12 +364,12 @@ You can customize background theming behavior:
 ```java
 // The background of the tab layout will match your primary theme color. This is the default.
 Aesthetic.get()
-    .tabLayoutBgMode(TabLayoutBgMode.PRIMARY)
+    .tabLayoutBackgroundMode(TabLayoutBgMode.PRIMARY)
     .apply();
 
 // The background of the tab layout will match your accent theme color.
 Aesthetic.get()
-    .tabLayoutBgMode(TabLayoutBgMode.ACCENT)
+    .tabLayoutBackgroundMode(TabLayoutBgMode.ACCENT)
     .apply();
 ```
 
@@ -408,12 +408,12 @@ You can customize behavior:
 ```java
 // Checked nav drawer item will use your set primary color
 Aesthetic.get()
-    .navViewMode(NavigationViewMode.SELECTED_PRIMARY)
+    .navigationViewMode(NavigationViewMode.SELECTED_PRIMARY)
     .apply();
 
 // Checked nav drawer item will use your set accent color
 Aesthetic.get()
-    .navViewMode(NavigationViewMode.SELECTED_ACCENT)
+    .navigationViewMode(NavigationViewMode.SELECTED_ACCENT)
     .apply();
 ```
 
@@ -432,23 +432,23 @@ You can customize background theming behavior:
 ```java
 // The background of the bottom tabs will match your primary theme color.
 Aesthetic.get()
-    .bottomNavBgMode(BottomNavBgMode.PRIMARY)
+    .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
     .apply();
 
 // The background of the bottom tabs will match your status bar theme color.
 Aesthetic.get()
-    .bottomNavBgMode(BottomNavBgMode.PRIMARY_DARK)
+    .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
     .apply();
 
 // The background of the bottom tabs will match your accent theme color.
 Aesthetic.get()
-    .bottomNavBgMode(BottomNavBgMode.ACCENT)
+    .bottomNavigationBackgroundMode(BottomNavBgMode.ACCENT)
     .apply();
 
 // The background of the bottom tabs will be dark gray or white depending on the isDark() property.
 // This is the default.
 Aesthetic.get()
-    .bottomNavBgMode(BottomNavBgMode.BLACK_WHITE_AUTO)
+    .bottomNavigationBackgroundMode(BottomNavBgMode.BLACK_WHITE_AUTO)
     .apply();
 ```
 
@@ -457,18 +457,18 @@ You can also customize icon/text theming behavior:
 ```java
 // The selected tab icon/text color will match your primary theme color.
 Aesthetic.get()
-    .bottomNavIconTextMode(BottomNavIconTextMode.SELECTED_PRIMARY)
+    .bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_PRIMARY)
     .apply();
 
 // The selected tab icon/text color will match your accent theme color. This is the default.
 Aesthetic.get()
-    .bottomNavIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
+    .bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
     .apply();
 
 // The selected tab icon/text color will be black or white depending on which is more visible 
 // over the background of the bottom tabs.
 Aesthetic.get()
-    .bottomNavIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+    .bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
     .apply();
 ```
 
@@ -504,7 +504,7 @@ public class MyActivity extends AestheticActivity {
 ```
 
 You can return whatever you wish. If this key is specified, this specific Activity will save its 
-own version of the `activityTheme()`, `statusBarColor()`, and `navBarColor()` theme properties. 
+own version of the `activityTheme()`, `colorStatusBar()`, and `colorNavigationBar()` theme properties. 
 
 An example of where this can be useful: You have an Activity which displays a list of videos, this 
 main activity has a colored status bar and navigation bar. When you tap a video, it brings you to a 
