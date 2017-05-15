@@ -19,13 +19,14 @@ You can download an <a href="https://raw.githubusercontent.com/afollestad/aesthe
 2. [Integration](https://github.com/afollestad/aesthetic#integration)
 3. [Basics](https://github.com/afollestad/aesthetic#basics) 
     1. [Basic Theme Colors](https://github.com/afollestad/aesthetic#basic-theme-colors)
-    2. [Status Bar](https://github.com/afollestad/aesthetic#status-bar)
-    3. [Navigation Bar](https://github.com/afollestad/aesthetic#navigation-bar)
-    4. [Text Colors](https://github.com/afollestad/aesthetic#text-colors)
-    5. [Activity Styles](https://github.com/afollestad/aesthetic#activity-styles)
-    6. [Window Background](https://github.com/afollestad/aesthetic#window-background)
-    7. [View Backgrounds](https://github.com/afollestad/aesthetic#view-backgrounds)
-    8. [Ignoring Views](https://github.com/afollestad/aesthetic#ignoring-views)
+    2. [Retrieving Current Values](https://github.com/afollestad/aesthetic#retrieving-current-values)
+    3. [Status Bar](https://github.com/afollestad/aesthetic#status-bar)
+    4. [Navigation Bar](https://github.com/afollestad/aesthetic#navigation-bar)
+    5. [Text Colors](https://github.com/afollestad/aesthetic#text-colors)
+    6. [Activity Styles](https://github.com/afollestad/aesthetic#activity-styles)
+    7. [Window Background](https://github.com/afollestad/aesthetic#window-background)
+    8. [View Backgrounds](https://github.com/afollestad/aesthetic#view-backgrounds)
+    9. [Ignoring Views](https://github.com/afollestad/aesthetic#ignoring-views)
 4. [Tab Layouts](https://github.com/afollestad/aesthetic#tab-layouts)
 5. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
 6. [Bottom Navigation](https://github.com/afollestad/aesthetic#bottom-navigation)
@@ -131,6 +132,39 @@ Aesthetic.get()
 You use `Aesthetic.get()` to retrieve the current attached `Aesthetic` instance, set theme properties, 
 and `apply()` theme. **This will trigger color changes in the visible Activity WITHOUT recreating it. 
 The set theme properties will also be persisted automatically.**
+
+---
+
+### Retrieving Current Values
+
+All the setter methods also have equivalent getters. For an example, you can get the current 
+primary theme color:
+
+```java
+Aesthetic.get()
+    .primaryColor()
+    .take(1)
+    .subscribe(color -> {
+      // Use color (and integer)
+    });
+```
+
+`primaryColor()` returns an RxJava `Observable`. `.take(1)` here retrieves the latest value, and 
+automatically unsubscribes so you don't continue to receive updates to the primary color.
+
+If you were to leave `.take(1)` out, you need to manage the subscription:
+
+```java
+Subscription subscription = 
+  Aesthetic.get()
+      .primaryColor()
+      .subscribe(color -> {
+        // Use color (and integer)
+      });
+      
+// Later, you should unsubscribe, e.g. when your Activity pauses
+subscription.unsubscribe();
+```
 
 ---
 
