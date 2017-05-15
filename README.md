@@ -32,6 +32,7 @@ You can download an <a href="https://raw.githubusercontent.com/afollestad/aesthe
 7. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
 8. [Bottom Navigation](https://github.com/afollestad/aesthetic#bottom-navigation)
 9. [Collapsible Toolbar Layouts](https://github.com/afollestad/aesthetic#collapsible-toolbar-layouts)
+10. [Activity Keys](https://github.com/afollestad/aesthetic#activity-keys)
 
 ---
 
@@ -482,3 +483,34 @@ Collapsible Toolbar Layouts are automatically themed, as seen in the sample proj
 In the sample layout, we automatically set the accent color to the expanded view. The collapsed toolbar 
 color will match whatever color your toolbar uses, which is the primary theme color by default. You'll 
 also notice that the icons and title color are updated to be most visible over the background color.
+
+---
+
+# Activity Keys
+
+`AestheticActivity` has an optional override named `key()`:
+
+```java
+public class MyActivity extends AestheticActivity {
+
+    ...
+    
+    @Nullable
+    @Override
+    public String key() {
+      return "my_activity";
+    }
+}
+```
+
+You can return whatever you wish. If this key is specified, this specific Activity will save its 
+own version of the `activityTheme()`, `statusBarColor()`, and `navBarColor()` theme properties. 
+
+An example of where this can be useful: You have an Activity which displays a list of videos, this 
+main activity has a colored status bar and navigation bar. When you tap a video, it brings you to a 
+player Activity. This player Activity needs a different theme so that the status bar and nav bar 
+are transparent and hidden. You can use a separate key for this player Activity so that it doesn't 
+adopt the same window theme properties as the main activity.
+
+If you do not use `AestheticActivity`, your custom Activity can implement the `AestheticKeyProvider` 
+interface.
