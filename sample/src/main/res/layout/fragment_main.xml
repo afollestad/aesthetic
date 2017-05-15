@@ -133,6 +133,36 @@
         android:enabled="false"
         android:text="@string/disabled_button"/>
 
+      <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        android:layout_marginTop="@dimen/content_inset">
+
+        <LinearLayout
+          android:padding="@dimen/content_inset"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hello_world"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/text_size_title"/>
+
+          <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lorem_ipsum"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="@dimen/text_size_body"/>
+
+        </LinearLayout>
+
+      </android.support.v7.widget.CardView>
+
     </LinearLayout>
 
   </ScrollView>

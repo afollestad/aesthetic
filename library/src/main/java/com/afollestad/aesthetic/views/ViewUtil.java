@@ -58,7 +58,8 @@ class ViewUtil {
     return fallback;
   }
 
-  static void tintToolbarMenu(@NonNull Toolbar toolbar, @NonNull Menu menu, @ColorInt int titleIconColor) {
+  static void tintToolbarMenu(
+      @NonNull Toolbar toolbar, @NonNull Menu menu, @ColorInt int titleIconColor) {
     // The collapse icon displays when action views are expanded (e.g. SearchView)
     try {
       final Field field = Toolbar.class.getDeclaredField("mCollapseIcon");

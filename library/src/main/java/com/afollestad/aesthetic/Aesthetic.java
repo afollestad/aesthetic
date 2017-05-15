@@ -51,6 +51,7 @@ public class Aesthetic {
   private static final String KEY_NAV_VIEW_MODE = "nav_view_mode";
   private static final String KEY_BOTTOM_NAV_BG_MODE = "bottom_nav_bg_mode";
   private static final String KEY_BOTTOM_NAV_ICONTEXT_MODE = "bottom_nav_icontext_mode";
+  private static final String KEY_CARD_VIEW_BG_COLOR = "card_view_bg_color";
 
   @SuppressLint("StaticFieldLeak")
   private static Aesthetic instance;
@@ -513,6 +514,32 @@ public class Aesthetic {
     return rxPrefs
         .getInteger(KEY_BOTTOM_NAV_ICONTEXT_MODE, BottomNavIconTextMode.SELECTED_ACCENT)
         .asObservable();
+  }
+
+  @CheckResult
+  public Observable<Integer> cardViewBgColor() {
+    return isDark()
+        .take(1)
+        .flatMap(
+            isDark ->
+                rxPrefs
+                    .getInteger(
+                        KEY_CARD_VIEW_BG_COLOR,
+                        ContextCompat.getColor(
+                            context,
+                            isDark ? R.color.ate_cardview_bg_dark : R.color.ate_cardview_bg_light))
+                    .asObservable());
+  }
+
+  @CheckResult
+  public Aesthetic cardViewBgColor(@ColorInt int color) {
+    editor.putInt(KEY_CARD_VIEW_BG_COLOR, color);
+    return this;
+  }
+
+  @CheckResult
+  public Aesthetic cardViewBgColorRes(@ColorRes int color) {
+    return cardViewBgColor(ContextCompat.getColor(context, color));
   }
 
   public void apply() {

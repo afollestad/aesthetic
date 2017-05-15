@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import com.afollestad.aesthetic.views.AestheticActionMenuItemView;
 import com.afollestad.aesthetic.views.AestheticBottomNavigationView;
 import com.afollestad.aesthetic.views.AestheticButton;
+import com.afollestad.aesthetic.views.AestheticCardView;
 import com.afollestad.aesthetic.views.AestheticCheckBox;
 import com.afollestad.aesthetic.views.AestheticCoordinatorLayout;
 import com.afollestad.aesthetic.views.AestheticDrawerLayout;
@@ -58,10 +59,10 @@ final class InflationInterceptor implements LayoutInflaterFactory {
   private final Method onCreateViewMethod;
   private final Method createViewMethod;
   private final Field constructorArgsField;
-  private int[] ATTRS_THEME;
   private final AppCompatActivity keyContext;
   @NonNull private final LayoutInflater layoutInflater;
   @Nullable private final AppCompatDelegate delegate;
+  private int[] ATTRS_THEME;
 
   InflationInterceptor(
       @Nullable AppCompatActivity keyContext,
@@ -243,6 +244,9 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         break;
       case "android.support.design.widget.CoordinatorLayout":
         view = new AestheticCoordinatorLayout(context, attrs);
+        break;
+      case "android.support.v7.widget.CardView":
+        view = new AestheticCardView(context, attrs);
         break;
 
         //      case "android.support.v7.widget.AppCompatAutoCompleteTextView":
