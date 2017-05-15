@@ -14,6 +14,7 @@ import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -110,12 +111,19 @@ public class Aesthetic {
   }
 
   /** Should be called in onPause() of each Activity. */
-  public static void pause() {
+  public static void pause(@NonNull AppCompatActivity activity) {
     if (instance == null) {
       return;
     }
     if (instance.subs != null) {
       instance.subs.unsubscribe();
+    }
+    if (instance.context != null
+        && instance.context.getClass().getName().equals(activity.getClass().getName())) {
+      Log.d("Aesthetic", "Pause " + instance.context.getClass().getName());
+      instance.context = null;
+      instance.prefs = null;
+      instance.rxPrefs = null;
     }
   }
 
@@ -173,21 +181,6 @@ public class Aesthetic {
             .lightStatusBarMode()
             .compose(distinctToMainThread())
             .subscribe(color -> instance.invalidateStatusBar(), onErrorLogAndRethrow()));
-  }
-
-  /** Should be called when your application is exiting. */
-  public static void destroy() {
-    if (instance != null) {
-      if (instance.subs != null) {
-        instance.subs.unsubscribe();
-        instance.subs = null;
-      }
-      instance.context = null;
-      instance.prefs = null;
-      instance.editor = null;
-      instance.rxPrefs = null;
-      instance = null;
-    }
   }
 
   public static boolean isFirstTime() {

@@ -99,19 +99,6 @@ public class AestheticActivity extends AppCompatActivity {
 
 ```
 
-You should also call `Aesthetic.destroy()` when your app is exiting.
-
-```java
-public class App extends Application {
-
-  @Override
-  public void onTerminate() {
-    Aesthetic.destroy();
-    super.onTerminate();
-  }
-}
-```
-
 ---
 
 # Basics

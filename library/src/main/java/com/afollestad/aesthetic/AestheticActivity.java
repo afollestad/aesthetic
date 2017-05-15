@@ -21,7 +21,7 @@ public class AestheticActivity extends AppCompatActivity implements AestheticKey
 
   @Override
   protected void onPause() {
-    Aesthetic.pause();
+    Aesthetic.pause(this);
     super.onPause();
   }
 
