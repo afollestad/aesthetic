@@ -13,7 +13,6 @@
   <!-- 38% -->
   <color name="ate_text_disabled_light">#61000000</color>
   <!-- 54% -->
-  <color name="ate_secondary_text_light">#8A000000</color>
   <color name="ate_icon_light">#8A000000</color>
   <color name="ate_control_normal_light">#8A000000</color>
   <!-- 87% -->
@@ -38,7 +37,6 @@
   <color name="ate_button_text_disabled_dark">#4DFFFFFF</color>
   <color name="ate_text_disabled_dark">#4DFFFFFF</color>
   <!-- 70% -->
-  <color name="ate_secondary_text_dark">#B3FFFFFF</color>
   <color name="ate_icon_dark">#B3FFFFFF</color>
   <color name="ate_control_normal_dark">#B3FFFFFF</color>
   <!-- 100% -->
