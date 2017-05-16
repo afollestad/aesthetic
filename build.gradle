@@ -8,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:' + versions.gradlePlugin
+        classpath 'me.tatarka:gradle-retrolambda:' + versions.retroLambda
     }
 }
 
