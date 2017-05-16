@@ -303,11 +303,6 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Boolean getDark() {
-    return rxPrefs.getBoolean(KEY_IS_DARK, false).get();
-  }
-
-  @CheckResult
   public Aesthetic colorPrimary(@ColorInt int color) {
     // needs to be committed immediately so that for statusBarColorAuto() and other auto methods
     editor.putInt(KEY_PRIMARY_COLOR, color).commit();
@@ -324,13 +319,6 @@ public class Aesthetic {
     return rxPrefs
         .getInteger(KEY_PRIMARY_COLOR, resolveColor(context, R.attr.colorPrimary))
         .asObservable();
-  }
-
-  @CheckResult
-  public Integer getColorPrimary() {
-    return rxPrefs
-            .getInteger(KEY_PRIMARY_COLOR, resolveColor(context, R.attr.colorPrimary))
-            .get();
   }
 
   @CheckResult
@@ -352,13 +340,6 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Integer getColorAccent() {
-    return rxPrefs
-            .getInteger(KEY_ACCENT_COLOR, resolveColor(context, R.attr.colorAccent))
-            .get();
-  }
-
-  @CheckResult
   public Aesthetic textColorPrimary(@ColorInt int color) {
     editor.putInt(KEY_PRIMARY_TEXT_COLOR, color);
     return this;
@@ -374,13 +355,6 @@ public class Aesthetic {
     return rxPrefs
         .getInteger(KEY_PRIMARY_TEXT_COLOR, resolveColor(context, android.R.attr.textColorPrimary))
         .asObservable();
-  }
-
-  @CheckResult
-  public Integer getTextColorPrimary() {
-    return rxPrefs
-            .getInteger(KEY_PRIMARY_TEXT_COLOR, resolveColor(context, android.R.attr.textColorPrimary))
-            .get();
   }
 
   @CheckResult
@@ -400,14 +374,6 @@ public class Aesthetic {
         .getInteger(
             KEY_SECONDARY_TEXT_COLOR, resolveColor(context, android.R.attr.textColorSecondary))
         .asObservable();
-  }
-
-  @CheckResult
-  public Integer getTextColorSecondary() {
-    return rxPrefs
-            .getInteger(
-                    KEY_SECONDARY_TEXT_COLOR, resolveColor(context, android.R.attr.textColorSecondary))
-            .get();
   }
 
   @CheckResult
@@ -431,15 +397,6 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Integer getTextColorPrimaryInverse() {
-    return rxPrefs
-            .getInteger(
-                    KEY_PRIMARY_TEXT_INVERSE_COLOR,
-                    resolveColor(context, android.R.attr.textColorPrimaryInverse))
-            .get();
-  }
-
-  @CheckResult
   public Aesthetic textColorSecondaryInverse(@ColorInt int color) {
     editor.putInt(KEY_SECONDARY_TEXT_INVERSE_COLOR, color);
     return this;
@@ -460,15 +417,6 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Integer getTextColorSecondaryInverse() {
-    return rxPrefs
-            .getInteger(
-                    KEY_SECONDARY_TEXT_INVERSE_COLOR,
-                    resolveColor(context, android.R.attr.textColorSecondaryInverse))
-            .get();
-  }
-
-  @CheckResult
   public Aesthetic colorWindowBackground(@ColorInt int color) {
     editor.putInt(KEY_WINDOW_BG_COLOR, color).commit();
     return this;
@@ -484,13 +432,6 @@ public class Aesthetic {
     return rxPrefs
         .getInteger(KEY_WINDOW_BG_COLOR, resolveColor(context, android.R.attr.windowBackground))
         .asObservable();
-  }
-
-  @CheckResult
-  public Integer getColorWindowBackground() {
-    return rxPrefs
-            .getInteger(KEY_WINDOW_BG_COLOR, resolveColor(context, android.R.attr.windowBackground))
-            .get();
   }
 
   @CheckResult
@@ -522,12 +463,6 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Integer getColorStatusBar() {
-    String key = String.format(KEY_STATUS_BAR_COLOR, key(context));
-    return rxPrefs.getInteger(key, resolveColor(context, R.attr.colorPrimaryDark)).get();
-  }
-
-  @CheckResult
   public Aesthetic colorNavigationBar(@ColorInt int color) {
     String key = String.format(KEY_NAV_BAR_COLOR, key(context));
     editor.putInt(key, color);
@@ -551,12 +486,6 @@ public class Aesthetic {
   public Observable<Integer> colorNavigationBar() {
     String key = String.format(KEY_NAV_BAR_COLOR, key(context));
     return rxPrefs.getInteger(key, Color.BLACK).asObservable();
-  }
-
-  @CheckResult
-  public Integer getColorNavigationBar() {
-    String key = String.format(KEY_NAV_BAR_COLOR, key(context));
-    return rxPrefs.getInteger(key, Color.BLACK).get();
   }
 
   @CheckResult
