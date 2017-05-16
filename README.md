@@ -279,7 +279,7 @@ Aesthetic.get()
     .apply();
 ```
 
-The getter for these methods are combined into one: `Observable<ActiveInactiveColors> colorIconTitle()`.
+The getter for these methods are combined into one: `Observable<ActiveInactiveColors> colorIconTitle(Observable<Integer>)`.
 
 Another example of where this is used is the text color for Tab Layout tabs. There are others that 
 you will see if you change these values and observe differences.
