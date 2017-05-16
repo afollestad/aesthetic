@@ -2,7 +2,6 @@ package com.afollestad.aestheticsample;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
@@ -15,13 +14,12 @@ import butterknife.Unbinder;
 /** @author Aidan Follestad (afollestad) */
 public class BottomNavActivity extends AestheticActivity {
 
-  private Unbinder unbinder;
-
   @BindView(R.id.toolbar)
   Toolbar toolbar;
+  private Unbinder unbinder;
 
-//  @BindView(R.id.bottom_tabs)
-//  BottomNavigationView bottomNavigationView;
+  //  @BindView(R.id.bottom_tabs)
+  //  BottomNavigationView bottomNavigationView;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -24,6 +24,15 @@ final class BgIconColorState {
     return new BgIconColorState(color, iconTitleColors);
   }
 
+  static Func2<Integer, ActiveInactiveColors, BgIconColorState> creator() {
+    return new Func2<Integer, ActiveInactiveColors, BgIconColorState>() {
+      @Override
+      public BgIconColorState call(Integer integer, ActiveInactiveColors activeInactiveColors) {
+        return BgIconColorState.create(integer, activeInactiveColors);
+      }
+    };
+  }
+
   @ColorInt
   int bgColor() {
     return bgColor;
@@ -32,14 +41,5 @@ final class BgIconColorState {
   @Nullable
   ActiveInactiveColors iconTitleColor() {
     return iconTitleColor;
-  }
-
-  static Func2<Integer, ActiveInactiveColors, BgIconColorState> creator() {
-    return new Func2<Integer, ActiveInactiveColors, BgIconColorState>() {
-      @Override
-      public BgIconColorState call(Integer integer, ActiveInactiveColors activeInactiveColors) {
-        return BgIconColorState.create(integer, activeInactiveColors);
-      }
-    };
   }
 }

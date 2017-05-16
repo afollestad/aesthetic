@@ -18,17 +18,14 @@ import butterknife.Unbinder;
 /** @author Aidan Follestad (afollestad) */
 public class DrawerActivity extends AestheticActivity {
 
-  private Unbinder unbinder;
-  private ActionBarDrawerToggle drawerToggle;
-
   @BindView(R.id.toolbar)
   Toolbar toolbar;
-
   @BindView(R.id.drawer_layout)
   DrawerLayout drawerLayout;
-
   @BindView(R.id.navigation_view)
   NavigationView navigationView;
+  private Unbinder unbinder;
+  private ActionBarDrawerToggle drawerToggle;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {

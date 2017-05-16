@@ -23,15 +23,6 @@ final class ColorIsDarkState {
     return new ColorIsDarkState(color, isDark);
   }
 
-  @ColorInt
-  int color() {
-    return color;
-  }
-
-  boolean isDark() {
-    return isDark;
-  }
-
   static Func2<Integer, Boolean, ColorIsDarkState> creator() {
     return new Func2<Integer, Boolean, ColorIsDarkState>() {
       @Override
@@ -39,5 +30,14 @@ final class ColorIsDarkState {
         return ColorIsDarkState.create(integer, aBoolean);
       }
     };
+  }
+
+  @ColorInt
+  int color() {
+    return color;
+  }
+
+  boolean isDark() {
+    return isDark;
   }
 }

@@ -22,16 +22,13 @@ import butterknife.Unbinder;
 /** @author Aidan Follestad (afollestad) */
 public class MainActivity extends AestheticActivity {
 
-  private Unbinder unbinder;
-
   @BindView(R.id.toolbar)
   Toolbar toolbar;
-
   @BindView(R.id.pager)
   ViewPager pager;
-
   @BindView(R.id.tabs)
   TabLayout tabs;
+  private Unbinder unbinder;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

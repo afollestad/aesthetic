@@ -14,10 +14,9 @@ import butterknife.Unbinder;
 /** @author Aidan Follestad (afollestad) */
 public class CoordinatorLayoutActivity extends AestheticActivity {
 
-  private Unbinder unbinder;
-
   @BindView(R.id.toolbar)
   Toolbar toolbar;
+  private Unbinder unbinder;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
