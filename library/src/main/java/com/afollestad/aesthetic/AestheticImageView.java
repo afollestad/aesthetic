@@ -11,6 +11,7 @@ import rx.Subscription;
 
 import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
+import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
 final class AestheticImageView extends AppCompatImageView {
@@ -34,10 +35,7 @@ final class AestheticImageView extends AppCompatImageView {
 
   private void init(Context context, AttributeSet attrs) {
     if (attrs != null) {
-      int[] attrsArray = new int[] {android.R.attr.background};
-      TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
-      backgroundResId = ta.getResourceId(0, 0);
-      ta.recycle();
+      backgroundResId = resolveResId(context, attrs, android.R.attr.background);
     }
   }
 

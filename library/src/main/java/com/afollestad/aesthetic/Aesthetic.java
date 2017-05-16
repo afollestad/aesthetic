@@ -211,21 +211,6 @@ public class Aesthetic {
     return firstTime;
   }
 
-  void addBackgroundSubscriber(@NonNull View view, @NonNull Observable<Integer> colorObservable) {
-    List<ViewObservablePair> subscribers = backgroundSubscriberViews.get(instance.context);
-    if (subscribers == null) {
-      subscribers = new ArrayList<>(1);
-      backgroundSubscriberViews.put(instance.context, subscribers);
-    }
-    subscribers.add(ViewObservablePair.create(view, colorObservable));
-    if (isResumed) {
-      instance.backgroundSubscriptions.add(
-          colorObservable
-              .compose(distinctToMainThread())
-              .subscribe(ViewBackgroundSubscriber.create(view)));
-    }
-  }
-
   private static void subscribeBackgroundListeners() {
     if (instance.backgroundSubscriptions != null) {
       instance.backgroundSubscriptions.unsubscribe();
@@ -239,6 +224,21 @@ public class Aesthetic {
                 .compose(distinctToMainThread())
                 .subscribe(ViewBackgroundSubscriber.create(pair.view())));
       }
+    }
+  }
+
+  void addBackgroundSubscriber(@NonNull View view, @NonNull Observable<Integer> colorObservable) {
+    List<ViewObservablePair> subscribers = backgroundSubscriberViews.get(instance.context);
+    if (subscribers == null) {
+      subscribers = new ArrayList<>(1);
+      backgroundSubscriberViews.put(instance.context, subscribers);
+    }
+    subscribers.add(ViewObservablePair.create(view, colorObservable));
+    if (isResumed) {
+      instance.backgroundSubscriptions.add(
+          colorObservable
+              .compose(distinctToMainThread())
+              .subscribe(ViewBackgroundSubscriber.create(view)));
     }
   }
 

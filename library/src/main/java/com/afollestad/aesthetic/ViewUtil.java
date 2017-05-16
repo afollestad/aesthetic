@@ -21,6 +21,7 @@ import rx.Observable;
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
 import static com.afollestad.aesthetic.Util.isColorLight;
+import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)
@@ -31,21 +32,21 @@ final class ViewUtil {
       @NonNull Context context, @IdRes int resId, @Nullable Observable<Integer> fallback) {
     if (resId == 0) {
       return fallback;
-    } else if (resId == Util.resolveResId(context, R.attr.colorPrimary, 0)) {
+    } else if (resId == resolveResId(context, R.attr.colorPrimary, 0)) {
       return Aesthetic.get().colorPrimary();
-    } else if (resId == Util.resolveResId(context, R.attr.colorPrimaryDark, 0)) {
+    } else if (resId == resolveResId(context, R.attr.colorPrimaryDark, 0)) {
       return Aesthetic.get().colorStatusBar();
-    } else if (resId == Util.resolveResId(context, R.attr.colorAccent, 0)) {
+    } else if (resId == resolveResId(context, R.attr.colorAccent, 0)) {
       return Aesthetic.get().colorAccent();
-    } else if (resId == Util.resolveResId(context, android.R.attr.windowBackground, 0)) {
+    } else if (resId == resolveResId(context, android.R.attr.windowBackground, 0)) {
       return Aesthetic.get().colorWindowBackground();
-    } else if (resId == Util.resolveResId(context, android.R.attr.textColorPrimary, 0)) {
+    } else if (resId == resolveResId(context, android.R.attr.textColorPrimary, 0)) {
       return Aesthetic.get().textColorPrimary();
-    } else if (resId == Util.resolveResId(context, android.R.attr.textColorPrimaryInverse, 0)) {
+    } else if (resId == resolveResId(context, android.R.attr.textColorPrimaryInverse, 0)) {
       return Aesthetic.get().textColorPrimaryInverse();
-    } else if (resId == Util.resolveResId(context, android.R.attr.textColorSecondary, 0)) {
+    } else if (resId == resolveResId(context, android.R.attr.textColorSecondary, 0)) {
       return Aesthetic.get().textColorSecondary();
-    } else if (resId == Util.resolveResId(context, android.R.attr.textColorSecondaryInverse, 0)) {
+    } else if (resId == resolveResId(context, android.R.attr.textColorSecondaryInverse, 0)) {
       return Aesthetic.get().textColorSecondaryInverse();
     }
     return fallback;

@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import rx.Observable;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)
@@ -204,29 +205,6 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       case "android.support.design.widget.CoordinatorLayout":
         view = new AestheticCoordinatorLayout(context, attrs);
         break;
-
-        //      case "android.support.v7.widget.AppCompatAutoCompleteTextView":
-        //      case "AutoCompleteTextView":
-        //        view =
-        //            new ATEAutoCompleteTextView(
-        //                context, attrs, keyContext, parent != null && parent instanceof TextInputLayout);
-        //        break;
-        //      case "android.support.v7.widget.AppCompatMultiAutoCompleteTextView":
-        //      case "MultiAutoCompleteTextView":
-        //        view =
-        //            new ATEMultiAutoCompleteTextView(
-        //                context, attrs, keyContext, parent != null && parent instanceof TextInputLayout);
-        //        break;
-
-        //      case "android.support.design.widget.CoordinatorLayout":
-        //        view = new ATECoordinatorLayout(context, attrs, keyContext);
-        //        break;
-        //      case "android.support.v7.widget.SearchView$SearchAutoComplete":
-        //        view = new ATESearchViewAutoComplete(context, attrs, keyContext);
-        //        break;
-        //      case "CheckedTextView":
-        //        view = new ATECheckedTextView(context, attrs, keyContext);
-        //        break;
     }
 
     int viewBackgroundRes = 0;
@@ -235,10 +213,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       // Set view back to null so we can let AppCompat handle this view instead.
       view = null;
     } else if (attrs != null) {
-      int[] attrsArray = new int[] {android.R.attr.background};
-      TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
-      viewBackgroundRes = ta.getResourceId(0, 0);
-      ta.recycle();
+      viewBackgroundRes = resolveResId(context, attrs, android.R.attr.background);
     }
 
     if (view == null) {
@@ -262,14 +237,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       // We need to intercept the default behavior rather than allowing the LayoutInflater to handle it after this method returns.
       if (view == null) {
         try {
-          Context viewContext;
-          final boolean inheritContext = false; // TODO will this ever need to be true?
-          //noinspection PointlessBooleanExpression,ConstantConditions
-          if (parent != null && inheritContext) {
-            viewContext = parent.getContext();
-          } else {
-            viewContext = layoutInflater.getContext();
-          }
+          Context viewContext = layoutInflater.getContext();
           // Apply a theme wrapper, if requested.
           if (ATTRS_THEME != null) {
             final TypedArray ta = viewContext.obtainStyledAttributes(attrs, ATTRS_THEME);
@@ -313,22 +281,16 @@ final class InflationInterceptor implements LayoutInflaterFactory {
 
     if (view != null) {
       if (view instanceof CardView) {
-        int[] attrsArray = new int[] {R.attr.cardBackgroundColor};
-        TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
-        viewBackgroundRes = ta.getResourceId(0, 0);
-        ta.recycle();
+        viewBackgroundRes = resolveResId(context, attrs, R.attr.cardBackgroundColor);
       }
       if (viewBackgroundRes != 0) {
-        Observable<Integer> obs;
-        if (viewBackgroundRes == 0 && view instanceof CardView) {
-          obs = Aesthetic.get().colorCardViewBackground();
-        } else {
-          obs = ViewUtil.getObservableForResId(view.getContext(), viewBackgroundRes, null);
+        Observable<Integer> fallback = null;
+        if (view instanceof CardView) {
+          fallback = Aesthetic.get().colorCardViewBackground();
         }
+        Observable<Integer> obs;
+        obs = ViewUtil.getObservableForResId(view.getContext(), viewBackgroundRes, fallback);
         if (obs != null) {
-          log(
-              "%s view background %d observable: %s",
-              view.getClass().getName(), viewBackgroundRes, obs);
           Aesthetic.get().addBackgroundSubscriber(view, obs);
         }
       }

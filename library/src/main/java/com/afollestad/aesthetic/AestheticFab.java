@@ -1,7 +1,6 @@
 package com.afollestad.aesthetic;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
@@ -13,6 +12,7 @@ import rx.Subscription;
 
 import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
+import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
 final class AestheticFab extends FloatingActionButton {
@@ -37,10 +37,7 @@ final class AestheticFab extends FloatingActionButton {
 
   private void init(Context context, AttributeSet attrs) {
     if (attrs != null) {
-      int[] attrsArray = new int[] {android.R.attr.background};
-      TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
-      backgroundResId = ta.getResourceId(0, 0);
-      ta.recycle();
+      backgroundResId = resolveResId(context, attrs, android.R.attr.background);
     }
   }
 

@@ -10,6 +10,7 @@ import rx.Subscription;
 
 import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
+import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
 final class AestheticTextView extends AppCompatTextView {
@@ -33,10 +34,7 @@ final class AestheticTextView extends AppCompatTextView {
 
   private void init(Context context, AttributeSet attrs) {
     if (attrs != null) {
-      int[] attrsArray = new int[] {android.R.attr.textColor};
-      TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
-      textColorResId = ta.getResourceId(0, 0);
-      ta.recycle();
+      textColorResId = resolveResId(context, attrs, android.R.attr.textColor);
     }
   }
 

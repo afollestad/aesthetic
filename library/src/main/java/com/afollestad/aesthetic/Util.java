@@ -22,6 +22,7 @@ import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +98,13 @@ final class Util {
     } finally {
       a.recycle();
     }
+  }
+
+  static int resolveResId(Context context, AttributeSet attrs, @AttrRes int attrId) {
+    TypedArray ta = context.obtainStyledAttributes(attrs, new int[] {attrId});
+    int result = ta.getResourceId(0, 0);
+    ta.recycle();
+    return result;
   }
 
   //  static ColorStateList resolveActionTextColorStateList(
