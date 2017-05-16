@@ -14,12 +14,14 @@ import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
-import com.afollestad.aesthetic.views.ActiveInactiveColors;
 import com.f2prateek.rx.preferences.RxSharedPreferences;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
@@ -32,6 +34,7 @@ import static com.afollestad.aesthetic.Util.setLightStatusBarCompat;
 import static com.afollestad.aesthetic.Util.setNavBarColorCompat;
 
 /** @author Aidan Follestad (afollestad) */
+@SuppressWarnings("WeakerAccess")
 public class Aesthetic {
 
   private static final String PREFS_NAME = "[aesthetic-prefs]";
@@ -60,12 +63,16 @@ public class Aesthetic {
   @SuppressLint("StaticFieldLeak")
   private static Aesthetic instance;
 
+  private final List<ViewObservablePair> backgroundSubscriberViews;
+  private CompositeSubscription backgroundSubscriptions;
+
+  private CompositeSubscription subs;
   private AppCompatActivity context;
   private SharedPreferences prefs;
   private SharedPreferences.Editor editor;
   private RxSharedPreferences rxPrefs;
-  private CompositeSubscription subs;
   private int lastActivityTheme;
+  private boolean isResumed;
 
   @SuppressLint("CommitPrefEdits")
   private Aesthetic(AppCompatActivity context) {
@@ -73,6 +80,7 @@ public class Aesthetic {
     prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     editor = prefs.edit();
     rxPrefs = RxSharedPreferences.create(prefs);
+    backgroundSubscriberViews = new ArrayList<>(0);
   }
 
   private static String key(@Nullable AppCompatActivity activity) {
@@ -94,9 +102,13 @@ public class Aesthetic {
     if (instance == null) {
       instance = new Aesthetic(activity);
     }
+    instance.isResumed = false;
     instance.context = activity;
+    instance.backgroundSubscriberViews.clear();
+
     LayoutInflater li = activity.getLayoutInflater();
     Util.setInflaterFactory(li, activity);
+
     String activityThemeKey = String.format(KEY_ACTIVITY_THEME, key(activity));
     instance.lastActivityTheme = instance.prefs.getInt(activityThemeKey, 0);
     if (instance.lastActivityTheme != 0) {
@@ -119,12 +131,12 @@ public class Aesthetic {
     if (instance == null) {
       return;
     }
+    instance.isResumed = false;
     if (instance.subs != null) {
       instance.subs.unsubscribe();
     }
     if (instance.context != null
         && instance.context.getClass().getName().equals(activity.getClass().getName())) {
-      Log.d("Aesthetic", "Pause " + instance.context.getClass().getName());
       instance.context = null;
     }
   }
@@ -139,6 +151,7 @@ public class Aesthetic {
       instance.subs.unsubscribe();
     }
     instance.subs = new CompositeSubscription();
+    subscribeBackgroundListeners();
     instance.subs.add(
         instance
             .colorPrimary()
@@ -183,6 +196,7 @@ public class Aesthetic {
             .lightStatusBarMode()
             .compose(distinctToMainThread())
             .subscribe(color -> instance.invalidateStatusBar(), onErrorLogAndRethrow()));
+    instance.isResumed = true;
   }
 
   public static boolean isFirstTime() {
@@ -191,9 +205,30 @@ public class Aesthetic {
     return firstTime;
   }
 
-  //
-  /////// GETTERS AND SETTERS OF THEME PROPERTIES
-  //
+  void addBackgroundSubscriber(@NonNull View view, @NonNull Observable<Integer> colorObservable) {
+    backgroundSubscriberViews.add(ViewObservablePair.create(view, colorObservable));
+    if (isResumed) {
+      instance.backgroundSubscriptions.add(
+          colorObservable
+              .compose(distinctToMainThread())
+              .subscribe(ViewBackgroundSubscriber.create(view)));
+    }
+  }
+
+  private static void subscribeBackgroundListeners() {
+    if (instance.backgroundSubscriptions != null) {
+      instance.backgroundSubscriptions.unsubscribe();
+    }
+    instance.backgroundSubscriptions = new CompositeSubscription();
+    if (instance.backgroundSubscriberViews.size() > 0) {
+      for (ViewObservablePair pair : instance.backgroundSubscriberViews) {
+        instance.backgroundSubscriptions.add(
+            pair.observable()
+                .compose(distinctToMainThread())
+                .subscribe(ViewBackgroundSubscriber.create(pair.view())));
+      }
+    }
+  }
 
   private void invalidateStatusBar() {
     String key = String.format(KEY_STATUS_BAR_COLOR, key(context));
@@ -224,6 +259,10 @@ public class Aesthetic {
     }
   }
 
+  //
+  /////// GETTERS AND SETTERS OF THEME PROPERTIES
+  //
+
   @CheckResult
   public Aesthetic activityTheme(@StyleRes int theme) {
     String key = String.format(KEY_ACTIVITY_THEME, key(context));
@@ -242,7 +281,7 @@ public class Aesthetic {
 
   @CheckResult
   public Aesthetic isDark(boolean isDark) {
-    editor.putBoolean(KEY_IS_DARK, isDark);
+    editor.putBoolean(KEY_IS_DARK, isDark).commit();
     return this;
   }
 
@@ -538,28 +577,32 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Observable<ActiveInactiveColors> colorIconTitle() {
-    return isDark()
-        .take(1)
-        .flatMap(
-            isDark ->
-                Observable.zip(
-                    rxPrefs
-                        .getInteger(
-                            KEY_ICON_TITLE_ACTIVE_COLOR,
-                            ContextCompat.getColor(
-                                context, isDark ? R.color.ate_icon_dark : R.color.ate_icon_light))
-                        .asObservable(),
-                    rxPrefs
-                        .getInteger(
-                            KEY_ICON_TITLE_INACTIVE_COLOR,
-                            ContextCompat.getColor(
-                                context,
-                                isDark
-                                    ? R.color.ate_icon_dark_inactive
-                                    : R.color.ate_icon_light_inactive))
-                        .asObservable(),
-                    ActiveInactiveColors::create));
+  public Observable<ActiveInactiveColors> colorIconTitle(
+      @Nullable Observable<Integer> backgroundObservable) {
+    if (backgroundObservable == null) {
+      backgroundObservable = Aesthetic.get().colorPrimary();
+    }
+    return backgroundObservable.flatMap(
+        primaryColor -> {
+          final boolean isDark = !isColorLight(primaryColor);
+          return Observable.zip(
+              rxPrefs
+                  .getInteger(
+                      KEY_ICON_TITLE_ACTIVE_COLOR,
+                      ContextCompat.getColor(
+                          context, isDark ? R.color.ate_icon_dark : R.color.ate_icon_light))
+                  .asObservable(),
+              rxPrefs
+                  .getInteger(
+                      KEY_ICON_TITLE_INACTIVE_COLOR,
+                      ContextCompat.getColor(
+                          context,
+                          isDark
+                              ? R.color.ate_icon_dark_inactive
+                              : R.color.ate_icon_light_inactive))
+                  .asObservable(),
+              ActiveInactiveColors::create);
+        });
   }
 
   @CheckResult

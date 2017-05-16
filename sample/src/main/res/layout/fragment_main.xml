@@ -137,6 +137,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="?colorAccent"
         android:layout_marginTop="@dimen/content_inset">
 
         <LinearLayout

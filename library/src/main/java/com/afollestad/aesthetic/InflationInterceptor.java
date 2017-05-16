@@ -9,46 +9,17 @@ import android.support.v4.view.LayoutInflaterFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.afollestad.aesthetic.views.AestheticActionMenuItemView;
-import com.afollestad.aesthetic.views.AestheticBottomNavigationView;
-import com.afollestad.aesthetic.views.AestheticButton;
-import com.afollestad.aesthetic.views.AestheticCardView;
-import com.afollestad.aesthetic.views.AestheticCheckBox;
-import com.afollestad.aesthetic.views.AestheticCoordinatorLayout;
-import com.afollestad.aesthetic.views.AestheticDrawerLayout;
-import com.afollestad.aesthetic.views.AestheticEditText;
-import com.afollestad.aesthetic.views.AestheticFab;
-import com.afollestad.aesthetic.views.AestheticFrameLayout;
-import com.afollestad.aesthetic.views.AestheticImageButton;
-import com.afollestad.aesthetic.views.AestheticImageView;
-import com.afollestad.aesthetic.views.AestheticLinearLayout;
-import com.afollestad.aesthetic.views.AestheticListView;
-import com.afollestad.aesthetic.views.AestheticNavigationView;
-import com.afollestad.aesthetic.views.AestheticNestedScrollView;
-import com.afollestad.aesthetic.views.AestheticProgressBar;
-import com.afollestad.aesthetic.views.AestheticRadioButton;
-import com.afollestad.aesthetic.views.AestheticRecyclerView;
-import com.afollestad.aesthetic.views.AestheticRelativeLayout;
-import com.afollestad.aesthetic.views.AestheticScrollView;
-import com.afollestad.aesthetic.views.AestheticSeekBar;
-import com.afollestad.aesthetic.views.AestheticSpinner;
-import com.afollestad.aesthetic.views.AestheticSwitch;
-import com.afollestad.aesthetic.views.AestheticSwitchCompat;
-import com.afollestad.aesthetic.views.AestheticTabLayout;
-import com.afollestad.aesthetic.views.AestheticTextInputEditText;
-import com.afollestad.aesthetic.views.AestheticTextInputLayout;
-import com.afollestad.aesthetic.views.AestheticTextView;
-import com.afollestad.aesthetic.views.AestheticToolbar;
-import com.afollestad.aesthetic.views.AestheticViewPager;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import rx.Observable;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
@@ -112,9 +83,6 @@ final class InflationInterceptor implements LayoutInflaterFactory {
 
   private static void log(String msg, Object... args) {
     //noinspection PointlessBooleanExpression
-    if (!BuildConfig.DEBUG) {
-      return;
-    }
     if (args != null) {
       Log.d("InflationInterceptor", String.format(msg, args));
     } else {
@@ -135,15 +103,6 @@ final class InflationInterceptor implements LayoutInflaterFactory {
     View view = null;
 
     switch (name) {
-      case "LinearLayout":
-        view = new AestheticLinearLayout(context, attrs);
-        break;
-      case "FrameLayout":
-        view = new AestheticFrameLayout(context, attrs);
-        break;
-      case "RelativeLayout":
-        view = new AestheticRelativeLayout(context, attrs);
-        break;
       case "ImageView":
       case "android.support.v7.widget.AppCompatImageView":
         view = new AestheticImageView(context, attrs);
@@ -245,9 +204,6 @@ final class InflationInterceptor implements LayoutInflaterFactory {
       case "android.support.design.widget.CoordinatorLayout":
         view = new AestheticCoordinatorLayout(context, attrs);
         break;
-      case "android.support.v7.widget.CardView":
-        view = new AestheticCardView(context, attrs);
-        break;
 
         //      case "android.support.v7.widget.AppCompatAutoCompleteTextView":
         //      case "AutoCompleteTextView":
@@ -273,9 +229,16 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         //        break;
     }
 
+    int viewBackgroundRes = 0;
+
     if (view != null && view.getTag() != null && ":aesthetic_ignore".equals(view.getTag())) {
       // Set view back to null so we can let AppCompat handle this view instead.
       view = null;
+    } else if (attrs != null) {
+      int[] attrsArray = new int[] {android.R.attr.background};
+      TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
+      viewBackgroundRes = ta.getResourceId(0, 0);
+      ta.recycle();
     }
 
     if (view == null) {
@@ -349,7 +312,26 @@ final class InflationInterceptor implements LayoutInflaterFactory {
     }
 
     if (view != null) {
-      log("Inflated %s", view.getClass().getName());
+      if (view instanceof CardView) {
+        int[] attrsArray = new int[] {R.attr.cardBackgroundColor};
+        TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
+        viewBackgroundRes = ta.getResourceId(0, 0);
+        ta.recycle();
+      }
+      if (viewBackgroundRes != 0) {
+        Observable<Integer> obs;
+        if (viewBackgroundRes == 0 && view instanceof CardView) {
+          obs = Aesthetic.get().colorCardViewBackground();
+        } else {
+          obs = ViewUtil.getObservableForResId(view.getContext(), viewBackgroundRes, null);
+        }
+        if (obs != null) {
+          log(
+              "%s view background %d observable: %s",
+              view.getClass().getName(), viewBackgroundRes, obs);
+          Aesthetic.get().addBackgroundSubscriber(view, obs);
+        }
+      }
     }
 
     return view;

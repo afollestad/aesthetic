@@ -11,6 +11,7 @@ import static com.afollestad.aesthetic.BottomNavBgMode.PRIMARY_DARK;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /** @author Aidan Follestad (afollestad) */
+@SuppressWarnings("WeakerAccess")
 @Retention(SOURCE)
 @IntDef(value = {BLACK_WHITE_AUTO, PRIMARY, PRIMARY_DARK, ACCENT})
 public @interface BottomNavBgMode {

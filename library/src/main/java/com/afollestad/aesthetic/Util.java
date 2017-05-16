@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -33,7 +32,7 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)
-public class Util {
+final class Util {
 
   static void setInflaterFactory(@NonNull LayoutInflater li, @NonNull AppCompatActivity activity) {
     LayoutInflaterCompat.setFactory(
@@ -41,7 +40,7 @@ public class Util {
   }
 
   /** Taken from CollapsingToolbarLayout's CollapsingTextHelper class. */
-  public static int blendColors(int color1, int color2, float ratio) {
+  static int blendColors(int color1, int color2, float ratio) {
     final float inverseRatio = 1f - ratio;
     float a = (Color.alpha(color1) * inverseRatio) + (Color.alpha(color2) * ratio);
     float r = (Color.red(color1) * inverseRatio) + (Color.red(color2) * ratio);
@@ -91,7 +90,7 @@ public class Util {
   }
 
   @IdRes
-  public static int resolveResId(Context context, @AttrRes int attr, int fallback) {
+  static int resolveResId(Context context, @AttrRes int attr, int fallback) {
     TypedArray a = context.getTheme().obtainStyledAttributes(new int[] {attr});
     try {
       return a.getResourceId(0, fallback);
@@ -143,22 +142,22 @@ public class Util {
   //    }
   //  }
 
-//  static ColorStateList getActionTextStateList(Context context, int newPrimaryColor) {
-//    final int fallBackButtonColor = resolveColor(context, android.R.attr.textColorPrimary);
-//    if (newPrimaryColor == 0) {
-//      newPrimaryColor = fallBackButtonColor;
-//    }
-//    int[][] states =
-//        new int[][] {
-//          new int[] {-android.R.attr.state_enabled}, // disabled
-//          new int[] {} // enabled
-//        };
-//    int[] colors = new int[] {adjustAlpha(newPrimaryColor, 0.4f), newPrimaryColor};
-//    return new ColorStateList(states, colors);
-//  }
+  //  static ColorStateList getActionTextStateList(Context context, int newPrimaryColor) {
+  //    final int fallBackButtonColor = resolveColor(context, android.R.attr.textColorPrimary);
+  //    if (newPrimaryColor == 0) {
+  //      newPrimaryColor = fallBackButtonColor;
+  //    }
+  //    int[][] states =
+  //        new int[][] {
+  //          new int[] {-android.R.attr.state_enabled}, // disabled
+  //          new int[] {} // enabled
+  //        };
+  //    int[] colors = new int[] {adjustAlpha(newPrimaryColor, 0.4f), newPrimaryColor};
+  //    return new ColorStateList(states, colors);
+  //  }
 
   @ColorInt
-  public static int adjustAlpha(
+  static int adjustAlpha(
       @ColorInt int color, @SuppressWarnings("SameParameterValue") float factor) {
     int alpha = Math.round(Color.alpha(color) * factor);
     int red = Color.red(color);
@@ -167,8 +166,7 @@ public class Util {
     return Color.argb(alpha, red, green, blue);
   }
 
-  public static void setOverflowButtonColor(
-      @NonNull final Toolbar toolbar, final @ColorInt int color) {
+  static void setOverflowButtonColor(@NonNull final Toolbar toolbar, final @ColorInt int color) {
     @SuppressLint("PrivateResource")
     final String overflowDescription =
         toolbar.getResources().getString(R.string.abc_action_menu_overflow_description);
@@ -196,7 +194,7 @@ public class Util {
     return shiftColor(color, 0.9f);
   }
 
-  public static boolean isColorLight(@ColorInt int color) {
+  static boolean isColorLight(@ColorInt int color) {
     if (color == Color.BLACK) {
       return false;
     } else if (color == Color.WHITE || color == Color.TRANSPARENT) {

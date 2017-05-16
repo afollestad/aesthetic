@@ -36,18 +36,19 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)
-public class TintHelper {
+final class TintHelper {
 
   @SuppressLint("PrivateResource")
   @ColorInt
-  static int getDefaultRippleColor(@NonNull Context context, boolean useDarkRipple) {
+  private static int getDefaultRippleColor(@NonNull Context context, boolean useDarkRipple) {
     // Light ripple is actually translucent black, and vice versa
     return ContextCompat.getColor(
         context, useDarkRipple ? R.color.ripple_material_light : R.color.ripple_material_dark);
   }
 
   @NonNull
-  static ColorStateList getDisabledColorStateList(@ColorInt int normal, @ColorInt int disabled) {
+  private static ColorStateList getDisabledColorStateList(
+      @ColorInt int normal, @ColorInt int disabled) {
     return new ColorStateList(
         new int[][] {
           new int[] {-android.R.attr.state_enabled}, new int[] {android.R.attr.state_enabled}
@@ -56,7 +57,7 @@ public class TintHelper {
   }
 
   @SuppressWarnings("deprecation")
-  static void setTintSelector(
+  private static void setTintSelector(
       @NonNull View view,
       @ColorInt final int color,
       final boolean darker,
@@ -142,7 +143,7 @@ public class TintHelper {
 
   @SuppressWarnings("deprecation")
   @SuppressLint("PrivateResource")
-  public static void setTintAuto(
+  static void setTintAuto(
       final @NonNull View view,
       final @ColorInt int color,
       boolean background,
@@ -207,8 +208,7 @@ public class TintHelper {
     }
   }
 
-  public static void setTint(
-      @NonNull RadioButton radioButton, @ColorInt int color, boolean useDarker) {
+  static void setTint(@NonNull RadioButton radioButton, @ColorInt int color, boolean useDarker) {
     ColorStateList sl =
         new ColorStateList(
             new int[][] {
@@ -242,7 +242,7 @@ public class TintHelper {
     }
   }
 
-  public static void setTint(@NonNull SeekBar seekBar, @ColorInt int color, boolean useDarker) {
+  static void setTint(@NonNull SeekBar seekBar, @ColorInt int color, boolean useDarker) {
     final ColorStateList s1 =
         getDisabledColorStateList(
             color,
@@ -264,7 +264,7 @@ public class TintHelper {
     }
   }
 
-  public static void setTint(@NonNull ProgressBar progressBar, @ColorInt int color) {
+  static void setTint(@NonNull ProgressBar progressBar, @ColorInt int color) {
     setTint(progressBar, color, false);
   }
 
@@ -288,7 +288,7 @@ public class TintHelper {
     }
   }
 
-  static void setTint(@NonNull EditText editText, @ColorInt int color, boolean useDarker) {
+  private static void setTint(@NonNull EditText editText, @ColorInt int color, boolean useDarker) {
     final ColorStateList editTextColorStateList =
         new ColorStateList(
             new int[][] {
@@ -317,7 +317,7 @@ public class TintHelper {
     setCursorTint(editText, color);
   }
 
-  public static void setTint(@NonNull CheckBox box, @ColorInt int color, boolean useDarker) {
+  static void setTint(@NonNull CheckBox box, @ColorInt int color, boolean useDarker) {
     ColorStateList sl =
         new ColorStateList(
             new int[][] {
@@ -347,7 +347,7 @@ public class TintHelper {
     }
   }
 
-  static void setTint(@NonNull ImageView image, @ColorInt int color) {
+  private static void setTint(@NonNull ImageView image, @ColorInt int color) {
     image.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
   }
 
@@ -413,7 +413,7 @@ public class TintHelper {
     return createTintedDrawable(from, sl);
   }
 
-  public static void setTint(@NonNull Switch switchView, @ColorInt int color, boolean useDarker) {
+  static void setTint(@NonNull Switch switchView, @ColorInt int color, boolean useDarker) {
     if (switchView.getTrackDrawable() != null) {
       switchView.setTrackDrawable(
           modifySwitchDrawable(
@@ -436,8 +436,7 @@ public class TintHelper {
     }
   }
 
-  public static void setTint(
-      @NonNull SwitchCompat switchView, @ColorInt int color, boolean useDarker) {
+  static void setTint(@NonNull SwitchCompat switchView, @ColorInt int color, boolean useDarker) {
     if (switchView.getTrackDrawable() != null) {
       switchView.setTrackDrawable(
           modifySwitchDrawable(
@@ -463,7 +462,7 @@ public class TintHelper {
   // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary because Drawables with the same resource have shared states otherwise.
   @CheckResult
   @Nullable
-  public static Drawable createTintedDrawable(@Nullable Drawable drawable, @ColorInt int color) {
+  static Drawable createTintedDrawable(@Nullable Drawable drawable, @ColorInt int color) {
     if (drawable == null) return null;
     drawable = DrawableCompat.wrap(drawable.mutate());
     DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
@@ -474,15 +473,14 @@ public class TintHelper {
   // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary because Drawables with the same resource have shared states otherwise.
   @CheckResult
   @Nullable
-  public static Drawable createTintedDrawable(
-      @Nullable Drawable drawable, @NonNull ColorStateList sl) {
+  static Drawable createTintedDrawable(@Nullable Drawable drawable, @NonNull ColorStateList sl) {
     if (drawable == null) return null;
     drawable = DrawableCompat.wrap(drawable.mutate());
     DrawableCompat.setTintList(drawable, sl);
     return drawable;
   }
 
-  public static void setCursorTint(@NonNull EditText editText, @ColorInt int color) {
+  static void setCursorTint(@NonNull EditText editText, @ColorInt int color) {
     try {
       Field fCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
       fCursorDrawableRes.setAccessible(true);

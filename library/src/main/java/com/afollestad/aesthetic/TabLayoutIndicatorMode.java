@@ -9,6 +9,7 @@ import static com.afollestad.aesthetic.TabLayoutIndicatorMode.PRIMARY;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /** @author Aidan Follestad (afollestad) */
+@SuppressWarnings("WeakerAccess")
 @Retention(SOURCE)
 @IntDef(value = {PRIMARY, ACCENT})
 public @interface TabLayoutIndicatorMode {
