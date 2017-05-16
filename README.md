@@ -46,7 +46,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
     // ... other dependencies
-    compile 'com.afollestad:aesthetic:0.1.0'
+    compile 'com.afollestad:aesthetic:0.2.0'
 }
 ```
 
