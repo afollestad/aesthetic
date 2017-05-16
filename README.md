@@ -134,7 +134,7 @@ Aesthetic.get()
     .colorPrimary()
     .take(1)
     .subscribe(color -> {
-      // Use color (and integer)
+      // Use color (an integer)
     });
 ```
 
@@ -149,7 +149,7 @@ Subscription subscription =
   Aesthetic.get()
       .colorPrimary()
       .subscribe(color -> {
-        // Use color (and integer)
+        // Use color (an integer)
       });
       
 // Later, you should unsubscribe, e.g. when your Activity pauses
