@@ -15,7 +15,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -234,15 +233,6 @@ public class Aesthetic {
     instance.backgroundSubscriptions = new CompositeSubscription();
     if (instance.backgroundSubscriberViews.size() > 0) {
       List<ViewObservablePair> pairs = instance.backgroundSubscriberViews.get(instance.context);
-      Log.d(
-          "Aesthetic",
-          "Retrieved "
-              + pairs.size()
-              + " for "
-              + instance.context.getClass().getName()
-              + ", out of "
-              + instance.backgroundSubscriberViews.size()
-              + " total.");
       for (ViewObservablePair pair : pairs) {
         instance.backgroundSubscriptions.add(
             pair.observable()
