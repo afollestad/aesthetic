@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.afollestad.aesthetic.AestheticActivity;
 
@@ -19,8 +20,8 @@ public class BottomNavActivity extends AestheticActivity {
   @BindView(R.id.toolbar)
   Toolbar toolbar;
 
-  @BindView(R.id.bottom_tabs)
-  BottomNavigationView bottomNavigationView;
+//  @BindView(R.id.bottom_tabs)
+//  BottomNavigationView bottomNavigationView;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,7 +29,13 @@ public class BottomNavActivity extends AestheticActivity {
     setContentView(R.layout.activity_bottom_nav);
     unbinder = ButterKnife.bind(this);
 
-    toolbar.setNavigationOnClickListener(view -> finish());
+    toolbar.setNavigationOnClickListener(
+        new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            finish();
+          }
+        });
   }
 
   @Override

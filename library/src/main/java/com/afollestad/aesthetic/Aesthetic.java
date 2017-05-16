@@ -605,14 +605,18 @@ public class Aesthetic {
     return isDark()
         .take(1)
         .flatMap(
-            isDark ->
-                rxPrefs
+            new Func1<Boolean, Observable<Integer>>() {
+              @Override
+              public Observable<Integer> call(Boolean isDark) {
+                return rxPrefs
                     .getInteger(
                         KEY_CARD_VIEW_BG_COLOR,
                         ContextCompat.getColor(
                             context,
                             isDark ? R.color.ate_cardview_bg_dark : R.color.ate_cardview_bg_light))
-                    .asObservable());
+                    .asObservable();
+              }
+            });
   }
 
   @CheckResult
@@ -633,30 +637,33 @@ public class Aesthetic {
       backgroundObservable = Aesthetic.get().colorPrimary();
     }
     return backgroundObservable.flatMap(
-        primaryColor -> {
-          final boolean isDark = !isColorLight(primaryColor);
-          return Observable.zip(
-              rxPrefs
-                  .getInteger(
-                      KEY_ICON_TITLE_ACTIVE_COLOR,
-                      ContextCompat.getColor(
-                          context, isDark ? R.color.ate_icon_dark : R.color.ate_icon_light))
-                  .asObservable(),
-              rxPrefs
-                  .getInteger(
-                      KEY_ICON_TITLE_INACTIVE_COLOR,
-                      ContextCompat.getColor(
-                          context,
-                          isDark
-                              ? R.color.ate_icon_dark_inactive
-                              : R.color.ate_icon_light_inactive))
-                  .asObservable(),
-              new Func2<Integer, Integer, ActiveInactiveColors>() {
-                @Override
-                public ActiveInactiveColors call(Integer integer, Integer integer2) {
-                  return ActiveInactiveColors.create(integer, integer2);
-                }
-              });
+        new Func1<Integer, Observable<ActiveInactiveColors>>() {
+          @Override
+          public Observable<ActiveInactiveColors> call(Integer primaryColor) {
+            final boolean isDark = !isColorLight(primaryColor);
+            return Observable.zip(
+                rxPrefs
+                    .getInteger(
+                        KEY_ICON_TITLE_ACTIVE_COLOR,
+                        ContextCompat.getColor(
+                            context, isDark ? R.color.ate_icon_dark : R.color.ate_icon_light))
+                    .asObservable(),
+                rxPrefs
+                    .getInteger(
+                        KEY_ICON_TITLE_INACTIVE_COLOR,
+                        ContextCompat.getColor(
+                            context,
+                            isDark
+                                ? R.color.ate_icon_dark_inactive
+                                : R.color.ate_icon_light_inactive))
+                    .asObservable(),
+                new Func2<Integer, Integer, ActiveInactiveColors>() {
+                  @Override
+                  public ActiveInactiveColors call(Integer integer, Integer integer2) {
+                    return ActiveInactiveColors.create(integer, integer2);
+                  }
+                });
+          }
         });
   }
 

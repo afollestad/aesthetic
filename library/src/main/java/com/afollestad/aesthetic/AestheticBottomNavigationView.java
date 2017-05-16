@@ -78,14 +78,28 @@ final class AestheticBottomNavigationView extends BottomNavigationView {
             Aesthetic.get()
                 .colorPrimary()
                 .compose(Rx.<Integer>distinctToMainThread())
-                .subscribe(color -> lastTextIconColor = color, onErrorLogAndRethrow()));
+                .subscribe(
+                    new Action1<Integer>() {
+                      @Override
+                      public void call(Integer color) {
+                        lastTextIconColor = color;
+                      }
+                    },
+                    onErrorLogAndRethrow()));
         break;
       case BottomNavIconTextMode.SELECTED_ACCENT:
         colorSubscriptions.add(
             Aesthetic.get()
                 .colorAccent()
                 .compose(Rx.<Integer>distinctToMainThread())
-                .subscribe(color -> lastTextIconColor = color, onErrorLogAndRethrow()));
+                .subscribe(
+                    new Action1<Integer>() {
+                      @Override
+                      public void call(Integer color) {
+                        lastTextIconColor = color;
+                      }
+                    },
+                    onErrorLogAndRethrow()));
         break;
       case BottomNavIconTextMode.BLACK_WHITE_AUTO:
         // We will automatically set the icon/text color when the background color is set

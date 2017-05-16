@@ -46,7 +46,13 @@ public class DrawerActivity extends AestheticActivity {
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setHomeButtonEnabled(true);
 
-    navigationView.post(() -> navigationView.setCheckedItem(R.id.item_three));
+    navigationView.post(
+        new Runnable() {
+          @Override
+          public void run() {
+            navigationView.setCheckedItem(R.id.item_three);
+          }
+        });
   }
 
   @Override
