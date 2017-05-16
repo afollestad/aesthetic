@@ -6,9 +6,9 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 
 import rx.Subscription;
+import rx.functions.Action1;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
@@ -35,8 +35,15 @@ public class AestheticViewPager extends ViewPager {
     subscription =
         Aesthetic.get()
             .colorAccent()
-            .compose(distinctToMainThread())
-            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
+            .compose(Rx.<Integer>distinctToMainThread())
+            .subscribe(
+                new Action1<Integer>() {
+                  @Override
+                  public void call(Integer color) {
+                    invalidateColors(color);
+                  }
+                },
+                onErrorLogAndRethrow());
   }
 
   @Override

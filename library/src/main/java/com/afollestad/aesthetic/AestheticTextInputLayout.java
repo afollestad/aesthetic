@@ -1,13 +1,12 @@
 package com.afollestad.aesthetic;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
 
+import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.adjustAlpha;
 import static com.afollestad.aesthetic.Util.resolveResId;
@@ -50,14 +49,27 @@ final class AestheticTextInputLayout extends TextInputLayout {
     subs.add(
         Aesthetic.get()
             .textColorSecondary()
-            .compose(distinctToMainThread())
+            .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                color -> TextInputLayoutUtil.setHint(this, adjustAlpha(color, 0.7f)),
+                new Action1<Integer>() {
+                  @Override
+                  public void call(Integer color) {
+                    TextInputLayoutUtil.setHint(
+                        AestheticTextInputLayout.this, adjustAlpha(color, 0.7f));
+                  }
+                },
                 onErrorLogAndRethrow()));
     subs.add(
         ViewUtil.getObservableForResId(getContext(), backgroundResId, Aesthetic.get().colorAccent())
-            .compose(distinctToMainThread())
-            .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
+            .compose(Rx.<Integer>distinctToMainThread())
+            .subscribe(
+                new Action1<Integer>() {
+                  @Override
+                  public void call(Integer color) {
+                    invalidateColors(color);
+                  }
+                },
+                onErrorLogAndRethrow()));
   }
 
   @Override

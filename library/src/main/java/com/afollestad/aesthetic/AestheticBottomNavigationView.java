@@ -10,9 +10,10 @@ import android.util.AttributeSet;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Func3;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
@@ -76,14 +77,14 @@ final class AestheticBottomNavigationView extends BottomNavigationView {
         colorSubscriptions.add(
             Aesthetic.get()
                 .colorPrimary()
-                .compose(distinctToMainThread())
+                .compose(Rx.<Integer>distinctToMainThread())
                 .subscribe(color -> lastTextIconColor = color, onErrorLogAndRethrow()));
         break;
       case BottomNavIconTextMode.SELECTED_ACCENT:
         colorSubscriptions.add(
             Aesthetic.get()
                 .colorAccent()
-                .compose(distinctToMainThread())
+                .compose(Rx.<Integer>distinctToMainThread())
                 .subscribe(color -> lastTextIconColor = color, onErrorLogAndRethrow()));
         break;
       case BottomNavIconTextMode.BLACK_WHITE_AUTO:
@@ -99,22 +100,22 @@ final class AestheticBottomNavigationView extends BottomNavigationView {
         colorSubscriptions.add(
             Aesthetic.get()
                 .colorPrimary()
-                .compose(distinctToMainThread())
-                .subscribe(this::setBackgroundColor, onErrorLogAndRethrow()));
+                .compose(Rx.<Integer>distinctToMainThread())
+                .subscribe(ViewBackgroundAction.create(this), onErrorLogAndRethrow()));
         break;
       case BottomNavBgMode.PRIMARY_DARK:
         colorSubscriptions.add(
             Aesthetic.get()
                 .colorStatusBar()
-                .compose(distinctToMainThread())
-                .subscribe(this::setBackgroundColor, onErrorLogAndRethrow()));
+                .compose(Rx.<Integer>distinctToMainThread())
+                .subscribe(ViewBackgroundAction.create(this), onErrorLogAndRethrow()));
         break;
       case BottomNavBgMode.ACCENT:
         colorSubscriptions.add(
             Aesthetic.get()
                 .colorAccent()
-                .compose(distinctToMainThread())
-                .subscribe(this::setBackgroundColor, onErrorLogAndRethrow()));
+                .compose(Rx.<Integer>distinctToMainThread())
+                .subscribe(ViewBackgroundAction.create(this), onErrorLogAndRethrow()));
         break;
       case BottomNavBgMode.BLACK_WHITE_AUTO:
         setBackgroundColor(
@@ -137,9 +138,16 @@ final class AestheticBottomNavigationView extends BottomNavigationView {
                 Aesthetic.get().bottomNavigationBackgroundMode(),
                 Aesthetic.get().bottomNavigationIconTextMode(),
                 Aesthetic.get().isDark(),
-                State::create)
-            .compose(distinctToMainThread())
-            .subscribe(this::onState, onErrorLogAndRethrow());
+                State.creator())
+            .compose(Rx.<State>distinctToMainThread())
+            .subscribe(
+                new Action1<State>() {
+                  @Override
+                  public void call(State state) {
+                    onState(state);
+                  }
+                },
+                onErrorLogAndRethrow());
   }
 
   @Override
@@ -164,6 +172,15 @@ final class AestheticBottomNavigationView extends BottomNavigationView {
     static State create(
         @BottomNavBgMode int bgMode, @BottomNavIconTextMode int iconTextMode, boolean isDark) {
       return new State(bgMode, iconTextMode, isDark);
+    }
+
+    static Func3<Integer, Integer, Boolean, State> creator() {
+      return new Func3<Integer, Integer, Boolean, State>() {
+        @Override
+        public State call(Integer integer, Integer integer2, Boolean aBoolean) {
+          return State.create(integer, integer2, aBoolean);
+        }
+      };
     }
   }
 }

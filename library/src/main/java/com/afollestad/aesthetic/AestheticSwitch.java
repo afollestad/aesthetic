@@ -1,14 +1,13 @@
 package com.afollestad.aesthetic;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.Switch;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action1;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
@@ -50,9 +49,16 @@ final class AestheticSwitch extends Switch {
                 ViewUtil.getObservableForResId(
                     getContext(), backgroundResId, Aesthetic.get().colorAccent()),
                 Aesthetic.get().isDark(),
-                ColorIsDarkState::create)
-            .compose(distinctToMainThread())
-            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
+                ColorIsDarkState.creator())
+            .compose(Rx.<ColorIsDarkState>distinctToMainThread())
+            .subscribe(
+                new Action1<ColorIsDarkState>() {
+                  @Override
+                  public void call(ColorIsDarkState state) {
+                    invalidateColors(state);
+                  }
+                },
+                onErrorLogAndRethrow());
   }
 
   @Override

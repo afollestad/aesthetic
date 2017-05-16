@@ -8,8 +8,8 @@ import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.util.AttributeSet;
 
 import rx.Subscription;
+import rx.functions.Action1;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
@@ -47,8 +47,15 @@ final class AestheticDrawerLayout extends DrawerLayout {
     subscription =
         Aesthetic.get()
             .colorIconTitle(null)
-            .compose(distinctToMainThread())
-            .subscribe(this::invalidateColor, onErrorLogAndRethrow());
+            .compose(Rx.<ActiveInactiveColors>distinctToMainThread())
+            .subscribe(
+                new Action1<ActiveInactiveColors>() {
+                  @Override
+                  public void call(ActiveInactiveColors colors) {
+                    invalidateColor(colors);
+                  }
+                },
+                onErrorLogAndRethrow());
   }
 
   @Override

@@ -8,8 +8,8 @@ import android.util.AttributeSet;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action1;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
 import static com.afollestad.aesthetic.Util.adjustAlpha;
@@ -57,11 +57,14 @@ final class AestheticTabLayout extends TabLayout {
         .colorIconTitle(Observable.just(color))
         .take(1)
         .subscribe(
-            activeInactiveColors -> {
-              setIconsColor(activeInactiveColors.activeColor());
-              setTabTextColors(
-                  adjustAlpha(activeInactiveColors.inactiveColor(), UNFOCUSED_ALPHA),
-                  activeInactiveColors.activeColor());
+            new Action1<ActiveInactiveColors>() {
+              @Override
+              public void call(ActiveInactiveColors activeInactiveColors) {
+                setIconsColor(activeInactiveColors.activeColor());
+                setTabTextColors(
+                    adjustAlpha(activeInactiveColors.inactiveColor(), UNFOCUSED_ALPHA),
+                    activeInactiveColors.activeColor());
+              }
             });
   }
 
@@ -72,29 +75,36 @@ final class AestheticTabLayout extends TabLayout {
     bgModeSubscription =
         Aesthetic.get()
             .tabLayoutBackgroundMode()
-            .compose(distinctToMainThread())
+            .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                mode -> {
-                  if (bgColorSubscription != null) {
-                    bgColorSubscription.unsubscribe();
-                  }
-                  switch (mode) {
-                    case TabLayoutIndicatorMode.PRIMARY:
-                      bgColorSubscription =
-                          Aesthetic.get()
-                              .colorPrimary()
-                              .compose(distinctToMainThread())
-                              .subscribe(this::setBackgroundColor, onErrorLogAndRethrow());
-                      break;
-                    case TabLayoutIndicatorMode.ACCENT:
-                      bgColorSubscription =
-                          Aesthetic.get()
-                              .colorAccent()
-                              .compose(distinctToMainThread())
-                              .subscribe(this::setBackgroundColor, onErrorLogAndRethrow());
-                      break;
-                    default:
-                      throw new IllegalStateException("Unimplemented bg mode: " + mode);
+                new Action1<Integer>() {
+                  @Override
+                  public void call(Integer mode) {
+                    if (bgColorSubscription != null) {
+                      bgColorSubscription.unsubscribe();
+                    }
+                    switch (mode) {
+                      case TabLayoutIndicatorMode.PRIMARY:
+                        bgColorSubscription =
+                            Aesthetic.get()
+                                .colorPrimary()
+                                .compose(Rx.<Integer>distinctToMainThread())
+                                .subscribe(
+                                    ViewBackgroundAction.create(AestheticTabLayout.this),
+                                    onErrorLogAndRethrow());
+                        break;
+                      case TabLayoutIndicatorMode.ACCENT:
+                        bgColorSubscription =
+                            Aesthetic.get()
+                                .colorAccent()
+                                .compose(Rx.<Integer>distinctToMainThread())
+                                .subscribe(
+                                    ViewBackgroundAction.create(AestheticTabLayout.this),
+                                    onErrorLogAndRethrow());
+                        break;
+                      default:
+                        throw new IllegalStateException("Unimplemented bg mode: " + mode);
+                    }
                   }
                 },
                 onErrorLogAndRethrow());
@@ -102,31 +112,46 @@ final class AestheticTabLayout extends TabLayout {
     indicatorModeSubscription =
         Aesthetic.get()
             .tabLayoutIndicatorMode()
-            .compose(distinctToMainThread())
+            .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                mode -> {
-                  if (indicatorColorSubscription != null) {
-                    indicatorColorSubscription.unsubscribe();
-                  }
-                  switch (mode) {
-                    case TabLayoutIndicatorMode.PRIMARY:
-                      indicatorColorSubscription =
-                          Aesthetic.get()
-                              .colorPrimary()
-                              .compose(distinctToMainThread())
-                              .subscribe(
-                                  this::setSelectedTabIndicatorColor, onErrorLogAndRethrow());
-                      break;
-                    case TabLayoutIndicatorMode.ACCENT:
-                      indicatorColorSubscription =
-                          Aesthetic.get()
-                              .colorAccent()
-                              .compose(distinctToMainThread())
-                              .subscribe(
-                                  this::setSelectedTabIndicatorColor, onErrorLogAndRethrow());
-                      break;
-                    default:
-                      throw new IllegalStateException("Unimplemented bg mode: " + mode);
+                new Action1<Integer>() {
+                  @Override
+                  public void call(Integer mode) {
+                    if (indicatorColorSubscription != null) {
+                      indicatorColorSubscription.unsubscribe();
+                    }
+                    switch (mode) {
+                      case TabLayoutIndicatorMode.PRIMARY:
+                        indicatorColorSubscription =
+                            Aesthetic.get()
+                                .colorPrimary()
+                                .compose(Rx.<Integer>distinctToMainThread())
+                                .subscribe(
+                                    new Action1<Integer>() {
+                                      @Override
+                                      public void call(Integer color) {
+                                        setSelectedTabIndicatorColor(color);
+                                      }
+                                    },
+                                    onErrorLogAndRethrow());
+                        break;
+                      case TabLayoutIndicatorMode.ACCENT:
+                        indicatorColorSubscription =
+                            Aesthetic.get()
+                                .colorAccent()
+                                .compose(Rx.<Integer>distinctToMainThread())
+                                .subscribe(
+                                    new Action1<Integer>() {
+                                      @Override
+                                      public void call(Integer color) {
+                                        setSelectedTabIndicatorColor(color);
+                                      }
+                                    },
+                                    onErrorLogAndRethrow());
+                        break;
+                      default:
+                        throw new IllegalStateException("Unimplemented bg mode: " + mode);
+                    }
                   }
                 },
                 onErrorLogAndRethrow());

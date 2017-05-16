@@ -6,9 +6,9 @@ import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
@@ -62,19 +62,26 @@ final class AestheticEditText extends AppCompatEditText {
                 ViewUtil.getObservableForResId(
                     getContext(), backgroundResId, Aesthetic.get().colorAccent()),
                 Aesthetic.get().isDark(),
-                ColorIsDarkState::create)
-            .compose(distinctToMainThread())
-            .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
+                ColorIsDarkState.creator())
+            .compose(Rx.<ColorIsDarkState>distinctToMainThread())
+            .subscribe(
+                new Action1<ColorIsDarkState>() {
+                  @Override
+                  public void call(ColorIsDarkState colorIsDarkState) {
+                    invalidateColors(colorIsDarkState);
+                  }
+                },
+                onErrorLogAndRethrow()));
     subscriptions.add(
         ViewUtil.getObservableForResId(
                 getContext(), textColorResId, Aesthetic.get().textColorPrimary())
-            .compose(distinctToMainThread())
-            .subscribe(this::setTextColor, onErrorLogAndRethrow()));
+            .compose(Rx.<Integer>distinctToMainThread())
+            .subscribe(ViewTextColorAction.create(this), onErrorLogAndRethrow()));
     subscriptions.add(
         ViewUtil.getObservableForResId(
                 getContext(), textColorHintResId, Aesthetic.get().textColorSecondary())
-            .compose(distinctToMainThread())
-            .subscribe(this::setTextColor, onErrorLogAndRethrow()));
+            .compose(Rx.<Integer>distinctToMainThread())
+            .subscribe(ViewHintTextColorAction.create(this), onErrorLogAndRethrow()));
   }
 
   @Override

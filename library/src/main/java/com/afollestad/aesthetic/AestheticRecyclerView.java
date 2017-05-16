@@ -5,8 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import rx.Subscription;
+import rx.functions.Action1;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
@@ -36,8 +36,15 @@ final class AestheticRecyclerView extends RecyclerView {
     subscription =
         Aesthetic.get()
             .colorAccent()
-            .compose(distinctToMainThread())
-            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
+            .compose(Rx.<Integer>distinctToMainThread())
+            .subscribe(
+                new Action1<Integer>() {
+                  @Override
+                  public void call(Integer color) {
+                    invalidateColors(color);
+                  }
+                },
+                onErrorLogAndRethrow());
   }
 
   @Override

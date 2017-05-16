@@ -5,9 +5,9 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
@@ -50,14 +50,21 @@ final class AestheticCheckBox extends AppCompatCheckBox {
                 ViewUtil.getObservableForResId(
                     getContext(), backgroundResId, Aesthetic.get().colorAccent()),
                 Aesthetic.get().isDark(),
-                ColorIsDarkState::create)
-            .compose(distinctToMainThread())
-            .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
+                ColorIsDarkState.creator())
+            .compose(Rx.<ColorIsDarkState>distinctToMainThread())
+            .subscribe(
+                new Action1<ColorIsDarkState>() {
+                  @Override
+                  public void call(ColorIsDarkState colorIsDarkState) {
+                    invalidateColors(colorIsDarkState);
+                  }
+                },
+                onErrorLogAndRethrow()));
     subscriptions.add(
         Aesthetic.get()
             .textColorPrimary()
-            .compose(distinctToMainThread())
-            .subscribe(this::setTextColor));
+            .compose(Rx.<Integer>distinctToMainThread())
+            .subscribe(ViewTextColorAction.create(this)));
   }
 
   @Override

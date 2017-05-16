@@ -1,7 +1,6 @@
 package com.afollestad.aesthetic;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
@@ -9,7 +8,6 @@ import android.util.AttributeSet;
 import rx.Observable;
 import rx.Subscription;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
@@ -45,8 +43,8 @@ final class AestheticImageButton extends AppCompatImageButton {
     Observable<Integer> obs = ViewUtil.getObservableForResId(getContext(), backgroundResId, null);
     if (obs != null) {
       bgSubscription =
-          obs.compose(distinctToMainThread())
-              .subscribe(this::setBackgroundColor, onErrorLogAndRethrow());
+          obs.compose(Rx.<Integer>distinctToMainThread())
+              .subscribe(ViewBackgroundAction.create(this), onErrorLogAndRethrow());
     }
   }
 

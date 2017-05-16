@@ -23,8 +23,9 @@ import java.lang.reflect.Field;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Func2;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
@@ -131,13 +132,22 @@ final class AestheticCoordinatorLayout extends CoordinatorLayout
           Observable.combineLatest(
                   toolbar.colorUpdated(),
                   Aesthetic.get().colorIconTitle(toolbar.colorUpdated()),
-                  Pair::create)
-              .compose(distinctToMainThread())
+                  new Func2<Integer, ActiveInactiveColors, Pair<Integer, ActiveInactiveColors>>() {
+                    @Override
+                    public Pair<Integer, ActiveInactiveColors> call(
+                        Integer integer, ActiveInactiveColors activeInactiveColors) {
+                      return Pair.create(integer, activeInactiveColors);
+                    }
+                  })
+              .compose(Rx.<Pair<Integer, ActiveInactiveColors>>distinctToMainThread())
               .subscribe(
-                  result -> {
-                    toolbarColor = result.first;
-                    iconTextColors = result.second;
-                    invalidateColors();
+                  new Action1<Pair<Integer, ActiveInactiveColors>>() {
+                    @Override
+                    public void call(Pair<Integer, ActiveInactiveColors> result) {
+                      toolbarColor = result.first;
+                      iconTextColors = result.second;
+                      invalidateColors();
+                    }
                   },
                   onErrorLogAndRethrow());
     }
@@ -146,11 +156,14 @@ final class AestheticCoordinatorLayout extends CoordinatorLayout
       statusBarColorSubscription =
           Aesthetic.get()
               .colorStatusBar()
-              .compose(distinctToMainThread())
+              .compose(Rx.<Integer>distinctToMainThread())
               .subscribe(
-                  color -> {
-                    collapsingToolbarLayout.setContentScrimColor(color);
-                    collapsingToolbarLayout.setStatusBarScrimColor(color);
+                  new Action1<Integer>() {
+                    @Override
+                    public void call(Integer color) {
+                      collapsingToolbarLayout.setContentScrimColor(color);
+                      collapsingToolbarLayout.setStatusBarScrimColor(color);
+                    }
                   },
                   onErrorLogAndRethrow());
     }

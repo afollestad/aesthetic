@@ -5,8 +5,8 @@ import android.util.AttributeSet;
 import android.widget.ListView;
 
 import rx.Subscription;
+import rx.functions.Action1;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
@@ -36,8 +36,15 @@ final class AestheticListView extends ListView {
     subscription =
         Aesthetic.get()
             .colorAccent()
-            .compose(distinctToMainThread())
-            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
+            .compose(Rx.<Integer>distinctToMainThread())
+            .subscribe(
+                new Action1<Integer>() {
+                  @Override
+                  public void call(Integer color) {
+                    invalidateColors(color);
+                  }
+                },
+                onErrorLogAndRethrow());
   }
 
   @Override

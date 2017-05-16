@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -25,9 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.isColorLight;
 import static com.afollestad.aesthetic.Util.resolveColor;
@@ -153,56 +156,85 @@ public class Aesthetic {
       return;
     }
     instance.context = activity;
+    instance.isResumed = true;
+
     if (instance.subs != null) {
       instance.subs.unsubscribe();
     }
     instance.subs = new CompositeSubscription();
     subscribeBackgroundListeners();
+
     instance.subs.add(
         instance
             .colorPrimary()
-            .compose(distinctToMainThread())
+            .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                color -> Util.setTaskDescriptionColor(instance.context, color),
-                onErrorLogAndRethrow()));
-    instance.subs.add(
-        instance
-            .activityTheme()
-            .compose(distinctToMainThread())
-            .subscribe(
-                themeId -> {
-                  if (instance.lastActivityTheme == themeId) {
-                    return;
+                new Action1<Integer>() {
+                  @Override
+                  public void call(Integer color) {
+                    Util.setTaskDescriptionColor(instance.context, color);
                   }
-                  instance.lastActivityTheme = themeId;
-                  instance.context.recreate();
                 },
                 onErrorLogAndRethrow()));
     instance.subs.add(
         instance
-            .colorStatusBar()
-            .compose(distinctToMainThread())
-            .subscribe(color -> instance.invalidateStatusBar(), onErrorLogAndRethrow()));
-    instance.subs.add(
-        instance
-            .colorNavigationBar()
-            .compose(distinctToMainThread())
+            .activityTheme()
+            .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                color -> setNavBarColorCompat(instance.context, color), onErrorLogAndRethrow()));
+                new Action1<Integer>() {
+                  @Override
+                  public void call(Integer themeId) {
+                    if (instance.lastActivityTheme == themeId) {
+                      return;
+                    }
+                    instance.lastActivityTheme = themeId;
+                    instance.context.recreate();
+                  }
+                },
+                onErrorLogAndRethrow()));
     instance.subs.add(
-        instance
-            .colorWindowBackground()
-            .compose(distinctToMainThread())
+        Observable.combineLatest(
+                instance.colorStatusBar(),
+                instance.lightStatusBarMode(),
+                new Func2<Integer, Integer, Pair<Integer, Integer>>() {
+                  @Override
+                  public Pair<Integer, Integer> call(Integer integer, Integer integer2) {
+                    return Pair.create(integer, integer2);
+                  }
+                })
+            .compose(Rx.<Pair<Integer, Integer>>distinctToMainThread())
             .subscribe(
-                color ->
-                    instance.context.getWindow().setBackgroundDrawable(new ColorDrawable(color)),
+                new Action1<Pair<Integer, Integer>>() {
+                  @Override
+                  public void call(Pair<Integer, Integer> result) {
+                    instance.invalidateStatusBar();
+                  }
+                },
                 onErrorLogAndRethrow()));
     instance.subs.add(
         instance
-            .lightStatusBarMode()
-            .compose(distinctToMainThread())
-            .subscribe(color -> instance.invalidateStatusBar(), onErrorLogAndRethrow()));
-    instance.isResumed = true;
+            .colorNavigationBar()
+            .compose(Rx.<Integer>distinctToMainThread())
+            .subscribe(
+                new Action1<Integer>() {
+                  @Override
+                  public void call(Integer color) {
+                    setNavBarColorCompat(instance.context, color);
+                  }
+                },
+                onErrorLogAndRethrow()));
+    instance.subs.add(
+        instance
+            .colorWindowBackground()
+            .compose(Rx.<Integer>distinctToMainThread())
+            .subscribe(
+                new Action1<Integer>() {
+                  @Override
+                  public void call(Integer color) {
+                    instance.context.getWindow().setBackgroundDrawable(new ColorDrawable(color));
+                  }
+                },
+                onErrorLogAndRethrow()));
   }
 
   public static boolean isFirstTime() {
@@ -221,7 +253,7 @@ public class Aesthetic {
       for (ViewObservablePair pair : pairs) {
         instance.backgroundSubscriptions.add(
             pair.observable()
-                .compose(distinctToMainThread())
+                .compose(Rx.<Integer>distinctToMainThread())
                 .subscribe(ViewBackgroundSubscriber.create(pair.view())));
       }
     }
@@ -237,7 +269,7 @@ public class Aesthetic {
     if (isResumed) {
       instance.backgroundSubscriptions.add(
           colorObservable
-              .compose(distinctToMainThread())
+              .compose(Rx.<Integer>distinctToMainThread())
               .subscribe(ViewBackgroundSubscriber.create(view)));
     }
   }
@@ -288,7 +320,13 @@ public class Aesthetic {
     return rxPrefs
         .getInteger(key, 0)
         .asObservable()
-        .filter(next -> next != 0 && next != lastActivityTheme);
+        .filter(
+            new Func1<Integer, Boolean>() {
+              @Override
+              public Boolean call(Integer next) {
+                return next != 0 && next != lastActivityTheme;
+              }
+            });
   }
 
   @CheckResult
@@ -613,7 +651,12 @@ public class Aesthetic {
                               ? R.color.ate_icon_dark_inactive
                               : R.color.ate_icon_light_inactive))
                   .asObservable(),
-              ActiveInactiveColors::create);
+              new Func2<Integer, Integer, ActiveInactiveColors>() {
+                @Override
+                public ActiveInactiveColors call(Integer integer, Integer integer2) {
+                  return ActiveInactiveColors.create(integer, integer2);
+                }
+              });
         });
   }
 

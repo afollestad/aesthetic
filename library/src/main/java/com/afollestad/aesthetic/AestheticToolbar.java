@@ -9,9 +9,9 @@ import android.util.AttributeSet;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
 import static com.afollestad.aesthetic.Util.setOverflowButtonColor;
@@ -83,9 +83,16 @@ final class AestheticToolbar extends Toolbar {
         Observable.combineLatest(
                 Aesthetic.get().colorPrimary(),
                 Aesthetic.get().colorIconTitle(null),
-                BgIconColorState::create)
-            .compose(distinctToMainThread())
-            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
+                BgIconColorState.creator())
+            .compose(Rx.<BgIconColorState>distinctToMainThread())
+            .subscribe(
+                new Action1<BgIconColorState>() {
+                  @Override
+                  public void call(BgIconColorState bgIconColorState) {
+                    invalidateColors(bgIconColorState);
+                  }
+                },
+                onErrorLogAndRethrow());
   }
 
   @Override

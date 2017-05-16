@@ -3,6 +3,8 @@ package com.afollestad.aesthetic;
 import android.support.annotation.ColorInt;
 import android.support.annotation.RestrictTo;
 
+import rx.functions.Func2;
+
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /** @author Aidan Follestad (afollestad) */
@@ -28,5 +30,14 @@ final class ColorIsDarkState {
 
   boolean isDark() {
     return isDark;
+  }
+
+  static Func2<Integer, Boolean, ColorIsDarkState> creator() {
+    return new Func2<Integer, Boolean, ColorIsDarkState>() {
+      @Override
+      public ColorIsDarkState call(Integer integer, Boolean aBoolean) {
+        return ColorIsDarkState.create(integer, aBoolean);
+      }
+    };
   }
 }

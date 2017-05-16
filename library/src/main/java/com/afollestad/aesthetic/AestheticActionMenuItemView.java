@@ -8,8 +8,8 @@ import android.util.AttributeSet;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
 
@@ -41,7 +41,14 @@ final class AestheticActionMenuItemView extends ActionMenuItemView {
         .colorIconTitle(null)
         .observeOn(AndroidSchedulers.mainThread())
         .take(1)
-        .subscribe(color -> setIcon(icon, color.toEnabledSl()), onErrorLogAndRethrow());
+        .subscribe(
+            new Action1<ActiveInactiveColors>() {
+              @Override
+              public void call(ActiveInactiveColors colors) {
+                setIcon(icon, colors.toEnabledSl());
+              }
+            },
+            onErrorLogAndRethrow());
   }
 
   public void setIcon(final Drawable icon, ColorStateList colors) {
@@ -55,11 +62,14 @@ final class AestheticActionMenuItemView extends ActionMenuItemView {
     subscription =
         Aesthetic.get()
             .colorIconTitle(null)
-            .compose(distinctToMainThread())
+            .compose(Rx.<ActiveInactiveColors>distinctToMainThread())
             .subscribe(
-                colors -> {
-                  if (icon != null) {
-                    setIcon(icon, colors.toEnabledSl());
+                new Action1<ActiveInactiveColors>() {
+                  @Override
+                  public void call(ActiveInactiveColors colors) {
+                    if (icon != null) {
+                      setIcon(icon, colors.toEnabledSl());
+                    }
                   }
                 },
                 onErrorLogAndRethrow());

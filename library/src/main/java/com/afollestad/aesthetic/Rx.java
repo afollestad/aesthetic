@@ -14,13 +14,21 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 final class Rx {
 
   static Action1<Throwable> onErrorLogAndRethrow() {
-    return t -> {
-      t.printStackTrace();
-      throw Exceptions.propagate(t);
+    return new Action1<Throwable>() {
+      @Override
+      public void call(Throwable throwable) {
+        throwable.printStackTrace();
+        throw Exceptions.propagate(throwable);
+      }
     };
   }
 
   static <T> Observable.Transformer<T, T> distinctToMainThread() {
-    return obs -> obs.observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged();
+    return new Observable.Transformer<T, T>() {
+      @Override
+      public Observable<T> call(Observable<T> obs) {
+        return obs.observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged();
+      }
+    };
   }
 }

@@ -7,13 +7,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.util.Pair;
 import android.util.AttributeSet;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action1;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
@@ -35,9 +34,9 @@ final class AestheticNavigationView extends NavigationView {
     super(context, attrs, defStyleAttr);
   }
 
-  private void invalidateColors(Pair<Integer, Boolean> pair) {
-    int selectedColor = pair.first;
-    boolean isDark = pair.second;
+  private void invalidateColors(ColorIsDarkState state) {
+    int selectedColor = state.color();
+    boolean isDark = state.isDark();
     int baseColor = isDark ? Color.WHITE : Color.BLACK;
     int unselectedIconColor = Util.adjustAlpha(baseColor, .54f);
     int unselectedTextColor = Util.adjustAlpha(baseColor, .87f);
@@ -75,30 +74,47 @@ final class AestheticNavigationView extends NavigationView {
     modeSubscription =
         Aesthetic.get()
             .navigationViewMode()
-            .compose(distinctToMainThread())
+            .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                mode -> {
-                  switch (mode) {
-                    case NavigationViewMode.SELECTED_PRIMARY:
-                      colorSubscription =
-                          Observable.combineLatest(
-                                  Aesthetic.get().colorPrimary(),
-                                  Aesthetic.get().isDark(),
-                                  Pair::create)
-                              .compose(distinctToMainThread())
-                              .subscribe(this::invalidateColors, onErrorLogAndRethrow());
-                      break;
-                    case NavigationViewMode.SELECTED_ACCENT:
-                      colorSubscription =
-                          Observable.combineLatest(
-                                  Aesthetic.get().colorAccent(),
-                                  Aesthetic.get().isDark(),
-                                  Pair::create)
-                              .compose(distinctToMainThread())
-                              .subscribe(this::invalidateColors, onErrorLogAndRethrow());
-                      break;
-                    default:
-                      throw new IllegalStateException("Unknown nav view mode: " + mode);
+                new Action1<Integer>() {
+                  @Override
+                  public void call(Integer mode) {
+                    switch (mode) {
+                      case NavigationViewMode.SELECTED_PRIMARY:
+                        colorSubscription =
+                            Observable.combineLatest(
+                                    Aesthetic.get().colorPrimary(),
+                                    Aesthetic.get().isDark(),
+                                    ColorIsDarkState.creator())
+                                .compose(Rx.<ColorIsDarkState>distinctToMainThread())
+                                .subscribe(
+                                    new Action1<ColorIsDarkState>() {
+                                      @Override
+                                      public void call(ColorIsDarkState colorIsDarkState) {
+                                        invalidateColors(colorIsDarkState);
+                                      }
+                                    },
+                                    onErrorLogAndRethrow());
+                        break;
+                      case NavigationViewMode.SELECTED_ACCENT:
+                        colorSubscription =
+                            Observable.combineLatest(
+                                    Aesthetic.get().colorAccent(),
+                                    Aesthetic.get().isDark(),
+                                    ColorIsDarkState.creator())
+                                .compose(Rx.<ColorIsDarkState>distinctToMainThread())
+                                .subscribe(
+                                    new Action1<ColorIsDarkState>() {
+                                      @Override
+                                      public void call(ColorIsDarkState colorIsDarkState) {
+                                        invalidateColors(colorIsDarkState);
+                                      }
+                                    },
+                                    onErrorLogAndRethrow());
+                        break;
+                      default:
+                        throw new IllegalStateException("Unknown nav view mode: " + mode);
+                    }
                   }
                 },
                 onErrorLogAndRethrow());

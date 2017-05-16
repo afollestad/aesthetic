@@ -35,7 +35,6 @@ final class ViewBackgroundSubscriber extends Subscriber<Integer> {
 
   @Override
   public void onNext(Integer color) {
-    Log.d("ViewBackgroundSub", "Set " + view.getClass().getName() + " background.");
     if (view instanceof CardView) {
       ((CardView) view).setCardBackgroundColor(color);
     } else {

@@ -1,14 +1,12 @@
 package com.afollestad.aesthetic;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 import rx.Observable;
 import rx.Subscription;
 
-import static com.afollestad.aesthetic.Rx.distinctToMainThread;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
@@ -46,7 +44,8 @@ final class AestheticTextView extends AppCompatTextView {
             getContext(), textColorResId, Aesthetic.get().textColorSecondary());
     //noinspection ConstantConditions
     subscription =
-        obs.compose(distinctToMainThread()).subscribe(this::setTextColor, onErrorLogAndRethrow());
+        obs.compose(Rx.<Integer>distinctToMainThread())
+            .subscribe(ViewTextColorAction.create(this), onErrorLogAndRethrow());
   }
 
   @Override
