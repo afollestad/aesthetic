@@ -519,8 +519,8 @@ public class MyCustomTextView extends AestheticTextView {
 }
 ```
 
-Otherwise, you can subscribe to theme properties such as `Aesthetic.get().primaryColor()` and manually 
- update your custom view, as seen in [Retrieving Current Values](https://github.com/afollestad/aesthetic#retrieving-current-values).
+Otherwise, you can subscribe to theme properties (as seen in [Retrieving Current Values](https://github.com/afollestad/aesthetic#retrieving-current-values)) 
+such as `Aesthetic.get().primaryColor()` and manually update your custom view (text color or whatever else).
 
 ---
 
