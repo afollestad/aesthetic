@@ -511,7 +511,9 @@ public class MyCustomTextView extends TextView {
 ```
 
 You may want your view to be themable. You can do so by swapping out `TextView` with `AestheticTextView`,
-or any of other Aesthetic's view classes.
+or any of Aesthetic's other view classes beginning with "Aesthetic". These views handle subscribing 
+and unsubscribing from theme property updates automatically; they also handle pulling out attributes 
+such as `android:textColor` or `android:backgroundColor`.
 
 ```java
 public class MyCustomTextView extends AestheticTextView {
