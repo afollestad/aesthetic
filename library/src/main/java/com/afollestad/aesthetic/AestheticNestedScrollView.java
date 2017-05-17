@@ -10,7 +10,7 @@ import rx.functions.Action1;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticNestedScrollView extends NestedScrollView {
+public class AestheticNestedScrollView extends NestedScrollView {
 
   private Subscription subscription;
 

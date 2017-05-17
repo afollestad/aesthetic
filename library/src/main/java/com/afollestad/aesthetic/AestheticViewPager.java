@@ -12,7 +12,6 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
-@RestrictTo(LIBRARY_GROUP)
 public class AestheticViewPager extends ViewPager {
 
   private Subscription subscription;

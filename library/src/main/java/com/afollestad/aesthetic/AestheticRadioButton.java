@@ -12,7 +12,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticRadioButton extends AppCompatRadioButton {
+public class AestheticRadioButton extends AppCompatRadioButton {
 
   private CompositeSubscription subscriptions;
   private int backgroundResId;

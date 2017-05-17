@@ -12,7 +12,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticImageButton extends AppCompatImageButton {
+public class AestheticImageButton extends AppCompatImageButton {
 
   private Subscription bgSubscription;
   private int backgroundResId;

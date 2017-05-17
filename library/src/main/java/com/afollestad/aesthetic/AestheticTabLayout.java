@@ -15,7 +15,7 @@ import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
 import static com.afollestad.aesthetic.Util.adjustAlpha;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticTabLayout extends TabLayout {
+public class AestheticTabLayout extends TabLayout {
 
   private static final float UNFOCUSED_ALPHA = 0.5f;
   private Subscription indicatorModeSubscription;

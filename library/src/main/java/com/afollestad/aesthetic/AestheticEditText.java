@@ -12,7 +12,7 @@ import rx.subscriptions.CompositeSubscription;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticEditText extends AppCompatEditText {
+public class AestheticEditText extends AppCompatEditText {
 
   private CompositeSubscription subscriptions;
   private int backgroundResId;

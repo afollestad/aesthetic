@@ -12,7 +12,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticSwitchCompat extends SwitchCompat {
+public class AestheticSwitchCompat extends SwitchCompat {
 
   private Subscription subscription;
   private int backgroundResId;

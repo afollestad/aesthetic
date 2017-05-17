@@ -17,7 +17,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressWarnings("RestrictedApi")
-final class AestheticNavigationView extends NavigationView {
+public class AestheticNavigationView extends NavigationView {
 
   private Subscription modeSubscription;
   private Subscription colorSubscription;

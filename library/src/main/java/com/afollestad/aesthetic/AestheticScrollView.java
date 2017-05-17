@@ -10,7 +10,7 @@ import rx.functions.Action1;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticScrollView extends ScrollView {
+public class AestheticScrollView extends ScrollView {
 
   private Subscription subscription;
 

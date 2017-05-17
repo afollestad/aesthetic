@@ -12,7 +12,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticSpinner extends AppCompatSpinner {
+public class AestheticSpinner extends AppCompatSpinner {
 
   private Subscription subscription;
   private int backgroundResId;

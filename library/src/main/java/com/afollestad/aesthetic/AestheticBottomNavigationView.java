@@ -17,7 +17,7 @@ import rx.subscriptions.CompositeSubscription;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticBottomNavigationView extends BottomNavigationView {
+public class AestheticBottomNavigationView extends BottomNavigationView {
 
   private Subscription modesSubscription;
   private CompositeSubscription colorSubscriptions;

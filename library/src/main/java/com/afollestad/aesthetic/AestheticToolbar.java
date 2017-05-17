@@ -17,7 +17,7 @@ import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
 import static com.afollestad.aesthetic.Util.setOverflowButtonColor;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticToolbar extends Toolbar {
+public class AestheticToolbar extends Toolbar {
 
   private BgIconColorState lastState;
   private Subscription subscription;

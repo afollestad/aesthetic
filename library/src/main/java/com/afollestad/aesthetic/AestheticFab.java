@@ -15,7 +15,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticFab extends FloatingActionButton {
+public class AestheticFab extends FloatingActionButton {
 
   private Subscription subscription;
   private int backgroundResId;

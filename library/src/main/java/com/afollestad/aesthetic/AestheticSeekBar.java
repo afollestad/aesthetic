@@ -12,7 +12,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticSeekBar extends AppCompatSeekBar {
+public class AestheticSeekBar extends AppCompatSeekBar {
 
   private Subscription subscription;
   private int backgroundResId;

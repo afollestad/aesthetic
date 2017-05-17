@@ -32,7 +32,8 @@ You can download an <a href="https://raw.githubusercontent.com/afollestad/aesthe
 7. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
 8. [Bottom Navigation](https://github.com/afollestad/aesthetic#bottom-navigation)
 9. [Collapsible Toolbar Layouts](https://github.com/afollestad/aesthetic#collapsible-toolbar-layouts)
-10. [Activity Keys](https://github.com/afollestad/aesthetic#activity-keys)
+10. [Custom View Subclasses](https://github.com/afollestad/aesthetic#custom-view-subclasses)
+11. [Activity Keys](https://github.com/afollestad/aesthetic#activity-keys)
 
 ---
 
@@ -46,7 +47,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
     // ... other dependencies
-    compile 'com.afollestad:aesthetic:0.3.0'
+    compile 'com.afollestad:aesthetic:0.3.1'
 }
 ```
 
@@ -496,6 +497,24 @@ Collapsible Toolbar Layouts are automatically themed, as seen in the sample proj
 In the sample layout, we automatically set the accent color to the expanded view. The collapsed toolbar 
 color will match whatever color your toolbar uses, which is the primary theme color by default. You'll 
 also notice that the icons and title color are updated to be most visible over the background color.
+
+---
+
+# Custom View Subclasses
+
+If you have custom view subclasses in your app, such as:
+
+```java
+public class MyCustomTextView extends TextView {
+  ...
+}
+```
+
+You may want your view to be themable. You can do so by swapping out `TextView` with `AestheticTextView`,
+or any of other Aesthetic's view classes.
+
+Otherwise, you can subscribe to theme properties such as `Aesthetic.get().primaryColor()` and manually 
+ update your custom view.
 
 ---
 

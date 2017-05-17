@@ -13,7 +13,7 @@ import rx.functions.Action1;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticDrawerLayout extends DrawerLayout {
+public class AestheticDrawerLayout extends DrawerLayout {
 
   private ActiveInactiveColors lastState;
   private DrawerArrowDrawable arrowDrawable;

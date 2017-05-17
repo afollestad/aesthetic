@@ -29,7 +29,7 @@ import rx.functions.Func2;
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticCoordinatorLayout extends CoordinatorLayout
+public class AestheticCoordinatorLayout extends CoordinatorLayout
     implements AppBarLayout.OnOffsetChangedListener {
 
   private Subscription toolbarColorSubscription;

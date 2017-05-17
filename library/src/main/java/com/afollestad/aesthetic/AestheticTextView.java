@@ -11,7 +11,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticTextView extends AppCompatTextView {
+public class AestheticTextView extends AppCompatTextView {
 
   private Subscription subscription;
   private int textColorResId;

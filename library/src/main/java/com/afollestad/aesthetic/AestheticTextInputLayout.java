@@ -12,7 +12,7 @@ import static com.afollestad.aesthetic.Util.adjustAlpha;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
 /** @author Aidan Follestad (afollestad) */
-final class AestheticTextInputLayout extends TextInputLayout {
+public class AestheticTextInputLayout extends TextInputLayout {
 
   private CompositeSubscription subs;
   private int backgroundResId;
