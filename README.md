@@ -513,8 +513,14 @@ public class MyCustomTextView extends TextView {
 You may want your view to be themable. You can do so by swapping out `TextView` with `AestheticTextView`,
 or any of other Aesthetic's view classes.
 
+```java
+public class MyCustomTextView extends AestheticTextView {
+  ...
+}
+```
+
 Otherwise, you can subscribe to theme properties such as `Aesthetic.get().primaryColor()` and manually 
- update your custom view.
+ update your custom view, as seen in [Retrieving Current Values](https://github.com/afollestad/aesthetic#retrieving-current-values).
 
 ---
 
