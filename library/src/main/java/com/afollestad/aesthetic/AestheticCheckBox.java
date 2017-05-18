@@ -4,9 +4,10 @@ import android.content.Context;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
 
-import rx.Observable;
-import rx.functions.Action1;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
@@ -14,7 +15,7 @@ import static com.afollestad.aesthetic.Util.resolveResId;
 /** @author Aidan Follestad (afollestad) */
 public class AestheticCheckBox extends AppCompatCheckBox {
 
-  private CompositeSubscription subscriptions;
+  private CompositeDisposable subscriptions;
   private int backgroundResId;
 
   public AestheticCheckBox(Context context) {
@@ -44,7 +45,8 @@ public class AestheticCheckBox extends AppCompatCheckBox {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    subscriptions = new CompositeSubscription();
+    subscriptions = new CompositeDisposable();
+    //noinspection ConstantConditions
     subscriptions.add(
         Observable.combineLatest(
                 ViewUtil.getObservableForResId(
@@ -53,9 +55,9 @@ public class AestheticCheckBox extends AppCompatCheckBox {
                 ColorIsDarkState.creator())
             .compose(Rx.<ColorIsDarkState>distinctToMainThread())
             .subscribe(
-                new Action1<ColorIsDarkState>() {
+                new Consumer<ColorIsDarkState>() {
                   @Override
-                  public void call(ColorIsDarkState colorIsDarkState) {
+                  public void accept(@NonNull ColorIsDarkState colorIsDarkState) {
                     invalidateColors(colorIsDarkState);
                   }
                 },
@@ -69,7 +71,7 @@ public class AestheticCheckBox extends AppCompatCheckBox {
 
   @Override
   protected void onDetachedFromWindow() {
-    subscriptions.unsubscribe();
+    subscriptions.clear();
     super.onDetachedFromWindow();
   }
 }

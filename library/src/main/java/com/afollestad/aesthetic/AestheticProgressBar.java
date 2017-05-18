@@ -3,16 +3,17 @@ package com.afollestad.aesthetic;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
-import rx.Subscription;
-import rx.functions.Action1;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticProgressBar extends MaterialProgressBar {
 
-  private Subscription subscription;
+  private Disposable subscription;
 
   public AestheticProgressBar(Context context) {
     super(context);
@@ -38,9 +39,9 @@ public class AestheticProgressBar extends MaterialProgressBar {
             .colorAccent()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer color) {
+                  public void accept(@NonNull Integer color) {
                     invalidateColors(color);
                   }
                 },
@@ -49,7 +50,7 @@ public class AestheticProgressBar extends MaterialProgressBar {
 
   @Override
   protected void onDetachedFromWindow() {
-    subscription.unsubscribe();
+    subscription.dispose();
     super.onDetachedFromWindow();
   }
 }

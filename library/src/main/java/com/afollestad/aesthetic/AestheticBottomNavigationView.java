@@ -8,19 +8,20 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func3;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function3;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticBottomNavigationView extends BottomNavigationView {
 
-  private Subscription modesSubscription;
-  private CompositeSubscription colorSubscriptions;
+  private Disposable modesSubscription;
+  private CompositeDisposable colorSubscriptions;
   private int lastTextIconColor;
 
   public AestheticBottomNavigationView(Context context) {
@@ -68,9 +69,9 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
 
   private void onState(State state) {
     if (colorSubscriptions != null) {
-      colorSubscriptions.unsubscribe();
+      colorSubscriptions.clear();
     }
-    colorSubscriptions = new CompositeSubscription();
+    colorSubscriptions = new CompositeDisposable();
 
     switch (state.iconTextMode) {
       case BottomNavIconTextMode.SELECTED_PRIMARY:
@@ -79,9 +80,9 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
                 .colorPrimary()
                 .compose(Rx.<Integer>distinctToMainThread())
                 .subscribe(
-                    new Action1<Integer>() {
+                    new Consumer<Integer>() {
                       @Override
-                      public void call(Integer color) {
+                      public void accept(@NonNull Integer color) {
                         lastTextIconColor = color;
                       }
                     },
@@ -93,9 +94,9 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
                 .colorAccent()
                 .compose(Rx.<Integer>distinctToMainThread())
                 .subscribe(
-                    new Action1<Integer>() {
+                    new Consumer<Integer>() {
                       @Override
-                      public void call(Integer color) {
+                      public void accept(@NonNull Integer color) {
                         lastTextIconColor = color;
                       }
                     },
@@ -155,9 +156,9 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
                 State.creator())
             .compose(Rx.<State>distinctToMainThread())
             .subscribe(
-                new Action1<State>() {
+                new Consumer<State>() {
                   @Override
-                  public void call(State state) {
+                  public void accept(@android.support.annotation.NonNull State state) {
                     onState(state);
                   }
                 },
@@ -166,8 +167,8 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
 
   @Override
   protected void onDetachedFromWindow() {
-    modesSubscription.unsubscribe();
-    colorSubscriptions.unsubscribe();
+    modesSubscription.dispose();
+    colorSubscriptions.clear();
     super.onDetachedFromWindow();
   }
 
@@ -188,10 +189,10 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
       return new State(bgMode, iconTextMode, isDark);
     }
 
-    static Func3<Integer, Integer, Boolean, State> creator() {
-      return new Func3<Integer, Integer, Boolean, State>() {
+    static Function3<Integer, Integer, Boolean, State> creator() {
+      return new Function3<Integer, Integer, Boolean, State>() {
         @Override
-        public State call(Integer integer, Integer integer2, Boolean aBoolean) {
+        public State apply(Integer integer, Integer integer2, Boolean aBoolean) {
           return State.create(integer, integer2, aBoolean);
         }
       };

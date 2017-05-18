@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 
-import rx.Observable;
-import rx.Subscription;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
@@ -14,7 +14,7 @@ import static com.afollestad.aesthetic.Util.resolveResId;
 /** @author Aidan Follestad (afollestad) */
 public class AestheticImageButton extends AppCompatImageButton {
 
-  private Subscription bgSubscription;
+  private Disposable bgSubscription;
   private int backgroundResId;
 
   public AestheticImageButton(Context context) {
@@ -51,7 +51,7 @@ public class AestheticImageButton extends AppCompatImageButton {
   @Override
   protected void onDetachedFromWindow() {
     if (bgSubscription != null) {
-      bgSubscription.unsubscribe();
+      bgSubscription.dispose();
     }
     super.onDetachedFromWindow();
   }

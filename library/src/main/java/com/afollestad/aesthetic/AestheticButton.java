@@ -6,9 +6,10 @@ import android.graphics.Color;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.functions.Action1;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
@@ -16,7 +17,7 @@ import static com.afollestad.aesthetic.Util.resolveResId;
 /** @author Aidan Follestad (afollestad) */
 public class AestheticButton extends AppCompatButton {
 
-  private Subscription subscription;
+  private Disposable subscription;
   private int backgroundResId;
 
   public AestheticButton(Context context) {
@@ -56,6 +57,7 @@ public class AestheticButton extends AppCompatButton {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
+    //noinspection ConstantConditions
     subscription =
         Observable.combineLatest(
                 ViewUtil.getObservableForResId(
@@ -64,9 +66,9 @@ public class AestheticButton extends AppCompatButton {
                 ColorIsDarkState.creator())
             .compose(Rx.<ColorIsDarkState>distinctToMainThread())
             .subscribe(
-                new Action1<ColorIsDarkState>() {
+                new Consumer<ColorIsDarkState>() {
                   @Override
-                  public void call(ColorIsDarkState colorIsDarkState) {
+                  public void accept(@NonNull ColorIsDarkState colorIsDarkState) {
                     invalidateColors(colorIsDarkState);
                   }
                 },
@@ -75,7 +77,7 @@ public class AestheticButton extends AppCompatButton {
 
   @Override
   protected void onDetachedFromWindow() {
-    subscription.unsubscribe();
+    subscription.dispose();
     super.onDetachedFromWindow();
   }
 }

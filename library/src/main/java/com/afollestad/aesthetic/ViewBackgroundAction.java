@@ -4,13 +4,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.view.View;
 
-import rx.functions.Action1;
+import io.reactivex.functions.Consumer;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)
-class ViewBackgroundAction implements Action1<Integer> {
+class ViewBackgroundAction implements Consumer<Integer> {
 
   private final View view;
 
@@ -23,7 +23,7 @@ class ViewBackgroundAction implements Action1<Integer> {
   }
 
   @Override
-  public void call(Integer color) {
+  public void accept(@io.reactivex.annotations.NonNull Integer color) {
     if (view != null) {
       view.setBackgroundColor(color);
     }

@@ -16,7 +16,7 @@ import android.widget.ImageView;
 
 import java.lang.reflect.Field;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;

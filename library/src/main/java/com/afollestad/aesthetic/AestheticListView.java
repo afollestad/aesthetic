@@ -4,15 +4,16 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ListView;
 
-import rx.Subscription;
-import rx.functions.Action1;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticListView extends ListView {
 
-  private Subscription subscription;
+  private Disposable subscription;
 
   public AestheticListView(Context context) {
     super(context);
@@ -38,9 +39,9 @@ public class AestheticListView extends ListView {
             .colorAccent()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer color) {
+                  public void accept(@NonNull Integer color) {
                     invalidateColors(color);
                   }
                 },
@@ -49,7 +50,7 @@ public class AestheticListView extends ListView {
 
   @Override
   protected void onDetachedFromWindow() {
-    subscription.unsubscribe();
+    subscription.dispose();
     super.onDetachedFromWindow();
   }
 }

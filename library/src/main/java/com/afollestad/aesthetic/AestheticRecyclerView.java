@@ -4,15 +4,16 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-import rx.Subscription;
-import rx.functions.Action1;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticRecyclerView extends RecyclerView {
 
-  private Subscription subscription;
+  private Disposable subscription;
 
   public AestheticRecyclerView(Context context) {
     super(context);
@@ -38,9 +39,9 @@ public class AestheticRecyclerView extends RecyclerView {
             .colorAccent()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer color) {
+                  public void accept(@NonNull Integer color) {
                     invalidateColors(color);
                   }
                 },
@@ -49,7 +50,7 @@ public class AestheticRecyclerView extends RecyclerView {
 
   @Override
   protected void onDetachedFromWindow() {
-    subscription.unsubscribe();
+    subscription.dispose();
     super.onDetachedFromWindow();
   }
 }

@@ -4,15 +4,16 @@ import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 
-import rx.Subscription;
-import rx.functions.Action1;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticViewPager extends ViewPager {
 
-  private Subscription subscription;
+  private Disposable subscription;
 
   public AestheticViewPager(Context context) {
     super(context);
@@ -34,9 +35,9 @@ public class AestheticViewPager extends ViewPager {
             .colorAccent()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer color) {
+                  public void accept(@NonNull Integer color) {
                     invalidateColors(color);
                   }
                 },
@@ -45,7 +46,7 @@ public class AestheticViewPager extends ViewPager {
 
   @Override
   protected void onDetachedFromWindow() {
-    subscription.unsubscribe();
+    subscription.dispose();
     super.onDetachedFromWindow();
   }
 }

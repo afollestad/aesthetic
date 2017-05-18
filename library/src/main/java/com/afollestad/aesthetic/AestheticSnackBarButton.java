@@ -4,12 +4,12 @@ import android.content.Context;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 
-import rx.Subscription;
+import io.reactivex.disposables.Disposable;
 
 /** @author Aidan Follestad (afollestad) */
 final class AestheticSnackBarButton extends AppCompatButton {
 
-  private Subscription subscription;
+  private Disposable subscription;
 
   public AestheticSnackBarButton(Context context) {
     super(context);
@@ -35,7 +35,7 @@ final class AestheticSnackBarButton extends AppCompatButton {
 
   @Override
   protected void onDetachedFromWindow() {
-    subscription.unsubscribe();
+    subscription.dispose();
     super.onDetachedFromWindow();
   }
 }

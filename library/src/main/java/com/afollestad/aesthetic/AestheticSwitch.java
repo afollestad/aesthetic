@@ -4,9 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Switch;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.functions.Action1;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
@@ -14,7 +15,7 @@ import static com.afollestad.aesthetic.Util.resolveResId;
 /** @author Aidan Follestad (afollestad) */
 public class AestheticSwitch extends Switch {
 
-  private Subscription subscription;
+  private Disposable subscription;
   private int backgroundResId;
 
   public AestheticSwitch(Context context) {
@@ -44,6 +45,7 @@ public class AestheticSwitch extends Switch {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
+    //noinspection ConstantConditions
     subscription =
         Observable.combineLatest(
                 ViewUtil.getObservableForResId(
@@ -52,9 +54,9 @@ public class AestheticSwitch extends Switch {
                 ColorIsDarkState.creator())
             .compose(Rx.<ColorIsDarkState>distinctToMainThread())
             .subscribe(
-                new Action1<ColorIsDarkState>() {
+                new Consumer<ColorIsDarkState>() {
                   @Override
-                  public void call(ColorIsDarkState state) {
+                  public void accept(@NonNull ColorIsDarkState state) {
                     invalidateColors(state);
                   }
                 },
@@ -63,7 +65,7 @@ public class AestheticSwitch extends Switch {
 
   @Override
   protected void onDetachedFromWindow() {
-    subscription.unsubscribe();
+    subscription.dispose();
     super.onDetachedFromWindow();
   }
 }

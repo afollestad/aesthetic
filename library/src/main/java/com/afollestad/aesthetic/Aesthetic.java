@@ -20,16 +20,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.f2prateek.rx.preferences.RxSharedPreferences;
+import com.f2prateek.rx.preferences2.RxSharedPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.functions.Func2;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.isColorLight;
@@ -38,7 +40,7 @@ import static com.afollestad.aesthetic.Util.setLightStatusBarCompat;
 import static com.afollestad.aesthetic.Util.setNavBarColorCompat;
 
 /** @author Aidan Follestad (afollestad) */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Aesthetic {
 
   private static final String PREFS_NAME = "[aesthetic-prefs]";
@@ -70,9 +72,9 @@ public class Aesthetic {
   private static Aesthetic instance;
 
   private final ArrayMap<Object, List<ViewObservablePair>> backgroundSubscriberViews;
-  private CompositeSubscription backgroundSubscriptions;
+  private CompositeDisposable backgroundSubscriptions;
 
-  private CompositeSubscription subs;
+  private CompositeDisposable subs;
   private AppCompatActivity context;
   private SharedPreferences prefs;
   private SharedPreferences.Editor editor;
@@ -138,10 +140,10 @@ public class Aesthetic {
     }
     instance.isResumed = false;
     if (instance.subs != null) {
-      instance.subs.unsubscribe();
+      instance.subs.clear();
     }
     if (instance.backgroundSubscriptions != null) {
-      instance.backgroundSubscriptions.unsubscribe();
+      instance.backgroundSubscriptions.clear();
     }
     if (instance.context != null
         && instance.context.getClass().getName().equals(activity.getClass().getName())) {
@@ -161,9 +163,9 @@ public class Aesthetic {
     instance.isResumed = true;
 
     if (instance.subs != null) {
-      instance.subs.unsubscribe();
+      instance.subs.clear();
     }
-    instance.subs = new CompositeSubscription();
+    instance.subs = new CompositeDisposable();
     subscribeBackgroundListeners();
 
     instance.subs.add(
@@ -171,9 +173,9 @@ public class Aesthetic {
             .colorPrimary()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer color) {
+                  public void accept(@io.reactivex.annotations.NonNull Integer color) {
                     Util.setTaskDescriptionColor(instance.context, color);
                   }
                 },
@@ -183,9 +185,9 @@ public class Aesthetic {
             .activityTheme()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer themeId) {
+                  public void accept(@io.reactivex.annotations.NonNull Integer themeId) {
                     if (instance.lastActivityTheme == themeId) {
                       return;
                     }
@@ -198,17 +200,18 @@ public class Aesthetic {
         Observable.combineLatest(
                 instance.colorStatusBar(),
                 instance.lightStatusBarMode(),
-                new Func2<Integer, Integer, Pair<Integer, Integer>>() {
+                new BiFunction<Integer, Integer, Pair<Integer, Integer>>() {
                   @Override
-                  public Pair<Integer, Integer> call(Integer integer, Integer integer2) {
+                  public Pair<Integer, Integer> apply(Integer integer, Integer integer2) {
                     return Pair.create(integer, integer2);
                   }
                 })
             .compose(Rx.<Pair<Integer, Integer>>distinctToMainThread())
             .subscribe(
-                new Action1<Pair<Integer, Integer>>() {
+                new Consumer<Pair<Integer, Integer>>() {
                   @Override
-                  public void call(Pair<Integer, Integer> result) {
+                  public void accept(
+                      @io.reactivex.annotations.NonNull Pair<Integer, Integer> result) {
                     instance.invalidateStatusBar();
                   }
                 },
@@ -218,9 +221,9 @@ public class Aesthetic {
             .colorNavigationBar()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer color) {
+                  public void accept(@io.reactivex.annotations.NonNull Integer color) {
                     setNavBarColorCompat(instance.context, color);
                   }
                 },
@@ -230,9 +233,9 @@ public class Aesthetic {
             .colorWindowBackground()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer color) {
+                  public void accept(@io.reactivex.annotations.NonNull Integer color) {
                     instance.context.getWindow().setBackgroundDrawable(new ColorDrawable(color));
                   }
                 },
@@ -247,16 +250,16 @@ public class Aesthetic {
 
   private static void subscribeBackgroundListeners() {
     if (instance.backgroundSubscriptions != null) {
-      instance.backgroundSubscriptions.unsubscribe();
+      instance.backgroundSubscriptions.clear();
     }
-    instance.backgroundSubscriptions = new CompositeSubscription();
+    instance.backgroundSubscriptions = new CompositeDisposable();
     if (instance.backgroundSubscriberViews.size() > 0) {
       List<ViewObservablePair> pairs = instance.backgroundSubscriberViews.get(instance.context);
       for (ViewObservablePair pair : pairs) {
         instance.backgroundSubscriptions.add(
             pair.observable()
                 .compose(Rx.<Integer>distinctToMainThread())
-                .subscribe(ViewBackgroundSubscriber.create(pair.view())));
+                .subscribeWith(ViewBackgroundSubscriber.create(pair.view())));
       }
     }
   }
@@ -272,7 +275,7 @@ public class Aesthetic {
       instance.backgroundSubscriptions.add(
           colorObservable
               .compose(Rx.<Integer>distinctToMainThread())
-              .subscribe(ViewBackgroundSubscriber.create(view)));
+              .subscribeWith(ViewBackgroundSubscriber.create(view)));
     }
   }
 
@@ -323,9 +326,9 @@ public class Aesthetic {
         .getInteger(key, 0)
         .asObservable()
         .filter(
-            new Func1<Integer, Boolean>() {
+            new Predicate<Integer>() {
               @Override
-              public Boolean call(Integer next) {
+              public boolean test(@io.reactivex.annotations.NonNull Integer next) throws Exception {
                 return next != 0 && next != lastActivityTheme;
               }
             });
@@ -606,9 +609,10 @@ public class Aesthetic {
   public Observable<Integer> colorCardViewBackground() {
     return isDark()
         .flatMap(
-            new Func1<Boolean, Observable<Integer>>() {
+            new Function<Boolean, ObservableSource<Integer>>() {
               @Override
-              public Observable<Integer> call(Boolean isDark) {
+              public ObservableSource<Integer> apply(
+                  @io.reactivex.annotations.NonNull Boolean isDark) throws Exception {
                 return rxPrefs
                     .getInteger(
                         KEY_CARD_VIEW_BG_COLOR,
@@ -638,9 +642,10 @@ public class Aesthetic {
       backgroundObservable = Aesthetic.get().colorPrimary();
     }
     return backgroundObservable.flatMap(
-        new Func1<Integer, Observable<ActiveInactiveColors>>() {
+        new Function<Integer, ObservableSource<ActiveInactiveColors>>() {
           @Override
-          public Observable<ActiveInactiveColors> call(Integer primaryColor) {
+          public ObservableSource<ActiveInactiveColors> apply(
+              @io.reactivex.annotations.NonNull Integer primaryColor) throws Exception {
             final boolean isDark = !isColorLight(primaryColor);
             return Observable.zip(
                 rxPrefs
@@ -658,9 +663,12 @@ public class Aesthetic {
                                 ? R.color.ate_icon_dark_inactive
                                 : R.color.ate_icon_light_inactive))
                     .asObservable(),
-                new Func2<Integer, Integer, ActiveInactiveColors>() {
+                new BiFunction<Integer, Integer, ActiveInactiveColors>() {
                   @Override
-                  public ActiveInactiveColors call(Integer integer, Integer integer2) {
+                  public ActiveInactiveColors apply(
+                      @io.reactivex.annotations.NonNull Integer integer,
+                      @io.reactivex.annotations.NonNull Integer integer2)
+                      throws Exception {
                     return ActiveInactiveColors.create(integer, integer2);
                   }
                 });
@@ -694,14 +702,17 @@ public class Aesthetic {
   public Observable<Integer> snackbarTextColor() {
     return isDark()
         .flatMap(
-            new Func1<Boolean, Observable<Integer>>() {
+            new Function<Boolean, ObservableSource<Integer>>() {
               @Override
-              public Observable<Integer> call(Boolean isDark) {
+              public ObservableSource<Integer> apply(
+                  @io.reactivex.annotations.NonNull Boolean isDark) throws Exception {
                 return (isDark ? textColorPrimary() : textColorPrimaryInverse())
                     .flatMap(
-                        new Func1<Integer, Observable<Integer>>() {
+                        new Function<Integer, ObservableSource<Integer>>() {
                           @Override
-                          public Observable<Integer> call(Integer defaultTextColor) {
+                          public ObservableSource<Integer> apply(
+                              @io.reactivex.annotations.NonNull Integer defaultTextColor)
+                              throws Exception {
                             return rxPrefs
                                 .getInteger(KEY_SNACKBAR_TEXT, defaultTextColor)
                                 .asObservable();
@@ -726,9 +737,10 @@ public class Aesthetic {
   public Observable<Integer> snackbarActionTextColor() {
     return colorAccent()
         .flatMap(
-            new Func1<Integer, Observable<Integer>>() {
+            new Function<Integer, ObservableSource<Integer>>() {
               @Override
-              public Observable<Integer> call(Integer accentColor) {
+              public ObservableSource<Integer> apply(
+                  @io.reactivex.annotations.NonNull Integer accentColor) throws Exception {
                 return rxPrefs.getInteger(KEY_SNACKBAR_ACTION_TEXT, accentColor).asObservable();
               }
             });

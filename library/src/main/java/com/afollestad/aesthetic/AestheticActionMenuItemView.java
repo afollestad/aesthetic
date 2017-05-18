@@ -6,9 +6,10 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.view.menu.ActionMenuItemView;
 import android.util.AttributeSet;
 
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
@@ -18,7 +19,7 @@ import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
 final class AestheticActionMenuItemView extends ActionMenuItemView {
 
   private Drawable icon;
-  private Subscription subscription;
+  private Disposable subscription;
 
   public AestheticActionMenuItemView(Context context) {
     super(context);
@@ -42,9 +43,9 @@ final class AestheticActionMenuItemView extends ActionMenuItemView {
         .observeOn(AndroidSchedulers.mainThread())
         .take(1)
         .subscribe(
-            new Action1<ActiveInactiveColors>() {
+            new Consumer<ActiveInactiveColors>() {
               @Override
-              public void call(ActiveInactiveColors colors) {
+              public void accept(@NonNull ActiveInactiveColors colors) {
                 setIcon(icon, colors.toEnabledSl());
               }
             },
@@ -64,9 +65,9 @@ final class AestheticActionMenuItemView extends ActionMenuItemView {
             .colorIconTitle(null)
             .compose(Rx.<ActiveInactiveColors>distinctToMainThread())
             .subscribe(
-                new Action1<ActiveInactiveColors>() {
+                new Consumer<ActiveInactiveColors>() {
                   @Override
-                  public void call(ActiveInactiveColors colors) {
+                  public void accept(@NonNull ActiveInactiveColors colors) {
                     if (icon != null) {
                       setIcon(icon, colors.toEnabledSl());
                     }
@@ -77,7 +78,7 @@ final class AestheticActionMenuItemView extends ActionMenuItemView {
 
   @Override
   protected void onDetachedFromWindow() {
-    subscription.unsubscribe();
+    subscription.dispose();
     super.onDetachedFromWindow();
   }
 }

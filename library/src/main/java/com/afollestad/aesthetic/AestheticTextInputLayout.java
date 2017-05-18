@@ -4,8 +4,9 @@ import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
 
-import rx.functions.Action1;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.adjustAlpha;
@@ -14,7 +15,7 @@ import static com.afollestad.aesthetic.Util.resolveResId;
 /** @author Aidan Follestad (afollestad) */
 public class AestheticTextInputLayout extends TextInputLayout {
 
-  private CompositeSubscription subs;
+  private CompositeDisposable subs;
   private int backgroundResId;
 
   public AestheticTextInputLayout(Context context) {
@@ -45,15 +46,15 @@ public class AestheticTextInputLayout extends TextInputLayout {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    subs = new CompositeSubscription();
+    subs = new CompositeDisposable();
     subs.add(
         Aesthetic.get()
             .textColorSecondary()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer color) {
+                  public void accept(@NonNull Integer color) {
                     TextInputLayoutUtil.setHint(
                         AestheticTextInputLayout.this, adjustAlpha(color, 0.7f));
                   }
@@ -63,9 +64,9 @@ public class AestheticTextInputLayout extends TextInputLayout {
         ViewUtil.getObservableForResId(getContext(), backgroundResId, Aesthetic.get().colorAccent())
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer color) {
+                  public void accept(@NonNull Integer color) {
                     invalidateColors(color);
                   }
                 },
@@ -74,7 +75,7 @@ public class AestheticTextInputLayout extends TextInputLayout {
 
   @Override
   protected void onDetachedFromWindow() {
-    subs.unsubscribe();
+    subs.clear();
     super.onDetachedFromWindow();
   }
 }

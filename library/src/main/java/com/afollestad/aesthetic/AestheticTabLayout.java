@@ -6,9 +6,10 @@ import android.support.annotation.ColorInt;
 import android.support.design.widget.TabLayout;
 import android.util.AttributeSet;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.functions.Action1;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
@@ -18,10 +19,10 @@ import static com.afollestad.aesthetic.Util.adjustAlpha;
 public class AestheticTabLayout extends TabLayout {
 
   private static final float UNFOCUSED_ALPHA = 0.5f;
-  private Subscription indicatorModeSubscription;
-  private Subscription bgModeSubscription;
-  private Subscription indicatorColorSubscription;
-  private Subscription bgColorSubscription;
+  private Disposable indicatorModeSubscription;
+  private Disposable bgModeSubscription;
+  private Disposable indicatorColorSubscription;
+  private Disposable bgColorSubscription;
 
   public AestheticTabLayout(Context context) {
     super(context);
@@ -57,9 +58,9 @@ public class AestheticTabLayout extends TabLayout {
         .colorIconTitle(Observable.just(color))
         .take(1)
         .subscribe(
-            new Action1<ActiveInactiveColors>() {
+            new Consumer<ActiveInactiveColors>() {
               @Override
-              public void call(ActiveInactiveColors activeInactiveColors) {
+              public void accept(@NonNull ActiveInactiveColors activeInactiveColors) {
                 setIconsColor(activeInactiveColors.activeColor());
                 setTabTextColors(
                     adjustAlpha(activeInactiveColors.inactiveColor(), UNFOCUSED_ALPHA),
@@ -77,11 +78,11 @@ public class AestheticTabLayout extends TabLayout {
             .tabLayoutBackgroundMode()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer mode) {
+                  public void accept(@NonNull Integer mode) {
                     if (bgColorSubscription != null) {
-                      bgColorSubscription.unsubscribe();
+                      bgColorSubscription.dispose();
                     }
                     switch (mode) {
                       case TabLayoutIndicatorMode.PRIMARY:
@@ -114,11 +115,11 @@ public class AestheticTabLayout extends TabLayout {
             .tabLayoutIndicatorMode()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer mode) {
+                  public void accept(@NonNull Integer mode) {
                     if (indicatorColorSubscription != null) {
-                      indicatorColorSubscription.unsubscribe();
+                      indicatorColorSubscription.dispose();
                     }
                     switch (mode) {
                       case TabLayoutIndicatorMode.PRIMARY:
@@ -127,9 +128,9 @@ public class AestheticTabLayout extends TabLayout {
                                 .colorPrimary()
                                 .compose(Rx.<Integer>distinctToMainThread())
                                 .subscribe(
-                                    new Action1<Integer>() {
+                                    new Consumer<Integer>() {
                                       @Override
-                                      public void call(Integer color) {
+                                      public void accept(@NonNull Integer color) {
                                         setSelectedTabIndicatorColor(color);
                                       }
                                     },
@@ -141,9 +142,9 @@ public class AestheticTabLayout extends TabLayout {
                                 .colorAccent()
                                 .compose(Rx.<Integer>distinctToMainThread())
                                 .subscribe(
-                                    new Action1<Integer>() {
+                                    new Consumer<Integer>() {
                                       @Override
-                                      public void call(Integer color) {
+                                      public void accept(@NonNull Integer color) {
                                         setSelectedTabIndicatorColor(color);
                                       }
                                     },
@@ -160,16 +161,16 @@ public class AestheticTabLayout extends TabLayout {
   @Override
   protected void onDetachedFromWindow() {
     if (bgModeSubscription != null) {
-      bgModeSubscription.unsubscribe();
+      bgModeSubscription.dispose();
     }
     if (indicatorModeSubscription != null) {
-      indicatorModeSubscription.unsubscribe();
+      indicatorModeSubscription.dispose();
     }
     if (bgColorSubscription != null) {
-      bgColorSubscription.unsubscribe();
+      bgColorSubscription.dispose();
     }
     if (indicatorColorSubscription != null) {
-      indicatorColorSubscription.unsubscribe();
+      indicatorColorSubscription.dispose();
     }
     super.onDetachedFromWindow();
   }

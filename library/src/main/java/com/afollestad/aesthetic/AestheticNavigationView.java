@@ -9,9 +9,10 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.functions.Action1;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
@@ -19,8 +20,8 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 @SuppressWarnings("RestrictedApi")
 public class AestheticNavigationView extends NavigationView {
 
-  private Subscription modeSubscription;
-  private Subscription colorSubscription;
+  private Disposable modeSubscription;
+  private Disposable colorSubscription;
 
   public AestheticNavigationView(Context context) {
     super(context);
@@ -76,9 +77,9 @@ public class AestheticNavigationView extends NavigationView {
             .navigationViewMode()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Action1<Integer>() {
+                new Consumer<Integer>() {
                   @Override
-                  public void call(Integer mode) {
+                  public void accept(@NonNull Integer mode) {
                     switch (mode) {
                       case NavigationViewMode.SELECTED_PRIMARY:
                         colorSubscription =
@@ -88,9 +89,10 @@ public class AestheticNavigationView extends NavigationView {
                                     ColorIsDarkState.creator())
                                 .compose(Rx.<ColorIsDarkState>distinctToMainThread())
                                 .subscribe(
-                                    new Action1<ColorIsDarkState>() {
+                                    new Consumer<ColorIsDarkState>() {
                                       @Override
-                                      public void call(ColorIsDarkState colorIsDarkState) {
+                                      public void accept(
+                                          @NonNull ColorIsDarkState colorIsDarkState) {
                                         invalidateColors(colorIsDarkState);
                                       }
                                     },
@@ -104,9 +106,10 @@ public class AestheticNavigationView extends NavigationView {
                                     ColorIsDarkState.creator())
                                 .compose(Rx.<ColorIsDarkState>distinctToMainThread())
                                 .subscribe(
-                                    new Action1<ColorIsDarkState>() {
+                                    new Consumer<ColorIsDarkState>() {
                                       @Override
-                                      public void call(ColorIsDarkState colorIsDarkState) {
+                                      public void accept(
+                                          @NonNull ColorIsDarkState colorIsDarkState) {
                                         invalidateColors(colorIsDarkState);
                                       }
                                     },
@@ -123,10 +126,10 @@ public class AestheticNavigationView extends NavigationView {
   @Override
   protected void onDetachedFromWindow() {
     if (modeSubscription != null) {
-      modeSubscription.unsubscribe();
+      modeSubscription.dispose();
     }
     if (colorSubscription != null) {
-      colorSubscription.unsubscribe();
+      colorSubscription.dispose();
     }
     super.onDetachedFromWindow();
   }

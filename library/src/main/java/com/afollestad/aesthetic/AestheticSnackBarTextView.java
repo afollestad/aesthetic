@@ -4,14 +4,14 @@ import android.content.Context;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
-import rx.Subscription;
+import io.reactivex.disposables.Disposable;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 /** @author Aidan Follestad (afollestad) */
 final class AestheticSnackBarTextView extends AppCompatTextView {
 
-  private Subscription subscription;
+  private Disposable subscription;
 
   public AestheticSnackBarTextView(Context context) {
     super(context);
@@ -37,7 +37,7 @@ final class AestheticSnackBarTextView extends AppCompatTextView {
 
   @Override
   protected void onDetachedFromWindow() {
-    subscription.unsubscribe();
+    subscription.dispose();
     super.onDetachedFromWindow();
   }
 }

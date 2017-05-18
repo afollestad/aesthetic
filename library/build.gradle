@@ -38,9 +38,9 @@ dependencies {
     compile 'com.android.support:design:' + versions.supportLib
     compile 'com.android.support:recyclerview-v7:' + versions.supportLib
 
-    compile 'io.reactivex:rxjava:' + versions.rxJava
-    compile 'io.reactivex:rxandroid:' + versions.rxAndroid
-    compile 'com.f2prateek.rx.preferences:rx-preferences:' + versions.rxPrefs
+    compile 'io.reactivex.rxjava2:rxjava:' + versions.rxJava
+    compile 'io.reactivex.rxjava2:rxandroid:' + versions.rxAndroid
+    compile 'com.f2prateek.rx.preferences2:rx-preferences:' + versions.rxPrefs
 
     compile 'me.zhanghai.android.materialprogressbar:library:' + versions.mdProgressBar
 }

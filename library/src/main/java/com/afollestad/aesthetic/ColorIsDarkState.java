@@ -3,7 +3,7 @@ package com.afollestad.aesthetic;
 import android.support.annotation.ColorInt;
 import android.support.annotation.RestrictTo;
 
-import rx.functions.Func2;
+import io.reactivex.functions.BiFunction;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
@@ -23,10 +23,10 @@ final class ColorIsDarkState {
     return new ColorIsDarkState(color, isDark);
   }
 
-  static Func2<Integer, Boolean, ColorIsDarkState> creator() {
-    return new Func2<Integer, Boolean, ColorIsDarkState>() {
+  static BiFunction<Integer, Boolean, ColorIsDarkState> creator() {
+    return new BiFunction<Integer, Boolean, ColorIsDarkState>() {
       @Override
-      public ColorIsDarkState call(Integer integer, Boolean aBoolean) {
+      public ColorIsDarkState apply(Integer integer, Boolean aBoolean) {
         return ColorIsDarkState.create(integer, aBoolean);
       }
     };

@@ -7,8 +7,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.util.AttributeSet;
 
-import rx.Subscription;
-import rx.functions.Action1;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
@@ -17,7 +17,7 @@ public class AestheticDrawerLayout extends DrawerLayout {
 
   private ActiveInactiveColors lastState;
   private DrawerArrowDrawable arrowDrawable;
-  private Subscription subscription;
+  private Disposable subscription;
 
   public AestheticDrawerLayout(Context context) {
     super(context);
@@ -49,9 +49,10 @@ public class AestheticDrawerLayout extends DrawerLayout {
             .colorIconTitle(null)
             .compose(Rx.<ActiveInactiveColors>distinctToMainThread())
             .subscribe(
-                new Action1<ActiveInactiveColors>() {
+                new Consumer<ActiveInactiveColors>() {
                   @Override
-                  public void call(ActiveInactiveColors colors) {
+                  public void accept(
+                      @io.reactivex.annotations.NonNull ActiveInactiveColors colors) {
                     invalidateColor(colors);
                   }
                 },
@@ -60,7 +61,7 @@ public class AestheticDrawerLayout extends DrawerLayout {
 
   @Override
   protected void onDetachedFromWindow() {
-    subscription.unsubscribe();
+    subscription.dispose();
     super.onDetachedFromWindow();
   }
 

@@ -4,9 +4,10 @@ import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.util.AttributeSet;
 
-import rx.Observable;
-import rx.functions.Action1;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.Util.resolveResId;
@@ -14,7 +15,7 @@ import static com.afollestad.aesthetic.Util.resolveResId;
 /** @author Aidan Follestad (afollestad) */
 public class AestheticTextInputEditText extends TextInputEditText {
 
-  private CompositeSubscription subs;
+  private CompositeDisposable subs;
   private int backgroundResId;
   private ColorIsDarkState lastState;
 
@@ -47,7 +48,7 @@ public class AestheticTextInputEditText extends TextInputEditText {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    subs = new CompositeSubscription();
+    subs = new CompositeDisposable();
     subs.add(
         Aesthetic.get()
             .textColorPrimary()
@@ -58,6 +59,7 @@ public class AestheticTextInputEditText extends TextInputEditText {
             .textColorSecondary()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(ViewHintTextColorAction.create(this), onErrorLogAndRethrow()));
+    //noinspection ConstantConditions
     subs.add(
         Observable.combineLatest(
                 ViewUtil.getObservableForResId(
@@ -66,9 +68,9 @@ public class AestheticTextInputEditText extends TextInputEditText {
                 ColorIsDarkState.creator())
             .compose(Rx.<ColorIsDarkState>distinctToMainThread())
             .subscribe(
-                new Action1<ColorIsDarkState>() {
+                new Consumer<ColorIsDarkState>() {
                   @Override
-                  public void call(ColorIsDarkState colorIsDarkState) {
+                  public void accept(@NonNull ColorIsDarkState colorIsDarkState) {
                     invalidateColors(colorIsDarkState);
                   }
                 },
@@ -77,7 +79,7 @@ public class AestheticTextInputEditText extends TextInputEditText {
 
   @Override
   protected void onDetachedFromWindow() {
-    subs.unsubscribe();
+    subs.clear();
     super.onDetachedFromWindow();
   }
 

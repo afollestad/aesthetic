@@ -3,7 +3,7 @@ package com.afollestad.aesthetic;
 import android.support.annotation.RestrictTo;
 import android.view.View;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 

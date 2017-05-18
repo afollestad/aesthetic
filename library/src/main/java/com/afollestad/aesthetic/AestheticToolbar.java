@@ -7,10 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.functions.Action1;
-import rx.subjects.PublishSubject;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.subjects.PublishSubject;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
@@ -20,7 +21,7 @@ import static com.afollestad.aesthetic.Util.setOverflowButtonColor;
 public class AestheticToolbar extends Toolbar {
 
   private BgIconColorState lastState;
-  private Subscription subscription;
+  private Disposable subscription;
   private PublishSubject<Integer> onColorUpdated;
 
   public AestheticToolbar(Context context) {
@@ -55,7 +56,7 @@ public class AestheticToolbar extends Toolbar {
   }
 
   public Observable<Integer> colorUpdated() {
-    return onColorUpdated.asObservable();
+    return onColorUpdated;
   }
 
   @Override
@@ -86,9 +87,9 @@ public class AestheticToolbar extends Toolbar {
                 BgIconColorState.creator())
             .compose(Rx.<BgIconColorState>distinctToMainThread())
             .subscribe(
-                new Action1<BgIconColorState>() {
+                new Consumer<BgIconColorState>() {
                   @Override
-                  public void call(BgIconColorState bgIconColorState) {
+                  public void accept(@NonNull BgIconColorState bgIconColorState) {
                     invalidateColors(bgIconColorState);
                   }
                 },
@@ -99,7 +100,7 @@ public class AestheticToolbar extends Toolbar {
   protected void onDetachedFromWindow() {
     lastState = null;
     onColorUpdated = null;
-    subscription.unsubscribe();
+    subscription.dispose();
     super.onDetachedFromWindow();
   }
 }

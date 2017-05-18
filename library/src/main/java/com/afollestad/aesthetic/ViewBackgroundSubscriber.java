@@ -5,14 +5,14 @@ import android.support.annotation.RestrictTo;
 import android.support.v7.widget.CardView;
 import android.view.View;
 
-import rx.Subscriber;
-import rx.exceptions.Exceptions;
+import io.reactivex.exceptions.Exceptions;
+import io.reactivex.observers.DisposableObserver;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)
-final class ViewBackgroundSubscriber extends Subscriber<Integer> {
+final class ViewBackgroundSubscriber extends DisposableObserver<Integer> {
 
   private final View view;
 
@@ -25,12 +25,12 @@ final class ViewBackgroundSubscriber extends Subscriber<Integer> {
   }
 
   @Override
-  public void onCompleted() {}
-
-  @Override
   public void onError(Throwable e) {
     throw Exceptions.propagate(e);
   }
+
+  @Override
+  public void onComplete() {}
 
   @Override
   public void onNext(Integer color) {

@@ -20,7 +20,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rx.functions.Action1;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 public class MainFragment extends Fragment {
@@ -54,9 +55,9 @@ public class MainFragment extends Fragment {
         .isDark()
         .take(1)
         .subscribe(
-            new Action1<Boolean>() {
+            new Consumer<Boolean>() {
               @Override
-              public void call(Boolean isDark) {
+              public void accept(@NonNull Boolean isDark) {
                 switchThemeView.setChecked(isDark);
               }
             });
