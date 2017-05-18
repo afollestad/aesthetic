@@ -12,7 +12,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-/** @author Aidan Follestad (afollestad) */
+/**
+ * @author Aidan Follestad (afollestad)
+ */
 public class SecondaryFragment extends Fragment {
 
   private Unbinder unbinder;
@@ -49,5 +51,10 @@ public class SecondaryFragment extends Fragment {
   @OnClick(R.id.bottom_tabs)
   public void onClickBottomTabs() {
     startActivity(new Intent(getActivity(), BottomNavActivity.class));
+  }
+
+  @OnClick(R.id.recycler_view)
+  public void onClickRecyclerView() {
+    startActivity(new Intent(getActivity(), RecyclerViewActivity.class));
   }
 }

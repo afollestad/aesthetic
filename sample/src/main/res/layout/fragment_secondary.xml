@@ -7,9 +7,23 @@
   android:padding="@dimen/content_inset">
 
   <Button
+    android:id="@+id/recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/recycler_view"/>
+
+  <Button
+    android:id="@+id/bottom_tabs"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/content_inset_quarter"
+    android:text="@string/bottom_tabs"/>
+
+  <Button
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/content_inset_quarter"
     android:text="@string/drawer_layout"/>
 
   <Button
@@ -18,12 +32,5 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/content_inset_quarter"
     android:text="@string/collapsing_toolbar_layout"/>
-
-  <Button
-    android:id="@+id/bottom_tabs"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/content_inset_quarter"
-    android:text="@string/bottom_tabs"/>
 
 </LinearLayout>

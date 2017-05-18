@@ -33,6 +33,10 @@
       android:name=".CoordinatorLayoutActivity"
       android:windowSoftInputMode="stateAlwaysHidden"/>
 
+    <activity
+      android:name=".RecyclerViewActivity"
+      android:windowSoftInputMode="stateAlwaysHidden"/>
+
   </application>
 
 </manifest>

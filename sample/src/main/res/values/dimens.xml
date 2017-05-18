@@ -4,6 +4,7 @@
   <dimen name="content_inset">16dp</dimen>
   <dimen name="content_inset_quarter">4dp</dimen>
   <dimen name="content_inset_half">8dp</dimen>
+  <dimen name="content_inset_less">12dp</dimen>
 
   <dimen name="text_size_title">24sp</dimen>
   <dimen name="text_size_body">16sp</dimen>
