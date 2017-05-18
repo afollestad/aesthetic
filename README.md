@@ -28,6 +28,7 @@ You can download an <a href="https://raw.githubusercontent.com/afollestad/aesthe
     8. [Window Background](https://github.com/afollestad/aesthetic#window-background)
 4. [View Backgrounds](https://github.com/afollestad/aesthetic#view-backgrounds)
 5. [Ignoring Views](https://github.com/afollestad/aesthetic#ignoring-views)
+5. [Snackbars](https://github.com/afollestad/aesthetic#snackbars)
 6. [Tab Layouts](https://github.com/afollestad/aesthetic#tab-layouts)
 7. [Drawer Layouts](https://github.com/afollestad/aesthetic#drawer-layouts)
 8. [Bottom Navigation](https://github.com/afollestad/aesthetic#bottom-navigation)
@@ -47,7 +48,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
     // ... other dependencies
-    compile 'com.afollestad:aesthetic:0.3.1'
+    compile 'com.afollestad:aesthetic:0.3.2'
 }
 ```
 
@@ -352,6 +353,23 @@ You could also use: `?colorPrimary`, `?colorPrimaryDark`, `?android:windowBackgr
 # Ignoring Views
 
 You can make this library ignore views from being themed by setting the view's tag to `:aesthetic_ignore`.
+
+---
+
+# Snackbars
+
+Snackbar theming is pretty simple. You can change the color of the message text and the color of the 
+(optional) action button.
+
+```java
+Aesthetic.get()
+    .snackbarTextColorRes(R.color.white)
+    .snackbarActionTextColorRes(R.color.md_blue)
+    .apply();
+```
+
+By default, the text color will match `textColorPrimary` when `isDark()` is true, or `textColorPrimaryInverse` 
+when `isDark()` is false. By default, the action text color will match `colorAccent()`.
 
 ---
 
