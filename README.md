@@ -361,6 +361,8 @@ You can make this library ignore views from being themed by setting the view's t
 Snackbar theming is pretty simple. You can change the color of the message text and the color of the 
 (optional) action button.
 
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/drawer_layout.png" />
+
 ```java
 Aesthetic.get()
     .snackbarTextColorRes(R.color.white)
