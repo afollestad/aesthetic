@@ -95,8 +95,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
     return "android.support.design.internal.NavigationMenuItemView".equals(name)
         || "ViewStub".equals(name)
         || "fragment".equals(name)
-        || "include".equals(name)
-        || "android.support.design.internal.NavigationMenuItemView".equals(name);
+        || "include".equals(name);
   }
 
   @Override
