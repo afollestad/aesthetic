@@ -63,6 +63,8 @@ public class Aesthetic {
   private static final String KEY_CARD_VIEW_BG_COLOR = "card_view_bg_color";
   private static final String KEY_ICON_TITLE_ACTIVE_COLOR = "icon_title_active_color";
   private static final String KEY_ICON_TITLE_INACTIVE_COLOR = "icon_title_inactive_color";
+  private static final String KEY_SNACKBAR_TEXT = "snackbar_text_color";
+  private static final String KEY_SNACKBAR_ACTION_TEXT = "snackbar_action_text_color";
 
   @SuppressLint("StaticFieldLeak")
   private static Aesthetic instance;
@@ -603,7 +605,6 @@ public class Aesthetic {
   @CheckResult
   public Observable<Integer> colorCardViewBackground() {
     return isDark()
-        .take(1)
         .flatMap(
             new Func1<Boolean, Observable<Integer>>() {
               @Override
@@ -687,6 +688,61 @@ public class Aesthetic {
   @CheckResult
   public Aesthetic colorIconTitleInactiveRes(@ColorRes int color) {
     return colorIconTitleActive(ContextCompat.getColor(context, color));
+  }
+
+  @CheckResult
+  public Observable<Integer> snackbarTextColor() {
+    return isDark()
+        .flatMap(
+            new Func1<Boolean, Observable<Integer>>() {
+              @Override
+              public Observable<Integer> call(Boolean isDark) {
+                return (isDark ? textColorPrimary() : textColorPrimaryInverse())
+                    .flatMap(
+                        new Func1<Integer, Observable<Integer>>() {
+                          @Override
+                          public Observable<Integer> call(Integer defaultTextColor) {
+                            return rxPrefs
+                                .getInteger(KEY_SNACKBAR_TEXT, defaultTextColor)
+                                .asObservable();
+                          }
+                        });
+              }
+            });
+  }
+
+  @CheckResult
+  public Aesthetic snackbarTextColor(@ColorInt int color) {
+    editor.putInt(KEY_SNACKBAR_TEXT, color);
+    return this;
+  }
+
+  @CheckResult
+  public Aesthetic snackbarTextColorRes(@ColorRes int color) {
+    return colorCardViewBackground(ContextCompat.getColor(context, color));
+  }
+
+  @CheckResult
+  public Observable<Integer> snackbarActionTextColor() {
+    return colorAccent()
+        .flatMap(
+            new Func1<Integer, Observable<Integer>>() {
+              @Override
+              public Observable<Integer> call(Integer accentColor) {
+                return rxPrefs.getInteger(KEY_SNACKBAR_ACTION_TEXT, accentColor).asObservable();
+              }
+            });
+  }
+
+  @CheckResult
+  public Aesthetic snackbarActionTextColor(@ColorInt int color) {
+    editor.putInt(KEY_SNACKBAR_ACTION_TEXT, color);
+    return this;
+  }
+
+  @CheckResult
+  public Aesthetic snackbarActionTextColorRes(@ColorRes int color) {
+    return colorCardViewBackground(ContextCompat.getColor(context, color));
   }
 
   public void apply() {

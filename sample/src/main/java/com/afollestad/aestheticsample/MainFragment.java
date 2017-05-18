@@ -2,12 +2,14 @@ package com.afollestad.aestheticsample;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
 
 import com.afollestad.aesthetic.Aesthetic;
@@ -23,12 +25,16 @@ import rx.functions.Action1;
 /** @author Aidan Follestad (afollestad) */
 public class MainFragment extends Fragment {
 
+  @BindView(R.id.root)
+  FrameLayout rootView;
+
   @BindView(R.id.switch_theme)
   SwitchCompat switchThemeView;
 
   @BindView(R.id.spinner)
   Spinner spinnerView;
 
+  private Snackbar snackbar;
   private Unbinder unbinder;
 
   @Nullable
@@ -168,5 +174,22 @@ public class MainFragment extends Fragment {
             .apply();
         break;
     }
+  }
+
+  @OnClick(R.id.fab)
+  public void onClickFab() {
+    if (snackbar != null) {
+      snackbar.dismiss();
+    }
+    snackbar = Snackbar.make(rootView, R.string.hello_world, Snackbar.LENGTH_LONG);
+    snackbar.setAction(
+        android.R.string.cancel,
+        new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            //no-op
+          }
+        });
+    snackbar.show();
   }
 }

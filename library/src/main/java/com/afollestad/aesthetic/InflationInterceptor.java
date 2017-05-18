@@ -101,6 +101,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
   @Override
   public View onCreateView(View parent, final String name, Context context, AttributeSet attrs) {
     View view = null;
+    final int viewId = resolveResId(context, attrs, android.R.attr.id);
 
     switch (name) {
       case "ImageView":
@@ -122,15 +123,23 @@ final class InflationInterceptor implements LayoutInflaterFactory {
 
       case "android.support.v7.widget.AppCompatTextView":
       case "TextView":
-        view = new AestheticTextView(context, attrs);
-        if (parent instanceof LinearLayout && view.getId() == android.R.id.message) {
-          // This is for a toast message
-          view = null;
+        if (viewId == R.id.snackbar_text) {
+          view = new AestheticSnackBarTextView(context, attrs);
+        } else {
+          view = new AestheticTextView(context, attrs);
+          if (parent instanceof LinearLayout && view.getId() == android.R.id.message) {
+            // This is for a toast message
+            view = null;
+          }
         }
         break;
       case "Button":
       case "android.support.v7.widget.AppCompatButton":
-        view = new AestheticButton(context, attrs);
+        if (viewId == R.id.snackbar_action) {
+          view = new AestheticSnackBarButton(context, attrs);
+        } else {
+          view = new AestheticButton(context, attrs);
+        }
         break;
       case "android.support.v7.widget.AppCompatCheckBox":
       case "CheckBox":
@@ -293,6 +302,13 @@ final class InflationInterceptor implements LayoutInflaterFactory {
           Aesthetic.get().addBackgroundSubscriber(view, obs);
         }
       }
+
+      String idName = "";
+      try {
+        idName = context.getResources().getResourceName(view.getId()) + " ";
+      } catch (Throwable ignored) {
+      }
+      log("Inflated -> %s%s", idName, view.getClass().getName());
     }
 
     return view;
