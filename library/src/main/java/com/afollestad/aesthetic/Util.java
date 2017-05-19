@@ -85,6 +85,8 @@ final class Util {
     TypedArray a = context.getTheme().obtainStyledAttributes(new int[] {attr});
     try {
       return a.getColor(0, fallback);
+    } catch (Throwable ignored) {
+      return fallback;
     } finally {
       a.recycle();
     }
