@@ -147,7 +147,7 @@ If you were to leave `take(1)` out, you need to manage the subscription. You wil
 updates every time the primary color is changed, until you unsubscribe.
 
 ```java
-Subscription subscription = 
+Disposable subscription = 
   Aesthetic.get()
       .colorPrimary()
       .subscribe(color -> {
@@ -155,7 +155,7 @@ Subscription subscription =
       });
       
 // Later, you should unsubscribe, e.g. when your Activity pauses
-subscription.unsubscribe();
+subscription.dispose();
 ```
 
 ---
