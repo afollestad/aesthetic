@@ -145,12 +145,12 @@ public class Aesthetic {
     if (instance.backgroundSubscriptions != null) {
       instance.backgroundSubscriptions.clear();
     }
-    if (instance.context != null
-        && instance.context.getClass().getName().equals(activity.getClass().getName())) {
-      instance.context = null;
-    }
     if (activity.isFinishing()) {
       instance.backgroundSubscriberViews.remove(activity);
+      if (instance.context != null
+          && instance.context.getClass().getName().equals(activity.getClass().getName())) {
+        instance.context = null;
+      }
     }
   }
 
