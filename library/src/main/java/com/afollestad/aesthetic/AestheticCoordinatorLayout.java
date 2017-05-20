@@ -28,7 +28,9 @@ import io.reactivex.functions.Consumer;
 
 import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
-/** @author Aidan Follestad (afollestad) */
+/**
+ * @author Aidan Follestad (afollestad)
+ */
 public class AestheticCoordinatorLayout extends CoordinatorLayout
     implements AppBarLayout.OnOffsetChangedListener {
 
@@ -130,16 +132,16 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
       this.appBarLayout.addOnOffsetChangedListener(this);
       toolbarColorSubscription =
           Observable.combineLatest(
-                  toolbar.colorUpdated(),
-                  Aesthetic.get().colorIconTitle(toolbar.colorUpdated()),
-                  new BiFunction<
-                      Integer, ActiveInactiveColors, Pair<Integer, ActiveInactiveColors>>() {
-                    @Override
-                    public Pair<Integer, ActiveInactiveColors> apply(
-                        Integer integer, ActiveInactiveColors activeInactiveColors) {
-                      return Pair.create(integer, activeInactiveColors);
-                    }
-                  })
+              toolbar.colorUpdated(),
+              Aesthetic.get().colorIconTitle(toolbar.colorUpdated()),
+              new BiFunction<
+                  Integer, ActiveInactiveColors, Pair<Integer, ActiveInactiveColors>>() {
+                @Override
+                public Pair<Integer, ActiveInactiveColors> apply(
+                    Integer integer, ActiveInactiveColors activeInactiveColors) {
+                  return Pair.create(integer, activeInactiveColors);
+                }
+              })
               .compose(Rx.<Pair<Integer, ActiveInactiveColors>>distinctToMainThread())
               .subscribe(
                   new Consumer<Pair<Integer, ActiveInactiveColors>>() {
@@ -178,8 +180,10 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
     if (statusBarColorSubscription != null) {
       statusBarColorSubscription.dispose();
     }
-    this.appBarLayout.removeOnOffsetChangedListener(this);
-    this.appBarLayout = null;
+    if (this.appBarLayout != null) {
+      this.appBarLayout.removeOnOffsetChangedListener(this);
+      this.appBarLayout = null;
+    }
     this.toolbar = null;
     this.colorView = null;
     super.onDetachedFromWindow();
