@@ -26,21 +26,14 @@ public class AestheticToolbar extends Toolbar {
 
   public AestheticToolbar(Context context) {
     super(context);
-    init();
   }
 
   public AestheticToolbar(Context context, @Nullable AttributeSet attrs) {
     super(context, attrs);
-    init();
   }
 
   public AestheticToolbar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
-    init();
-  }
-
-  private void init() {
-    onColorUpdated = PublishSubject.create();
   }
 
   private void invalidateColors(BgIconColorState state) {
@@ -80,6 +73,7 @@ public class AestheticToolbar extends Toolbar {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
+    onColorUpdated = PublishSubject.create();
     subscription =
         Observable.combineLatest(
                 Aesthetic.get().colorPrimary(),
