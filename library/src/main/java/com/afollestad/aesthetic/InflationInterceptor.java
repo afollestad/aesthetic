@@ -9,7 +9,6 @@ import android.support.v4.view.LayoutInflaterFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -202,6 +201,9 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         view = new AestheticTextInputEditText(context, attrs);
         break;
 
+      case "android.support.v7.widget.CardView":
+        view = new AestheticCardView(context, attrs);
+        break;
       case "android.support.design.widget.TabLayout":
         view = new AestheticTabLayout(context, attrs);
         break;
@@ -292,16 +294,9 @@ final class InflationInterceptor implements LayoutInflaterFactory {
     }
 
     if (view != null) {
-      if (view instanceof CardView) {
-        viewBackgroundRes = resolveResId(context, attrs, R.attr.cardBackgroundColor);
-      }
       if (viewBackgroundRes != 0) {
-        Observable<Integer> fallback = null;
-        if (view instanceof CardView) {
-          fallback = Aesthetic.get().colorCardViewBackground();
-        }
         Observable<Integer> obs;
-        obs = ViewUtil.getObservableForResId(view.getContext(), viewBackgroundRes, fallback);
+        obs = ViewUtil.getObservableForResId(view.getContext(), viewBackgroundRes, null);
         if (obs != null) {
           Aesthetic.get().addBackgroundSubscriber(view, obs);
         }
