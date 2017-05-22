@@ -135,7 +135,11 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         break;
       case "Button":
       case "android.support.v7.widget.AppCompatButton":
-        if (viewId == R.id.snackbar_action) {
+        if (viewId == android.R.id.button1
+            || viewId == android.R.id.button2
+            || viewId == android.R.id.button3) {
+          view = new AestheticDialogButton(context, attrs);
+        } else if (viewId == R.id.snackbar_action) {
           view = new AestheticSnackBarButton(context, attrs);
         } else {
           view = new AestheticButton(context, attrs);
