@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
@@ -37,6 +38,7 @@ public class MainFragment extends Fragment {
 
   private Snackbar snackbar;
   private Unbinder unbinder;
+  private Disposable isDarkSubscription;
 
   @Nullable
   @Override
@@ -51,16 +53,16 @@ public class MainFragment extends Fragment {
     unbinder = ButterKnife.bind(this, view);
 
     // Update the dark theme switch to the last saved isDark value.
-    Aesthetic.get()
-        .isDark()
-        .take(1)
-        .subscribe(
-            new Consumer<Boolean>() {
-              @Override
-              public void accept(@NonNull Boolean isDark) {
-                switchThemeView.setChecked(isDark);
-              }
-            });
+    isDarkSubscription =
+        Aesthetic.get()
+            .isDark()
+            .subscribe(
+                new Consumer<Boolean>() {
+                  @Override
+                  public void accept(@NonNull Boolean isDark) {
+                    switchThemeView.setChecked(isDark);
+                  }
+                });
 
     // Further view setup
     ArrayAdapter<String> spinnerAdapter =
@@ -81,6 +83,7 @@ public class MainFragment extends Fragment {
 
   @Override
   public void onDestroyView() {
+    isDarkSubscription.dispose();
     unbinder.unbind();
     super.onDestroyView();
   }

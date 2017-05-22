@@ -28,6 +28,7 @@ public class MainActivity extends AestheticActivity {
   ViewPager pager;
   @BindView(R.id.tabs)
   TabLayout tabs;
+
   private Unbinder unbinder;
 
   @Override

@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.afollestad.aesthetic.Aesthetic;
 import com.afollestad.aesthetic.AestheticActivity;
 
 import butterknife.BindView;
@@ -20,10 +21,13 @@ public class DrawerActivity extends AestheticActivity {
 
   @BindView(R.id.toolbar)
   Toolbar toolbar;
+
   @BindView(R.id.drawer_layout)
   DrawerLayout drawerLayout;
+
   @BindView(R.id.navigation_view)
   NavigationView navigationView;
+
   private Unbinder unbinder;
   private ActionBarDrawerToggle drawerToggle;
 

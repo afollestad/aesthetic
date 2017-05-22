@@ -1,11 +1,5 @@
 package com.afollestad.aesthetic;
 
-import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
-import static com.afollestad.aesthetic.Util.isColorLight;
-import static com.afollestad.aesthetic.Util.resolveColor;
-import static com.afollestad.aesthetic.Util.setLightStatusBarCompat;
-import static com.afollestad.aesthetic.Util.setNavBarColorCompat;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -25,7 +19,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.disposables.CompositeDisposable;
@@ -33,8 +32,12 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import java.util.ArrayList;
-import java.util.List;
+
+import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
+import static com.afollestad.aesthetic.Util.isColorLight;
+import static com.afollestad.aesthetic.Util.resolveColor;
+import static com.afollestad.aesthetic.Util.setLightStatusBarCompat;
+import static com.afollestad.aesthetic.Util.setNavBarColorCompat;
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressWarnings({"WeakerAccess", "unused"})
@@ -69,6 +72,7 @@ public class Aesthetic {
   private static Aesthetic instance;
 
   private final ArrayMap<Object, List<ViewObservablePair>> backgroundSubscriberViews;
+  private final ArrayMap<Object, Integer> lastActivityThemes;
   private CompositeDisposable backgroundSubscriptions;
 
   private CompositeDisposable subs;
@@ -76,7 +80,6 @@ public class Aesthetic {
   private SharedPreferences prefs;
   private SharedPreferences.Editor editor;
   private RxSharedPreferences rxPrefs;
-  private int lastActivityTheme;
   private boolean isResumed;
 
   @SuppressLint("CommitPrefEdits")
@@ -86,6 +89,7 @@ public class Aesthetic {
     editor = prefs.edit();
     rxPrefs = RxSharedPreferences.create(prefs);
     backgroundSubscriberViews = new ArrayMap<>(0);
+    lastActivityThemes = new ArrayMap<>(2);
   }
 
   private static String key(@Nullable AppCompatActivity activity) {
@@ -114,11 +118,24 @@ public class Aesthetic {
     Util.setInflaterFactory(li, activity);
 
     String activityThemeKey = String.format(KEY_ACTIVITY_THEME, key(activity));
-    instance.lastActivityTheme = instance.prefs.getInt(activityThemeKey, 0);
-    if (instance.lastActivityTheme != 0) {
-      activity.setTheme(instance.lastActivityTheme);
+    int latestActivityTheme = instance.prefs.getInt(activityThemeKey, 0);
+    instance.lastActivityThemes.put(instance.context, latestActivityTheme);
+    if (latestActivityTheme != 0) {
+      activity.setTheme(latestActivityTheme);
     }
+
     return instance;
+  }
+
+  private static int getLastActivityTheme(@Nullable Context forContext) {
+    if (forContext == null || instance == null) {
+      return 0;
+    }
+    Integer lastActivityTheme = instance.lastActivityThemes.get(forContext);
+    if (lastActivityTheme == null) {
+      return 0;
+    }
+    return lastActivityTheme;
   }
 
   @NonNull
@@ -185,10 +202,10 @@ public class Aesthetic {
                 new Consumer<Integer>() {
                   @Override
                   public void accept(@io.reactivex.annotations.NonNull Integer themeId) {
-                    if (instance.lastActivityTheme == themeId) {
+                    if (getLastActivityTheme(instance.context) == themeId) {
                       return;
                     }
-                    instance.lastActivityTheme = themeId;
+                    instance.lastActivityThemes.put(instance.context, themeId);
                     instance.context.recreate();
                   }
                 },
@@ -329,7 +346,7 @@ public class Aesthetic {
             new Predicate<Integer>() {
               @Override
               public boolean test(@io.reactivex.annotations.NonNull Integer next) throws Exception {
-                return next != 0 && next != lastActivityTheme;
+                return next != 0 && next != getLastActivityTheme(instance.context);
               }
             });
   }
