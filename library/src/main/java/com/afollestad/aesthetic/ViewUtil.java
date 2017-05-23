@@ -35,6 +35,8 @@ final class ViewUtil {
     } else if (resId == resolveResId(context, R.attr.colorPrimary, 0)) {
       return Aesthetic.get().colorPrimary();
     } else if (resId == resolveResId(context, R.attr.colorPrimaryDark, 0)) {
+      return Aesthetic.get().colorPrimaryDark();
+    } else if (resId == resolveResId(context, android.R.attr.statusBarColor, 0)) {
       return Aesthetic.get().colorStatusBar();
     } else if (resId == resolveResId(context, R.attr.colorAccent, 0)) {
       return Aesthetic.get().colorAccent();
