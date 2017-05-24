@@ -35,6 +35,8 @@ final class AestheticActionMenuItemView extends ActionMenuItemView {
 
   @Override
   public void setIcon(final Drawable icon) {
+    super.setIcon(icon);
+
     // We need to retrieve the color again here.
     // For some reason, without this, a transparent color is used and the icon disappears
     // when the overflow menu opens.
