@@ -13,15 +13,15 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 @RestrictTo(LIBRARY_GROUP)
 final class BgIconColorState {
 
-  private final int bgColor;
+  @ColorInt private final int bgColor;
   private final ActiveInactiveColors iconTitleColor;
 
-  private BgIconColorState(int bgColor, ActiveInactiveColors iconTitleColor) {
+  private BgIconColorState(@ColorInt int bgColor, ActiveInactiveColors iconTitleColor) {
     this.bgColor = bgColor;
     this.iconTitleColor = iconTitleColor;
   }
 
-  static BgIconColorState create(int color, ActiveInactiveColors iconTitleColors) {
+  static BgIconColorState create(@ColorInt int color, ActiveInactiveColors iconTitleColors) {
     return new BgIconColorState(color, iconTitleColors);
   }
 
