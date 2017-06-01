@@ -11,15 +11,15 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 @RestrictTo(LIBRARY_GROUP)
 final class ColorIsDarkState {
 
-  private final int color;
+  @ColorInt private final int color;
   private final boolean isDark;
 
-  private ColorIsDarkState(int color, boolean isDark) {
+  private ColorIsDarkState(@ColorInt int color, boolean isDark) {
     this.color = color;
     this.isDark = isDark;
   }
 
-  static ColorIsDarkState create(int color, boolean isDark) {
+  static ColorIsDarkState create(@ColorInt int color, boolean isDark) {
     return new ColorIsDarkState(color, isDark);
   }
 
