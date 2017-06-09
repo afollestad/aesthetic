@@ -264,51 +264,52 @@ final class Util {
     if (Build.VERSION.SDK_INT >= 26) {
       icon = getAppIcon(activity.getPackageManager(), activity.getPackageName());
     } else {
-      icon = ((BitmapDrawable) activity.getApplicationInfo().loadIcon(activity.getPackageManager()))
-                      .getBitmap();
+      icon =
+          ((BitmapDrawable) activity.getApplicationInfo().loadIcon(activity.getPackageManager()))
+              .getBitmap();
     }
-    if(icon != null) {
+    if (icon != null) {
       // Sets color of entry in the system recents page
       ActivityManager.TaskDescription td =
-              new ActivityManager.TaskDescription((String) activity.getTitle(), icon, color);
+          new ActivityManager.TaskDescription((String) activity.getTitle(), icon, color);
       activity.setTaskDescription(td);
     }
   }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private static Bitmap getAppIcon(PackageManager mPackageManager, String packageName) {
-        try {
-            Drawable drawable = mPackageManager.getApplicationIcon(packageName);
+  @RequiresApi(api = Build.VERSION_CODES.O)
+  private static Bitmap getAppIcon(PackageManager mPackageManager, String packageName) {
+    try {
+      Drawable drawable = mPackageManager.getApplicationIcon(packageName);
 
-            if (drawable instanceof BitmapDrawable) {
-                return ((BitmapDrawable) drawable).getBitmap();
-            } else if (drawable instanceof AdaptiveIconDrawable) {
-                Drawable backgroundDr = ((AdaptiveIconDrawable) drawable).getBackground();
-                Drawable foregroundDr = ((AdaptiveIconDrawable) drawable).getForeground();
+      if (drawable instanceof BitmapDrawable) {
+        return ((BitmapDrawable) drawable).getBitmap();
+      } else if (drawable instanceof AdaptiveIconDrawable) {
+        Drawable backgroundDr = ((AdaptiveIconDrawable) drawable).getBackground();
+        Drawable foregroundDr = ((AdaptiveIconDrawable) drawable).getForeground();
 
-                Drawable[] drr = new Drawable[2];
-                drr[0] = backgroundDr;
-                drr[1] = foregroundDr;
+        Drawable[] drr = new Drawable[2];
+        drr[0] = backgroundDr;
+        drr[1] = foregroundDr;
 
-                LayerDrawable layerDrawable = new LayerDrawable(drr);
+        LayerDrawable layerDrawable = new LayerDrawable(drr);
 
-                int width = layerDrawable.getIntrinsicWidth();
-                int height = layerDrawable.getIntrinsicHeight();
+        int width = layerDrawable.getIntrinsicWidth();
+        int height = layerDrawable.getIntrinsicHeight();
 
-                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-                Canvas canvas = new Canvas(bitmap);
+        Canvas canvas = new Canvas(bitmap);
 
-                layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-                layerDrawable.draw(canvas);
+        layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        layerDrawable.draw(canvas);
 
-                return bitmap;
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return bitmap;
+      }
+    } catch (PackageManager.NameNotFoundException e) {
+      e.printStackTrace();
     }
+    return null;
+  }
 
   //  @Nullable
   //  static Toolbar getSupportActionBarView(@Nullable ActionBar ab) {
