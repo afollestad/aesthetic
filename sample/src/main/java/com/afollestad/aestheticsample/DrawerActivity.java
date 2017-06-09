@@ -8,13 +8,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-
-import com.afollestad.aesthetic.Aesthetic;
-import com.afollestad.aesthetic.AestheticActivity;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import com.afollestad.aesthetic.AestheticActivity;
 
 /** @author Aidan Follestad (afollestad) */
 public class DrawerActivity extends AestheticActivity {

@@ -5,15 +5,34 @@ buildscript {
 
     repositories {
         jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:' + versions.gradlePlugin
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:" + versions.spotlessPlugin
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+
+    buildscript {
+        repositories {
+            maven { url "https://plugins.gradle.org/m2/" }
+        }
+    }
+    apply plugin: "com.diffplug.gradle.spotless"
+    spotless {
+        java {
+            target "**/*.java"
+            trimTrailingWhitespace()
+            removeUnusedImports()
+            googleJavaFormat()
+            endWithNewline()
+        }
     }
 }
 

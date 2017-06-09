@@ -1,5 +1,7 @@
 package com.afollestad.aesthetic;
 
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -31,10 +33,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.ArrayList;
-
-import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)

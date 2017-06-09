@@ -1,7 +1,8 @@
 package com.afollestad.aesthetic;
 
-import android.support.annotation.RestrictTo;
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
+import android.support.annotation.RestrictTo;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
@@ -9,8 +10,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.exceptions.Exceptions;
 import io.reactivex.functions.Consumer;
-
-import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)

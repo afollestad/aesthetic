@@ -1,21 +1,20 @@
 package com.afollestad.aesthetic;
 
+import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
+import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
+import static com.afollestad.aesthetic.Util.setOverflowButtonColor;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
-
-import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
-import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
-import static com.afollestad.aesthetic.Util.setOverflowButtonColor;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticToolbar extends Toolbar {
