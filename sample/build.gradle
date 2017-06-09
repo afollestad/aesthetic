@@ -21,6 +21,12 @@ android {
 }
 
 dependencies {
+    repositories {
+        maven {
+            url 'https://maven.google.com'
+        }
+    }
+
     compile 'com.android.support:appcompat-v7:' + versions.supportLib
     compile 'com.jakewharton:butterknife:' + versions.butterKnife
     annotationProcessor 'com.jakewharton:butterknife-compiler:' + versions.butterKnife
