@@ -15,7 +15,8 @@ public final class ActiveInactiveColors {
     this.inactiveColor = inactiveColor;
   }
 
-  public static ActiveInactiveColors create(@ColorInt int activeColor, @ColorInt int inactiveColor) {
+  public static ActiveInactiveColors create(
+      @ColorInt int activeColor, @ColorInt int inactiveColor) {
     return new ActiveInactiveColors(activeColor, inactiveColor);
   }
 

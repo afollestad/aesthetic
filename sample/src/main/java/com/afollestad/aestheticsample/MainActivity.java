@@ -8,24 +8,24 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import com.afollestad.aesthetic.Aesthetic;
 import com.afollestad.aesthetic.AestheticActivity;
 import com.afollestad.aesthetic.BottomNavBgMode;
 import com.afollestad.aesthetic.BottomNavIconTextMode;
 import com.afollestad.aesthetic.NavigationViewMode;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /** @author Aidan Follestad (afollestad) */
 public class MainActivity extends AestheticActivity {
 
   @BindView(R.id.toolbar)
   Toolbar toolbar;
+
   @BindView(R.id.pager)
   ViewPager pager;
+
   @BindView(R.id.tabs)
   TabLayout tabs;
 

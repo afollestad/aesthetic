@@ -1,13 +1,12 @@
 package com.afollestad.aesthetic;
 
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
-
-import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)

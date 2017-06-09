@@ -1,5 +1,11 @@
 package com.afollestad.aesthetic;
 
+import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
+import static com.afollestad.aesthetic.Util.isColorLight;
+import static com.afollestad.aesthetic.Util.resolveColor;
+import static com.afollestad.aesthetic.Util.setLightStatusBarCompat;
+import static com.afollestad.aesthetic.Util.setNavBarColorCompat;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,12 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.disposables.CompositeDisposable;
@@ -32,12 +33,8 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-
-import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
-import static com.afollestad.aesthetic.Util.isColorLight;
-import static com.afollestad.aesthetic.Util.resolveColor;
-import static com.afollestad.aesthetic.Util.setLightStatusBarCompat;
-import static com.afollestad.aesthetic.Util.setNavBarColorCompat;
+import java.util.ArrayList;
+import java.util.List;
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressWarnings({"WeakerAccess", "unused"})

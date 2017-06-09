@@ -1,5 +1,10 @@
 package com.afollestad.aesthetic;
 
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
+import static com.afollestad.aesthetic.Util.isColorLight;
+import static com.afollestad.aesthetic.Util.resolveResId;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IdRes;
@@ -13,15 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-
-import java.lang.reflect.Field;
-
 import io.reactivex.Observable;
-
-import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
-import static com.afollestad.aesthetic.TintHelper.createTintedDrawable;
-import static com.afollestad.aesthetic.Util.isColorLight;
-import static com.afollestad.aesthetic.Util.resolveResId;
+import java.lang.reflect.Field;
 
 /** @author Aidan Follestad (afollestad) */
 @RestrictTo(LIBRARY_GROUP)

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -15,8 +14,8 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
   @Override
   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.list_item_rv, parent, false);
+    View view =
+        LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_rv, parent, false);
     return new ViewHolder(view);
   }
 

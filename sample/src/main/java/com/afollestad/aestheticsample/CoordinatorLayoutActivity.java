@@ -4,18 +4,17 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-
-import com.afollestad.aesthetic.AestheticActivity;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import com.afollestad.aesthetic.AestheticActivity;
 
 /** @author Aidan Follestad (afollestad) */
 public class CoordinatorLayoutActivity extends AestheticActivity {
 
   @BindView(R.id.toolbar)
   Toolbar toolbar;
+
   private Unbinder unbinder;
 
   @Override
