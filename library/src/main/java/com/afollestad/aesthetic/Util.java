@@ -1,7 +1,5 @@
 package com.afollestad.aesthetic;
 
-import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -24,7 +22,6 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.annotation.RestrictTo;
 import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
@@ -33,18 +30,24 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import java.util.ArrayList;
 
-/** @author Aidan Follestad (afollestad) */
-@RestrictTo(LIBRARY_GROUP)
-final class Util {
+/**
+ * @author Aidan Follestad (afollestad)
+ */
+@SuppressWarnings("WeakerAccess")
+public final class Util {
 
   static void setInflaterFactory(@NonNull LayoutInflater li, @NonNull AppCompatActivity activity) {
     LayoutInflaterCompat.setFactory(
         li, new InflationInterceptor(activity, li, activity.getDelegate()));
   }
 
-  /** Taken from CollapsingToolbarLayout's CollapsingTextHelper class. */
+  /**
+   * Taken from CollapsingToolbarLayout's CollapsingTextHelper class.
+   */
+  @ColorInt
   static int blendColors(int color1, int color2, float ratio) {
     final float inverseRatio = 1f - ratio;
     float a = (Color.alpha(color1) * inverseRatio) + (Color.alpha(color2) * ratio);
@@ -75,7 +78,8 @@ final class Util {
     }
   }
 
-  static int stripAlpha(@ColorInt int color) {
+  @ColorInt
+  public static int stripAlpha(@ColorInt int color) {
     return Color.rgb(Color.red(color), Color.green(color), Color.blue(color));
   }
 
@@ -86,7 +90,7 @@ final class Util {
 
   @ColorInt
   static int resolveColor(Context context, @AttrRes int attr, int fallback) {
-    TypedArray a = context.getTheme().obtainStyledAttributes(new int[] {attr});
+    TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{attr});
     try {
       return a.getColor(0, fallback);
     } catch (Throwable ignored) {
@@ -97,8 +101,8 @@ final class Util {
   }
 
   @IdRes
-  static int resolveResId(Context context, @AttrRes int attr, int fallback) {
-    TypedArray a = context.getTheme().obtainStyledAttributes(new int[] {attr});
+  public static int resolveResId(Context context, @AttrRes int attr, int fallback) {
+    TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{attr});
     try {
       return a.getResourceId(0, fallback);
     } finally {
@@ -106,8 +110,9 @@ final class Util {
     }
   }
 
-  static int resolveResId(Context context, AttributeSet attrs, @AttrRes int attrId) {
-    TypedArray ta = context.obtainStyledAttributes(attrs, new int[] {attrId});
+  @IdRes
+  public static int resolveResId(Context context, AttributeSet attrs, @AttrRes int attrId) {
+    TypedArray ta = context.obtainStyledAttributes(attrs, new int[]{attrId});
     int result = ta.getResourceId(0, 0);
     ta.recycle();
     return result;
@@ -171,7 +176,7 @@ final class Util {
   //  }
 
   @ColorInt
-  static int adjustAlpha(
+  public static int adjustAlpha(
       @ColorInt int color, @SuppressWarnings("SameParameterValue") float factor) {
     int alpha = Math.round(Color.alpha(color) * factor);
     int red = Color.red(color);
@@ -195,7 +200,7 @@ final class Util {
   }
 
   @ColorInt
-  static int shiftColor(@ColorInt int color, @FloatRange(from = 0.0f, to = 2.0f) float by) {
+  public static int shiftColor(@ColorInt int color, @FloatRange(from = 0.0f, to = 2.0f) float by) {
     if (by == 1f) return color;
     float[] hsv = new float[3];
     Color.colorToHSV(color, hsv);
@@ -204,11 +209,11 @@ final class Util {
   }
 
   @ColorInt
-  static int darkenColor(@ColorInt int color) {
+  public static int darkenColor(@ColorInt int color) {
     return shiftColor(color, 0.9f);
   }
 
-  static boolean isColorLight(@ColorInt int color) {
+  public static boolean isColorLight(@ColorInt int color) {
     if (color == Color.BLACK) {
       return false;
     } else if (color == Color.WHITE || color == Color.TRANSPARENT) {
@@ -217,7 +222,7 @@ final class Util {
     final double darkness =
         1
             - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color))
-                / 255;
+            / 255;
     return darkness < 0.4;
   }
 

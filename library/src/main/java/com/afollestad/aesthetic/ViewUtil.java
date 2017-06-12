@@ -22,11 +22,10 @@ import io.reactivex.Observable;
 import java.lang.reflect.Field;
 
 /** @author Aidan Follestad (afollestad) */
-@RestrictTo(LIBRARY_GROUP)
-final class ViewUtil {
+public final class ViewUtil {
 
   @Nullable
-  static Observable<Integer> getObservableForResId(
+  public static Observable<Integer> getObservableForResId(
       @NonNull Context context, @IdRes int resId, @Nullable Observable<Integer> fallback) {
     if (resId == 0) {
       return fallback;
