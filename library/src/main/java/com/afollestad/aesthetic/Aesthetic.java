@@ -1,11 +1,5 @@
 package com.afollestad.aesthetic;
 
-import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
-import static com.afollestad.aesthetic.Util.isColorLight;
-import static com.afollestad.aesthetic.Util.resolveColor;
-import static com.afollestad.aesthetic.Util.setLightStatusBarCompat;
-import static com.afollestad.aesthetic.Util.setNavBarColorCompat;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -25,7 +19,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.disposables.CompositeDisposable;
@@ -33,10 +32,16 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import java.util.ArrayList;
-import java.util.List;
 
-/** @author Aidan Follestad (afollestad) */
+import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
+import static com.afollestad.aesthetic.Util.isColorLight;
+import static com.afollestad.aesthetic.Util.resolveColor;
+import static com.afollestad.aesthetic.Util.setLightStatusBarCompat;
+import static com.afollestad.aesthetic.Util.setNavBarColorCompat;
+
+/**
+ * @author Aidan Follestad (afollestad)
+ */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Aesthetic {
 
@@ -103,7 +108,9 @@ public class Aesthetic {
     return key;
   }
 
-  /** Should be called before super.onCreate() in each Activity. */
+  /**
+   * Should be called before super.onCreate() in each Activity.
+   */
   @NonNull
   public static Aesthetic attach(@NonNull AppCompatActivity activity) {
     if (instance == null) {
@@ -145,7 +152,9 @@ public class Aesthetic {
     return instance;
   }
 
-  /** Should be called in onPause() of each Activity. */
+  /**
+   * Should be called in onPause() of each Activity.
+   */
   public static void pause(@NonNull AppCompatActivity activity) {
     if (instance == null) {
       return;
@@ -166,7 +175,9 @@ public class Aesthetic {
     }
   }
 
-  /** Should be called in onResume() of each Activity. */
+  /**
+   * Should be called in onResume() of each Activity.
+   */
   public static void resume(@NonNull AppCompatActivity activity) {
     if (instance == null) {
       return;
@@ -210,14 +221,14 @@ public class Aesthetic {
                 onErrorLogAndRethrow()));
     instance.subs.add(
         Observable.combineLatest(
-                instance.colorStatusBar(),
-                instance.lightStatusBarMode(),
-                new BiFunction<Integer, Integer, Pair<Integer, Integer>>() {
-                  @Override
-                  public Pair<Integer, Integer> apply(Integer integer, Integer integer2) {
-                    return Pair.create(integer, integer2);
-                  }
-                })
+            instance.colorStatusBar(),
+            instance.lightStatusBarMode(),
+            new BiFunction<Integer, Integer, Pair<Integer, Integer>>() {
+              @Override
+              public Pair<Integer, Integer> apply(Integer integer, Integer integer2) {
+                return Pair.create(integer, integer2);
+              }
+            })
             .compose(Rx.<Pair<Integer, Integer>>distinctToMainThread())
             .subscribe(
                 new Consumer<Pair<Integer, Integer>>() {
@@ -252,9 +263,15 @@ public class Aesthetic {
                   }
                 },
                 onErrorLogAndRethrow()));
+
+    if (MaterialDialogsUtil.shouldSupport()) {
+      instance.subs.add(MaterialDialogsUtil.observe(instance));
+    }
   }
 
-  /** Returns true if this method has never been called before. */
+  /**
+   * Returns true if this method has never been called before.
+   */
   public static boolean isFirstTime() {
     boolean firstTime = instance.prefs.getBoolean(KEY_FIRST_TIME, true);
     instance.editor.putBoolean(KEY_FIRST_TIME, false).commit();
@@ -801,7 +818,9 @@ public class Aesthetic {
     return colorCardViewBackground(ContextCompat.getColor(context, color));
   }
 
-  /** Notifies all listening views that theme properties have been updated. */
+  /**
+   * Notifies all listening views that theme properties have been updated.
+   */
   public void apply() {
     editor.commit();
   }
