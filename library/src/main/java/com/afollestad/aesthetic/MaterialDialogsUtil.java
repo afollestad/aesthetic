@@ -1,17 +1,15 @@
 package com.afollestad.aesthetic;
 
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+
 import android.content.res.ColorStateList;
 import android.support.annotation.RestrictTo;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function4;
-
-import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * Handles auto theming of dialogs from my Material Dialogs library, using the ThemeSingleton class.
@@ -93,22 +91,22 @@ final class MaterialDialogsUtil {
 
   static Disposable observe(Aesthetic instance) {
     return Observable.combineLatest(
-        instance.textColorPrimary(),
-        instance.textColorSecondary(),
-        instance.colorAccent(),
-        instance.isDark(),
-        new Function4<Integer, Integer, Integer, Boolean, Params>() {
-          @Override
-          public MaterialDialogsUtil.Params apply(
-              @io.reactivex.annotations.NonNull Integer primaryText,
-              @io.reactivex.annotations.NonNull Integer secondaryText,
-              @io.reactivex.annotations.NonNull Integer accent,
-              @io.reactivex.annotations.NonNull Boolean isDark)
-              throws Exception {
-            return MaterialDialogsUtil.Params.create(
-                primaryText, secondaryText, accent, isDark);
-          }
-        })
+            instance.textColorPrimary(),
+            instance.textColorSecondary(),
+            instance.colorAccent(),
+            instance.isDark(),
+            new Function4<Integer, Integer, Integer, Boolean, Params>() {
+              @Override
+              public MaterialDialogsUtil.Params apply(
+                  @io.reactivex.annotations.NonNull Integer primaryText,
+                  @io.reactivex.annotations.NonNull Integer secondaryText,
+                  @io.reactivex.annotations.NonNull Integer accent,
+                  @io.reactivex.annotations.NonNull Boolean isDark)
+                  throws Exception {
+                return MaterialDialogsUtil.Params.create(
+                    primaryText, secondaryText, accent, isDark);
+              }
+            })
         .distinctUntilChanged()
         .subscribe(
             new Consumer<Params>() {

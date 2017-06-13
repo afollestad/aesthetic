@@ -18,6 +18,7 @@ import butterknife.Unbinder;
 import com.afollestad.aesthetic.Aesthetic;
 import com.afollestad.aesthetic.BottomNavBgMode;
 import com.afollestad.aesthetic.BottomNavIconTextMode;
+import com.afollestad.materialdialogs.MaterialDialog;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -103,6 +104,16 @@ public class MainFragment extends Fragment {
           .textColorSecondaryRes(R.color.text_color_secondary)
           .apply();
     }
+  }
+
+  @OnClick(R.id.btn_dialog)
+  public void showMaterialDialog() {
+    new MaterialDialog.Builder(getContext())
+        .title(R.string.hello_world)
+        .content(R.string.lorem_ipsum)
+        .positiveText(android.R.string.ok)
+        .negativeText(android.R.string.cancel)
+        .show();
   }
 
   @OnClick({

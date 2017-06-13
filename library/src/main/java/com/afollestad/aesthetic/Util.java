@@ -30,12 +30,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.ArrayList;
 
-/**
- * @author Aidan Follestad (afollestad)
- */
+/** @author Aidan Follestad (afollestad) */
 @SuppressWarnings("WeakerAccess")
 public final class Util {
 
@@ -44,9 +41,7 @@ public final class Util {
         li, new InflationInterceptor(activity, li, activity.getDelegate()));
   }
 
-  /**
-   * Taken from CollapsingToolbarLayout's CollapsingTextHelper class.
-   */
+  /** Taken from CollapsingToolbarLayout's CollapsingTextHelper class. */
   @ColorInt
   static int blendColors(int color1, int color2, float ratio) {
     final float inverseRatio = 1f - ratio;
@@ -90,7 +85,7 @@ public final class Util {
 
   @ColorInt
   static int resolveColor(Context context, @AttrRes int attr, int fallback) {
-    TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{attr});
+    TypedArray a = context.getTheme().obtainStyledAttributes(new int[] {attr});
     try {
       return a.getColor(0, fallback);
     } catch (Throwable ignored) {
@@ -102,7 +97,7 @@ public final class Util {
 
   @IdRes
   public static int resolveResId(Context context, @AttrRes int attr, int fallback) {
-    TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{attr});
+    TypedArray a = context.getTheme().obtainStyledAttributes(new int[] {attr});
     try {
       return a.getResourceId(0, fallback);
     } finally {
@@ -112,7 +107,7 @@ public final class Util {
 
   @IdRes
   public static int resolveResId(Context context, AttributeSet attrs, @AttrRes int attrId) {
-    TypedArray ta = context.obtainStyledAttributes(attrs, new int[]{attrId});
+    TypedArray ta = context.obtainStyledAttributes(attrs, new int[] {attrId});
     int result = ta.getResourceId(0, 0);
     ta.recycle();
     return result;
@@ -222,7 +217,7 @@ public final class Util {
     final double darkness =
         1
             - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color))
-            / 255;
+                / 255;
     return darkness < 0.4;
   }
 

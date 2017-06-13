@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-  android:id="@+id/root"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/root"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
@@ -134,17 +134,24 @@
         android:enabled="false"
         android:text="@string/disabled_button"/>
 
+      <Button
+        android:id="@+id/btn_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/content_inset"
+        android:text="@string/show_materialdialog"/>
+
       <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true"
-        android:layout_marginTop="@dimen/content_inset">
+        android:layout_marginTop="@dimen/content_inset"
+        app:cardUseCompatPadding="true">
 
         <LinearLayout
-          android:padding="@dimen/content_inset"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:orientation="vertical">
+          android:orientation="vertical"
+          android:padding="@dimen/content_inset">
 
           <TextView
             android:layout_width="match_parent"
@@ -174,9 +181,9 @@
     android:layout_height="wrap_content"
     android:layout_gravity="bottom|end"
     android:clickable="true"
-    app:srcCompat="@drawable/ic_check"
     app:elevation="@dimen/content_inset_half"
     app:fabSize="normal"
+    app:srcCompat="@drawable/ic_check"
     app:useCompatPadding="true"/>
 
 </FrameLayout>

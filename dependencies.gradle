@@ -11,5 +11,6 @@ ext.versions = [
         butterKnife       : '8.6.0',
         rxJava            : '2.1.0',
         rxAndroid         : '2.0.1',
-        rxPrefs           : '2.0.0-RC2'
+        rxPrefs           : '2.0.0-RC2',
+        materialDialogs   : '0.9.4.5'
 ]

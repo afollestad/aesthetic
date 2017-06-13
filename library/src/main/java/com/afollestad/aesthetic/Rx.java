@@ -8,9 +8,7 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.exceptions.Exceptions;
 import io.reactivex.functions.Consumer;
 
-/**
- * @author Aidan Follestad (afollestad)
- */
+/** @author Aidan Follestad (afollestad) */
 public final class Rx {
 
   public static Consumer<Throwable> onErrorLogAndRethrow() {

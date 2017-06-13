@@ -2,12 +2,9 @@ package com.afollestad.aesthetic;
 
 import android.support.annotation.NonNull;
 import android.view.View;
-
 import io.reactivex.functions.Consumer;
 
-/**
- * @author Aidan Follestad (afollestad)
- */
+/** @author Aidan Follestad (afollestad) */
 @SuppressWarnings("WeakerAccess")
 public final class ViewBackgroundAction implements Consumer<Integer> {
 
