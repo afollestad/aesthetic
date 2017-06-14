@@ -20,6 +20,12 @@ java.lang.RuntimeException: Oh no, an unknown error occurred!
     at com.example.helloworld.MainActivity.onCreate()
     at com.example.helloworld.idkHey()
 ```
+
+```xml
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+```
  
 ###### Reproduction Steps
 
