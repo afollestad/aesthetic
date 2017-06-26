@@ -579,3 +579,10 @@ adopt the same window theme properties as the main activity.
 
 If you do not use `AestheticActivity`, your custom Activity can implement the `AestheticKeyProvider` 
 interface.
+
+# Proguard
+In case you are using views from the support library (e.g. TextInputLayout & TextInputEditText), you will
+need to add the following to your proguard:
+```
+-keep class android.support.design.widget.** { *; }
+```
