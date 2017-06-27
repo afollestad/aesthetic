@@ -38,13 +38,16 @@ public class AestheticToolbar extends Toolbar {
   private void invalidateColors(BgIconColorState state) {
     lastState = state;
     setBackgroundColor(state.bgColor());
-    setTitleTextColor(state.iconTitleColor().activeColor());
-    setOverflowButtonColor(this, state.iconTitleColor().activeColor());
+    final ActiveInactiveColors iconTitleColors = state.iconTitleColor();
+    if (iconTitleColors != null) {
+      setTitleTextColor(iconTitleColors.activeColor());
+      setOverflowButtonColor(this, iconTitleColors.activeColor());
+    }
     if (getNavigationIcon() != null) {
       setNavigationIcon(getNavigationIcon());
     }
     onColorUpdated.onNext(state.bgColor());
-    ViewUtil.tintToolbarMenu(this, getMenu(), state.iconTitleColor());
+    ViewUtil.tintToolbarMenu(this, getMenu(), iconTitleColors);
   }
 
   public Observable<Integer> colorUpdated() {
@@ -57,7 +60,12 @@ public class AestheticToolbar extends Toolbar {
       super.setNavigationIcon(icon);
       return;
     }
-    super.setNavigationIcon(createTintedDrawable(icon, lastState.iconTitleColor().toEnabledSl()));
+    final ActiveInactiveColors iconTitleColors = lastState.iconTitleColor();
+    if (iconTitleColors != null) {
+      super.setNavigationIcon(createTintedDrawable(icon, iconTitleColors.toEnabledSl()));
+    } else {
+      super.setNavigationIcon(icon);
+    }
   }
 
   public void setNavigationIcon(@Nullable Drawable icon, @ColorInt int color) {

@@ -181,6 +181,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="bottom|end"
     android:clickable="true"
+    android:focusable="true"
     app:elevation="@dimen/content_inset_half"
     app:fabSize="normal"
     app:srcCompat="@drawable/ic_check"

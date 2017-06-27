@@ -28,6 +28,7 @@ dependencies {
     }
 
     compile 'com.android.support:appcompat-v7:' + versions.supportLib
+    compile 'com.android.support:support-v13:' + versions.supportLib
     compile 'com.jakewharton:butterknife:' + versions.butterKnife
     annotationProcessor 'com.jakewharton:butterknife-compiler:' + versions.butterKnife
     compile 'com.afollestad.material-dialogs:core:' + versions.materialDialogs
