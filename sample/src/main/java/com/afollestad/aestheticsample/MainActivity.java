@@ -3,7 +3,6 @@ package com.afollestad.aestheticsample;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -39,7 +38,7 @@ public class MainActivity extends AestheticActivity {
 
     toolbar.inflateMenu(R.menu.main);
     final MenuItem searchItem = toolbar.getMenu().findItem(R.id.search);
-    final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+    final SearchView searchView = (SearchView) searchItem.getActionView();
     searchView.setQueryHint(getString(R.string.search_view_example));
 
     // If we haven't set any defaults, do that now
