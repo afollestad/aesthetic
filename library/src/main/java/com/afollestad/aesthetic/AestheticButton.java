@@ -51,6 +51,10 @@ public class AestheticButton extends AppCompatButton {
               state.isDark() ? Color.WHITE : Color.BLACK
             });
     setTextColor(textColorSl);
+
+    // Hack around button color not updating
+    setEnabled(!isEnabled());
+    setEnabled(!isEnabled());
   }
 
   @Override

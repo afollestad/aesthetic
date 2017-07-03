@@ -75,9 +75,9 @@ public class Aesthetic {
 
   private CompositeDisposable subs;
   private AppCompatActivity context;
-  private SharedPreferences prefs;
-  private SharedPreferences.Editor editor;
-  private RxSharedPreferences rxPrefs;
+  private final SharedPreferences prefs;
+  private final SharedPreferences.Editor editor;
+  private final RxSharedPreferences rxPrefs;
   private boolean isResumed;
 
   @SuppressLint("CommitPrefEdits")
