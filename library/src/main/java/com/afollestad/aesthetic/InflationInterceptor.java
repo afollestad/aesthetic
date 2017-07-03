@@ -3,6 +3,7 @@ package com.afollestad.aesthetic;
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 import static com.afollestad.aesthetic.Util.resolveResId;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
@@ -95,6 +96,7 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         || "include".equals(name);
   }
 
+  @SuppressLint("RestrictedApi")
   @Override
   public View onCreateView(View parent, final String name, Context context, AttributeSet attrs) {
     View view = null;
