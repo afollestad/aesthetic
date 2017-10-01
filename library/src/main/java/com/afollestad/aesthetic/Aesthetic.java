@@ -275,10 +275,17 @@ public class Aesthetic {
           instance.backgroundSubscriberViews.get(instance.context.getClass().getName());
       if (pairs != null) {
         for (ViewObservablePair pair : pairs) {
+
+          final View view = pair.view();
+
+          if (view.getTag() != null && view.getTag().equals(":aesthetic_ignore")) {
+            continue;
+          }
+
           instance.backgroundSubscriptions.add(
               pair.observable()
                   .compose(Rx.<Integer>distinctToMainThread())
-                  .subscribeWith(ViewBackgroundSubscriber.create(pair.view())));
+                  .subscribeWith(ViewBackgroundSubscriber.create(view)));
         }
       }
     }
