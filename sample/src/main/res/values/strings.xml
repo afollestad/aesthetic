@@ -54,6 +54,10 @@
   <string name="open_drawer">Open Drawer</string>
   <string name="close_drawer">Close Drawer</string>
   <string name="disabled_button">Disabled Button</string>
+  <string name="borderless_button">Borderless Button</string>
+  <string name="disabled_borderless_button">Disabled Borderless Button</string>
+  <string name="borderless_colored_button">Borderless Colored Button</string>
+  <string name="disabled_borderless_colored_button">Disabled Borderless Colored Button</string>
   <string name="search">Search</string>
   <string name="search_view_example">Search view example…</string>
   <string name="recycler_view">Recycler View</string>

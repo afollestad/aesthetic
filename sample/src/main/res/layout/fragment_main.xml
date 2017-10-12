@@ -135,6 +135,40 @@
         android:text="@string/disabled_button"/>
 
       <Button
+          style="@style/Widget.AppCompat.Button.Borderless"
+          android:id="@+id/btn_borderless"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/content_inset"
+          android:text="@string/borderless_button"/>
+
+      <Button
+          style="@style/Widget.AppCompat.Button.Borderless"
+          android:id="@+id/btn_disabled_borderless"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/content_inset"
+          android:enabled="false"
+          android:text="@string/disabled_borderless_button"/>
+
+      <Button
+          style="@style/Widget.AppCompat.Button.Borderless.Colored"
+          android:id="@+id/btn_borderless_colored"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/content_inset"
+          android:text="@string/borderless_colored_button"/>
+
+      <Button
+          style="@style/Widget.AppCompat.Button.Borderless.Colored"
+          android:id="@+id/btn_disabled_borderless_colored"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/content_inset"
+          android:enabled="false"
+          android:text="@string/disabled_borderless_colored_button"/>
+
+      <Button
         android:id="@+id/btn_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
