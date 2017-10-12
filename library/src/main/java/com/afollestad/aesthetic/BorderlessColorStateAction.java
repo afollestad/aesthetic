@@ -1,13 +1,12 @@
 package com.afollestad.aesthetic;
 
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+
 import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.widget.TextView;
-
 import io.reactivex.functions.Consumer;
-
-import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /** @author Asen Lekov (L3K0V) */
 @RestrictTo(LIBRARY_GROUP)
@@ -32,10 +31,9 @@ class BorderlessColorStateAction implements Consumer<Integer> {
       ColorStateList textColorSl =
           new ColorStateList(
               new int[][] {
-                  new int[] {android.R.attr.state_enabled}, new int[] {-android.R.attr.state_enabled}
+                new int[] {android.R.attr.state_enabled}, new int[] {-android.R.attr.state_enabled}
               },
-              new int[] {color, disabledColor}
-          );
+              new int[] {color, disabledColor});
 
       view.setTextColor(textColorSl);
     }
