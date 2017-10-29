@@ -1,10 +1,10 @@
 ext.versions = [
         minSdk            : 16,
         compileSdk        : 26,
-        buildTools        : '26.0.0',
+        buildTools        : '26.0.2',
         publishVersion    : '0.4.7',
         publishVersionCode: 19,
-        gradlePlugin      : '3.0.0-alpha5',
+        gradlePlugin      : '3.0.0',
         spotlessPlugin    : '3.4.0',
         supportLib        : '26.1.0',
         mdProgressBar     : '1.4.1',
