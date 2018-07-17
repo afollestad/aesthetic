@@ -4,13 +4,11 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import io.reactivex.annotations.NonNull;
+import android.widget.ProgressBar;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /** @author Aidan Follestad (afollestad) */
-public class AestheticProgressBar extends MaterialProgressBar {
+public class AestheticProgressBar extends ProgressBar {
 
   private Disposable subscription;
 
@@ -37,14 +35,7 @@ public class AestheticProgressBar extends MaterialProgressBar {
         Aesthetic.get()
             .colorAccent()
             .compose(Rx.<Integer>distinctToMainThread())
-            .subscribe(
-                new Consumer<Integer>() {
-                  @Override
-                  public void accept(@NonNull Integer color) {
-                    invalidateColors(color);
-                  }
-                },
-                onErrorLogAndRethrow());
+            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
   }
 
   @Override

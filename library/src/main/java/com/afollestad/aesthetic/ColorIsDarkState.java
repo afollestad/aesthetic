@@ -23,12 +23,7 @@ final class ColorIsDarkState {
   }
 
   static BiFunction<Integer, Boolean, ColorIsDarkState> creator() {
-    return new BiFunction<Integer, Boolean, ColorIsDarkState>() {
-      @Override
-      public ColorIsDarkState apply(Integer integer, Boolean aBoolean) {
-        return ColorIsDarkState.create(integer, aBoolean);
-      }
-    };
+    return ColorIsDarkState::create;
   }
 
   @ColorInt

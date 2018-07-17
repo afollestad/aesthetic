@@ -11,9 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressWarnings("RestrictedApi")
@@ -74,49 +72,30 @@ public class AestheticNavigationView extends NavigationView {
     modeSubscription =
         Aesthetic.get()
             .navigationViewMode()
-            .compose(Rx.<Integer>distinctToMainThread())
+            .compose(Rx.distinctToMainThread())
             .subscribe(
-                new Consumer<Integer>() {
-                  @Override
-                  public void accept(@NonNull Integer mode) {
-                    switch (mode) {
-                      case NavigationViewMode.SELECTED_PRIMARY:
-                        colorSubscription =
-                            Observable.combineLatest(
-                                    Aesthetic.get().colorPrimary(),
-                                    Aesthetic.get().isDark(),
-                                    ColorIsDarkState.creator())
-                                .compose(Rx.<ColorIsDarkState>distinctToMainThread())
-                                .subscribe(
-                                    new Consumer<ColorIsDarkState>() {
-                                      @Override
-                                      public void accept(
-                                          @NonNull ColorIsDarkState colorIsDarkState) {
-                                        invalidateColors(colorIsDarkState);
-                                      }
-                                    },
-                                    onErrorLogAndRethrow());
-                        break;
-                      case NavigationViewMode.SELECTED_ACCENT:
-                        colorSubscription =
-                            Observable.combineLatest(
-                                    Aesthetic.get().colorAccent(),
-                                    Aesthetic.get().isDark(),
-                                    ColorIsDarkState.creator())
-                                .compose(Rx.<ColorIsDarkState>distinctToMainThread())
-                                .subscribe(
-                                    new Consumer<ColorIsDarkState>() {
-                                      @Override
-                                      public void accept(
-                                          @NonNull ColorIsDarkState colorIsDarkState) {
-                                        invalidateColors(colorIsDarkState);
-                                      }
-                                    },
-                                    onErrorLogAndRethrow());
-                        break;
-                      default:
-                        throw new IllegalStateException("Unknown nav view mode: " + mode);
-                    }
+                mode -> {
+                  switch (mode) {
+                    case NavigationViewMode.SELECTED_PRIMARY:
+                      colorSubscription =
+                          Observable.combineLatest(
+                                  Aesthetic.get().colorPrimary(),
+                                  Aesthetic.get().isDark(),
+                                  ColorIsDarkState.creator())
+                              .compose(Rx.distinctToMainThread())
+                              .subscribe(this::invalidateColors, onErrorLogAndRethrow());
+                      break;
+                    case NavigationViewMode.SELECTED_ACCENT:
+                      colorSubscription =
+                          Observable.combineLatest(
+                                  Aesthetic.get().colorAccent(),
+                                  Aesthetic.get().isDark(),
+                                  ColorIsDarkState.creator())
+                              .compose(Rx.distinctToMainThread())
+                              .subscribe(this::invalidateColors, onErrorLogAndRethrow());
+                      break;
+                    default:
+                      throw new IllegalStateException("Unknown nav view mode: " + mode);
                   }
                 },
                 onErrorLogAndRethrow());

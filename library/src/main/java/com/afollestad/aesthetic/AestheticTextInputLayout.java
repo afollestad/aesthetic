@@ -7,9 +7,7 @@ import static com.afollestad.aesthetic.Util.resolveResId;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticTextInputLayout extends TextInputLayout {
@@ -51,25 +49,14 @@ public class AestheticTextInputLayout extends TextInputLayout {
             .textColorSecondary()
             .compose(Rx.<Integer>distinctToMainThread())
             .subscribe(
-                new Consumer<Integer>() {
-                  @Override
-                  public void accept(@NonNull Integer color) {
+                color ->
                     TextInputLayoutUtil.setHint(
-                        AestheticTextInputLayout.this, adjustAlpha(color, 0.7f));
-                  }
-                },
+                        AestheticTextInputLayout.this, adjustAlpha(color, 0.7f)),
                 onErrorLogAndRethrow()));
     subs.add(
         ViewUtil.getObservableForResId(getContext(), backgroundResId, Aesthetic.get().colorAccent())
             .compose(Rx.<Integer>distinctToMainThread())
-            .subscribe(
-                new Consumer<Integer>() {
-                  @Override
-                  public void accept(@NonNull Integer color) {
-                    invalidateColors(color);
-                  }
-                },
-                onErrorLogAndRethrow()));
+            .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
   }
 
   @Override

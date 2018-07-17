@@ -37,12 +37,4 @@ public final class ActiveInactiveColors {
         },
         new int[] {activeColor(), inactiveColor()});
   }
-
-  //  public ColorStateList toCheckedSl() {
-  //    return new ColorStateList(
-  //        new int[][] {
-  //          new int[] {android.R.attr.state_checked}, new int[] {-android.R.attr.state_checked}
-  //        },
-  //        new int[] {activeColor(), inactiveColor()});
-  //  }
 }

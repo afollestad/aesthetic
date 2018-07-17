@@ -9,9 +9,7 @@ import android.graphics.Color;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticButton extends AppCompatButton {
@@ -68,14 +66,7 @@ public class AestheticButton extends AppCompatButton {
                 Aesthetic.get().isDark(),
                 ColorIsDarkState.creator())
             .compose(Rx.<ColorIsDarkState>distinctToMainThread())
-            .subscribe(
-                new Consumer<ColorIsDarkState>() {
-                  @Override
-                  public void accept(@NonNull ColorIsDarkState colorIsDarkState) {
-                    invalidateColors(colorIsDarkState);
-                  }
-                },
-                onErrorLogAndRethrow());
+            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
   }
 
   @Override

@@ -5,9 +5,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticRecyclerView extends RecyclerView {
@@ -37,14 +35,7 @@ public class AestheticRecyclerView extends RecyclerView {
         Aesthetic.get()
             .colorAccent()
             .compose(Rx.<Integer>distinctToMainThread())
-            .subscribe(
-                new Consumer<Integer>() {
-                  @Override
-                  public void accept(@NonNull Integer color) {
-                    invalidateColors(color);
-                  }
-                },
-                onErrorLogAndRethrow());
+            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
   }
 
   @Override

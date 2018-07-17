@@ -5,7 +5,6 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
 
 /** @author Aidan Follestad (afollestad) */
@@ -25,13 +24,7 @@ final class BgIconColorState {
   }
 
   static BiFunction<Integer, ActiveInactiveColors, BgIconColorState> creator() {
-    return new BiFunction<Integer, ActiveInactiveColors, BgIconColorState>() {
-      @Override
-      public BgIconColorState apply(
-          @NonNull Integer integer, ActiveInactiveColors activeInactiveColors) {
-        return BgIconColorState.create(integer, activeInactiveColors);
-      }
-    };
+    return BgIconColorState::create;
   }
 
   @ColorInt

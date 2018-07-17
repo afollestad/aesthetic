@@ -7,9 +7,7 @@ import android.content.res.TypedArray;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticEditText extends AppCompatEditText {
@@ -64,14 +62,7 @@ public class AestheticEditText extends AppCompatEditText {
                 Aesthetic.get().isDark(),
                 ColorIsDarkState.creator())
             .compose(Rx.<ColorIsDarkState>distinctToMainThread())
-            .subscribe(
-                new Consumer<ColorIsDarkState>() {
-                  @Override
-                  public void accept(@NonNull ColorIsDarkState colorIsDarkState) {
-                    invalidateColors(colorIsDarkState);
-                  }
-                },
-                onErrorLogAndRethrow()));
+            .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
     subscriptions.add(
         ViewUtil.getObservableForResId(
                 getContext(), textColorResId, Aesthetic.get().textColorPrimary())

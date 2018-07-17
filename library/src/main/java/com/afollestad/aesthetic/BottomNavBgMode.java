@@ -1,21 +1,32 @@
 package com.afollestad.aesthetic;
 
-import static com.afollestad.aesthetic.BottomNavBgMode.ACCENT;
-import static com.afollestad.aesthetic.BottomNavBgMode.BLACK_WHITE_AUTO;
-import static com.afollestad.aesthetic.BottomNavBgMode.PRIMARY;
-import static com.afollestad.aesthetic.BottomNavBgMode.PRIMARY_DARK;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
-import android.support.annotation.IntDef;
-import java.lang.annotation.Retention;
-
 /** @author Aidan Follestad (afollestad) */
-@SuppressWarnings("WeakerAccess")
-@Retention(SOURCE)
-@IntDef(value = {BLACK_WHITE_AUTO, PRIMARY, PRIMARY_DARK, ACCENT})
-public @interface BottomNavBgMode {
-  int BLACK_WHITE_AUTO = 0;
-  int PRIMARY = 1;
-  int PRIMARY_DARK = 2;
-  int ACCENT = 3;
+public enum BottomNavBgMode {
+  BLACK_WHITE_AUTO(0),
+  PRIMARY(1),
+  PRIMARY_DARK(2),
+  ACCENT(3);
+
+  private final int value;
+
+  BottomNavBgMode(int value) {
+    this.value = value;
+  }
+
+  public int toInt() {
+    return value;
+  }
+
+  public static BottomNavBgMode fromInt(int value) {
+    switch (value) {
+      case 0:
+        return BLACK_WHITE_AUTO;
+      case 1:
+        return PRIMARY;
+      case 2:
+        return PRIMARY_DARK;
+      default:
+        return ACCENT;
+    }
+  }
 }

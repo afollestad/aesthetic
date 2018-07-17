@@ -5,9 +5,7 @@ import static com.afollestad.aesthetic.Rx.onErrorLogAndRethrow;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ScrollView;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticScrollView extends ScrollView {
@@ -37,14 +35,7 @@ public class AestheticScrollView extends ScrollView {
         Aesthetic.get()
             .colorAccent()
             .compose(Rx.<Integer>distinctToMainThread())
-            .subscribe(
-                new Consumer<Integer>() {
-                  @Override
-                  public void accept(@NonNull Integer color) {
-                    invalidateColors(color);
-                  }
-                },
-                onErrorLogAndRethrow());
+            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
   }
 
   @Override

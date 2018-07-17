@@ -7,9 +7,7 @@ import android.content.Context;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
 import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticSpinner extends AppCompatSpinner {
@@ -52,14 +50,7 @@ public class AestheticSpinner extends AppCompatSpinner {
                 Aesthetic.get().isDark(),
                 ColorIsDarkState.creator())
             .compose(Rx.<ColorIsDarkState>distinctToMainThread())
-            .subscribe(
-                new Consumer<ColorIsDarkState>() {
-                  @Override
-                  public void accept(@NonNull ColorIsDarkState colorIsDarkState) {
-                    invalidateColors(colorIsDarkState);
-                  }
-                },
-                onErrorLogAndRethrow());
+            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
   }
 
   @Override

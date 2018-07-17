@@ -458,7 +458,8 @@ final class TintHelper {
     }
   }
 
-  // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary because Drawables with the same resource have shared states otherwise.
+  // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary
+  // because Drawables with the same resource have shared states otherwise.
   @CheckResult
   @Nullable
   static Drawable createTintedDrawable(@Nullable Drawable drawable, @ColorInt int color) {
@@ -469,7 +470,8 @@ final class TintHelper {
     return drawable;
   }
 
-  // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary because Drawables with the same resource have shared states otherwise.
+  // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary
+  // because Drawables with the same resource have shared states otherwise.
   @CheckResult
   @Nullable
   static Drawable createTintedDrawable(@Nullable Drawable drawable, @NonNull ColorStateList sl) {

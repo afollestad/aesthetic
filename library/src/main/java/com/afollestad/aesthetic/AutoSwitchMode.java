@@ -1,19 +1,29 @@
 package com.afollestad.aesthetic;
 
-import static com.afollestad.aesthetic.AutoSwitchMode.AUTO;
-import static com.afollestad.aesthetic.AutoSwitchMode.OFF;
-import static com.afollestad.aesthetic.AutoSwitchMode.ON;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
-import android.support.annotation.IntDef;
-import java.lang.annotation.Retention;
-
 /** @author Aidan Follestad (afollestad) */
-@SuppressWarnings("WeakerAccess")
-@Retention(SOURCE)
-@IntDef(value = {OFF, ON, AUTO})
-public @interface AutoSwitchMode {
-  int OFF = 0;
-  int ON = 1;
-  int AUTO = 2;
+public enum AutoSwitchMode {
+  OFF(0),
+  ON(1),
+  AUTO(2);
+
+  private final int value;
+
+  AutoSwitchMode(int value) {
+    this.value = value;
+  }
+
+  public int toInt() {
+    return value;
+  }
+
+  public static AutoSwitchMode fromInt(int value) {
+    switch (value) {
+      case 0:
+        return OFF;
+      case 1:
+        return ON;
+      default:
+        return AUTO;
+    }
+  }
 }

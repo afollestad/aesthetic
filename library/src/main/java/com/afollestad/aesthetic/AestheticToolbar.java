@@ -11,9 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 
 /** @author Aidan Follestad (afollestad) */
@@ -87,14 +85,7 @@ public class AestheticToolbar extends Toolbar {
                 Aesthetic.get().colorIconTitle(null),
                 BgIconColorState.creator())
             .compose(Rx.<BgIconColorState>distinctToMainThread())
-            .subscribe(
-                new Consumer<BgIconColorState>() {
-                  @Override
-                  public void accept(@NonNull BgIconColorState bgIconColorState) {
-                    invalidateColors(bgIconColorState);
-                  }
-                },
-                onErrorLogAndRethrow());
+            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
   }
 
   @Override

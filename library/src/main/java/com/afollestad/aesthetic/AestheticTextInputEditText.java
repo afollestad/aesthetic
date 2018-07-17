@@ -7,9 +7,7 @@ import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.util.AttributeSet;
 import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticTextInputEditText extends TextInputEditText {
@@ -66,14 +64,7 @@ public class AestheticTextInputEditText extends TextInputEditText {
                 Aesthetic.get().isDark(),
                 ColorIsDarkState.creator())
             .compose(Rx.<ColorIsDarkState>distinctToMainThread())
-            .subscribe(
-                new Consumer<ColorIsDarkState>() {
-                  @Override
-                  public void accept(@NonNull ColorIsDarkState colorIsDarkState) {
-                    invalidateColors(colorIsDarkState);
-                  }
-                },
-                onErrorLogAndRethrow()));
+            .subscribe(this::invalidateColors, onErrorLogAndRethrow()));
   }
 
   @Override
@@ -86,13 +77,7 @@ public class AestheticTextInputEditText extends TextInputEditText {
   public void refreshDrawableState() {
     super.refreshDrawableState();
     if (lastState != null) {
-      post(
-          new Runnable() {
-            @Override
-            public void run() {
-              invalidateColors(lastState);
-            }
-          });
+      post(() -> invalidateColors(lastState));
     }
   }
 }

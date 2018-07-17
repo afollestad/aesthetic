@@ -10,10 +10,8 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
 
 /** @author Aidan Follestad (afollestad) */
@@ -78,28 +76,14 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
             Aesthetic.get()
                 .colorPrimary()
                 .compose(Rx.<Integer>distinctToMainThread())
-                .subscribe(
-                    new Consumer<Integer>() {
-                      @Override
-                      public void accept(@NonNull Integer color) {
-                        lastTextIconColor = color;
-                      }
-                    },
-                    onErrorLogAndRethrow()));
+                .subscribe(color -> lastTextIconColor = color, onErrorLogAndRethrow()));
         break;
       case BottomNavIconTextMode.SELECTED_ACCENT:
         colorSubscriptions.add(
             Aesthetic.get()
                 .colorAccent()
                 .compose(Rx.<Integer>distinctToMainThread())
-                .subscribe(
-                    new Consumer<Integer>() {
-                      @Override
-                      public void accept(@NonNull Integer color) {
-                        lastTextIconColor = color;
-                      }
-                    },
-                    onErrorLogAndRethrow()));
+                .subscribe(color -> lastTextIconColor = color, onErrorLogAndRethrow()));
         break;
       case BottomNavIconTextMode.BLACK_WHITE_AUTO:
         // We will automatically set the icon/text color when the background color is set
@@ -154,14 +138,7 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
                 Aesthetic.get().isDark(),
                 State.creator())
             .compose(Rx.<State>distinctToMainThread())
-            .subscribe(
-                new Consumer<State>() {
-                  @Override
-                  public void accept(@android.support.annotation.NonNull State state) {
-                    onState(state);
-                  }
-                },
-                onErrorLogAndRethrow());
+            .subscribe(this::onState, onErrorLogAndRethrow());
   }
 
   @Override
@@ -189,12 +166,7 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
     }
 
     static Function3<Integer, Integer, Boolean, State> creator() {
-      return new Function3<Integer, Integer, Boolean, State>() {
-        @Override
-        public State apply(Integer integer, Integer integer2, Boolean aBoolean) {
-          return State.create(integer, integer2, aBoolean);
-        }
-      };
+      return State::create;
     }
   }
 }

@@ -22,8 +22,6 @@ import android.view.Menu;
 import android.view.View;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 import java.lang.reflect.Field;
 
 /** @author Aidan Follestad (afollestad) */
@@ -76,7 +74,8 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
         new PorterDuffColorFilter(colors.activeColor(), PorterDuff.Mode.SRC_IN);
     for (int i = 0; i < toolbar.getChildCount(); i++) {
       final View v = toolbar.getChildAt(i);
-      // We can't iterate through the toolbar.getMenu() here, because we need the ActionMenuItemView.
+      // We can't iterate through the toolbar.getMenu() here, because we need the
+      // ActionMenuItemView.
       if (v instanceof ActionMenuView) {
         for (int j = 0; j < ((ActionMenuView) v).getChildCount(); j++) {
           final View innerView = ((ActionMenuView) v).getChildAt(j);
@@ -130,23 +129,13 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
           Observable.combineLatest(
                   toolbar.colorUpdated(),
                   Aesthetic.get().colorIconTitle(toolbar.colorUpdated()),
-                  new BiFunction<
-                      Integer, ActiveInactiveColors, Pair<Integer, ActiveInactiveColors>>() {
-                    @Override
-                    public Pair<Integer, ActiveInactiveColors> apply(
-                        Integer integer, ActiveInactiveColors activeInactiveColors) {
-                      return Pair.create(integer, activeInactiveColors);
-                    }
-                  })
+                  Pair::create)
               .compose(Rx.<Pair<Integer, ActiveInactiveColors>>distinctToMainThread())
               .subscribe(
-                  new Consumer<Pair<Integer, ActiveInactiveColors>>() {
-                    @Override
-                    public void accept(@NonNull Pair<Integer, ActiveInactiveColors> result) {
-                      toolbarColor = result.first;
-                      iconTextColors = result.second;
-                      invalidateColors();
-                    }
+                  result -> {
+                    toolbarColor = result.first;
+                    iconTextColors = result.second;
+                    invalidateColors();
                   },
                   onErrorLogAndRethrow());
     }
@@ -157,12 +146,9 @@ public class AestheticCoordinatorLayout extends CoordinatorLayout
               .colorStatusBar()
               .compose(Rx.<Integer>distinctToMainThread())
               .subscribe(
-                  new Consumer<Integer>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull Integer color) {
-                      collapsingToolbarLayout.setContentScrimColor(color);
-                      collapsingToolbarLayout.setStatusBarScrimColor(color);
-                    }
+                  color -> {
+                    collapsingToolbarLayout.setContentScrimColor(color);
+                    collapsingToolbarLayout.setStatusBarScrimColor(color);
                   },
                   onErrorLogAndRethrow());
     }

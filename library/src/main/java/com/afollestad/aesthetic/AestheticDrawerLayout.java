@@ -9,7 +9,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.util.AttributeSet;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticDrawerLayout extends DrawerLayout {
@@ -47,15 +46,7 @@ public class AestheticDrawerLayout extends DrawerLayout {
         Aesthetic.get()
             .colorIconTitle(null)
             .compose(Rx.<ActiveInactiveColors>distinctToMainThread())
-            .subscribe(
-                new Consumer<ActiveInactiveColors>() {
-                  @Override
-                  public void accept(
-                      @io.reactivex.annotations.NonNull ActiveInactiveColors colors) {
-                    invalidateColor(colors);
-                  }
-                },
-                onErrorLogAndRethrow());
+            .subscribe(this::invalidateColor, onErrorLogAndRethrow());
   }
 
   @Override

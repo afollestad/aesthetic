@@ -248,8 +248,10 @@ final class InflationInterceptor implements LayoutInflaterFactory {
         return view;
       }
 
-      // Mimic code of LayoutInflater using reflection tricks (this would normally be run when this factory returns null).
-      // We need to intercept the default behavior rather than allowing the LayoutInflater to handle it after this method returns.
+      // Mimic code of LayoutInflater using reflection tricks (this would normally be run when this
+      // factory returns null).
+      // We need to intercept the default behavior rather than allowing the LayoutInflater to handle
+      // it after this method returns.
       if (view == null) {
         try {
           Context viewContext = layoutInflater.getContext();

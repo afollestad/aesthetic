@@ -8,9 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import io.reactivex.Observable;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 public class AestheticCardView extends CardView {
@@ -47,14 +45,7 @@ public class AestheticCardView extends CardView {
     //noinspection ConstantConditions
     bgSubscription =
         obs.compose(Rx.<Integer>distinctToMainThread())
-            .subscribe(
-                new Consumer<Integer>() {
-                  @Override
-                  public void accept(@NonNull Integer bgColor) throws Exception {
-                    setCardBackgroundColor(bgColor);
-                  }
-                },
-                onErrorLogAndRethrow());
+            .subscribe(this::setCardBackgroundColor, onErrorLogAndRethrow());
   }
 
   @Override

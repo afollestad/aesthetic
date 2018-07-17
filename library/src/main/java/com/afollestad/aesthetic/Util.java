@@ -110,63 +110,6 @@ public final class Util {
     return result;
   }
 
-  //  static ColorStateList resolveActionTextColorStateList(
-  //      Context context, @AttrRes int colorAttr, ColorStateList fallback) {
-  //    TypedArray a = context.getTheme().obtainStyledAttributes(new int[] {colorAttr});
-  //    try {
-  //      final TypedValue value = a.peekValue(0);
-  //      if (value == null) {
-  //        return fallback;
-  //      }
-  //      if (value.type >= TypedValue.TYPE_FIRST_COLOR_INT
-  //          && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
-  //        return getActionTextStateList(context, value.data);
-  //      } else {
-  //        final ColorStateList stateList = a.getColorStateList(0);
-  //        if (stateList != null) {
-  //          return stateList;
-  //        } else {
-  //          return fallback;
-  //        }
-  //      }
-  //    } finally {
-  //      a.recycle();
-  //    }
-  //  }
-
-  // Get the specified color resource, creating a ColorStateList if the resource
-  // points to a color value.
-  //  static ColorStateList getActionTextColorStateList(Context context, @ColorRes int colorId) {
-  //    final TypedValue value = new TypedValue();
-  //    context.getResources().getValue(colorId, value, true);
-  //    if (value.type >= TypedValue.TYPE_FIRST_COLOR_INT
-  //        && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
-  //      return getActionTextStateList(context, value.data);
-  //    } else {
-  //
-  //      if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
-  //        //noinspection deprecation
-  //        return context.getResources().getColorStateList(colorId);
-  //      } else {
-  //        return context.getColorStateList(colorId);
-  //      }
-  //    }
-  //  }
-
-  //  static ColorStateList getActionTextStateList(Context context, int newPrimaryColor) {
-  //    final int fallBackButtonColor = resolveColor(context, android.R.attr.textColorPrimary);
-  //    if (newPrimaryColor == 0) {
-  //      newPrimaryColor = fallBackButtonColor;
-  //    }
-  //    int[][] states =
-  //        new int[][] {
-  //          new int[] {-android.R.attr.state_enabled}, // disabled
-  //          new int[] {} // enabled
-  //        };
-  //    int[] colors = new int[] {adjustAlpha(newPrimaryColor, 0.4f), newPrimaryColor};
-  //    return new ColorStateList(states, colors);
-  //  }
-
   @ColorInt
   public static int adjustAlpha(
       @ColorInt int color, @SuppressWarnings("SameParameterValue") float factor) {
@@ -211,7 +154,8 @@ public final class Util {
     return darkness < 0.4;
   }
 
-  // optional convenience method, this can be called when we have information about the background color and want to consider it
+  // optional convenience method, this can be called when we have information about the background
+  // color and want to consider it
   static boolean isColorLight(@ColorInt int color, @ColorInt int bgColor) {
     if (Color.alpha(color)
         < 128) { // if the color is less than 50% visible rely on the background color
@@ -300,22 +244,6 @@ public final class Util {
     }
     return null;
   }
-
-  //  @Nullable
-  //  static Toolbar getSupportActionBarView(@Nullable ActionBar ab) {
-  //    if (ab == null) return null;
-  //    try {
-  //      Field field = ab.getClass().getDeclaredField("mDecorToolbar");
-  //      field.setAccessible(true);
-  //      ToolbarWidgetWrapper wrapper = (ToolbarWidgetWrapper) field.get(ab);
-  //      field = ToolbarWidgetWrapper.class.getDeclaredField("mToolbar");
-  //      field.setAccessible(true);
-  //      return (Toolbar) field.get(wrapper);
-  //    } catch (Throwable t) {
-  //      Log.d("Aesthetic", "Unable to get Toolbar from " + ab.getClass().getName());
-  //      return null;
-  //    }
-  //  }
 
   @NonNull
   static ViewGroup getRootView(@NonNull Activity activity) {

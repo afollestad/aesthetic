@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressWarnings("RestrictedApi")
@@ -50,14 +49,7 @@ final class AestheticActionMenuItemView extends ActionMenuItemView {
         .colorIconTitle(null)
         .observeOn(AndroidSchedulers.mainThread())
         .take(1)
-        .subscribe(
-            new Consumer<ActiveInactiveColors>() {
-              @Override
-              public void accept(@NonNull ActiveInactiveColors colors) {
-                invalidateColors(colors);
-              }
-            },
-            onErrorLogAndRethrow());
+        .subscribe(colors -> invalidateColors(colors), onErrorLogAndRethrow());
   }
 
   public void setIcon(final Drawable icon, ColorStateList colors) {
@@ -72,14 +64,7 @@ final class AestheticActionMenuItemView extends ActionMenuItemView {
         Aesthetic.get()
             .colorIconTitle(null)
             .compose(Rx.<ActiveInactiveColors>distinctToMainThread())
-            .subscribe(
-                new Consumer<ActiveInactiveColors>() {
-                  @Override
-                  public void accept(@NonNull ActiveInactiveColors colors) {
-                    invalidateColors(colors);
-                  }
-                },
-                onErrorLogAndRethrow());
+            .subscribe(this::invalidateColors, onErrorLogAndRethrow());
   }
 
   @Override

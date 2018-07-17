@@ -200,7 +200,7 @@ public class MainFragment extends Fragment {
         new View.OnClickListener() {
           @Override
           public void onClick(View view) {
-            //no-op
+            // no-op
           }
         });
     snackbar.show();

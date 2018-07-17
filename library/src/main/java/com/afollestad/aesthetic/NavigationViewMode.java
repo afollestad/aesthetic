@@ -1,17 +1,26 @@
 package com.afollestad.aesthetic;
 
-import static com.afollestad.aesthetic.NavigationViewMode.SELECTED_ACCENT;
-import static com.afollestad.aesthetic.NavigationViewMode.SELECTED_PRIMARY;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
-import android.support.annotation.IntDef;
-import java.lang.annotation.Retention;
-
 /** @author Aidan Follestad (afollestad) */
-@SuppressWarnings("WeakerAccess")
-@Retention(SOURCE)
-@IntDef(value = {SELECTED_PRIMARY, SELECTED_ACCENT})
-public @interface NavigationViewMode {
-  int SELECTED_PRIMARY = 0;
-  int SELECTED_ACCENT = 1;
+public enum NavigationViewMode {
+  SELECTED_PRIMARY(0),
+  SELECTED_ACCENT(1);
+
+  private final int value;
+
+  NavigationViewMode(int value) {
+    this.value = value;
+  }
+
+  public int toInt() {
+    return value;
+  }
+
+  public static NavigationViewMode fromInt(int value) {
+    switch (value) {
+      case 0:
+        return SELECTED_PRIMARY;
+      default:
+        return SELECTED_ACCENT;
+    }
+  }
 }

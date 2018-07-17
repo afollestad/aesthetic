@@ -1,17 +1,26 @@
 package com.afollestad.aesthetic;
 
-import static com.afollestad.aesthetic.TabLayoutIndicatorMode.ACCENT;
-import static com.afollestad.aesthetic.TabLayoutIndicatorMode.PRIMARY;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
-import android.support.annotation.IntDef;
-import java.lang.annotation.Retention;
-
 /** @author Aidan Follestad (afollestad) */
-@SuppressWarnings("WeakerAccess")
-@Retention(SOURCE)
-@IntDef(value = {PRIMARY, ACCENT})
-public @interface TabLayoutIndicatorMode {
-  int PRIMARY = 0;
-  int ACCENT = 1;
+public enum TabLayoutIndicatorMode {
+  PRIMARY(0),
+  ACCENT(1);
+
+  private final int value;
+
+  TabLayoutIndicatorMode(int value) {
+    this.value = value;
+  }
+
+  public int toInt() {
+    return value;
+  }
+
+  public static TabLayoutIndicatorMode fromInt(int value) {
+    switch (value) {
+      case 0:
+        return PRIMARY;
+      default:
+        return ACCENT;
+    }
+  }
 }
