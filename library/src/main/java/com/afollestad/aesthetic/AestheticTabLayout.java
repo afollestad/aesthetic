@@ -38,9 +38,10 @@ public class AestheticTabLayout extends TabLayout {
     final ColorStateList sl =
         new ColorStateList(
             new int[][] {
-              new int[] {-android.R.attr.state_selected}, new int[] {android.R.attr.state_selected}
+                new int[] { -android.R.attr.state_selected },
+                new int[] { android.R.attr.state_selected }
             },
-            new int[] {adjustAlpha(color, UNFOCUSED_ALPHA), color});
+            new int[] { adjustAlpha(color, UNFOCUSED_ALPHA), color });
     for (int i = 0; i < getTabCount(); i++) {
       final TabLayout.Tab tab = getTabAt(i);
       if (tab != null && tab.getIcon() != null) {
@@ -79,7 +80,7 @@ public class AestheticTabLayout extends TabLayout {
                     bgColorSubscription.dispose();
                   }
                   switch (mode) {
-                    case TabLayoutIndicatorMode.PRIMARY:
+                    case PRIMARY:
                       bgColorSubscription =
                           Aesthetic.get()
                               .colorPrimary()
@@ -88,7 +89,7 @@ public class AestheticTabLayout extends TabLayout {
                                   ViewBackgroundAction.create(AestheticTabLayout.this),
                                   onErrorLogAndRethrow());
                       break;
-                    case TabLayoutIndicatorMode.ACCENT:
+                    case ACCENT:
                       bgColorSubscription =
                           Aesthetic.get()
                               .colorAccent()
@@ -113,7 +114,7 @@ public class AestheticTabLayout extends TabLayout {
                     indicatorColorSubscription.dispose();
                   }
                   switch (mode) {
-                    case TabLayoutIndicatorMode.PRIMARY:
+                    case PRIMARY:
                       indicatorColorSubscription =
                           Aesthetic.get()
                               .colorPrimary()
@@ -121,7 +122,7 @@ public class AestheticTabLayout extends TabLayout {
                               .subscribe(
                                   this::setSelectedTabIndicatorColor, onErrorLogAndRethrow());
                       break;
-                    case TabLayoutIndicatorMode.ACCENT:
+                    case ACCENT:
                       indicatorColorSubscription =
                           Aesthetic.get()
                               .colorAccent()

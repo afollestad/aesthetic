@@ -60,7 +60,7 @@ import java.util.List;
 import java.util.Map;
 
 /** @author Aidan Follestad (afollestad) */
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings({ "WeakerAccess", "unused" })
 public class Aesthetic {
 
   @SuppressLint("StaticFieldLeak")
@@ -199,8 +199,8 @@ public class Aesthetic {
                 onErrorLogAndRethrow()));
     instance.subs.add(
         Observable.combineLatest(
-                instance.colorStatusBar(), instance.lightStatusBarMode(), Pair::create)
-            .compose(Rx.<Pair<Integer, Integer>>distinctToMainThread())
+            instance.colorStatusBar(), instance.lightStatusBarMode(), Pair::create)
+            .compose(Rx.distinctToMainThread())
             .subscribe(result -> instance.invalidateStatusBar(), onErrorLogAndRethrow()));
     instance.subs.add(
         instance
@@ -549,10 +549,11 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Observable<Integer> tabLayoutIndicatorMode() {
+  public Observable<TabLayoutIndicatorMode> tabLayoutIndicatorMode() {
     return rxPrefs
         .getInteger(KEY_TAB_LAYOUT_INDICATOR_MODE, TabLayoutIndicatorMode.ACCENT.toInt())
-        .asObservable();
+        .asObservable()
+        .map(TabLayoutIndicatorMode::fromInt);
   }
 
   @CheckResult
@@ -562,10 +563,11 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Observable<Integer> tabLayoutBackgroundMode() {
+  public Observable<TabLayoutBgMode> tabLayoutBackgroundMode() {
     return rxPrefs
         .getInteger(KEY_TAB_LAYOUT_BG_MODE, TabLayoutBgMode.PRIMARY.toInt())
-        .asObservable();
+        .asObservable()
+        .map(TabLayoutBgMode::fromInt);
   }
 
   @CheckResult
@@ -575,10 +577,11 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Observable<Integer> navigationViewMode() {
+  public Observable<NavigationViewMode> navigationViewMode() {
     return rxPrefs
         .getInteger(KEY_NAV_VIEW_MODE, NavigationViewMode.SELECTED_PRIMARY.toInt())
-        .asObservable();
+        .asObservable()
+        .map(NavigationViewMode::fromInt);
   }
 
   @CheckResult
@@ -588,10 +591,11 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Observable<Integer> bottomNavigationBackgroundMode() {
+  public Observable<BottomNavBgMode> bottomNavigationBackgroundMode() {
     return rxPrefs
         .getInteger(KEY_BOTTOM_NAV_BG_MODE, BottomNavBgMode.BLACK_WHITE_AUTO.toInt())
-        .asObservable();
+        .asObservable()
+        .map(BottomNavBgMode::fromInt);
   }
 
   @CheckResult
@@ -601,10 +605,11 @@ public class Aesthetic {
   }
 
   @CheckResult
-  public Observable<Integer> bottomNavigationIconTextMode() {
+  public Observable<BottomNavIconTextMode> bottomNavigationIconTextMode() {
     return rxPrefs
         .getInteger(KEY_BOTTOM_NAV_ICONTEXT_MODE, BottomNavIconTextMode.SELECTED_ACCENT.toInt())
-        .asObservable();
+        .asObservable()
+        .map(BottomNavIconTextMode::fromInt);
   }
 
   @CheckResult

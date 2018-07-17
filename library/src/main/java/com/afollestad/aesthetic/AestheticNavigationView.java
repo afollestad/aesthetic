@@ -76,7 +76,7 @@ public class AestheticNavigationView extends NavigationView {
             .subscribe(
                 mode -> {
                   switch (mode) {
-                    case NavigationViewMode.SELECTED_PRIMARY:
+                    case SELECTED_PRIMARY:
                       colorSubscription =
                           Observable.combineLatest(
                                   Aesthetic.get().colorPrimary(),
@@ -85,7 +85,7 @@ public class AestheticNavigationView extends NavigationView {
                               .compose(Rx.distinctToMainThread())
                               .subscribe(this::invalidateColors, onErrorLogAndRethrow());
                       break;
-                    case NavigationViewMode.SELECTED_ACCENT:
+                    case SELECTED_ACCENT:
                       colorSubscription =
                           Observable.combineLatest(
                                   Aesthetic.get().colorAccent(),
