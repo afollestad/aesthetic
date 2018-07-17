@@ -1,39 +1,43 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply from: '../dependencies.gradle'
 
 android {
-    compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
-    defaultConfig {
-        applicationId "com.afollestad.aestheticsample"
-        minSdkVersion versions.minSdk
-        targetSdkVersion versions.compileSdk
-        versionCode versions.publishVersionCode
-        versionName versions.publishVersion
-        vectorDrawables.useSupportLibrary = true
+  compileSdkVersion versions.compileSdk
+  buildToolsVersion versions.buildTools
+
+  defaultConfig {
+    applicationId "com.afollestad.aestheticsample"
+    minSdkVersion versions.minSdk
+    targetSdkVersion versions.compileSdk
+    versionCode versions.publishVersionCode
+    versionName versions.publishVersion
+    vectorDrawables.useSupportLibrary = true
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+  }
 }
 
 dependencies {
-    repositories {
-        maven {
-            url 'https://maven.google.com'
-        }
-    }
+  repositories {
+    google()
+  }
 
-    implementation 'com.android.support:appcompat-v7:' + versions.supportLib
-    implementation 'com.android.support:design:' + versions.supportLib
-    implementation 'com.android.support:support-v13:' + versions.supportLib
-    implementation 'io.reactivex.rxjava2:rxjava:' + versions.rxJava
-    implementation 'io.reactivex.rxjava2:rxandroid:' + versions.rxAndroid
-    implementation 'com.jakewharton:butterknife:' + versions.butterKnife
-    annotationProcessor 'com.jakewharton:butterknife-compiler:' + versions.butterKnife
-    implementation 'com.afollestad.material-dialogs:core:' + versions.materialDialogs
-    implementation project(path: ':library')
+  implementation project(path: ':library')
+
+  implementation 'com.jakewharton:butterknife:' + versions.butterKnife
+  annotationProcessor 'com.jakewharton:butterknife-compiler:' + versions.butterKnife
+
+  implementation 'com.android.support:appcompat-v7:' + versions.supportLib
+  implementation 'com.android.support:design:' + versions.supportLib
+  implementation 'com.android.support:support-v13:' + versions.supportLib
+
+  implementation 'io.reactivex.rxjava2:rxjava:' + versions.rxJava
+  implementation 'io.reactivex.rxjava2:rxandroid:' + versions.rxAndroid
 }
