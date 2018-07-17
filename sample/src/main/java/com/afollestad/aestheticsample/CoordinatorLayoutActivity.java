@@ -24,13 +24,7 @@ public class CoordinatorLayoutActivity extends AestheticActivity {
     unbinder = ButterKnife.bind(this);
 
     toolbar.inflateMenu(R.menu.coordinatorlayout);
-    toolbar.setNavigationOnClickListener(
-        new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            finish();
-          }
-        });
+    toolbar.setNavigationOnClickListener(__ -> finish());
   }
 
   @Override

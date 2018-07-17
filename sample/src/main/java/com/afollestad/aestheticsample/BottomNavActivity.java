@@ -23,13 +23,7 @@ public class BottomNavActivity extends AestheticActivity {
     setContentView(R.layout.activity_bottom_nav);
     unbinder = ButterKnife.bind(this);
 
-    toolbar.setNavigationOnClickListener(
-        new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            finish();
-          }
-        });
+    toolbar.setNavigationOnClickListener(__ -> finish());
   }
 
   @Override

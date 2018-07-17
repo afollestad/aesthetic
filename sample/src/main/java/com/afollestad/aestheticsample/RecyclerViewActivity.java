@@ -28,13 +28,7 @@ public class RecyclerViewActivity extends AestheticActivity {
     setContentView(R.layout.activity_recyclerview);
     unbinder = ButterKnife.bind(this);
 
-    toolbar.setNavigationOnClickListener(
-        new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            finish();
-          }
-        });
+    toolbar.setNavigationOnClickListener(__ -> finish());
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setAdapter(new MainAdapter());
   }

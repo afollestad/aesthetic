@@ -1,7 +1,7 @@
 package com.afollestad.aestheticsample;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -20,9 +20,7 @@ import butterknife.Unbinder;
 import com.afollestad.aesthetic.Aesthetic;
 import com.afollestad.aesthetic.BottomNavBgMode;
 import com.afollestad.aesthetic.BottomNavIconTextMode;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /** @author Aidan Follestad (afollestad) */
 public class MainFragment extends Fragment {
@@ -43,12 +41,14 @@ public class MainFragment extends Fragment {
   @Nullable
   @Override
   public View onCreateView(
-      LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+      @NonNull LayoutInflater inflater,
+      @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_main, container, false);
   }
 
   @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     unbinder = ButterKnife.bind(this, view);
 
@@ -57,12 +57,7 @@ public class MainFragment extends Fragment {
         Aesthetic.get()
             .isDark()
             .subscribe(
-                new Consumer<Boolean>() {
-                  @Override
-                  public void accept(@NonNull Boolean isDark) {
-                    switchThemeView.setChecked(isDark);
-                  }
-                });
+                isDark -> switchThemeView.setChecked(isDark));
 
     // Further view setup
     ArrayAdapter<String> spinnerAdapter =
@@ -112,15 +107,9 @@ public class MainFragment extends Fragment {
     new AlertDialog.Builder(getActivity())
         .setTitle(R.string.hello_world)
         .setMessage(R.string.lorem_ipsum)
-        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-          @Override public void onClick(DialogInterface dialogInterface, int i) {
-
-          }
+        .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
         })
-        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-          @Override public void onClick(DialogInterface dialogInterface, int i) {
-
-          }
+        .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> {
         })
         .show();
   }
@@ -206,11 +195,8 @@ public class MainFragment extends Fragment {
     snackbar = Snackbar.make(rootView, R.string.hello_world, Snackbar.LENGTH_LONG);
     snackbar.setAction(
         android.R.string.cancel,
-        new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            // no-op
-          }
+        view -> {
+          // no-op
         });
     snackbar.show();
   }
