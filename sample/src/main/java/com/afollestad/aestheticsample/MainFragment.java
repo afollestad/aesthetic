@@ -1,9 +1,11 @@
 package com.afollestad.aestheticsample;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +20,6 @@ import butterknife.Unbinder;
 import com.afollestad.aesthetic.Aesthetic;
 import com.afollestad.aesthetic.BottomNavBgMode;
 import com.afollestad.aesthetic.BottomNavIconTextMode;
-import com.afollestad.materialdialogs.MaterialDialog;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -69,12 +70,12 @@ public class MainFragment extends Fragment {
             getContext(),
             R.layout.list_item_spinner,
             new String[] {
-              "Spinner One",
-              "Spinner Two",
-              "Spinner Three",
-              "Spinner Four",
-              "Spinner Five",
-              "Spinner Six"
+                "Spinner One",
+                "Spinner Two",
+                "Spinner Three",
+                "Spinner Four",
+                "Spinner Five",
+                "Spinner Six"
             });
     spinnerAdapter.setDropDownViewResource(R.layout.list_item_spinner_dropdown);
     spinnerView.setAdapter(spinnerAdapter);
@@ -108,21 +109,29 @@ public class MainFragment extends Fragment {
 
   @OnClick(R.id.btn_dialog)
   public void showMaterialDialog() {
-    new MaterialDialog.Builder(getContext())
-        .title(R.string.hello_world)
-        .content(R.string.lorem_ipsum)
-        .positiveText(android.R.string.ok)
-        .negativeText(android.R.string.cancel)
+    new AlertDialog.Builder(getActivity())
+        .setTitle(R.string.hello_world)
+        .setMessage(R.string.lorem_ipsum)
+        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+          @Override public void onClick(DialogInterface dialogInterface, int i) {
+
+          }
+        })
+        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+          @Override public void onClick(DialogInterface dialogInterface, int i) {
+
+          }
+        })
         .show();
   }
 
   @OnClick({
-    R.id.btn_black,
-    R.id.btn_red,
-    R.id.btn_purple,
-    R.id.btn_blue,
-    R.id.btn_green,
-    R.id.btn_white
+      R.id.btn_black,
+      R.id.btn_red,
+      R.id.btn_purple,
+      R.id.btn_blue,
+      R.id.btn_green,
+      R.id.btn_white
   })
   public void onClickButton(View view) {
     switch (view.getId()) {

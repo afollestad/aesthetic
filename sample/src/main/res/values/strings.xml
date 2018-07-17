@@ -57,6 +57,6 @@
   <string name="search">Search</string>
   <string name="search_view_example">Search view example…</string>
   <string name="recycler_view">Recycler View</string>
-  <string name="show_materialdialog">Show MaterialDialog</string>
+  <string name="show_materialdialog">Show Dialog</string>
 
 </resources>
