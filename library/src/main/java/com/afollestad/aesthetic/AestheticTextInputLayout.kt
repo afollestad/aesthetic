@@ -9,8 +9,8 @@ import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
-import com.afollestad.aesthetic.utils.setAccent
-import com.afollestad.aesthetic.utils.setHint
+import com.afollestad.aesthetic.utils.setAccentColor
+import com.afollestad.aesthetic.utils.setHintColor
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 
@@ -32,7 +32,7 @@ class AestheticTextInputLayout(
   }
 
   private fun invalidateColors(color: Int) {
-    setAccent(color)
+    setAccentColor(color)
   }
 
   override fun onAttachedToWindow() {
@@ -43,7 +43,7 @@ class AestheticTextInputLayout(
             .textColorSecondary()
             .distinctToMainThread()
             .subscribe(
-                Consumer { setHint(it.adjustAlpha(0.7f)) },
+                Consumer { setHintColor(it.adjustAlpha(0.7f)) },
                 onErrorLogAndRethrow()
             )
     subs!! +=

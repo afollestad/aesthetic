@@ -112,11 +112,13 @@ internal fun tintImageView(
   }
 }
 
-internal fun TextInputLayout.setHint(@ColorInt hintColor: Int) {
+internal fun TextInputLayout.setHintColor(@ColorInt hintColor: Int) {
   try {
-    val mDefaultTextColorField = TextInputLayout::class.java.getDeclaredField("mDefaultTextColor")
-    mDefaultTextColorField.isAccessible = true
-    mDefaultTextColorField.set(this, ColorStateList.valueOf(hintColor))
+    val defaultHintColorField = TextInputLayout::class.java.findField(
+        "defaultHintTextColor", "mDefaultTextColor"
+    )
+    defaultHintColorField.isAccessible = true
+    defaultHintColorField.set(this, ColorStateList.valueOf(hintColor))
     val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
         "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType
     )
@@ -130,11 +132,13 @@ internal fun TextInputLayout.setHint(@ColorInt hintColor: Int) {
 
 }
 
-internal fun TextInputLayout.setAccent(@ColorInt accentColor: Int) {
+internal fun TextInputLayout.setAccentColor(@ColorInt accentColor: Int) {
   try {
-    val mFocusedTextColorField = TextInputLayout::class.java.getDeclaredField("mFocusedTextColor")
-    mFocusedTextColorField.isAccessible = true
-    mFocusedTextColorField.set(this, ColorStateList.valueOf(accentColor))
+    val focusedTextColor = TextInputLayout::class.java.findField(
+        "focusedTextColor", "mFocusedTextColor"
+    )
+    focusedTextColor.isAccessible = true
+    focusedTextColor.set(this, ColorStateList.valueOf(accentColor))
     val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
         "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType
     )
@@ -145,5 +149,21 @@ internal fun TextInputLayout.setAccent(@ColorInt accentColor: Int) {
         "Failed to set TextInputLayout accent (expanded) color: " + t.localizedMessage, t
     )
   }
+}
 
+internal fun TextInputLayout.setDisabledColor(@ColorInt accentColor: Int) {
+  try {
+    val disabledTextColor = TextInputLayout::class.java.findField("disabledColor")
+    disabledTextColor.isAccessible = true
+    disabledTextColor.set(this, ColorStateList.valueOf(accentColor))
+    val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
+        "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType
+    )
+    updateLabelStateMethod.isAccessible = true
+    updateLabelStateMethod.invoke(this, false, true)
+  } catch (t: Throwable) {
+    throw IllegalStateException(
+        "Failed to set TextInputLayout accent (expanded) color: " + t.localizedMessage, t
+    )
+  }
 }
