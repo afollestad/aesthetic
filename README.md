@@ -109,6 +109,20 @@ The primary color and accent color are the two base theme colors used by apps. G
 see the primary color on things such as `Toolbar`'s, and the accent color on widgets such as 
 `EditText`'s, `CheckBox`'s, `RadioButton`'s, `Switch`'s, `SeekBar`'s, `ProgressBar`'s, etc.
 
+You use `Aesthetic.get()` to retrieve the current attached `Aesthetic` instance. You can call
+the individual property setters on that instance, followed by `apply()`.
+
+```kotlin
+Aesthetic.get()
+    .colorPrimaryRes(R.color.md_indigo)
+    .colorPrimaryDarkRes(R.color.md_indigo_dark)
+    .colorAccentRes(R.color.md_yellow)
+    .apply()
+```
+
+However, the static `config` method is provided for convenience. It's a syntax-sugar shortcut to
+apply multiple properties on your instance and automatically apply them.
+
 ```kotlin
 Aesthetic.config {
     colorPrimaryRes(R.color.md_indigo)
@@ -117,14 +131,10 @@ Aesthetic.config {
 }
 ```
 
-You use `Aesthetic.get()` to retrieve the current attached `Aesthetic` instance. You can call
-the individual property setters on that instance, followed by `apply()`. However, the static
-`config` method is provided for convenience. It's a shortcut to apply multiple properties on your
-instance and automatically apply them.
-
-**This will trigger color changes in the visible Activity WITHOUT recreating it.
+**In any case, this will trigger color changes in the visible Activity WITHOUT recreating it.
 The set theme properties will also be persisted automatically.** The methods above end with `Res`,
-indicating they take a color resource. If you remove the `Res` suffix, you can pass a literal color integer.
+indicating they take a color resource. If you remove the `Res` suffix, you can pass a literal color
+integer.
 
 ---
 
