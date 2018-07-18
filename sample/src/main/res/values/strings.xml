@@ -38,6 +38,8 @@
     Vivamus vel euismod nulla. Vivamus eget metus sit amet lacus tempor faucibus.
   </string>
   <string name="dark_theme">Dark theme</string>
+  <string name="dark_theme_on">Dark theme on</string>
+  <string name="dark_theme_off">Dark theme off</string>
   <string name="info">Info</string>
   <string name="other">Other</string>
   <string name="main">Main</string>

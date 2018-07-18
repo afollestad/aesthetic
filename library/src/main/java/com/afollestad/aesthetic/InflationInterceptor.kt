@@ -83,7 +83,7 @@ internal class InflationInterceptor(
 
   @SuppressLint("RestrictedApi")
   override fun onCreateView(
-    parent: View,
+    parent: View?,
     name: String,
     context: Context,
     attrs: AttributeSet?
@@ -109,16 +109,18 @@ internal class InflationInterceptor(
           view = null
         }
       }
-      "Button", "android.support.v7.widget.AppCompatButton" -> if (viewId == android.R.id.button1
-          || viewId == android.R.id.button2
-          || viewId == android.R.id.button3
-      ) {
-        view = AestheticDialogButton(context, attrs)
-      } else if (viewId == R.id.snackbar_action) {
-        view = AestheticSnackBarButton(context, attrs)
-      } else {
-        view = AestheticButton(context, attrs)
-      }
+      "Button", "android.support.v7.widget.AppCompatButton" ->
+        view =
+            if (viewId == android.R.id.button1
+                || viewId == android.R.id.button2
+                || viewId == android.R.id.button3
+            ) {
+              AestheticDialogButton(context, attrs)
+            } else if (viewId == R.id.snackbar_action) {
+              AestheticSnackBarButton(context, attrs)
+            } else {
+              AestheticButton(context, attrs)
+            }
       "android.support.v7.widget.AppCompatCheckBox", "CheckBox" -> view =
           AestheticCheckBox(context, attrs)
       "android.support.v7.widget.AppCompatRadioButton", "RadioButton" -> view =
@@ -216,10 +218,10 @@ internal class InflationInterceptor(
           val lastContext = constructorArgs[0]
           constructorArgs[0] = viewContext
           try {
-            if (-1 == name.indexOf('.')) {
-              view = onCreateViewMethod.invoke(layoutInflater, parent, name, attrs) as View
+            view = if (-1 == name.indexOf('.')) {
+              onCreateViewMethod.invoke(layoutInflater, parent, name, attrs) as View
             } else {
-              view = createViewMethod.invoke(layoutInflater, name, null, attrs) as View
+              createViewMethod.invoke(layoutInflater, name, null, attrs) as View
             }
           } catch (e: Exception) {
             log("Failed to inflate $name: ${e.message}")
@@ -241,8 +243,7 @@ internal class InflationInterceptor(
         val obs: Observable<Int>? =
           ViewUtil.getObservableForResId(view.context, viewBackgroundRes, null)
         if (obs != null) {
-          Aesthetic.get()
-              .addBackgroundSubscriber(view, obs)
+          Aesthetic.get().addBackgroundSubscriber(view, obs)
         }
       }
 
