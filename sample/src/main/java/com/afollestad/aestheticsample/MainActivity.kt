@@ -26,19 +26,19 @@ class MainActivity : AestheticActivity() {
 
     // If we haven't set any defaults, do that now
     if (Aesthetic.isFirstTime) {
-      Aesthetic.get()
-          .activityTheme(R.style.AppTheme)
-          .textColorPrimaryRes(R.color.text_color_primary)
-          .textColorSecondaryRes(R.color.text_color_secondary)
-          .colorPrimaryRes(R.color.md_white)
-          .colorAccentRes(R.color.md_blue)
-          .colorStatusBarAuto()
-          .colorNavigationBarAuto()
-          .textColorPrimary(Color.BLACK)
-          .navigationViewMode(NavigationViewMode.SELECTED_ACCENT)
-          .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
-          .bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
-          .apply()
+      Aesthetic.config {
+        activityTheme(R.style.AppTheme)
+        textColorPrimaryRes(R.color.text_color_primary)
+        textColorSecondaryRes(R.color.text_color_secondary)
+        colorPrimaryRes(R.color.md_white)
+        colorAccentRes(R.color.md_blue)
+        colorStatusBarAuto()
+        colorNavigationBarAuto()
+        textColorPrimary(Color.BLACK)
+        navigationViewMode(NavigationViewMode.SELECTED_ACCENT)
+        bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
+        bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
+      }
     }
 
     pager.adapter = MainPagerAdapter(this, supportFragmentManager)

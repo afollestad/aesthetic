@@ -689,6 +689,12 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
       return instance!!
     }
 
+    inline fun config(func: Aesthetic.() -> Unit) {
+      val instance = get()
+      instance.func()
+      instance.apply()
+    }
+
     /** Should be called in onPause() of each Activity.  */
     fun pause(activity: AppCompatActivity) {
       if (instance == null) {
