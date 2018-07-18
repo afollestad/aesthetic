@@ -13,6 +13,7 @@ import com.afollestad.aesthetic.TabLayoutBgMode.PRIMARY
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
+import com.afollestad.aesthetic.utils.one
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
@@ -53,7 +54,7 @@ class AestheticTabLayout(
     super.setBackgroundColor(color)
     Aesthetic.get()
         .colorIconTitle(Observable.just(color))
-        .take(1)
+        .one()
         .subscribe { (activeColor, inactiveColor) ->
           setIconsColor(activeColor)
           setTabTextColors(
