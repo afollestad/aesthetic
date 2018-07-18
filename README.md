@@ -309,7 +309,7 @@ Aesthetic allows you to change the actual styles.xml theme applied to Activities
 Aesthetic.config {
     activityTheme(R.style.Theme_AppCompat_Light_NoActionBar)
     isDark(false)
-|
+}
 
 // Apply an overall dark theme
 Aesthetic.config {
@@ -436,7 +436,6 @@ If you use `NavigationView`, it will be themed automatically, also.
 <img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/drawer_layout.png" />
 
 You can customize behavior:
-
 
 ```kotlin
 // Checked nav drawer item will use your set primary color
