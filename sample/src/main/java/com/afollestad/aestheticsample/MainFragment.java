@@ -54,7 +54,7 @@ public class MainFragment extends Fragment {
 
     // Update the dark theme switch to the last saved isDark value.
     isDarkSubscription =
-        Aesthetic.get().isDark().subscribe(isDark -> switchThemeView.setChecked(isDark));
+        Aesthetic.Companion.get().isDark().subscribe(isDark -> switchThemeView.setChecked(isDark));
 
     // Further view setup
     ArrayAdapter<String> spinnerAdapter =
@@ -83,14 +83,14 @@ public class MainFragment extends Fragment {
   @OnClick(R.id.switch_theme)
   public void onThemeChange(SwitchCompat switchCompat) {
     if (switchCompat.isChecked()) {
-      Aesthetic.get()
+      Aesthetic.Companion.get()
           .activityTheme(R.style.AppThemeDark)
           .isDark(true)
           .textColorPrimaryRes(R.color.text_color_primary_dark)
           .textColorSecondaryRes(R.color.text_color_secondary_dark)
           .apply();
     } else {
-      Aesthetic.get()
+      Aesthetic.Companion.get()
           .activityTheme(R.style.AppTheme)
           .isDark(false)
           .textColorPrimaryRes(R.color.text_color_primary)
@@ -120,7 +120,7 @@ public class MainFragment extends Fragment {
   public void onClickButton(View view) {
     switch (view.getId()) {
       case R.id.btn_black:
-        Aesthetic.get()
+        Aesthetic.Companion.get()
             .colorPrimaryRes(R.color.text_color_primary)
             .colorAccentRes(R.color.md_purple)
             .colorStatusBarAuto()
@@ -130,7 +130,7 @@ public class MainFragment extends Fragment {
             .apply();
         break;
       case R.id.btn_red:
-        Aesthetic.get()
+        Aesthetic.Companion.get()
             .colorPrimaryRes(R.color.md_red)
             .colorAccentRes(R.color.md_amber)
             .colorStatusBarAuto()
@@ -140,7 +140,7 @@ public class MainFragment extends Fragment {
             .apply();
         break;
       case R.id.btn_purple:
-        Aesthetic.get()
+        Aesthetic.Companion.get()
             .colorPrimaryRes(R.color.md_purple)
             .colorAccentRes(R.color.md_lime)
             .colorStatusBarAuto()
@@ -150,7 +150,7 @@ public class MainFragment extends Fragment {
             .apply();
         break;
       case R.id.btn_blue:
-        Aesthetic.get()
+        Aesthetic.Companion.get()
             .colorPrimaryRes(R.color.md_blue)
             .colorAccentRes(R.color.md_pink)
             .colorStatusBarAuto()
@@ -160,7 +160,7 @@ public class MainFragment extends Fragment {
             .apply();
         break;
       case R.id.btn_green:
-        Aesthetic.get()
+        Aesthetic.Companion.get()
             .colorPrimaryRes(R.color.md_green)
             .colorAccentRes(R.color.md_blue_grey)
             .colorStatusBarAuto()
@@ -170,7 +170,7 @@ public class MainFragment extends Fragment {
             .apply();
         break;
       case R.id.btn_white:
-        Aesthetic.get()
+        Aesthetic.Companion.get()
             .colorPrimaryRes(R.color.md_white)
             .colorAccentRes(R.color.md_blue)
             .colorStatusBarAuto()

@@ -42,8 +42,8 @@ public class MainActivity extends AestheticActivity {
     searchView.setQueryHint(getString(R.string.search_view_example));
 
     // If we haven't set any defaults, do that now
-    if (Aesthetic.isFirstTime()) {
-      Aesthetic.get()
+    if (Aesthetic.Companion.isFirstTime()) {
+      Aesthetic.Companion.get()
           .activityTheme(R.style.AppTheme)
           .textColorPrimaryRes(R.color.text_color_primary)
           .textColorSecondaryRes(R.color.text_color_secondary)
