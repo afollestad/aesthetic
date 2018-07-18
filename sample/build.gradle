@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 apply from: '../dependencies.gradle'
 
 android {
@@ -35,9 +36,6 @@ dependencies {
   }
 
   implementation project(path: ':library')
-
-  implementation 'com.jakewharton:butterknife:' + versions.butterKnife
-  annotationProcessor 'com.jakewharton:butterknife-compiler:' + versions.butterKnife
 
   implementation 'com.android.support:appcompat-v7:' + versions.supportLib
   implementation 'com.android.support:design:' + versions.supportLib

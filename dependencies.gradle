@@ -12,7 +12,6 @@ ext.versions = [
     bintrayRelease    : '0.8.1',
 
     supportLib        : '28.0.+',
-    butterKnife       : '8.8.1',
     rxJava            : '2.1.13',
     rxAndroid         : '2.0.2',
     rxPrefs           : '2.0.0'
