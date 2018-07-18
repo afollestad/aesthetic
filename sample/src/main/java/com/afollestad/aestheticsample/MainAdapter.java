@@ -13,11 +13,11 @@ import butterknife.ButterKnife;
 /** @author Aidan Follestad (afollestad) */
 class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
-  @NonNull @Override
+  @NonNull
+  @Override
   public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     View view =
-        LayoutInflater.from(parent.getContext()).inflate(
-            R.layout.list_item_rv, parent, false);
+        LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_rv, parent, false);
     return new ViewHolder(view);
   }
 

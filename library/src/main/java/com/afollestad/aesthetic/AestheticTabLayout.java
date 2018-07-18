@@ -38,10 +38,9 @@ public class AestheticTabLayout extends TabLayout {
     final ColorStateList sl =
         new ColorStateList(
             new int[][] {
-                new int[] { -android.R.attr.state_selected },
-                new int[] { android.R.attr.state_selected }
+              new int[] {-android.R.attr.state_selected}, new int[] {android.R.attr.state_selected}
             },
-            new int[] { adjustAlpha(color, UNFOCUSED_ALPHA), color });
+            new int[] {adjustAlpha(color, UNFOCUSED_ALPHA), color});
     for (int i = 0; i < getTabCount(); i++) {
       final TabLayout.Tab tab = getTabAt(i);
       if (tab != null && tab.getIcon() != null) {

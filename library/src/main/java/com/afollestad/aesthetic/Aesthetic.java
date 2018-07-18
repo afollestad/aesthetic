@@ -60,7 +60,7 @@ import java.util.List;
 import java.util.Map;
 
 /** @author Aidan Follestad (afollestad) */
-@SuppressWarnings({ "WeakerAccess", "unused" })
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Aesthetic {
 
   @SuppressLint("StaticFieldLeak")
@@ -199,7 +199,7 @@ public class Aesthetic {
                 onErrorLogAndRethrow()));
     instance.subs.add(
         Observable.combineLatest(
-            instance.colorStatusBar(), instance.lightStatusBarMode(), Pair::create)
+                instance.colorStatusBar(), instance.lightStatusBarMode(), Pair::create)
             .compose(Rx.distinctToMainThread())
             .subscribe(result -> instance.invalidateStatusBar(), onErrorLogAndRethrow()));
     instance.subs.add(

@@ -42,17 +42,15 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
     ColorStateList iconColor =
         new ColorStateList(
             new int[][] {
-                new int[] { -android.R.attr.state_checked },
-                new int[] { android.R.attr.state_checked }
+              new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}
             },
-            new int[] { unselectedIconTextColor, selectedColor });
+            new int[] {unselectedIconTextColor, selectedColor});
     ColorStateList textColor =
         new ColorStateList(
             new int[][] {
-                new int[] { -android.R.attr.state_checked },
-                new int[] { android.R.attr.state_checked }
+              new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}
             },
-            new int[] { unselectedIconTextColor, selectedColor });
+            new int[] {unselectedIconTextColor, selectedColor});
     setItemIconTintList(iconColor);
     setItemTextColor(textColor);
   }
@@ -135,10 +133,10 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
     super.onAttachedToWindow();
     modesSubscription =
         Observable.combineLatest(
-            Aesthetic.get().bottomNavigationBackgroundMode(),
-            Aesthetic.get().bottomNavigationIconTextMode(),
-            Aesthetic.get().isDark(),
-            State.creator())
+                Aesthetic.get().bottomNavigationBackgroundMode(),
+                Aesthetic.get().bottomNavigationIconTextMode(),
+                Aesthetic.get().isDark(),
+                State.creator())
             .compose(Rx.<State>distinctToMainThread())
             .subscribe(this::onState, onErrorLogAndRethrow());
   }
@@ -156,10 +154,7 @@ public class AestheticBottomNavigationView extends BottomNavigationView {
     private final BottomNavIconTextMode iconTextMode;
     private final boolean isDark;
 
-    private State(
-        BottomNavBgMode bgMode,
-        BottomNavIconTextMode iconTextMode,
-        boolean isDark) {
+    private State(BottomNavBgMode bgMode, BottomNavIconTextMode iconTextMode, boolean isDark) {
       this.bgMode = bgMode;
       this.iconTextMode = iconTextMode;
       this.isDark = isDark;

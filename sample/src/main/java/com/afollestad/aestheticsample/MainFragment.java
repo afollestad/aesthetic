@@ -54,10 +54,7 @@ public class MainFragment extends Fragment {
 
     // Update the dark theme switch to the last saved isDark value.
     isDarkSubscription =
-        Aesthetic.get()
-            .isDark()
-            .subscribe(
-                isDark -> switchThemeView.setChecked(isDark));
+        Aesthetic.get().isDark().subscribe(isDark -> switchThemeView.setChecked(isDark));
 
     // Further view setup
     ArrayAdapter<String> spinnerAdapter =
@@ -65,12 +62,12 @@ public class MainFragment extends Fragment {
             getContext(),
             R.layout.list_item_spinner,
             new String[] {
-                "Spinner One",
-                "Spinner Two",
-                "Spinner Three",
-                "Spinner Four",
-                "Spinner Five",
-                "Spinner Six"
+              "Spinner One",
+              "Spinner Two",
+              "Spinner Three",
+              "Spinner Four",
+              "Spinner Five",
+              "Spinner Six"
             });
     spinnerAdapter.setDropDownViewResource(R.layout.list_item_spinner_dropdown);
     spinnerView.setAdapter(spinnerAdapter);
@@ -107,20 +104,18 @@ public class MainFragment extends Fragment {
     new AlertDialog.Builder(getActivity())
         .setTitle(R.string.hello_world)
         .setMessage(R.string.lorem_ipsum)
-        .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
-        })
-        .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> {
-        })
+        .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {})
+        .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> {})
         .show();
   }
 
   @OnClick({
-      R.id.btn_black,
-      R.id.btn_red,
-      R.id.btn_purple,
-      R.id.btn_blue,
-      R.id.btn_green,
-      R.id.btn_white
+    R.id.btn_black,
+    R.id.btn_red,
+    R.id.btn_purple,
+    R.id.btn_blue,
+    R.id.btn_green,
+    R.id.btn_white
   })
   public void onClickButton(View view) {
     switch (view.getId()) {
