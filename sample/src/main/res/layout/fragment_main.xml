@@ -18,7 +18,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/content_inset"
+        android:paddingBottom="@dimen/content_inset"
+        android:paddingEnd="@dimen/content_inset"
+        android:paddingStart="@dimen/content_inset"
+        android:paddingTop="@dimen/content_inset_more"
         >
 
       <android.support.v7.widget.SwitchCompat
@@ -34,7 +37,7 @@
           android:id="@+id/btn_black"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/content_inset_quarter"
+          android:layout_marginTop="@dimen/content_inset"
           android:text="@string/black"
           />
 
