@@ -23,7 +23,7 @@ import android.util.AttributeSet
   }
 }
 
-@IdRes internal fun Context.resId(
+internal fun Context.resId(
   @AttrRes attr: Int,
   fallback: Int
 ): Int {
@@ -35,7 +35,7 @@ import android.util.AttributeSet
   }
 }
 
-@IdRes internal fun Context.resId(
+internal fun Context.resId(
   attrs: AttributeSet?,
   @AttrRes attrId: Int
 ): Int {

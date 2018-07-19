@@ -7,6 +7,7 @@ import android.support.v7.widget.AppCompatButton
 import android.util.AttributeSet
 import com.afollestad.aesthetic.utils.TintHelper
 import com.afollestad.aesthetic.utils.ViewUtil
+import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
@@ -16,29 +17,20 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
-class AestheticButton(
+class AestheticBorderlessButton(
   context: Context,
   attrs: AttributeSet? = null
 ) : AppCompatButton(context, attrs) {
 
   private var subscription: Disposable? = null
-  private var backgroundResId: Int = 0
 
-  init {
-    if (attrs != null) {
-      backgroundResId = context.resId(attrs, android.R.attr.background)
-    }
-  }
-
-  private fun invalidateColors(state: ColorIsDarkState) {
-    TintHelper.setTintAuto(this, state.color, true, state.isDark)
+  private fun invalidateColors(accentColor: Int) {
     val textColorSl = ColorStateList(
         arrayOf(
             intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)
         ),
         intArrayOf(
-            if (state.color.isColorLight()) Color.BLACK else Color.WHITE,
-            if (state.isDark) Color.WHITE else Color.BLACK
+            accentColor, accentColor.adjustAlpha(0.56f)
         )
     )
     setTextColor(textColorSl)
@@ -50,13 +42,8 @@ class AestheticButton(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscription = Observable.combineLatest(
-        ViewUtil.getObservableForResId(
-            context, backgroundResId, Aesthetic.get().colorAccent()
-        )!!,
-        Aesthetic.get().isDark,
-        ColorIsDarkState.creator()
-    )
+    subscription = Aesthetic.get()
+        .colorAccent()
         .distinctToMainThread()
         .subscribe(
             Consumer { this.invalidateColors(it) },

@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <item
-    android:id="@+id/search"
-    android:icon="@drawable/ic_search"
-    android:title="@string/search"
-    app:actionViewClass="android.support.v7.widget.SearchView"
-    app:showAsAction="ifRoom|collapseActionView"/>
+      android:id="@+id/search"
+      android:icon="@drawable/ic_search"
+      android:title="@string/search"
+      app:actionViewClass="android.support.v7.widget.SearchView"
+      app:showAsAction="ifRoom|collapseActionView"/>
 
   <item
-    android:id="@+id/hello_world"
-    android:title="@string/hello_world"/>
+      android:id="@+id/hello_world"
+      android:title="@string/hello_world"/>
 
   <group
-    android:checkableBehavior="single">
+      android:checkableBehavior="single">
 
     <item
-      android:id="@+id/hello_world_check"
-      android:checked="true"
-      android:title="@string/hello_world"/>
+        android:id="@+id/hello_world_check"
+        android:checked="true"
+        android:title="@string/hello_world"/>
 
   </group>
 
   <group
-    android:checkableBehavior="all">
+      android:checkableBehavior="all">
 
     <item
-      android:id="@+id/hello_world_radio"
-      android:checked="true"
-      android:title="@string/hello_world"/>
+        android:id="@+id/hello_world_radio"
+        android:checked="true"
+        android:title="@string/hello_world"/>
 
   </group>
 

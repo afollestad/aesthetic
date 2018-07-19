@@ -4,44 +4,44 @@
   <group android:id="@+id/group1">
 
     <item
-      android:id="@+id/item_one"
-      android:checkable="true"
-      android:icon="@drawable/ic_announcement"
-      android:title="@string/one"/>
+        android:id="@+id/item_one"
+        android:checkable="true"
+        android:icon="@drawable/ic_announcement"
+        android:title="@string/one"/>
 
     <item
-      android:id="@+id/item_two"
-      android:checkable="true"
-      android:icon="@drawable/ic_archive"
-      android:title="@string/two"/>
+        android:id="@+id/item_two"
+        android:checkable="true"
+        android:icon="@drawable/ic_archive"
+        android:title="@string/two"/>
 
     <item
-      android:id="@+id/item_three"
-      android:checkable="true"
-      android:icon="@drawable/ic_attach_money"
-      android:title="@string/three"/>
+        android:id="@+id/item_three"
+        android:checkable="true"
+        android:icon="@drawable/ic_attach_money"
+        android:title="@string/three"/>
 
   </group>
 
   <group android:id="@+id/group2">
 
     <item
-      android:id="@+id/item_four"
-      android:checkable="true"
-      android:icon="@drawable/ic_backup"
-      android:title="@string/four"/>
+        android:id="@+id/item_four"
+        android:checkable="true"
+        android:icon="@drawable/ic_backup"
+        android:title="@string/four"/>
 
     <item
-      android:id="@+id/item_five"
-      android:checkable="true"
-      android:icon="@drawable/ic_book"
-      android:title="@string/five"/>
+        android:id="@+id/item_five"
+        android:checkable="true"
+        android:icon="@drawable/ic_book"
+        android:title="@string/five"/>
 
     <item
-      android:id="@+id/item_six"
-      android:checkable="true"
-      android:icon="@drawable/ic_watch"
-      android:title="@string/six"/>
+        android:id="@+id/item_six"
+        android:checkable="true"
+        android:icon="@drawable/ic_watch"
+        android:title="@string/six"/>
 
   </group>
 

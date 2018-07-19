@@ -54,7 +54,7 @@ internal class InflationInterceptor(
     }
 
     try {
-      val attrsThemeField = LayoutInflater::class.java.getDeclaredField("attrsTheme")
+      val attrsThemeField = LayoutInflater::class.java.getDeclaredField("ATTRS_THEME")
       attrsThemeField.isAccessible = true
       attrsTheme = attrsThemeField.get(null) as IntArray
     } catch (t: Throwable) {
@@ -92,23 +92,26 @@ internal class InflationInterceptor(
     val viewId = context.resId(attrs, android.R.attr.id)
 
     when (name) {
-      "ImageView", "android.support.v7.widget.AppCompatImageView" -> view =
-          AestheticImageView(context, attrs)
-      "ImageButton", "android.support.v7.widget.AppCompatImageButton" -> view =
-          AestheticImageButton(context, attrs)
+      "ImageView", "android.support.v7.widget.AppCompatImageView" ->
+        view = AestheticImageView(context, attrs)
+      "ImageButton", "android.support.v7.widget.AppCompatImageButton" ->
+        view = AestheticImageButton(context, attrs)
 
-      "android.support.v4.widget.DrawerLayout" -> view = AestheticDrawerLayout(context, attrs)
-      "Toolbar", "android.support.v7.widget.Toolbar" -> view = AestheticToolbar(context, attrs)
+      "android.support.v4.widget.DrawerLayout" ->
+        view = AestheticDrawerLayout(context, attrs)
+      "Toolbar", "android.support.v7.widget.Toolbar" ->
+        view = AestheticToolbar(context, attrs)
 
-      "android.support.v7.widget.AppCompatTextView", "TextView" -> if (viewId == R.id.snackbar_text) {
-        view = AestheticSnackBarTextView(context, attrs)
-      } else {
-        view = AestheticTextView(context, attrs)
-        if (parent is LinearLayout && view.id == android.R.id.message) {
-          // This is for a toast message
-          view = null
+      "android.support.v7.widget.AppCompatTextView", "TextView" ->
+        if (viewId == R.id.snackbar_text) {
+          view = AestheticSnackBarTextView(context, attrs)
+        } else {
+          view = AestheticTextView(context, attrs)
+          if (parent is LinearLayout && view.id == android.R.id.message) {
+            // This is for a toast message
+            view = null
+          }
         }
-      }
       "Button", "android.support.v7.widget.AppCompatButton" ->
         view =
             if (viewId == android.R.id.button1
@@ -118,52 +121,56 @@ internal class InflationInterceptor(
               AestheticDialogButton(context, attrs)
             } else if (viewId == R.id.snackbar_action) {
               AestheticSnackBarButton(context, attrs)
+            } else if (isBorderlessButton(context, attrs)) {
+              AestheticBorderlessButton(context, attrs)
             } else {
               AestheticButton(context, attrs)
             }
-      "android.support.v7.widget.AppCompatCheckBox", "CheckBox" -> view =
-          AestheticCheckBox(context, attrs)
-      "android.support.v7.widget.AppCompatRadioButton", "RadioButton" -> view =
-          AestheticRadioButton(context, attrs)
-      "android.support.v7.widget.AppCompatEditText", "EditText" -> view =
-          AestheticEditText(context, attrs)
+      "android.support.v7.widget.AppCompatCheckBox", "CheckBox" ->
+        view = AestheticCheckBox(context, attrs)
+      "android.support.v7.widget.AppCompatRadioButton", "RadioButton" ->
+        view = AestheticRadioButton(context, attrs)
+      "android.support.v7.widget.AppCompatEditText", "EditText" ->
+        view = AestheticEditText(context, attrs)
       "Switch" -> view = AestheticSwitch(context, attrs)
-      "android.support.v7.widget.SwitchCompat" -> view = AestheticSwitchCompat(context, attrs)
-      "android.support.v7.widget.AppCompatSeekBar", "SeekBar" -> view =
-          AestheticSeekBar(context, attrs)
-      "ProgressBar", "me.zhanghai.android.materialprogressbar.MaterialProgressBar" -> view =
-          AestheticProgressBar(context, attrs)
-      "android.support.v7.view.menu.ActionMenuItemView" -> view =
-          AestheticActionMenuItemView(context, attrs)
+      "android.support.v7.widget.SwitchCompat" -> view =
+          AestheticSwitchCompat(context, attrs)
+      "android.support.v7.widget.AppCompatSeekBar", "SeekBar" ->
+        view = AestheticSeekBar(context, attrs)
+      "ProgressBar", "me.zhanghai.android.materialprogressbar.MaterialProgressBar" ->
+        view = AestheticProgressBar(context, attrs)
+      "android.support.v7.view.menu.ActionMenuItemView" ->
+        view = AestheticActionMenuItemView(context, attrs)
 
-      "android.support.v7.widget.RecyclerView" -> view = AestheticRecyclerView(context, attrs)
-      "android.support.v4.widget.NestedScrollView" -> view =
-          AestheticNestedScrollView(context, attrs)
+      "android.support.v7.widget.RecyclerView" ->
+        view = AestheticRecyclerView(context, attrs)
+      "android.support.v4.widget.NestedScrollView" ->
+        view = AestheticNestedScrollView(context, attrs)
       "ListView" -> view = AestheticListView(context, attrs)
       "ScrollView" -> view = AestheticScrollView(context, attrs)
       "android.support.v4.view.ViewPager" -> view = AestheticViewPager(context, attrs)
 
-      "Spinner", "android.support.v7.widget.AppCompatSpinner" -> view =
-          AestheticSpinner(context, attrs)
+      "Spinner", "android.support.v7.widget.AppCompatSpinner" ->
+        view = AestheticSpinner(context, attrs)
 
-      "android.support.design.widget.TextInputLayout" -> view =
-          AestheticTextInputLayout(context, attrs)
-      "android.support.design.widget.TextInputEditText" -> view =
-          AestheticTextInputEditText(context, attrs)
+      "android.support.design.widget.TextInputLayout" ->
+        view = AestheticTextInputLayout(context, attrs)
+      "android.support.design.widget.TextInputEditText" ->
+        view = AestheticTextInputEditText(context, attrs)
 
       "android.support.v7.widget.CardView" -> view = AestheticCardView(context, attrs)
       "android.support.design.widget.TabLayout" -> view = AestheticTabLayout(context, attrs)
-      "android.support.design.widget.NavigationView" -> view =
-          AestheticNavigationView(context, attrs)
-      "android.support.design.widget.BottomNavigationView" -> view =
-          AestheticBottomNavigationView(context, attrs)
-      "android.support.design.widget.FloatingActionButton" -> view = AestheticFab(context, attrs)
-      "android.support.design.widget.CoordinatorLayout" -> view =
-          AestheticCoordinatorLayout(context, attrs)
+      "android.support.design.widget.NavigationView" ->
+        view = AestheticNavigationView(context, attrs)
+      "android.support.design.widget.BottomNavigationView" ->
+        view = AestheticBottomNavigationView(context, attrs)
+      "android.support.design.widget.FloatingActionButton" ->
+        view = AestheticFab(context, attrs)
+      "android.support.design.widget.CoordinatorLayout" ->
+        view = AestheticCoordinatorLayout(context, attrs)
     }
 
     var viewBackgroundRes = 0
-
     if (view != null && view.tag != null && ":aesthetic_ignore" == view.tag) {
       // Set view back to null so we can let AppCompat handle this view instead.
       view = null
@@ -175,10 +182,10 @@ internal class InflationInterceptor(
       // First, check if the AppCompatDelegate will give us a view, usually (maybe always) null.
       if (delegate != null) {
         view = delegate.createView(parent, name, context, attrs!!)
-        if (view == null) {
-          view = keyContext!!.onCreateView(parent, name, context, attrs)
+        view = if (view == null) {
+          keyContext!!.onCreateView(parent, name, context, attrs)
         } else {
-          view = null
+          null
         }
       } else {
         view = null
@@ -243,7 +250,8 @@ internal class InflationInterceptor(
         val obs: Observable<Int>? =
           ViewUtil.getObservableForResId(view.context, viewBackgroundRes, null)
         if (obs != null) {
-          Aesthetic.get().addBackgroundSubscriber(view, obs)
+          Aesthetic.get()
+              .addBackgroundSubscriber(view, obs)
         }
       }
 
@@ -257,5 +265,20 @@ internal class InflationInterceptor(
     }
 
     return view
+  }
+
+  private fun isBorderlessButton(
+    context: Context,
+    attrs: AttributeSet?
+  ): Boolean {
+    if (attrs == null) {
+      return false
+    }
+    val backgroundRes = context.resId(attrs, android.R.attr.background)
+    if (backgroundRes == 0) {
+      return false
+    }
+    val resName = context.resources.getResourceEntryName(backgroundRes)
+    return resName.endsWith("btn_borderless_material")
   }
 }

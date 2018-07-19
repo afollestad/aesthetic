@@ -722,7 +722,6 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
       instance!!.initPrefs()
       instance!!.isResumed = true
 
-      instance!!.subs?.clear()
       instance!!.subs = CompositeDisposable()
       subscribeBackgroundListeners()
 
