@@ -24,7 +24,7 @@ class AestheticToolbar(
 
   private var lastState: BgIconColorState? = null
   private var subscription: Disposable? = null
-  private var onColorUpdated: PublishSubject<Int>? = null
+  private var onColorUpdated = PublishSubject.create<Int>()
 
   private fun invalidateColors(state: BgIconColorState) {
     lastState = state
@@ -38,7 +38,7 @@ class AestheticToolbar(
     if (navigationIcon != null) {
       this.navigationIcon = navigationIcon
     }
-    onColorUpdated!!.onNext(state.bgColor)
+    onColorUpdated.onNext(state.bgColor)
   }
 
   fun colorUpdated(): Observable<Int>? {
@@ -68,7 +68,6 @@ class AestheticToolbar(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    onColorUpdated = PublishSubject.create()
     subscription = Observable.combineLatest(
         Aesthetic.get().colorPrimary(),
         Aesthetic.get().colorIconTitle(null),
@@ -83,7 +82,6 @@ class AestheticToolbar(
 
   override fun onDetachedFromWindow() {
     lastState = null
-    onColorUpdated = null
     subscription?.dispose()
     super.onDetachedFromWindow()
   }
