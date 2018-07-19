@@ -719,6 +719,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
         return
       }
       instance!!.context = activity
+      instance!!.initPrefs()
       instance!!.isResumed = true
 
       instance!!.subs?.clear()
