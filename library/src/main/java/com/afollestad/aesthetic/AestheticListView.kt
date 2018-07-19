@@ -12,9 +12,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticListView(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : ListView(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : ListView(context, attrs) {
 
   private var subscription: Disposable? = null
 

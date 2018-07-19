@@ -32,9 +32,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticCoordinatorLayout(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : CoordinatorLayout(context, attrs, defStyleAttr), AppBarLayout.OnOffsetChangedListener {
+  attrs: AttributeSet? = null
+) : CoordinatorLayout(context, attrs), AppBarLayout.OnOffsetChangedListener {
 
   private var toolbarColorSubscription: Disposable? = null
   private var statusBarColorSubscription: Disposable? = null

@@ -12,9 +12,8 @@ import io.reactivex.disposables.Disposable
 /** @author Aidan Follestad (afollestad) */
 class AestheticImageButton(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : AppCompatImageButton(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : AppCompatImageButton(context, attrs) {
 
   private var bgSubscription: Disposable? = null
   private var backgroundResId: Int = 0

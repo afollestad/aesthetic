@@ -20,9 +20,8 @@ import io.reactivex.functions.Consumer
  */
 class AestheticFab(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : FloatingActionButton(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : FloatingActionButton(context, attrs) {
 
   private var subscription: Disposable? = null
   private var backgroundResId: Int = 0

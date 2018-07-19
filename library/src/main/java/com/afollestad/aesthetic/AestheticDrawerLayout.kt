@@ -14,9 +14,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticDrawerLayout(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyle: Int = 0
-) : DrawerLayout(context, attrs, defStyle) {
+  attrs: AttributeSet? = null
+) : DrawerLayout(context, attrs) {
 
   private var lastState: ActiveInactiveColors? = null
   private var arrowDrawable: DrawerArrowDrawable? = null

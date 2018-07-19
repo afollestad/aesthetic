@@ -15,9 +15,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticSwitchCompat(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : SwitchCompat(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : SwitchCompat(context, attrs) {
 
   private var subscription: Disposable? = null
   private var backgroundResId: Int = 0

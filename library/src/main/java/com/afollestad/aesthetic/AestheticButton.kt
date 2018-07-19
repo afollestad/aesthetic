@@ -19,9 +19,8 @@ import io.reactivex.functions.Consumer
  */
 class AestheticButton(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : AppCompatButton(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : AppCompatButton(context, attrs) {
 
   private var subscription: Disposable? = null
   private var backgroundResId: Int = 0

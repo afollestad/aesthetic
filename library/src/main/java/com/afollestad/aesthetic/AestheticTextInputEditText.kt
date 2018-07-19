@@ -16,9 +16,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticTextInputEditText(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : TextInputEditText(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : TextInputEditText(context, attrs) {
 
   private var subs: CompositeDisposable? = null
   private var backgroundResId: Int = 0

@@ -13,9 +13,8 @@ import com.afollestad.aesthetic.utils.resId
 /** @author Aidan Follestad (afollestad) */
 class AestheticImageView(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : AppCompatImageView(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : AppCompatImageView(context, attrs) {
 
   private var bgSubscription: Disposable? = null
   private var backgroundResId: Int = 0

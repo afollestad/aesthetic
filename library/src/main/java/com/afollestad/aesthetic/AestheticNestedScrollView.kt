@@ -12,9 +12,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticNestedScrollView(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : NestedScrollView(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : NestedScrollView(context, attrs) {
 
   private var subscription: Disposable? = null
 

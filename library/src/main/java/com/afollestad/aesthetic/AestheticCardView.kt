@@ -15,9 +15,8 @@ import io.reactivex.functions.Consumer
 @SuppressLint("PrivateResource")
 class AestheticCardView(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : CardView(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : CardView(context, attrs) {
 
   private var bgSubscription: Disposable? = null
   private var backgroundResId: Int = 0

@@ -16,9 +16,8 @@ import io.reactivex.functions.Consumer
  */
 class AestheticSpinner(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : AppCompatSpinner(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : AppCompatSpinner(context, attrs) {
 
   private var subscription: Disposable? = null
   private var backgroundResId: Int = 0

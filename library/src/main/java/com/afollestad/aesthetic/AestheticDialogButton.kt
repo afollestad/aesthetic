@@ -9,9 +9,8 @@ import io.reactivex.disposables.Disposable
 /** @author Aidan Follestad (afollestad) */
 internal class AestheticDialogButton(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : AppCompatButton(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : AppCompatButton(context, attrs) {
 
   private var subscription: Disposable? = null
 

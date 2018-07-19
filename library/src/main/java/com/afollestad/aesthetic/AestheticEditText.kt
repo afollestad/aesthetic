@@ -19,9 +19,8 @@ import io.reactivex.functions.Consumer
 @SuppressLint("ResourceType")
 class AestheticEditText(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : AppCompatEditText(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : AppCompatEditText(context, attrs) {
 
   private var subscriptions: CompositeDisposable? = null
   private var backgroundResId: Int = 0

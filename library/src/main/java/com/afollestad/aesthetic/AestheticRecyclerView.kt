@@ -12,9 +12,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticRecyclerView(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyle: Int = 0
-) : RecyclerView(context, attrs, defStyle) {
+  attrs: AttributeSet? = null
+) : RecyclerView(context, attrs) {
 
   private var subscription: Disposable? = null
 

@@ -12,9 +12,8 @@ import io.reactivex.disposables.Disposable
 /** @author Aidan Follestad (afollestad) */
 class AestheticTextView(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : AppCompatTextView(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : AppCompatTextView(context, attrs) {
 
   private var subscription: Disposable? = null
   private var textColorResId: Int = 0

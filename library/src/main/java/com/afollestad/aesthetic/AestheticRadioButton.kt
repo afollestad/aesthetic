@@ -16,9 +16,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticRadioButton(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : AppCompatRadioButton(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : AppCompatRadioButton(context, attrs) {
 
   private var subscriptions: CompositeDisposable? = null
   private var backgroundResId: Int = 0

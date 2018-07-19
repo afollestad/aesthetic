@@ -19,9 +19,8 @@ import io.reactivex.subjects.PublishSubject
 /** @author Aidan Follestad (afollestad) */
 class AestheticToolbar(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : Toolbar(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : Toolbar(context, attrs) {
 
   private var lastState: BgIconColorState? = null
   private var subscription: Disposable? = null

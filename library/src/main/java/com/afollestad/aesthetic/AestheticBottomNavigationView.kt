@@ -22,9 +22,8 @@ import io.reactivex.functions.Function3
  */
 class AestheticBottomNavigationView(
   context: Context?,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : BottomNavigationView(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : BottomNavigationView(context, attrs) {
 
   private var modesSubscription: Disposable? = null
   private var colorSubscriptions: CompositeDisposable? = null
@@ -73,7 +72,8 @@ class AestheticBottomNavigationView(
             Aesthetic.get()
                 .colorPrimary()
                 .distinctToMainThread()
-                .subscribe(Consumer { lastTextIconColor = it },
+                .subscribe(
+                    Consumer { lastTextIconColor = it },
                     onErrorLogAndRethrow()
                 )
 
@@ -97,21 +97,24 @@ class AestheticBottomNavigationView(
             Aesthetic.get()
                 .colorPrimary()
                 .distinctToMainThread()
-                .subscribe(ViewBackgroundAction(this),
+                .subscribe(
+                    ViewBackgroundAction(this),
                     onErrorLogAndRethrow()
                 )
       BottomNavBgMode.PRIMARY_DARK -> colorSubscriptions!! +=
           Aesthetic.get()
               .colorStatusBar()
               .distinctToMainThread()
-              .subscribe(ViewBackgroundAction(this),
+              .subscribe(
+                  ViewBackgroundAction(this),
                   onErrorLogAndRethrow()
               )
       BottomNavBgMode.ACCENT -> colorSubscriptions!! +=
           Aesthetic.get()
               .colorAccent()
               .distinctToMainThread()
-              .subscribe(ViewBackgroundAction(this),
+              .subscribe(
+                  ViewBackgroundAction(this),
                   onErrorLogAndRethrow()
               )
       BottomNavBgMode.BLACK_WHITE_AUTO ->
@@ -137,7 +140,8 @@ class AestheticBottomNavigationView(
             State.creator()
         )
             .distinctToMainThread()
-            .subscribe(Consumer { this.onState(it) },
+            .subscribe(
+                Consumer { this.onState(it) },
                 onErrorLogAndRethrow()
             )
   }

@@ -23,9 +23,8 @@ import io.reactivex.functions.Consumer
 @SuppressLint("RestrictedApi")
 class AestheticNavigationView(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : NavigationView(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : NavigationView(context, attrs) {
 
   private var modeSubscription: Disposable? = null
   private var colorSubscription: Disposable? = null

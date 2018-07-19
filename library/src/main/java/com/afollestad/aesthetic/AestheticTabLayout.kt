@@ -21,9 +21,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticTabLayout(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : TabLayout(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : TabLayout(context, attrs) {
 
   private var indicatorModeSubscription: Disposable? = null
   private var bgModeSubscription: Disposable? = null

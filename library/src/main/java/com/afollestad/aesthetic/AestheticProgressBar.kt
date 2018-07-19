@@ -12,9 +12,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticProgressBar(
   context: Context?,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : ProgressBar(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : ProgressBar(context, attrs) {
 
   private var subscription: Disposable? = null
 

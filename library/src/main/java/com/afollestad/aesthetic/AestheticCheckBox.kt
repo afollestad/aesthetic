@@ -16,9 +16,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticCheckBox(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : AppCompatCheckBox(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : AppCompatCheckBox(context, attrs) {
 
   private var subscriptions: CompositeDisposable? = null
   private var backgroundResId: Int = 0

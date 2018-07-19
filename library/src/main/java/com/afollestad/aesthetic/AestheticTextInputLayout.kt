@@ -14,13 +14,11 @@ import com.afollestad.aesthetic.utils.setHintColor
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 
-/** @author Aidan Follestad (afollestad)
- */
+/** @author Aidan Follestad (afollestad) */
 class AestheticTextInputLayout(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : TextInputLayout(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : TextInputLayout(context, attrs) {
 
   private var subs: CompositeDisposable? = null
   private var backgroundResId: Int = 0

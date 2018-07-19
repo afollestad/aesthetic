@@ -12,9 +12,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticScrollView(
   context: Context?,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : ScrollView(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : ScrollView(context, attrs) {
 
   private var subscription: Disposable? = null
 

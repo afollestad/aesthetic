@@ -20,9 +20,8 @@ import io.reactivex.functions.Consumer
 @SuppressLint("RestrictedApi")
 internal class AestheticActionMenuItemView(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyle: Int = 0
-) : ActionMenuItemView(context, attrs, defStyle) {
+  attrs: AttributeSet? = null
+) : ActionMenuItemView(context, attrs) {
 
   private var icon: Drawable? = null
   private var subscription: Disposable? = null

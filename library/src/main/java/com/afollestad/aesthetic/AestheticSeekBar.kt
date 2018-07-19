@@ -16,9 +16,8 @@ import io.reactivex.functions.Consumer
 /** @author Aidan Follestad (afollestad) */
 class AestheticSeekBar(
   context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : AppCompatSeekBar(context, attrs, defStyleAttr) {
+  attrs: AttributeSet? = null
+) : AppCompatSeekBar(context, attrs) {
 
   private var subscription: Disposable? = null
   private var backgroundResId: Int = 0
@@ -44,7 +43,8 @@ class AestheticSeekBar(
         ColorIsDarkState.creator()
     )
         .distinctToMainThread()
-        .subscribe(Consumer { this.invalidateColors(it) },
+        .subscribe(
+            Consumer { this.invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }
