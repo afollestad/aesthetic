@@ -82,7 +82,7 @@
           android:id="@+id/title_textview"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/content_inset"
+          android:layout_marginTop="@dimen/content_inset_more"
           android:text="@string/hello_world"
           android:textColor="?colorAccent"
           android:textSize="@dimen/text_size_title"
@@ -175,7 +175,7 @@
       <android.support.v7.widget.CardView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/content_inset"
+          android:layout_marginTop="@dimen/content_inset_more"
           app:cardUseCompatPadding="true"
           >
 

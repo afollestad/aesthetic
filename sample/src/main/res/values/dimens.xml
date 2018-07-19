@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <dimen name="content_inset_more">24dp</dimen>
   <dimen name="content_inset">16dp</dimen>
   <dimen name="content_inset_quarter">4dp</dimen>
   <dimen name="content_inset_half">8dp</dimen>
