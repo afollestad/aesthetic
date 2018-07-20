@@ -9,7 +9,7 @@ Aesthetic is an easy to use, fast, Rx-powered theme engine for Android applicati
 
 You can download an <a href="https://raw.githubusercontent.com/afollestad/aesthetic/master/sample.apk">APK of the sample project</a>.
 
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/showcase1.png" /> 
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/1.jpg" />
 
 ---
 
@@ -373,7 +373,7 @@ You can make this library ignore views from being themed by setting the view's t
 Snackbar theming is pretty simple. You can change the color of the message text and the color of the 
 (optional) action button.
 
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/snackbars.png" />
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/2.jpg" />
 
 ```kotlin
 Aesthetic.config {
@@ -433,7 +433,7 @@ transparent per the Material Design guidelines (so that the drawer goes behind t
  
 If you use `NavigationView`, it will be themed automatically, also. 
 
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/drawer_layout.png" />
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/3.jpg" />
 
 You can customize behavior:
 
@@ -457,7 +457,7 @@ In addition, unselected nav drawer items will be shades of white or black based 
 
 Bottom Navigation Views from the Design Support library are automatically themed.
 
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/bottom_tabs.png" />
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/4.jpg" />
 
 You can customize background theming behavior:
 
@@ -510,7 +510,7 @@ Aesthetic.config {
 
 Collapsible Toolbar Layouts are automatically themed, as seen in the sample project.
 
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/collapsing_appbar.png" width="600" />
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/5.jpg" width="600" />
 
 In the sample layout, we automatically set the accent color to the expanded view. The collapsed toolbar 
 color will match whatever color your toolbar uses, which is the primary theme color by default. You'll 
