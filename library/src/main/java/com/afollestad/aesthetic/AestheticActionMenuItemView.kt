@@ -43,7 +43,8 @@ internal class AestheticActionMenuItemView(
         .colorIconTitle(null)
         .onMainThread()
         .one()
-        .subscribe(Consumer { colors -> invalidateColors(colors) },
+        .subscribe(
+            Consumer { invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }
@@ -61,7 +62,8 @@ internal class AestheticActionMenuItemView(
     subscription = Aesthetic.get()
         .colorIconTitle(null)
         .distinctToMainThread()
-        .subscribe(Consumer { invalidateColors(it) },
+        .subscribe(
+            Consumer { invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }

@@ -14,6 +14,7 @@ import android.widget.ImageView
 import com.afollestad.aesthetic.ActiveInactiveColors
 import java.lang.reflect.Field
 
+@Suppress("DEPRECATION")
 internal fun View.setBackgroundCompat(drawable: Drawable?) {
   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
     background = drawable
@@ -50,9 +51,10 @@ internal fun Toolbar.tintMenu(
 
   // Theme menu action views
   for (i in 0 until menu.size()) {
-    val item = menu.getItem(i)
-    if (item.actionView is SearchView) {
-      (item.actionView as SearchView).setColors(titleIconColors)
+    val actionView = menu.getItem(i)
+        .actionView
+    if (actionView is SearchView) {
+      actionView.setColors(titleIconColors)
     }
   }
 }
@@ -151,11 +153,62 @@ internal fun TextInputLayout.setAccentColor(@ColorInt accentColor: Int) {
   }
 }
 
+internal fun TextInputLayout.setStrokeColor(@ColorInt accentColor: Int) {
+  try {
+    val disabledTextColor = TextInputLayout::class.java.findField("defaultStrokeColor")
+    disabledTextColor.isAccessible = true
+    disabledTextColor.set(this, accentColor)
+    val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
+        "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType
+    )
+    updateLabelStateMethod.isAccessible = true
+    updateLabelStateMethod.invoke(this, false, true)
+  } catch (t: Throwable) {
+    throw IllegalStateException(
+        "Failed to set TextInputLayout accent (expanded) color: " + t.localizedMessage, t
+    )
+  }
+}
+
+internal fun TextInputLayout.setStrokeColorHover(@ColorInt accentColor: Int) {
+  try {
+    val disabledTextColor = TextInputLayout::class.java.findField("hoveredStrokeColor")
+    disabledTextColor.isAccessible = true
+    disabledTextColor.set(this, accentColor)
+    val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
+        "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType
+    )
+    updateLabelStateMethod.isAccessible = true
+    updateLabelStateMethod.invoke(this, false, true)
+  } catch (t: Throwable) {
+    throw IllegalStateException(
+        "Failed to set TextInputLayout accent (expanded) color: " + t.localizedMessage, t
+    )
+  }
+}
+
+internal fun TextInputLayout.setStrokeColorFocused(@ColorInt accentColor: Int) {
+  try {
+    val disabledTextColor = TextInputLayout::class.java.findField("focusedStrokeColor")
+    disabledTextColor.isAccessible = true
+    disabledTextColor.set(this, accentColor)
+    val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
+        "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType
+    )
+    updateLabelStateMethod.isAccessible = true
+    updateLabelStateMethod.invoke(this, false, true)
+  } catch (t: Throwable) {
+    throw IllegalStateException(
+        "Failed to set TextInputLayout accent (expanded) color: " + t.localizedMessage, t
+    )
+  }
+}
+
 internal fun TextInputLayout.setDisabledColor(@ColorInt accentColor: Int) {
   try {
     val disabledTextColor = TextInputLayout::class.java.findField("disabledColor")
     disabledTextColor.isAccessible = true
-    disabledTextColor.set(this, ColorStateList.valueOf(accentColor))
+    disabledTextColor.set(this, accentColor)
     val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
         "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType
     )

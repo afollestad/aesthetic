@@ -537,7 +537,7 @@ internal object TintHelper {
           createTintedDrawable(drawables[1], color)
       fCursorDrawable.set(editor, drawables)
     } catch (e: Exception) {
-      e.printStackTrace()
+      // TODO FIX    e.printStackTrace()
     }
   }
 }

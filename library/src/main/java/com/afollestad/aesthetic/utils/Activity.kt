@@ -15,9 +15,7 @@ import android.view.ViewGroup
 import com.afollestad.aesthetic.InflationInterceptor
 
 internal fun AppCompatActivity.setInflaterFactory(li: LayoutInflater) {
-  LayoutInflaterCompat.setFactory(
-      li, InflationInterceptor(this, li, delegate)
-  )
+  LayoutInflaterCompat.setFactory2(li, InflationInterceptor(this, li, delegate))
 }
 
 internal fun Activity.setStatusBarColorCompat(@ColorInt color: Int) {
