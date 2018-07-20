@@ -63,7 +63,7 @@ import java.lang.String.format
 import java.util.ArrayList
 
 /** @author Aidan Follestad (afollestad) */
-class Aesthetic private constructor(private var context: AppCompatActivity?) {
+class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
 
   private val backgroundSubscriberViews: MutableMap<String, MutableList<ViewObservablePair>> =
     ArrayMap(0)
@@ -76,8 +76,13 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
   private var rxPrefs: RxSharedPreferences? = null
   private var isResumed: Boolean = false
 
+  init {
+    initPrefs()
+  }
+
+  @SuppressLint("CommitPrefEdits")
   private fun initPrefs() {
-    prefs = context!!
+    prefs = context
         .applicationContext
         .getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
     editor = prefs!!.edit()
@@ -90,9 +95,9 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
     rxPrefs = null
   }
 
-  init {
-    initPrefs()
-  }
+  internal val context
+    @CheckResult
+    get() = ctxt!!
 
   val isDark: Observable<Boolean>
     @CheckResult
@@ -103,14 +108,14 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
     colorObservable: Observable<Int>
   ) {
     var subscribers: MutableList<ViewObservablePair>? =
-      backgroundSubscriberViews[instance!!.context!!.javaClass.name]
+      backgroundSubscriberViews[context.javaClass.name]
     if (subscribers == null) {
       subscribers = ArrayList(1)
-      backgroundSubscriberViews[instance!!.context!!.javaClass.name] = subscribers
+      backgroundSubscriberViews[context.javaClass.name] = subscribers
     }
     subscribers.add(ViewObservablePair(view, colorObservable))
     if (isResumed) {
-      instance!!.backgroundSubscriptions!! +=
+      backgroundSubscriptions!! +=
           colorObservable
               .distinctToMainThread()
               .subscribeWith(ViewBackgroundSubscriber(view))
@@ -119,25 +124,25 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   private fun invalidateStatusBar() {
     val key = format(KEY_STATUS_BAR_COLOR, key(context))
-    val color = prefs!!.getInt(key, context!!.colorAttr(R.attr.colorPrimaryDark))
+    val color = prefs!!.getInt(key, context.colorAttr(R.attr.colorPrimaryDark))
 
-    val rootView = context!!.getRootView()
+    val rootView = context.getRootView()
     if (rootView is DrawerLayout) {
       // Color is set to DrawerLayout, Activity gets transparent status bar
-      context!!.setLightStatusBarCompat(false)
-      context!!.setStatusBarColorCompat(context!!.color(android.R.color.transparent))
+      context.setLightStatusBarCompat(false)
+      context.setStatusBarColorCompat(Color.TRANSPARENT)
       rootView.setStatusBarBackgroundColor(color)
     } else {
-      context!!.setStatusBarColorCompat(color)
+      context.setStatusBarColorCompat(color)
     }
 
     val mode = AutoSwitchMode.fromInt(
         prefs!!.getInt(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
     )
     when (mode) {
-      AutoSwitchMode.OFF -> context!!.setLightStatusBarCompat(false)
-      AutoSwitchMode.ON -> context!!.setLightStatusBarCompat(true)
-      else -> context!!.setLightStatusBarCompat(color.isColorLight())
+      AutoSwitchMode.OFF -> context.setLightStatusBarCompat(false)
+      AutoSwitchMode.ON -> context.setLightStatusBarCompat(true)
+      else -> context.setLightStatusBarCompat(color.isColorLight())
     }
   }
 
@@ -158,7 +163,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
     return rxPrefs!!
         .getInteger(key, 0)
         .asObservable()
-        .filter { it != 0 && it != getLastActivityTheme(instance!!.context) }
+        .filter { it != 0 && it != getLastActivityTheme(context) }
   }
 
   @CheckResult
@@ -178,13 +183,13 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun colorPrimaryRes(@ColorRes color: Int): Aesthetic {
-    return colorPrimary(context!!.color(color))
+    return colorPrimary(context.color(color))
   }
 
   @CheckResult
   fun colorPrimary(): Observable<Int> {
     return rxPrefs!!
-        .getInteger(KEY_PRIMARY_COLOR, context!!.colorAttr(R.attr.colorPrimary))
+        .getInteger(KEY_PRIMARY_COLOR, context.colorAttr(R.attr.colorPrimary))
         .asObservable()
   }
 
@@ -198,14 +203,14 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun colorPrimaryDarkRes(@ColorRes color: Int): Aesthetic {
-    return colorPrimaryDark(context!!.color(color))
+    return colorPrimaryDark(context.color(color))
   }
 
   @CheckResult
   fun colorPrimaryDark(): Observable<Int> {
     return rxPrefs!!
         .getInteger(
-            KEY_PRIMARY_DARK_COLOR, context!!.colorAttr(R.attr.colorPrimaryDark)
+            KEY_PRIMARY_DARK_COLOR, context.colorAttr(R.attr.colorPrimaryDark)
         )
         .asObservable()
   }
@@ -219,13 +224,13 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun colorAccentRes(@ColorRes color: Int): Aesthetic {
-    return colorAccent(context!!.color(color))
+    return colorAccent(context.color(color))
   }
 
   @CheckResult
   fun colorAccent(): Observable<Int> {
     return rxPrefs!!
-        .getInteger(KEY_ACCENT_COLOR, context!!.colorAttr(R.attr.colorAccent))
+        .getInteger(KEY_ACCENT_COLOR, context.colorAttr(R.attr.colorAccent))
         .asObservable()
   }
 
@@ -237,7 +242,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun textColorPrimaryRes(@ColorRes color: Int): Aesthetic {
-    return textColorPrimary(context!!.color(color))
+    return textColorPrimary(context.color(color))
   }
 
   @CheckResult
@@ -245,7 +250,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
     return rxPrefs!!
         .getInteger(
             KEY_PRIMARY_TEXT_COLOR,
-            context!!.colorAttr(android.R.attr.textColorPrimary)
+            context.colorAttr(android.R.attr.textColorPrimary)
         )
         .asObservable()
   }
@@ -258,7 +263,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun textColorSecondaryRes(@ColorRes color: Int): Aesthetic {
-    return textColorSecondary(context!!.color(color))
+    return textColorSecondary(context.color(color))
   }
 
   @CheckResult
@@ -266,7 +271,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
     return rxPrefs!!
         .getInteger(
             KEY_SECONDARY_TEXT_COLOR,
-            context!!.colorAttr(android.R.attr.textColorSecondary)
+            context.colorAttr(android.R.attr.textColorSecondary)
         )
         .asObservable()
   }
@@ -279,7 +284,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun textColorPrimaryInverseRes(@ColorRes color: Int): Aesthetic {
-    return textColorPrimaryInverse(context!!.color(color))
+    return textColorPrimaryInverse(context.color(color))
   }
 
   @CheckResult
@@ -287,7 +292,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
     return rxPrefs!!
         .getInteger(
             KEY_PRIMARY_TEXT_INVERSE_COLOR,
-            context!!.colorAttr(android.R.attr.textColorPrimaryInverse)
+            context.colorAttr(android.R.attr.textColorPrimaryInverse)
         )
         .asObservable()
   }
@@ -300,7 +305,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun textColorSecondaryInverseRes(@ColorRes color: Int): Aesthetic {
-    return textColorSecondaryInverse(context!!.color(color))
+    return textColorSecondaryInverse(context.color(color))
   }
 
   @CheckResult
@@ -308,7 +313,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
     return rxPrefs!!
         .getInteger(
             KEY_SECONDARY_TEXT_INVERSE_COLOR,
-            context!!.colorAttr(android.R.attr.textColorSecondaryInverse)
+            context.colorAttr(android.R.attr.textColorSecondaryInverse)
         )
         .asObservable()
   }
@@ -322,7 +327,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun colorWindowBackgroundRes(@ColorRes color: Int): Aesthetic {
-    return colorWindowBackground(context!!.color(color))
+    return colorWindowBackground(context.color(color))
   }
 
   @CheckResult
@@ -330,7 +335,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
     return rxPrefs!!
         .getInteger(
             KEY_WINDOW_BG_COLOR,
-            context!!.colorAttr(android.R.attr.windowBackground)
+            context.colorAttr(android.R.attr.windowBackground)
         )
         .asObservable()
   }
@@ -344,7 +349,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun colorStatusBarRes(@ColorRes color: Int): Aesthetic {
-    return colorStatusBar(context!!.color(color))
+    return colorStatusBar(context.color(color))
   }
 
   @CheckResult
@@ -353,7 +358,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
     editor!!.putInt(
         key,
         prefs!!.getInt(
-            KEY_PRIMARY_COLOR, context!!.colorAttr(R.attr.colorPrimary)
+            KEY_PRIMARY_COLOR, context.colorAttr(R.attr.colorPrimary)
         ).darkenColor()
     )
     return this
@@ -377,13 +382,13 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun colorNavigationBarRes(@ColorRes color: Int): Aesthetic {
-    return colorNavigationBar(context!!.color(color))
+    return colorNavigationBar(context.color(color))
   }
 
   @CheckResult
   fun colorNavigationBarAuto(): Aesthetic {
     val color =
-      prefs!!.getInt(KEY_PRIMARY_COLOR, context!!.colorAttr(R.attr.colorPrimary))
+      prefs!!.getInt(KEY_PRIMARY_COLOR, context.colorAttr(R.attr.colorPrimary))
     val key = format(KEY_NAV_BAR_COLOR, key(context))
     editor!!.putInt(key, if (color.isColorLight()) Color.BLACK else color)
     return this
@@ -496,7 +501,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
           .getInteger(
               KEY_CARD_VIEW_BG_COLOR,
               ContextCompat.getColor(
-                  context!!,
+                  context,
                   if (it)
                     R.color.ate_cardview_bg_dark
                   else
@@ -515,7 +520,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun colorCardViewBackgroundRes(@ColorRes color: Int): Aesthetic {
-    return colorCardViewBackground(context!!.color(color))
+    return colorCardViewBackground(context.color(color))
   }
 
   @CheckResult
@@ -534,7 +539,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
               .getInteger(
                   KEY_ICON_TITLE_ACTIVE_COLOR,
                   ContextCompat.getColor(
-                      context!!, if (isDark) R.color.ate_icon_dark else R.color.ate_icon_light
+                      context, if (isDark) R.color.ate_icon_dark else R.color.ate_icon_light
                   )
               )
               .asObservable(),
@@ -542,7 +547,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
               .getInteger(
                   KEY_ICON_TITLE_INACTIVE_COLOR,
                   ContextCompat.getColor(
-                      context!!,
+                      context,
                       if (isDark)
                         R.color.ate_icon_dark_inactive
                       else
@@ -566,7 +571,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun colorIconTitleActiveRes(@ColorRes color: Int): Aesthetic {
-    return colorIconTitleActive(context!!.color(color))
+    return colorIconTitleActive(context.color(color))
   }
 
   @CheckResult
@@ -577,7 +582,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun colorIconTitleInactiveRes(@ColorRes color: Int): Aesthetic {
-    return colorIconTitleActive(context!!.color(color))
+    return colorIconTitleActive(context.color(color))
   }
 
   @CheckResult
@@ -606,7 +611,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun snackbarTextColorRes(@ColorRes color: Int): Aesthetic {
-    return colorCardViewBackground(context!!.color(color))
+    return colorCardViewBackground(context.color(color))
   }
 
   @CheckResult
@@ -627,7 +632,7 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
 
   @CheckResult
   fun snackbarActionTextColorRes(@ColorRes color: Int): Aesthetic {
-    return colorCardViewBackground(context!!.color(color))
+    return colorCardViewBackground(context.color(color))
   }
 
   /** Notifies all listening views that theme properties have been updated.  */
@@ -658,21 +663,23 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
       if (instance == null) {
         instance = Aesthetic(activity)
       }
-      instance!!.isResumed = false
-      instance!!.context = activity
-      instance!!.initPrefs()
+      with(instance!!) {
+        isResumed = false
+        ctxt = activity
+        initPrefs()
 
-      val li = activity.layoutInflater
-      activity.setInflaterFactory(li)
+        val li = activity.layoutInflater
+        activity.setInflaterFactory(li)
 
-      val activityThemeKey = format(KEY_ACTIVITY_THEME, key(activity))
-      val latestActivityTheme = instance!!.prefs!!.getInt(activityThemeKey, 0)
-      instance!!.lastActivityThemes[instance!!.context!!.javaClass.name] = latestActivityTheme
-      if (latestActivityTheme != 0) {
-        activity.setTheme(latestActivityTheme)
+        val activityThemeKey = format(KEY_ACTIVITY_THEME, key(activity))
+        val latestActivityTheme = prefs!!.getInt(activityThemeKey, 0)
+        lastActivityThemes[context.javaClass.name] = latestActivityTheme
+        if (latestActivityTheme != 0) {
+          activity.setTheme(latestActivityTheme)
+        }
+
+        return this
       }
-
-      return instance!!
     }
 
     private fun getLastActivityTheme(forContext: Context?): Int {
@@ -700,15 +707,17 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
       if (instance == null) {
         return
       }
-      instance!!.isResumed = false
-      instance!!.subs?.clear()
-      instance!!.backgroundSubscriptions?.clear()
+      with(instance!!) {
+        isResumed = false
+        subs?.clear()
+        backgroundSubscriptions?.clear()
 
-      if (activity.isFinishing) {
-        instance!!.backgroundSubscriberViews.remove(activity.javaClass.name)
-        if (instance!!.context!!.javaClass.name == activity.javaClass.name) {
-          instance!!.context = null
-          instance!!.deinitPrefs()
+        if (activity.isFinishing) {
+          backgroundSubscriberViews.remove(activity.javaClass.name)
+          if (context.javaClass.name == activity.javaClass.name) {
+            ctxt = null
+            deinitPrefs()
+          }
         }
       }
     }
@@ -718,81 +727,87 @@ class Aesthetic private constructor(private var context: AppCompatActivity?) {
       if (instance == null) {
         return
       }
-      instance!!.context = activity
-      instance!!.initPrefs()
-      instance!!.isResumed = true
+      with(instance!!) {
+        ctxt = activity
+        initPrefs()
+        isResumed = true
 
-      instance!!.subs = CompositeDisposable()
-      subscribeBackgroundListeners()
+        subs = CompositeDisposable()
+        subscribeBackgroundListeners()
 
-      instance!!.subs!! +=
-          instance!!
-              .colorPrimary()
-              .distinctToMainThread()
-              .subscribe(
-                  Consumer { instance!!.context?.setTaskDescriptionColor(it) },
-                  onErrorLogAndRethrow()
-              )
-      instance!!.subs!! +=
-          instance!!
-              .activityTheme()
-              .distinctToMainThread()
-              .subscribe(
-                  Consumer {
-                    if (getLastActivityTheme(instance!!.context) != it) {
-                      instance!!.lastActivityThemes[instance!!.context!!.javaClass.name] = it
-                      instance!!.context?.recreate()
-                    }
-                  },
-                  onErrorLogAndRethrow()
-              )
+        subs!! +=
+            instance!!
+                .colorPrimary()
+                .distinctToMainThread()
+                .subscribe(
+                    Consumer { context.setTaskDescriptionColor(it) },
+                    onErrorLogAndRethrow()
+                )
+        subs!! +=
+            instance!!
+                .activityTheme()
+                .distinctToMainThread()
+                .filter { getLastActivityTheme(context) != it }
+                .subscribe(
+                    Consumer {
+                      lastActivityThemes[context.javaClass.name] = it
+                      context.recreate()
+                    },
+                    onErrorLogAndRethrow()
+                )
 
-      instance!!.subs!! +=
-          Observable.combineLatest<Int, Int, Pair<Int, Int>>(
-              instance!!.colorStatusBar(), instance!!.lightStatusBarMode(),
-              BiFunction<Int, Int, Pair<Int, Int>> { a, b -> Pair.create(a, b) })
-              .distinctToMainThread()
-              .subscribe(
-                  Consumer { instance!!.invalidateStatusBar() },
-                  onErrorLogAndRethrow()
-              )
-      instance!!.subs!! +=
-          instance!!
-              .colorNavigationBar()
-              .distinctToMainThread()
-              .subscribe(
-                  Consumer { instance!!.context?.setNavBarColorCompat(it) },
-                  onErrorLogAndRethrow()
-              )
-      instance!!.subs!! +=
-          instance!!
-              .colorWindowBackground()
-              .distinctToMainThread()
-              .subscribe(
-                  Consumer {
-                    instance!!.context?.window?.setBackgroundDrawable(ColorDrawable(it))
-                  },
-                  onErrorLogAndRethrow()
-              )
+        subs!! +=
+            Observable.combineLatest<Int, Int, Pair<Int, Int>>(
+                colorStatusBar(), lightStatusBarMode(),
+                BiFunction<Int, Int, Pair<Int, Int>> { a, b -> Pair.create(a, b) })
+                .distinctToMainThread()
+                .subscribe(
+                    Consumer { invalidateStatusBar() },
+                    onErrorLogAndRethrow()
+                )
+        subs!! +=
+            instance!!
+                .colorNavigationBar()
+                .distinctToMainThread()
+                .subscribe(
+                    Consumer { context.setNavBarColorCompat(it) },
+                    onErrorLogAndRethrow()
+                )
+        subs!! +=
+            instance!!
+                .colorWindowBackground()
+                .distinctToMainThread()
+                .subscribe(
+                    Consumer {
+                      context.window?.setBackgroundDrawable(ColorDrawable(it))
+                    },
+                    onErrorLogAndRethrow()
+                )
+      }
     }
 
-    /** Returns true if this method has never been called before.  */
+    /** Returns true if this field has never been accessed before.  */
     val isFirstTime: Boolean
       get() {
-        val firstTime = instance!!.prefs!!.getBoolean(KEY_FIRST_TIME, true)
-        instance!!.editor!!.putBoolean(KEY_FIRST_TIME, false)
-            .commit()
-        return firstTime
+        with(instance!!) {
+          val firstTime = prefs!!.getBoolean(KEY_FIRST_TIME, true)
+          editor!!.putBoolean(KEY_FIRST_TIME, false)
+              .apply()
+          return firstTime
+        }
       }
 
     private fun subscribeBackgroundListeners() {
-      instance!!.backgroundSubscriptions?.clear()
-      instance!!.backgroundSubscriptions = CompositeDisposable()
-      if (instance!!.backgroundSubscriberViews.isNotEmpty()) {
-        val pairs = instance!!.backgroundSubscriberViews[instance!!.context!!.javaClass.name]
+      with(instance!!) {
+        backgroundSubscriptions?.clear()
+        backgroundSubscriptions = CompositeDisposable()
+        if (backgroundSubscriberViews.isEmpty()) {
+          return
+        }
+        val pairs = backgroundSubscriberViews[context.javaClass.name]
         if (pairs != null) {
           for ((view, observable) in pairs) {
-            instance!!.backgroundSubscriptions!! +=
+            backgroundSubscriptions!! +=
                 observable
                     .distinctToMainThread()
                     .subscribeWith(ViewBackgroundSubscriber(view))

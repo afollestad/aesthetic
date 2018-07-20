@@ -14,8 +14,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 
-/** @author Aidan Follestad (afollestad)
- */
+/** @author Aidan Follestad (afollestad) */
 @SuppressLint("ResourceType")
 class AestheticEditText(
   context: Context,
