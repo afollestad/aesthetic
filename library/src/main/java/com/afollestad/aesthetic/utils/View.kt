@@ -51,10 +51,15 @@ internal fun Toolbar.tintMenu(
 
   // Theme menu action views
   for (i in 0 until menu.size()) {
-    val actionView = menu.getItem(i)
-        .actionView
+    val menuItem = menu.getItem(i)
+    val actionView = menuItem.actionView
     if (actionView is SearchView) {
       actionView.setColors(titleIconColors)
+    }
+    if (menu.getItem(i).icon != null) {
+      menuItem.icon = TintHelper.createTintedDrawable(
+          menuItem.icon, titleIconColors.toEnabledSl()
+      )
     }
   }
 }
