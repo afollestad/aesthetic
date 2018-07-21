@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.afollestad.aestheticsample">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.afollestad.aestheticsample">
 
   <application
-    android:allowBackup="false"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:roundIcon="@mipmap/ic_launcher_round"
-    android:supportsRtl="true"
-    android:theme="@style/AppTheme">
+      android:allowBackup="false"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:roundIcon="@mipmap/ic_launcher_round"
+      android:supportsRtl="true"
+      android:theme="@style/AppTheme">
 
     <activity
-      android:name=".MainActivity"
-      android:windowSoftInputMode="stateHidden">
+        android:name=".MainActivity"
+        android:windowSoftInputMode="stateHidden">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
@@ -22,20 +22,24 @@
     </activity>
 
     <activity
-      android:name=".DrawerActivity"
-      android:windowSoftInputMode="stateAlwaysHidden"/>
+        android:name=".DrawerActivity"
+        android:windowSoftInputMode="stateAlwaysHidden"/>
 
     <activity
-      android:name=".BottomNavActivity"
-      android:windowSoftInputMode="stateAlwaysHidden"/>
+        android:name=".BottomNavActivity"
+        android:windowSoftInputMode="stateAlwaysHidden"/>
 
     <activity
-      android:name=".CoordinatorLayoutActivity"
-      android:windowSoftInputMode="stateAlwaysHidden"/>
+        android:name=".CoordinatorLayoutActivity"
+        android:windowSoftInputMode="stateAlwaysHidden"/>
 
     <activity
-      android:name=".RecyclerViewActivity"
-      android:windowSoftInputMode="stateAlwaysHidden"/>
+        android:name=".RecyclerViewActivity"
+        android:windowSoftInputMode="stateAlwaysHidden"/>
+
+    <activity
+        android:name=".SwipeRefreshActivity"
+        android:windowSoftInputMode="stateAlwaysHidden"/>
 
   </application>
 

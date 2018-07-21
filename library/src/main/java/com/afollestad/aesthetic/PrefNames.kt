@@ -26,4 +26,5 @@ internal object PrefNames {
   const val KEY_ICON_TITLE_INACTIVE_COLOR = "icon_title_inactive_color"
   const val KEY_SNACKBAR_TEXT = "snackbar_text_color"
   const val KEY_SNACKBAR_ACTION_TEXT = "snackbar_action_text_color"
+  const val KEY_SWIPEREFRESH_COLORS = "swiperefreshlayout_colors";
 }

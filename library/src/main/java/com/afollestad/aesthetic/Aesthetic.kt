@@ -37,6 +37,7 @@ import com.afollestad.aesthetic.PrefNames.KEY_SECONDARY_TEXT_INVERSE_COLOR
 import com.afollestad.aesthetic.PrefNames.KEY_SNACKBAR_ACTION_TEXT
 import com.afollestad.aesthetic.PrefNames.KEY_SNACKBAR_TEXT
 import com.afollestad.aesthetic.PrefNames.KEY_STATUS_BAR_COLOR
+import com.afollestad.aesthetic.PrefNames.KEY_SWIPEREFRESH_COLORS
 import com.afollestad.aesthetic.PrefNames.KEY_TAB_LAYOUT_BG_MODE
 import com.afollestad.aesthetic.PrefNames.KEY_TAB_LAYOUT_INDICATOR_MODE
 import com.afollestad.aesthetic.PrefNames.KEY_WINDOW_BG_COLOR
@@ -54,6 +55,7 @@ import com.afollestad.aesthetic.utils.setLightStatusBarCompat
 import com.afollestad.aesthetic.utils.setNavBarColorCompat
 import com.afollestad.aesthetic.utils.setStatusBarColorCompat
 import com.afollestad.aesthetic.utils.setTaskDescriptionColor
+import com.afollestad.aesthetic.utils.splitToInts
 import com.f2prateek.rx.preferences2.RxSharedPreferences
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -633,6 +635,31 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
   @CheckResult
   fun snackbarActionTextColorRes(@ColorRes color: Int): Aesthetic {
     return colorCardViewBackground(context.color(color))
+  }
+
+  @CheckResult
+  fun swipeRefreshLayoutColors(): Observable<IntArray> {
+    return colorAccent()
+        .flatMap {
+          rxPrefs!!
+              .getString(KEY_SWIPEREFRESH_COLORS, "$it")
+              .asObservable()
+              .map { it.splitToInts() }
+        }
+  }
+
+  @CheckResult
+  fun swipeRefreshLayoutColors(@ColorInt vararg colors: Int): Aesthetic {
+    editor!!.putString(KEY_SWIPEREFRESH_COLORS, colors.joinToString(","))
+    return this
+  }
+
+  @CheckResult
+  fun swipeRefreshLayoutColorsRes(@ColorRes vararg colorsRes: Int): Aesthetic {
+    editor!!.putString(
+        KEY_SWIPEREFRESH_COLORS, colorsRes.map { context.color(it) }.joinToString(",")
+    )
+    return this
   }
 
   /** Notifies all listening views that theme properties have been updated.  */

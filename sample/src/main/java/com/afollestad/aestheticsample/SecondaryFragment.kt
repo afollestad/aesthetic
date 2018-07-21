@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.fragment_secondary.view.bottom_tabs
 import kotlinx.android.synthetic.main.fragment_secondary.view.coordinator_layout
 import kotlinx.android.synthetic.main.fragment_secondary.view.drawer_layout
 import kotlinx.android.synthetic.main.fragment_secondary.view.recycler_view
+import kotlinx.android.synthetic.main.fragment_secondary.view.swipe_refresh
 
 /** @author Aidan Follestad (afollestad)
  */
@@ -47,6 +48,11 @@ class SecondaryFragment : Fragment() {
     view.recycler_view.setOnClickListener {
       startActivity(
           Intent(activity, RecyclerViewActivity::class.java)
+      )
+    }
+    view.swipe_refresh.setOnClickListener {
+      startActivity(
+          Intent(activity, SwipeRefreshActivity::class.java)
       )
     }
   }

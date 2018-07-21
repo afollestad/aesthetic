@@ -38,4 +38,12 @@
       android:text="@string/collapsing_toolbar_layout"
       />
 
+  <Button
+      android:id="@+id/swipe_refresh"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/content_inset_quarter"
+      android:text="@string/swipe_refresh"
+      />
+
 </LinearLayout>

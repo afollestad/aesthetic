@@ -159,6 +159,8 @@ internal class InflationInterceptor(
         view = AestheticFab(context, attrs)
       "android.support.design.widget.CoordinatorLayout" ->
         view = AestheticCoordinatorLayout(context, attrs)
+      "android.support.v4.widget.SwipeRefreshLayout" ->
+        view = AestheticSwipeRefreshLayout(context, attrs)
     }
 
     var viewBackgroundRes = 0
