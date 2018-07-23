@@ -61,19 +61,19 @@ class MainFragment : Fragment() {
 
     view.switch_theme.setOnClickListener {
       if (view.switch_theme.isChecked) {
-        Aesthetic.get()
-            .activityTheme(R.style.AppThemeDark)
-            .isDark(true)
-            .textColorPrimaryRes(R.color.text_color_primary_dark)
-            .textColorSecondaryRes(R.color.text_color_secondary_dark)
-            .apply()
+        Aesthetic.config {
+          activityTheme(R.style.AppThemeDark)
+          isDark(true)
+          textColorPrimaryRes(R.color.text_color_primary_dark)
+          textColorSecondaryRes(R.color.text_color_secondary_dark)
+        }
       } else {
-        Aesthetic.get()
-            .activityTheme(R.style.AppTheme)
-            .isDark(false)
-            .textColorPrimaryRes(R.color.text_color_primary)
-            .textColorSecondaryRes(R.color.text_color_secondary)
-            .apply()
+        Aesthetic.config {
+          activityTheme(R.style.AppTheme)
+          isDark(false)
+          textColorPrimaryRes(R.color.text_color_primary)
+          textColorSecondaryRes(R.color.text_color_secondary)
+        }
       }
     }
 
@@ -89,8 +89,10 @@ class MainFragment : Fragment() {
     view.fab.setOnClickListener {
       snackbar?.dismiss()
       snackbar = Snackbar.make(view, R.string.hello_world, Snackbar.LENGTH_LONG)
-      snackbar!!.setAction(android.R.string.cancel) {}
-      snackbar!!.show()
+      with(snackbar!!) {
+        setAction(android.R.string.cancel) {}
+        show()
+      }
     }
 
     btn_black.setOnClickListener { onClickButton(it) }
@@ -106,7 +108,7 @@ class MainFragment : Fragment() {
     super.onDestroyView()
   }
 
-  fun onClickButton(view: View) {
+  private fun onClickButton(view: View) {
     when (view.id) {
       R.id.btn_black -> Aesthetic.get()
           .colorPrimaryRes(R.color.text_color_primary)
