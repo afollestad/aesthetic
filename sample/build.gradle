@@ -45,6 +45,9 @@ dependencies {
   implementation 'io.reactivex.rxjava2:rxandroid:' + versions.rxAndroid
 
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
+
+  debugImplementation 'com.squareup.leakcanary:leakcanary-android:' + versions.leakCanary
+  releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:' + versions.leakCanary
 }
 
 repositories {
