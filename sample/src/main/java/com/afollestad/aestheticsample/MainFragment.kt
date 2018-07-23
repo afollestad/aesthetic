@@ -81,8 +81,8 @@ class MainFragment : Fragment() {
       AlertDialog.Builder(activity!!)
           .setTitle(R.string.hello_world)
           .setMessage(R.string.lorem_ipsum)
-          .setPositiveButton(android.R.string.ok, { dialogInterface, i -> })
-          .setNegativeButton(android.R.string.cancel, { dialogInterface, i -> })
+          .setPositiveButton(android.R.string.ok, { _, _ -> })
+          .setNegativeButton(android.R.string.cancel, { _, _ -> })
           .show()
     }
 
