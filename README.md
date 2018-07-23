@@ -83,7 +83,7 @@ If you don't want to extend `AestheticActivity`, there are a few methods you nee
 class AestheticActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    Aesthetic.attach(this); // MUST come before super.onCreate(...)
+    Aesthetic.attach(this)  // MUST come before super.onCreate(...)
     super.onCreate(savedInstanceState)
   }
 
