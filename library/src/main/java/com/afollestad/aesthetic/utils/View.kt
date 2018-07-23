@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.support.annotation.ColorInt
 import android.support.design.widget.TextInputLayout
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.Menu
@@ -12,6 +13,9 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import com.afollestad.aesthetic.ActiveInactiveColors
+import com.afollestad.aesthetic.R
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import java.lang.reflect.Field
 
 @Suppress("DEPRECATION")
@@ -224,4 +228,60 @@ internal fun TextInputLayout.setDisabledColor(@ColorInt accentColor: Int) {
         "Failed to set TextInputLayout accent (expanded) color: " + t.localizedMessage, t
     )
   }
+}
+
+val View.isAttachedToWindowCompat: Boolean get() = ViewCompat.isAttachedToWindow(this)
+
+fun View.unsubscribeOnDetach(disposableFactory: () -> Disposable) {
+  val attachedDisposables = ensureAttachedDisposables()
+  if (isAttachedToWindowCompat) {
+    val disposable = disposableFactory()
+    if (isAttachedToWindowCompat) {
+      attachedDisposables.disposables += disposable
+    } else {
+      disposable.dispose()
+    }
+  } else {
+    attachedDisposables += disposableFactory
+  }
+}
+
+fun Disposable.unsubscribeOnDetach(view: View): Disposable {
+  view.unsubscribeOnDetach { this }
+  return this
+}
+
+private fun View.ensureAttachedDisposables(): AttachedDisposables {
+  var attachedDisposables = getTag(R.id.tag_attached_disposables) as AttachedDisposables?
+
+  if (attachedDisposables == null) {
+    attachedDisposables = AttachedDisposables()
+    setTag(R.id.tag_attached_disposables, attachedDisposables)
+    addOnAttachStateChangeListener(attachedDisposables)
+  }
+
+  return attachedDisposables
+}
+
+private class AttachedDisposables : View.OnAttachStateChangeListener {
+  val disposables = CompositeDisposable()
+  private val disposableFactory by lazy { mutableListOf<() -> Disposable>() }
+
+  operator fun plusAssign(disposable: () -> Disposable) {
+    disposableFactory += disposable
+  }
+
+  override fun onViewAttachedToWindow(v: View) {
+    disposableFactory.apply {
+      forEach { factory -> disposables += factory() }
+      clear()
+    }
+  }
+
+  override fun onViewDetachedFromWindow(v: View) = disposables.clear()
+
+//  fun clearAllDisposables() {
+//    disposableFactory.clear()
+//    disposables.clear()
+//  }
 }

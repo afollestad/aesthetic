@@ -46,4 +46,11 @@
       android:text="@string/swipe_refresh"
       />
 
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="120dp"
+      android:layout_marginTop="@dimen/content_inset_more"
+      android:background="?colorAccent"
+      />
+
 </LinearLayout>

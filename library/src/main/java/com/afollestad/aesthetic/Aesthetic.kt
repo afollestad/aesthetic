@@ -58,6 +58,7 @@ import com.afollestad.aesthetic.utils.setNavBarColorCompat
 import com.afollestad.aesthetic.utils.setStatusBarColorCompat
 import com.afollestad.aesthetic.utils.setTaskDescriptionColor
 import com.afollestad.aesthetic.utils.splitToInts
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.f2prateek.rx.preferences2.RxSharedPreferences
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -68,10 +69,7 @@ import java.lang.String.format
 /** @author Aidan Follestad (afollestad) */
 class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
 
-  private val backgroundSubscriberViews =
-    mutableArrayMapOf<String, MutableList<ViewObservablePair>>()
   private val lastActivityThemes = mutableArrayMapOf<String, Int>(2)
-  private var backgroundSubscriptions: CompositeDisposable? = null
 
   private var subs: CompositeDisposable? = null
   private var prefs: SharedPreferences? = null
@@ -110,18 +108,11 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
     view: View,
     colorObservable: Observable<Int>
   ) {
-    var subscribers: MutableList<ViewObservablePair>? =
-      backgroundSubscriberViews[context.javaClass.name]
-    if (subscribers == null) {
-      subscribers = mutableListOf()
-      backgroundSubscriberViews[context.javaClass.name] = subscribers
-    }
-    subscribers.add(ViewObservablePair(view, colorObservable))
     if (isResumed) {
-      backgroundSubscriptions!! +=
-          colorObservable
-              .distinctToMainThread()
-              .subscribeWith(ViewBackgroundSubscriber(view))
+      colorObservable
+          .distinctToMainThread()
+          .subscribeWith(ViewBackgroundSubscriber(view))
+          .unsubscribeOnDetach(view)
     }
   }
 
@@ -734,10 +725,7 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
       with(instance!!) {
         isResumed = false
         subs?.clear()
-        backgroundSubscriptions?.clear()
-
         if (activity.isFinishing) {
-          backgroundSubscriberViews.remove(activity.javaClass.name)
           if (context.javaClass.name == activity.javaClass.name) {
             ctxt = null
             deinitPrefs()
@@ -757,8 +745,6 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
         isResumed = true
 
         subs = CompositeDisposable()
-        subscribeBackgroundListeners()
-
         subs!! +=
             instance!!
                 .colorPrimary()
@@ -820,24 +806,5 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
           return firstTime
         }
       }
-
-    private fun subscribeBackgroundListeners() {
-      with(instance!!) {
-        backgroundSubscriptions?.clear()
-        backgroundSubscriptions = CompositeDisposable()
-        if (backgroundSubscriberViews.isEmpty()) {
-          return
-        }
-        val pairs = backgroundSubscriberViews[context.javaClass.name]
-        if (pairs != null) {
-          for ((view, observable) in pairs) {
-            backgroundSubscriptions!! +=
-                observable
-                    .distinctToMainThread()
-                    .subscribeWith(ViewBackgroundSubscriber(view))
-          }
-        }
-      }
-    }
   }
 }
