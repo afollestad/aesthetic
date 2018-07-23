@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.afollestad.aesthetic
 
 import android.annotation.SuppressLint
@@ -11,7 +13,6 @@ import android.support.annotation.ColorInt
 import android.support.annotation.ColorRes
 import android.support.annotation.StyleRes
 import android.support.v4.content.ContextCompat
-import android.support.v4.util.ArrayMap
 import android.support.v4.util.Pair
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
@@ -48,6 +49,7 @@ import com.afollestad.aesthetic.utils.darkenColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.getRootView
 import com.afollestad.aesthetic.utils.isColorLight
+import com.afollestad.aesthetic.utils.mutableArrayMapOf
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.setInflaterFactory
@@ -62,14 +64,13 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
 import java.lang.String.format
-import java.util.ArrayList
 
 /** @author Aidan Follestad (afollestad) */
 class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
 
-  private val backgroundSubscriberViews: MutableMap<String, MutableList<ViewObservablePair>> =
-    ArrayMap(0)
-  private val lastActivityThemes: MutableMap<String, Int> = ArrayMap(2)
+  private val backgroundSubscriberViews =
+    mutableArrayMapOf<String, MutableList<ViewObservablePair>>()
+  private val lastActivityThemes = mutableArrayMapOf<String, Int>(2)
   private var backgroundSubscriptions: CompositeDisposable? = null
 
   private var subs: CompositeDisposable? = null
@@ -112,7 +113,7 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
     var subscribers: MutableList<ViewObservablePair>? =
       backgroundSubscriberViews[context.javaClass.name]
     if (subscribers == null) {
-      subscribers = ArrayList(1)
+      subscribers = mutableListOf()
       backgroundSubscriberViews[context.javaClass.name] = subscribers
     }
     subscribers.add(ViewObservablePair(view, colorObservable))
@@ -123,34 +124,6 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
               .subscribeWith(ViewBackgroundSubscriber(view))
     }
   }
-
-  private fun invalidateStatusBar() {
-    val key = format(KEY_STATUS_BAR_COLOR, key(context))
-    val color = prefs!!.getInt(key, context.colorAttr(R.attr.colorPrimaryDark))
-
-    val rootView = context.getRootView()
-    if (rootView is DrawerLayout) {
-      // Color is set to DrawerLayout, Activity gets transparent status bar
-      context.setLightStatusBarCompat(false)
-      context.setStatusBarColorCompat(Color.TRANSPARENT)
-      rootView.setStatusBarBackgroundColor(color)
-    } else {
-      context.setStatusBarColorCompat(color)
-    }
-
-    val mode = AutoSwitchMode.fromInt(
-        prefs!!.getInt(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
-    )
-    when (mode) {
-      AutoSwitchMode.OFF -> context.setLightStatusBarCompat(false)
-      AutoSwitchMode.ON -> context.setLightStatusBarCompat(true)
-      else -> context.setLightStatusBarCompat(color.isColorLight())
-    }
-  }
-
-  //
-  /////// GETTERS AND SETTERS OF THEME PROPERTIES
-  //
 
   @CheckResult
   fun activityTheme(@StyleRes theme: Int): Aesthetic {
@@ -665,6 +638,30 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
   /** Notifies all listening views that theme properties have been updated.  */
   fun apply() {
     editor!!.commit()
+  }
+
+  private fun invalidateStatusBar() {
+    val key = format(KEY_STATUS_BAR_COLOR, key(context))
+    val color = prefs!!.getInt(key, context.colorAttr(R.attr.colorPrimaryDark))
+
+    val rootView = context.getRootView()
+    if (rootView is DrawerLayout) {
+      // Color is set to DrawerLayout, Activity gets transparent status bar
+      context.setLightStatusBarCompat(false)
+      context.setStatusBarColorCompat(Color.TRANSPARENT)
+      rootView.setStatusBarBackgroundColor(color)
+    } else {
+      context.setStatusBarColorCompat(color)
+    }
+
+    val mode = AutoSwitchMode.fromInt(
+        prefs!!.getInt(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
+    )
+    when (mode) {
+      AutoSwitchMode.OFF -> context.setLightStatusBarCompat(false)
+      AutoSwitchMode.ON -> context.setLightStatusBarCompat(true)
+      else -> context.setLightStatusBarCompat(color.isColorLight())
+    }
   }
 
   companion object {

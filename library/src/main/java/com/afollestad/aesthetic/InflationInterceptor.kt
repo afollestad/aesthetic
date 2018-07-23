@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import com.afollestad.aesthetic.utils.ViewUtil
+import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.resId
 
 /** @author Aidan Follestad (afollestad) */
@@ -197,7 +198,7 @@ internal class InflationInterceptor(
     }
 
     if (viewBackgroundRes != 0) {
-      val obs = ViewUtil.getObservableForResId(view.context, viewBackgroundRes, null)
+      val obs = getObservableForResId(view.context, viewBackgroundRes, null)
       if (obs != null) {
         Aesthetic.get()
             .addBackgroundSubscriber(view, obs)
