@@ -26,7 +26,8 @@ class AestheticProgressBar(
     subscription = Aesthetic.get()
         .colorAccent()
         .distinctToMainThread()
-        .subscribe(Consumer { this.invalidateColors(it) },
+        .subscribe(
+            Consumer { this.invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }

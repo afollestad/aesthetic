@@ -81,7 +81,8 @@ class AestheticNavigationView(
                       ColorIsDarkState.creator()
                   )
                       .distinctToMainThread()
-                      .subscribe(Consumer { this.invalidateColors(it) },
+                      .subscribe(
+                          Consumer { this.invalidateColors(it) },
                           onErrorLogAndRethrow()
                       )
                 SELECTED_ACCENT ->
@@ -91,7 +92,8 @@ class AestheticNavigationView(
                       ColorIsDarkState.creator()
                   )
                       .distinctToMainThread()
-                      .subscribe(Consumer { this.invalidateColors(it) },
+                      .subscribe(
+                          Consumer { this.invalidateColors(it) },
                           onErrorLogAndRethrow()
                       )
                 else -> throw IllegalStateException("Unknown nav view mode: $it")

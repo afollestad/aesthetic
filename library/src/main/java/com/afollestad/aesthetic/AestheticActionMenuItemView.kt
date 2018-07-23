@@ -1,13 +1,12 @@
 package com.afollestad.aesthetic
 
 import android.annotation.SuppressLint
-import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
-
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.support.v7.view.menu.ActionMenuItemView
 import android.util.AttributeSet
+import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.onMainThread

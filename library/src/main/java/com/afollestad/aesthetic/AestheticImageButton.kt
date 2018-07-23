@@ -30,7 +30,8 @@ class AestheticImageButton(
     if (obs != null) {
       bgSubscription = obs
           .distinctToMainThread()
-          .subscribe(ViewBackgroundAction(this),
+          .subscribe(
+              ViewBackgroundAction(this),
               onErrorLogAndRethrow()
           )
     }

@@ -42,7 +42,8 @@ class AestheticSwitch(
         ColorIsDarkState.creator()
     )
         .distinctToMainThread()
-        .subscribe(Consumer { this.invalidateColors(it) },
+        .subscribe(
+            Consumer { this.invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }

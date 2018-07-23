@@ -1,7 +1,5 @@
 package com.afollestad.aesthetic
 
-import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
@@ -10,6 +8,7 @@ import android.support.design.widget.TabLayout
 import android.util.AttributeSet
 import com.afollestad.aesthetic.TabLayoutBgMode.ACCENT
 import com.afollestad.aesthetic.TabLayoutBgMode.PRIMARY
+import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow

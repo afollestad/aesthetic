@@ -56,7 +56,8 @@ class AestheticEditText(
             ColorIsDarkState.creator()
         )
             .distinctToMainThread()
-            .subscribe(Consumer { this.invalidateColors(it) },
+            .subscribe(
+                Consumer { this.invalidateColors(it) },
                 onErrorLogAndRethrow()
             )
     subscriptions!! +=
@@ -64,7 +65,8 @@ class AestheticEditText(
             context, textColorResId, Aesthetic.get().textColorPrimary()
         )!!
             .distinctToMainThread()
-            .subscribe(ViewTextColorAction(this),
+            .subscribe(
+                ViewTextColorAction(this),
                 onErrorLogAndRethrow()
             )
     subscriptions!! +=
@@ -72,7 +74,8 @@ class AestheticEditText(
             context, textColorHintResId, Aesthetic.get().textColorSecondary()
         )!!
             .distinctToMainThread()
-            .subscribe(ViewHintTextColorAction(this),
+            .subscribe(
+                ViewHintTextColorAction(this),
                 onErrorLogAndRethrow()
             )
   }

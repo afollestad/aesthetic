@@ -1,12 +1,11 @@
 package com.afollestad.aesthetic
 
-import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
-
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.annotation.ColorInt
 import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
+import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.setOverflowButtonColor

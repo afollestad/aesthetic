@@ -5,12 +5,11 @@ import android.support.v7.widget.AppCompatSeekBar
 import android.util.AttributeSet
 import com.afollestad.aesthetic.utils.TintHelper
 import com.afollestad.aesthetic.utils.ViewUtil
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
-
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */

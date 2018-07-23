@@ -7,13 +7,12 @@ import android.support.design.widget.FloatingActionButton
 import android.util.AttributeSet
 import com.afollestad.aesthetic.utils.TintHelper
 import com.afollestad.aesthetic.utils.ViewUtil
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
-
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad)
@@ -41,7 +40,8 @@ class AestheticFab(
 
   override fun setImageDrawable(drawable: Drawable?) {
     super.setImageDrawable(
-        TintHelper.createTintedDrawable(drawable, iconColor))
+        TintHelper.createTintedDrawable(drawable, iconColor)
+    )
   }
 
   override fun onAttachedToWindow() {

@@ -4,7 +4,6 @@ import android.content.Context
 import android.support.annotation.AttrRes
 import android.support.annotation.ColorInt
 import android.support.annotation.ColorRes
-import android.support.annotation.IdRes
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 

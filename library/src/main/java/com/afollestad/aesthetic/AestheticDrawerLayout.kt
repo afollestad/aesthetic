@@ -36,7 +36,8 @@ class AestheticDrawerLayout(
     subscription = Aesthetic.get()
         .colorIconTitle(null)
         .distinctToMainThread()
-        .subscribe(Consumer { this.invalidateColor(it) },
+        .subscribe(
+            Consumer { this.invalidateColor(it) },
             onErrorLogAndRethrow()
         )
   }

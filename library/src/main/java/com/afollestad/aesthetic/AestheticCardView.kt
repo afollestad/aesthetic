@@ -34,7 +34,8 @@ class AestheticCardView(
     )!!
     bgSubscription = obs
         .distinctToMainThread()
-        .subscribe(Consumer { setCardBackgroundColor(it) },
+        .subscribe(
+            Consumer { setCardBackgroundColor(it) },
             onErrorLogAndRethrow()
         )
   }

@@ -4,11 +4,10 @@ import android.content.Context
 import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
 import com.afollestad.aesthetic.utils.ViewUtil
-import io.reactivex.disposables.Disposable
-
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
+import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticImageView(
@@ -31,7 +30,8 @@ class AestheticImageView(
     if (obs != null) {
       bgSubscription = obs
           .distinctToMainThread()
-          .subscribe(ViewBackgroundAction(this),
+          .subscribe(
+              ViewBackgroundAction(this),
               onErrorLogAndRethrow()
           )
     }
