@@ -14,30 +14,20 @@ object ViewUtil {
     @IdRes resId: Int,
     fallback: Observable<Int>?
   ): Observable<Int>? {
-    when (resId) {
-      0 -> return fallback
-      context.resId(
-          attr.colorPrimary, 0) -> return Aesthetic.get()
-          .colorPrimary()
-      context.resId(
-          attr.colorPrimaryDark, 0) -> return Aesthetic.get()
-          .colorPrimaryDark()
-      context.resId(android.R.attr.statusBarColor, 0) -> return Aesthetic.get()
-          .colorStatusBar()
-      context.resId(
-          attr.colorAccent, 0) -> return Aesthetic.get()
-          .colorAccent()
-      context.resId(android.R.attr.windowBackground, 0) -> return Aesthetic.get()
-          .colorWindowBackground()
-      context.resId(android.R.attr.textColorPrimary, 0) -> return Aesthetic.get()
-          .textColorPrimary()
-      context.resId(android.R.attr.textColorPrimaryInverse, 0) -> return Aesthetic.get()
-          .textColorPrimaryInverse()
-      context.resId(android.R.attr.textColorSecondary, 0) -> return Aesthetic.get()
-          .textColorSecondary()
-      context.resId(android.R.attr.textColorSecondaryInverse, 0) -> return Aesthetic.get()
-          .textColorSecondaryInverse()
-      else -> return fallback
+    with(Aesthetic.get()) {
+      return when (resId) {
+        0 -> fallback
+        context.resId(attr.colorPrimary) -> colorPrimary()
+        context.resId(attr.colorPrimaryDark) -> colorPrimaryDark()
+        context.resId(android.R.attr.statusBarColor) -> colorStatusBar()
+        context.resId(attr.colorAccent) -> colorAccent()
+        context.resId(android.R.attr.windowBackground) -> colorWindowBackground()
+        context.resId(android.R.attr.textColorPrimary) -> textColorPrimary()
+        context.resId(android.R.attr.textColorPrimaryInverse) -> textColorPrimaryInverse()
+        context.resId(android.R.attr.textColorSecondary) -> textColorSecondary()
+        context.resId(android.R.attr.textColorSecondaryInverse) -> textColorSecondaryInverse()
+        else -> fallback
+      }
     }
   }
 }

@@ -25,7 +25,7 @@ import android.util.AttributeSet
 
 internal fun Context.resId(
   @AttrRes attr: Int,
-  fallback: Int
+  fallback: Int = 0
 ): Int {
   val a = theme.obtainStyledAttributes(intArrayOf(attr))
   try {
