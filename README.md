@@ -167,7 +167,7 @@ val subscription =
         // Use color (an integer)
       }
       
-// Later, you should unsubscribe, e.g. when your Activity pauses
+// Later, you should unsubscribe, e.g. when your Activity pauses or your View detaches from its Window
 subscription.dispose();
 ```
 
