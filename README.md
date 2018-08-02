@@ -49,7 +49,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
     // ... other dependencies
-    implementation 'com.afollestad:aesthetic:0.5.2'
+    implementation 'com.afollestad:aesthetic:0.5.3'
 }
 ```
 
