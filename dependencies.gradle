@@ -6,13 +6,13 @@ ext.versions = [
     publishVersionCode: 22,
 
     gradlePlugin      : '3.1.3',
-    kotlin            : '1.2.51',
-    spotlessPlugin    : '3.12.0',
-    versionsPlugin    : '0.17.0',
+    kotlin            : '1.2.60',
+    spotlessPlugin    : '3.14.0',
+    versionsPlugin    : '0.20.0',
     bintrayRelease    : '0.8.1',
 
-    supportLib        : '28.0.+',
-    rxJava            : '2.1.13',
+    supportLib        : '28.0.0-beta01',
+    rxJava            : '2.2.0',
     rxAndroid         : '2.0.2',
     rxPrefs           : '2.0.0',
     leakCanary        : '1.6.1'
