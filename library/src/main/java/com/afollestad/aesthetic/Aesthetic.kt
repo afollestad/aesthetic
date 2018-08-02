@@ -3,6 +3,7 @@
 package com.afollestad.aesthetic
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
@@ -67,7 +68,7 @@ import io.reactivex.functions.Consumer
 import java.lang.String.format
 
 /** @author Aidan Follestad (afollestad) */
-class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
+class Aesthetic private constructor(private var ctxt: Context?) {
 
   private val lastActivityThemes = mutableArrayMapOf<String, Int>(2)
 
@@ -630,26 +631,28 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
   }
 
   private fun invalidateStatusBar() {
-    val key = format(KEY_STATUS_BAR_COLOR, key(context))
-    val color = prefs!!.getInt(key, context.colorAttr(R.attr.colorPrimaryDark))
+    with(context as? Activity ?: return) {
+      val key = format(KEY_STATUS_BAR_COLOR, key(context))
+      val color = prefs!!.getInt(key, context.colorAttr(R.attr.colorPrimaryDark))
 
-    val rootView = context.getRootView()
-    if (rootView is DrawerLayout) {
-      // Color is set to DrawerLayout, Activity gets transparent status bar
-      context.setLightStatusBarCompat(false)
-      context.setStatusBarColorCompat(Color.TRANSPARENT)
-      rootView.setStatusBarBackgroundColor(color)
-    } else {
-      context.setStatusBarColorCompat(color)
-    }
+      val rootView = getRootView()
+      if (rootView is DrawerLayout) {
+        // Color is set to DrawerLayout, Activity gets transparent status bar
+        setLightStatusBarCompat(false)
+        setStatusBarColorCompat(Color.TRANSPARENT)
+        rootView.setStatusBarBackgroundColor(color)
+      } else {
+        setStatusBarColorCompat(color)
+      }
 
-    val mode = AutoSwitchMode.fromInt(
-        prefs!!.getInt(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
-    )
-    when (mode) {
-      AutoSwitchMode.OFF -> context.setLightStatusBarCompat(false)
-      AutoSwitchMode.ON -> context.setLightStatusBarCompat(true)
-      else -> context.setLightStatusBarCompat(color.isColorLight())
+      val mode = AutoSwitchMode.fromInt(
+          prefs!!.getInt(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
+      )
+      when (mode) {
+        AutoSwitchMode.OFF -> setLightStatusBarCompat(false)
+        AutoSwitchMode.ON -> setLightStatusBarCompat(true)
+        else -> setLightStatusBarCompat(color.isColorLight())
+      }
     }
   }
 
@@ -658,10 +661,10 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
     @SuppressLint("StaticFieldLeak")
     private var instance: Aesthetic? = null
 
-    private fun key(activity: AppCompatActivity?): String {
+    private fun key(whereAmI: Context?): String {
       var key: String?
-      key = if (activity is AestheticKeyProvider) {
-        (activity as AestheticKeyProvider).key()
+      key = if (whereAmI is AestheticKeyProvider) {
+        (whereAmI as AestheticKeyProvider).key()
       } else {
         "default"
       }
@@ -672,23 +675,25 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
     }
 
     /** Should be called before super.onCreate() in each Activity.  */
-    fun attach(activity: AppCompatActivity): Aesthetic {
+    fun attach(whereAmI: Context): Aesthetic {
       if (instance == null) {
-        instance = Aesthetic(activity)
+        instance = Aesthetic(whereAmI)
       }
       with(instance!!) {
         isResumed = false
-        ctxt = activity
+        ctxt = whereAmI
         initPrefs()
 
-        val li = activity.layoutInflater
-        activity.setInflaterFactory(li)
+        with(whereAmI as? Activity ?: return this) {
+          val li = layoutInflater
+          (this as? AppCompatActivity)?.setInflaterFactory(li)
 
-        val activityThemeKey = format(KEY_ACTIVITY_THEME, key(activity))
-        val latestActivityTheme = prefs!!.getInt(activityThemeKey, 0)
-        lastActivityThemes[context.javaClass.name] = latestActivityTheme
-        if (latestActivityTheme != 0) {
-          activity.setTheme(latestActivityTheme)
+          val activityThemeKey = format(KEY_ACTIVITY_THEME, key(this))
+          val latestActivityTheme = prefs!!.getInt(activityThemeKey, 0)
+          lastActivityThemes[context.javaClass.name] = latestActivityTheme
+          if (latestActivityTheme != 0) {
+            setTheme(latestActivityTheme)
+          }
         }
 
         return this
@@ -710,79 +715,80 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
       instance.apply()
     }
 
-    /** Should be called in onPause() of each Activity.  */
-    fun pause(activity: AppCompatActivity) {
+    /** Should be called in onPause() of each Activity or Service.  */
+    fun pause(whereAmI: Context) {
       with(instance ?: return) {
         isResumed = false
         subs?.clear()
-        if (activity.isFinishing) {
-          if (context.javaClass.name == activity.javaClass.name) {
-            ctxt = null
-            deinitPrefs()
-          }
+        if (whereAmI is Activity && whereAmI.isFinishing &&
+            context.javaClass.name == whereAmI.javaClass.name
+        ) {
+          ctxt = null
+          deinitPrefs()
         }
       }
     }
 
     /** Should be called in onResume() of each Activity.  */
-    fun resume(activity: AppCompatActivity) {
+    fun resume(whereAmI: Context) {
       with(instance ?: throw IllegalStateException("Not attached")) {
         if (isResumed)
-          throw IllegalStateException("Already resumed!")
+          throw IllegalStateException("Already resumed")
 
-        ctxt = activity
+        ctxt = whereAmI
         initPrefs()
         isResumed = true
 
         subs = CompositeDisposable()
-        subs!! +=
-            instance!!
-                .colorPrimary()
-                .distinctToMainThread()
-                .subscribe(
-                    Consumer { context.setTaskDescriptionColor(it) },
-                    onErrorLogAndRethrow()
-                )
-        subs!! +=
-            instance!!
-                .activityTheme()
-                .distinctToMainThread()
-                .filter { getLastActivityTheme(context) != it }
-                .subscribe(
-                    Consumer {
-                      lastActivityThemes[context.javaClass.name] = it
-                      context.recreate()
-                    },
-                    onErrorLogAndRethrow()
-                )
-
-        subs!! +=
-            Observable.combineLatest<Int, Int, Pair<Int, Int>>(
-                colorStatusBar(), lightStatusBarMode(),
-                BiFunction<Int, Int, Pair<Int, Int>> { a, b -> Pair.create(a, b) })
-                .distinctToMainThread()
-                .subscribe(
-                    Consumer { invalidateStatusBar() },
-                    onErrorLogAndRethrow()
-                )
-        subs!! +=
-            instance!!
-                .colorNavigationBar()
-                .distinctToMainThread()
-                .subscribe(
-                    Consumer { context.setNavBarColorCompat(it) },
-                    onErrorLogAndRethrow()
-                )
-        subs!! +=
-            instance!!
-                .colorWindowBackground()
-                .distinctToMainThread()
-                .subscribe(
-                    Consumer {
-                      context.window?.setBackgroundDrawable(ColorDrawable(it))
-                    },
-                    onErrorLogAndRethrow()
-                )
+        if (context is Activity) {
+          subs!! +=
+              instance!!
+                  .colorPrimary()
+                  .distinctToMainThread()
+                  .subscribe(
+                      Consumer { (context as Activity).setTaskDescriptionColor(it) },
+                      onErrorLogAndRethrow()
+                  )
+          subs!! +=
+              instance!!
+                  .activityTheme()
+                  .distinctToMainThread()
+                  .filter { getLastActivityTheme(context) != it }
+                  .subscribe(
+                      Consumer {
+                        lastActivityThemes[context.javaClass.name] = it
+                        (context as Activity).recreate()
+                      },
+                      onErrorLogAndRethrow()
+                  )
+          subs!! +=
+              Observable.combineLatest<Int, Int, Pair<Int, Int>>(
+                  colorStatusBar(), lightStatusBarMode(),
+                  BiFunction<Int, Int, Pair<Int, Int>> { a, b -> Pair.create(a, b) })
+                  .distinctToMainThread()
+                  .subscribe(
+                      Consumer { invalidateStatusBar() },
+                      onErrorLogAndRethrow()
+                  )
+          subs!! +=
+              instance!!
+                  .colorNavigationBar()
+                  .distinctToMainThread()
+                  .subscribe(
+                      Consumer { (context as Activity).setNavBarColorCompat(it) },
+                      onErrorLogAndRethrow()
+                  )
+          subs!! +=
+              instance!!
+                  .colorWindowBackground()
+                  .distinctToMainThread()
+                  .subscribe(
+                      Consumer {
+                        (context as Activity).window?.setBackgroundDrawable(ColorDrawable(it))
+                      },
+                      onErrorLogAndRethrow()
+                  )
+        }
       }
     }
 
