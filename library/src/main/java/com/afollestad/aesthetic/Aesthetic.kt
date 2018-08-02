@@ -108,12 +108,10 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
     view: View,
     colorObservable: Observable<Int>
   ) {
-    if (isResumed) {
-      colorObservable
-          .distinctToMainThread()
-          .subscribeWith(ViewBackgroundSubscriber(view))
-          .unsubscribeOnDetach(view)
-    }
+    colorObservable
+        .distinctToMainThread()
+        .subscribeWith(ViewBackgroundSubscriber(view))
+        .unsubscribeOnDetach(view)
   }
 
   @CheckResult
@@ -704,12 +702,7 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
     }
 
     @CheckResult
-    fun get(): Aesthetic {
-      if (instance == null) {
-        throw IllegalStateException("Not attached!")
-      }
-      return instance!!
-    }
+    fun get() = instance ?: throw IllegalStateException("Not attached")
 
     inline fun config(func: Aesthetic.() -> Unit) {
       val instance = get()
@@ -719,10 +712,7 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
 
     /** Should be called in onPause() of each Activity.  */
     fun pause(activity: AppCompatActivity) {
-      if (instance == null) {
-        return
-      }
-      with(instance!!) {
+      with(instance ?: return) {
         isResumed = false
         subs?.clear()
         if (activity.isFinishing) {
@@ -736,10 +726,10 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
 
     /** Should be called in onResume() of each Activity.  */
     fun resume(activity: AppCompatActivity) {
-      if (instance == null) {
-        return
-      }
-      with(instance!!) {
+      with(instance ?: throw IllegalStateException("Not attached")) {
+        if (isResumed)
+          throw IllegalStateException("Already resumed!")
+
         ctxt = activity
         initPrefs()
         isResumed = true
@@ -799,7 +789,7 @@ class Aesthetic private constructor(private var ctxt: AppCompatActivity?) {
     /** Returns true if this field has never been accessed before.  */
     val isFirstTime: Boolean
       get() {
-        with(instance!!) {
+        with(instance ?: throw IllegalStateException("Not attached")) {
           val firstTime = prefs!!.getBoolean(KEY_FIRST_TIME, true)
           editor!!.putBoolean(KEY_FIRST_TIME, false)
               .apply()
