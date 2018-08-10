@@ -1,6 +1,6 @@
 - [ ] I have verified there are no duplicate active or recent bugs, questions, or requests
 - [ ] I have verified that I am using the latest version of Aesthetic (see the README)
-- [ ] I have given my issue description title
+- [ ] I have given my issue a description and title
 - [ ] I have read over the documentation (before asking questions on how to do something).
 
 ###### Include the following:
