@@ -1,8 +1,9 @@
+apply from: '../dependencies.gradle'
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
-apply from: '../dependencies.gradle'
+apply plugin: "com.github.ben-manes.versions"
 
 android {
   compileSdkVersion versions.compileSdk
@@ -21,21 +22,10 @@ android {
     versionName versions.publishVersion
     vectorDrawables.useSupportLibrary = true
   }
-
-  buildTypes {
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-    }
-  }
 }
 
 dependencies {
-  repositories {
-    google()
-  }
-
-  implementation project(path: ':library')
+  implementation project(':library')
 
   implementation 'com.android.support:appcompat-v7:' + versions.supportLib
   implementation 'com.android.support:design:' + versions.supportLib
@@ -50,6 +40,4 @@ dependencies {
   releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:' + versions.leakCanary
 }
 
-repositories {
-  mavenCentral()
-}
+apply from: '../spotless.gradle'
