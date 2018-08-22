@@ -2,7 +2,6 @@ apply from: '../dependencies.gradle'
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'com.novoda.bintray-release'
 apply plugin: "com.github.ben-manes.versions"
 
 apply from: '../bintrayconfig.gradle'
