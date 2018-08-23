@@ -1,3 +1,8 @@
+/*
+ * Licensed under Apache-2.0
+ *
+ * Designed and developed by Aidan Follestad (@afollestad)
+ */
 package com.afollestad.aesthetic
 
 import android.annotation.SuppressLint
@@ -30,10 +35,10 @@ internal class InflationInterceptor(
     }
 
     private fun isBlackListedForApply(name: String): Boolean {
-      return ("android.support.design.internal.NavigationMenuItemView" == name
-          || "ViewStub" == name
-          || "fragment" == name
-          || "include" == name)
+      return ("android.support.design.internal.NavigationMenuItemView" == name ||
+          "ViewStub" == name ||
+          "fragment" == name ||
+          "include" == name)
     }
 
     private fun isBorderlessButton(
@@ -105,9 +110,9 @@ internal class InflationInterceptor(
         }
       "Button", "android.support.v7.widget.AppCompatButton" ->
         view =
-            if (viewId == android.R.id.button1
-                || viewId == android.R.id.button2
-                || viewId == android.R.id.button3
+            if (viewId == android.R.id.button1 ||
+                viewId == android.R.id.button2 ||
+                viewId == android.R.id.button3
             ) {
               AestheticDialogButton(context, attrs)
             } else if (viewId == R.id.snackbar_action) {

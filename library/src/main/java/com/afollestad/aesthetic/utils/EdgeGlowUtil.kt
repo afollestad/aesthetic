@@ -1,3 +1,8 @@
+/*
+ * Licensed under Apache-2.0
+ *
+ * Designed and developed by Aidan Follestad (@afollestad)
+ */
 package com.afollestad.aesthetic.utils
 
 import android.annotation.TargetApi
@@ -35,9 +40,9 @@ internal object EdgeGlowUtil {
   private var VIEW_PAGER_FIELD_EDGE_GLOW_RIGHT: Field? = null
 
   private fun invalidateEdgeEffectFields() {
-    if (EDGE_GLOW_FIELD_EDGE != null
-        && EDGE_GLOW_FIELD_GLOW != null
-        && EDGE_EFFECT_COMPAT_FIELD_EDGE_EFFECT != null
+    if (EDGE_GLOW_FIELD_EDGE != null &&
+        EDGE_GLOW_FIELD_GLOW != null &&
+        EDGE_EFFECT_COMPAT_FIELD_EDGE_EFFECT != null
     ) {
       EDGE_GLOW_FIELD_EDGE!!.isAccessible = true
       EDGE_GLOW_FIELD_GLOW!!.isAccessible = true
@@ -140,10 +145,10 @@ internal object EdgeGlowUtil {
   }
 
   private fun invalidateRecyclerViewFields() {
-    if (RECYCLER_VIEW_FIELD_EDGE_GLOW_TOP != null
-        && RECYCLER_VIEW_FIELD_EDGE_GLOW_LEFT != null
-        && RECYCLER_VIEW_FIELD_EDGE_GLOW_RIGHT != null
-        && RECYCLER_VIEW_FIELD_EDGE_GLOW_BOTTOM != null
+    if (RECYCLER_VIEW_FIELD_EDGE_GLOW_TOP != null &&
+        RECYCLER_VIEW_FIELD_EDGE_GLOW_LEFT != null &&
+        RECYCLER_VIEW_FIELD_EDGE_GLOW_RIGHT != null &&
+        RECYCLER_VIEW_FIELD_EDGE_GLOW_BOTTOM != null
     ) {
       RECYCLER_VIEW_FIELD_EDGE_GLOW_TOP!!.isAccessible = true
       RECYCLER_VIEW_FIELD_EDGE_GLOW_LEFT!!.isAccessible = true
@@ -207,7 +212,6 @@ internal object EdgeGlowUtil {
     } catch (ex: Exception) {
       if (BuildConfig.DEBUG) ex.printStackTrace()
     }
-
   }
 
   fun setEdgeGlowColor(scrollView: NestedScrollView, @ColorInt color: Int) {
@@ -220,7 +224,6 @@ internal object EdgeGlowUtil {
     } catch (ex: Exception) {
       if (BuildConfig.DEBUG) ex.printStackTrace()
     }
-
   }
 
   fun setEdgeGlowColor(listView: AbsListView, @ColorInt color: Int) {
@@ -233,7 +236,6 @@ internal object EdgeGlowUtil {
     } catch (ex: Exception) {
       if (BuildConfig.DEBUG) ex.printStackTrace()
     }
-
   }
 
   fun setEdgeGlowColor(
@@ -268,7 +270,6 @@ internal object EdgeGlowUtil {
     } catch (ex: Exception) {
       if (BuildConfig.DEBUG) ex.printStackTrace()
     }
-
   }
 
   fun setEdgeGlowColor(pager: ViewPager, @ColorInt color: Int) {
@@ -281,7 +282,6 @@ internal object EdgeGlowUtil {
     } catch (ex: Exception) {
       if (BuildConfig.DEBUG) ex.printStackTrace()
     }
-
   }
 
   // Utilities
@@ -299,7 +299,6 @@ internal object EdgeGlowUtil {
         e.printStackTrace()
         return
       }
-
     }
     if (edgeEffect == null) {
       return
@@ -318,7 +317,6 @@ internal object EdgeGlowUtil {
       } catch (ex: Exception) {
         ex.printStackTrace()
       }
-
     } else {
       // EdgeEffect
       (edgeEffect as EdgeEffect).color = color

@@ -1,3 +1,8 @@
+/*
+ * Licensed under Apache-2.0
+ *
+ * Designed and developed by Aidan Follestad (@afollestad)
+ */
 package com.afollestad.aesthetic.utils
 
 import android.content.res.ColorStateList
@@ -105,7 +110,6 @@ internal fun SearchView.setColors(tintColors: ActiveInactiveColors) {
   } catch (e: Exception) {
     e.printStackTrace()
   }
-
 }
 
 @Throws(Exception::class)
@@ -140,7 +144,6 @@ internal fun TextInputLayout.setHintColor(@ColorInt hintColor: Int) {
         "Failed to set TextInputLayout hint (collapsed) color: " + t.localizedMessage, t
     )
   }
-
 }
 
 internal fun TextInputLayout.setAccentColor(@ColorInt accentColor: Int) {

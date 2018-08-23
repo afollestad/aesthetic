@@ -1,3 +1,8 @@
+/*
+ * Licensed under Apache-2.0
+ *
+ * Designed and developed by Aidan Follestad (@afollestad)
+ */
 package com.afollestad.aestheticsample
 
 import android.app.Application
@@ -12,6 +17,6 @@ class App : Application() {
       // You should not init your app in this process.
       return
     }
-    LeakCanary.install(this);
+    LeakCanary.install(this)
   }
 }

@@ -1,3 +1,8 @@
+/*
+ * Licensed under Apache-2.0
+ *
+ * Designed and developed by Aidan Follestad (@afollestad)
+ */
 package com.afollestad.aesthetic.utils
 
 import android.annotation.SuppressLint
@@ -46,7 +51,8 @@ internal object TintHelper {
   }
 
   private fun getDisabledColorStateList(
-    @ColorInt normal: Int, @ColorInt disabled: Int
+    @ColorInt normal: Int,
+    @ColorInt disabled: Int
   ): ColorStateList {
     return ColorStateList(
         arrayOf(
@@ -168,9 +174,9 @@ internal object TintHelper {
         else -> background = true
       }
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-          && !background
-          && view.background is RippleDrawable
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+          !background &&
+          view.background is RippleDrawable
       ) {
         // Ripples for the above views (e.g. when you tap and hold a switch or checkbox)
         val rd = view.background as RippleDrawable
@@ -335,7 +341,8 @@ internal object TintHelper {
   }
 
   fun setTint(
-    box: CheckBox, @ColorInt color: Int,
+    box: CheckBox,
+    @ColorInt color: Int,
     useDarker: Boolean
   ) {
     val sl = ColorStateList(
