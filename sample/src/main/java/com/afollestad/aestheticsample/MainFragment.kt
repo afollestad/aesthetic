@@ -54,7 +54,7 @@ class MainFragment : Fragment() {
 
     // Further view setup
     val spinnerAdapter = ArrayAdapter(
-        context,
+        context!!,
         R.layout.list_item_spinner,
         arrayOf(
             "Spinner One", "Spinner Two", "Spinner Three", "Spinner Four", "Spinner Five",

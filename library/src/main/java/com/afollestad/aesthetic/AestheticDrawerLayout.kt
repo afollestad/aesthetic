@@ -60,6 +60,7 @@ class AestheticDrawerLayout(
     invalidateColor(lastState)
   }
 
+  @Suppress("OverridingDeprecatedMember", "DEPRECATION")
   override fun setDrawerListener(listener: DrawerLayout.DrawerListener) {
     super.setDrawerListener(listener)
     if (listener is ActionBarDrawerToggle) {
