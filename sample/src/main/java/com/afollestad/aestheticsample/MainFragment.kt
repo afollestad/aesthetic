@@ -50,15 +50,15 @@ class MainFragment : Fragment() {
 
     // Update the dark theme switch to the last saved isDark value.
     isDarkSubscription = Aesthetic.get()
-        .isDark.subscribe { isDark -> view.switch_theme.isChecked = isDark!! }
+        .isDark.subscribe { view.switch_theme.isChecked = it }
 
     // Further view setup
     val spinnerAdapter = ArrayAdapter(
         context!!,
         R.layout.list_item_spinner,
         arrayOf(
-            "Spinner One", "Spinner Two", "Spinner Three", "Spinner Four", "Spinner Five",
-            "Spinner Six"
+            "Spinner One", "Spinner Two", "Spinner Three",
+            "Spinner Four", "Spinner Five", "Spinner Six"
         )
     )
     spinnerAdapter.setDropDownViewResource(R.layout.list_item_spinner_dropdown)
@@ -86,8 +86,8 @@ class MainFragment : Fragment() {
       AlertDialog.Builder(activity!!)
           .setTitle(R.string.hello_world)
           .setMessage(R.string.lorem_ipsum)
-          .setPositiveButton(android.R.string.ok, { _, _ -> })
-          .setNegativeButton(android.R.string.cancel, { _, _ -> })
+          .setPositiveButton(android.R.string.ok) { _, _ -> }
+          .setNegativeButton(android.R.string.cancel) { _, _ -> }
           .show()
     }
 
@@ -95,7 +95,7 @@ class MainFragment : Fragment() {
       snackbar?.dismiss()
       snackbar = Snackbar.make(view, R.string.hello_world, Snackbar.LENGTH_LONG)
       with(snackbar!!) {
-        setAction(android.R.string.cancel) {}
+        setAction(android.R.string.cancel) { _ -> }
         show()
       }
     }
@@ -115,54 +115,54 @@ class MainFragment : Fragment() {
 
   private fun onClickButton(view: View) {
     when (view.id) {
-      R.id.btn_black -> Aesthetic.get()
-          .colorPrimaryRes(R.color.text_color_primary)
-          .colorAccentRes(R.color.md_purple)
-          .colorStatusBarAuto()
-          .colorNavigationBarAuto()
-          .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
-          .bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
-          .apply()
-      R.id.btn_red -> Aesthetic.get()
-          .colorPrimaryRes(R.color.md_red)
-          .colorAccentRes(R.color.md_amber)
-          .colorStatusBarAuto()
-          .colorNavigationBarAuto()
-          .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
-          .bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
-          .apply()
-      R.id.btn_purple -> Aesthetic.get()
-          .colorPrimaryRes(R.color.md_purple)
-          .colorAccentRes(R.color.md_lime)
-          .colorStatusBarAuto()
-          .colorNavigationBarAuto()
-          .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
-          .bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
-          .apply()
-      R.id.btn_blue -> Aesthetic.get()
-          .colorPrimaryRes(R.color.md_blue)
-          .colorAccentRes(R.color.md_pink)
-          .colorStatusBarAuto()
-          .colorNavigationBarAuto()
-          .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
-          .bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
-          .apply()
-      R.id.btn_green -> Aesthetic.get()
-          .colorPrimaryRes(R.color.md_green)
-          .colorAccentRes(R.color.md_blue_grey)
-          .colorStatusBarAuto()
-          .colorNavigationBarAuto()
-          .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
-          .bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
-          .apply()
-      R.id.btn_white -> Aesthetic.get()
-          .colorPrimaryRes(R.color.md_white)
-          .colorAccentRes(R.color.md_blue)
-          .colorStatusBarAuto()
-          .colorNavigationBarAuto()
-          .bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
-          .bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
-          .apply()
+      R.id.btn_black -> Aesthetic.config {
+        colorPrimaryRes(R.color.text_color_primary)
+        colorAccentRes(R.color.md_purple)
+        colorStatusBarAuto()
+        colorNavigationBarAuto()
+        bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
+        bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+      }
+      R.id.btn_red -> Aesthetic.config {
+        colorPrimaryRes(R.color.md_red)
+        colorAccentRes(R.color.md_amber)
+        colorStatusBarAuto()
+        colorNavigationBarAuto()
+        bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
+        bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+      }
+      R.id.btn_purple -> Aesthetic.config {
+        colorPrimaryRes(R.color.md_purple)
+        colorAccentRes(R.color.md_lime)
+        colorStatusBarAuto()
+        colorNavigationBarAuto()
+        bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
+        bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+      }
+      R.id.btn_blue -> Aesthetic.config {
+        colorPrimaryRes(R.color.md_blue)
+        colorAccentRes(R.color.md_pink)
+        colorStatusBarAuto()
+        colorNavigationBarAuto()
+        bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
+        bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+      }
+      R.id.btn_green -> Aesthetic.config {
+        colorPrimaryRes(R.color.md_green)
+        colorAccentRes(R.color.md_blue_grey)
+        colorStatusBarAuto()
+        colorNavigationBarAuto()
+        bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
+        bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+      }
+      R.id.btn_white -> Aesthetic.config {
+        colorPrimaryRes(R.color.md_white)
+        colorAccentRes(R.color.md_blue)
+        colorStatusBarAuto()
+        colorNavigationBarAuto()
+        bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
+        bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
+      }
     }
   }
 }

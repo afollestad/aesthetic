@@ -42,10 +42,10 @@ internal class InflationInterceptor(
     }
 
     private fun isBorderlessButton(
-      context: Context,
+      context: Context?,
       attrs: AttributeSet?
     ): Boolean {
-      if (attrs == null) {
+      if (context == null || attrs == null) {
         return false
       }
       val backgroundRes = context.resId(attrs, android.R.attr.background)
@@ -202,7 +202,7 @@ internal class InflationInterceptor(
     }
 
     if (viewBackgroundRes != 0) {
-      val obs = getObservableForResId(view.context, viewBackgroundRes, null)
+      val obs = getObservableForResId(context, viewBackgroundRes, null)
       if (obs != null) {
         Aesthetic.get()
             .addBackgroundSubscriber(view, obs)
