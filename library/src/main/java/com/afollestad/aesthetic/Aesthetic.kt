@@ -67,14 +67,18 @@ import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.rxkprefs.RxkPrefs
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
+import io.reactivex.subjects.BehaviorSubject
 import java.lang.String.format
 
 /** @author Aidan Follestad (afollestad) */
 class Aesthetic private constructor(private var ctxt: Context?) {
 
   private val lastActivityThemes = mutableArrayMapOf<String, Int>(2)
+  private val isDarkSubject = BehaviorSubject.create<Boolean>()
+  private var isDarkSubscription: Disposable? = null
 
   private var subs: CompositeDisposable? = null
   private var prefs: SharedPreferences? = null
@@ -91,9 +95,15 @@ class Aesthetic private constructor(private var ctxt: Context?) {
     rxkPrefs = RxkPrefs(context, PREFS_NAME)
     prefs = rxkPrefs!!.getSharedPrefs()
     editor = prefs!!.edit()
+
+    isDarkSubscription?.dispose()
+    isDarkSubscription = rxkPrefs!!.boolean(KEY_IS_DARK)
+        .asObservable()
+        .subscribe(isDarkSubject::onNext)
   }
 
   private fun deInitPrefs() {
+    isDarkSubscription?.dispose()
     prefs = null
     editor = null
     rxkPrefs = null
@@ -105,7 +115,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   val isDark: Observable<Boolean>
     @CheckResult
-    get() = rxkPrefs!!.boolean(KEY_IS_DARK).asObservable()
+    get() = isDarkSubject
 
   internal fun addBackgroundSubscriber(
     view: View,
