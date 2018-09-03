@@ -3,7 +3,7 @@
  *
  * Designed and developed by Aidan Follestad (@afollestad)
  */
-package com.afollestad.aesthetic
+package com.afollestad.aesthetic.internal
 
 internal object PrefNames {
   const val PREFS_NAME = "[aesthetic-prefs]"
