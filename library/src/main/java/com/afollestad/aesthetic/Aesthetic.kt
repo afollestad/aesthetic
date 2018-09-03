@@ -48,6 +48,7 @@ import com.afollestad.aesthetic.PrefNames.KEY_TAB_LAYOUT_BG_MODE
 import com.afollestad.aesthetic.PrefNames.KEY_TAB_LAYOUT_INDICATOR_MODE
 import com.afollestad.aesthetic.PrefNames.KEY_WINDOW_BG_COLOR
 import com.afollestad.aesthetic.PrefNames.PREFS_NAME
+import com.afollestad.aesthetic.actions.ViewBackgroundSubscriber
 import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.colorAttr
 import com.afollestad.aesthetic.utils.darkenColor

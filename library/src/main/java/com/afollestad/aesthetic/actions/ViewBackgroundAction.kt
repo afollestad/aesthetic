@@ -3,14 +3,14 @@
  *
  * Designed and developed by Aidan Follestad (@afollestad)
  */
-package com.afollestad.aesthetic
+package com.afollestad.aesthetic.actions
 
-import android.widget.TextView
+import android.view.View
 import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
-internal class ViewTextColorAction constructor(val view: TextView) : Consumer<Int> {
+internal class ViewBackgroundAction constructor(val view: View) : Consumer<Int> {
   override fun accept(color: Int) {
-    view.setTextColor(color)
+    view.setBackgroundColor(color)
   }
 }

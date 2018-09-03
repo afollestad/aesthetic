@@ -3,7 +3,7 @@
  *
  * Designed and developed by Aidan Follestad (@afollestad)
  */
-package com.afollestad.aesthetic
+package com.afollestad.aesthetic.actions
 
 import android.widget.TextView
 import io.reactivex.functions.Consumer

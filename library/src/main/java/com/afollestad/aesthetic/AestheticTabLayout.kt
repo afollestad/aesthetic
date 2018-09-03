@@ -13,6 +13,7 @@ import android.support.design.widget.TabLayout
 import android.util.AttributeSet
 import com.afollestad.aesthetic.TabLayoutBgMode.ACCENT
 import com.afollestad.aesthetic.TabLayoutBgMode.PRIMARY
+import com.afollestad.aesthetic.actions.ViewBackgroundAction
 import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
@@ -82,7 +83,9 @@ class AestheticTabLayout(
                       .colorPrimary()
                       .distinctToMainThread()
                       .subscribe(
-                          ViewBackgroundAction(this@AestheticTabLayout),
+                          ViewBackgroundAction(
+                              this@AestheticTabLayout
+                          ),
                           onErrorLogAndRethrow()
                       )
                 ACCENT ->
@@ -90,7 +93,9 @@ class AestheticTabLayout(
                       .colorAccent()
                       .distinctToMainThread()
                       .subscribe(
-                          ViewBackgroundAction(this@AestheticTabLayout),
+                          ViewBackgroundAction(
+                              this@AestheticTabLayout
+                          ),
                           onErrorLogAndRethrow()
                       )
                 else -> throw IllegalStateException("Unimplemented bg mode: $it")
