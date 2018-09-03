@@ -10,12 +10,15 @@ import android.support.v7.widget.AppCompatRadioButton
 import android.util.AttributeSet
 import com.afollestad.aesthetic.actions.ViewTextColorAction
 import com.afollestad.aesthetic.utils.TintHelper
+import com.afollestad.aesthetic.utils.TintHelper.setTint
 import com.afollestad.aesthetic.utils.ViewUtil
+import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
 import io.reactivex.Observable
+import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 
@@ -34,24 +37,25 @@ class AestheticRadioButton(
     }
   }
 
-  private fun invalidateColors(state: ColorIsDarkState) {
-    TintHelper.setTint(this, state.color, state.isDark)
-  }
+  private fun invalidateColors(state: ColorIsDarkState) =
+    setTint(this, state.color, state.isDark)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     subscriptions = CompositeDisposable()
     subscriptions!! +=
-        Observable.combineLatest(
-            ViewUtil.getObservableForResId(
-                context, backgroundResId, Aesthetic.get().colorAccent()
+        combineLatest(
+            getObservableForResId(
+                context,
+                backgroundResId,
+                Aesthetic.get().colorAccent()
             ),
             Aesthetic.get().isDark,
             ColorIsDarkState.creator()
         )
             .distinctToMainThread()
             .subscribe(
-                Consumer<ColorIsDarkState> { invalidateColors(it) },
+                Consumer { invalidateColors(it) },
                 onErrorLogAndRethrow()
             )
     subscriptions!! +=

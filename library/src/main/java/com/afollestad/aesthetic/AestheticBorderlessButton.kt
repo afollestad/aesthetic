@@ -45,7 +45,7 @@ class AestheticBorderlessButton(
         .colorAccent()
         .distinctToMainThread()
         .subscribe(
-            Consumer { this.invalidateColors(it) },
+            Consumer { invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }

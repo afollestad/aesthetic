@@ -10,6 +10,7 @@ import android.content.Context
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import com.afollestad.aesthetic.utils.ViewUtil
+import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
@@ -34,7 +35,7 @@ class AestheticCardView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    val obs = ViewUtil.getObservableForResId(
+    val obs = getObservableForResId(
         context, backgroundResId, Aesthetic.get().colorCardViewBackground()
     )!!
     bgSubscription = obs

@@ -8,7 +8,7 @@ package com.afollestad.aesthetic
 import android.content.Context
 import android.support.design.widget.TextInputLayout
 import android.util.AttributeSet
-import com.afollestad.aesthetic.utils.ViewUtil
+import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
@@ -34,13 +34,12 @@ class AestheticTextInputLayout(
     }
   }
 
-  private fun invalidateColors(color: Int) {
-    setAccentColor(color)
-  }
+  private fun invalidateColors(color: Int) = setAccentColor(color)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     subs = CompositeDisposable()
+
     subs!! +=
         Aesthetic.get()
             .textColorSecondary()
@@ -50,7 +49,11 @@ class AestheticTextInputLayout(
                 onErrorLogAndRethrow()
             )
     subs!! +=
-        ViewUtil.getObservableForResId(context, backgroundResId, Aesthetic.get().colorAccent())!!
+        getObservableForResId(
+            context,
+            backgroundResId,
+            Aesthetic.get().colorAccent()
+        )!!
             .distinctToMainThread()
             .subscribe(
                 Consumer { this.invalidateColors(it) },

@@ -11,12 +11,15 @@ import android.graphics.Color
 import android.support.v7.widget.AppCompatButton
 import android.util.AttributeSet
 import com.afollestad.aesthetic.utils.TintHelper
+import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
 import com.afollestad.aesthetic.utils.ViewUtil
+import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
 import io.reactivex.Observable
+import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 
@@ -36,7 +39,7 @@ class AestheticButton(
   }
 
   private fun invalidateColors(state: ColorIsDarkState) {
-    TintHelper.setTintAuto(this, state.color, true, state.isDark)
+    setTintAuto(this, state.color, true, state.isDark)
     val textColorSl = ColorStateList(
         arrayOf(
             intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)
@@ -55,8 +58,8 @@ class AestheticButton(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscription = Observable.combineLatest(
-        ViewUtil.getObservableForResId(
+    subscription = combineLatest(
+        getObservableForResId(
             context, backgroundResId, Aesthetic.get().colorAccent()
         )!!,
         Aesthetic.get().isDark,
@@ -64,7 +67,7 @@ class AestheticButton(
     )
         .distinctToMainThread()
         .subscribe(
-            Consumer { this.invalidateColors(it) },
+            Consumer { invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }

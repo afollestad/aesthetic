@@ -13,11 +13,15 @@ import android.util.AttributeSet
 import com.afollestad.aesthetic.actions.ViewHintTextColorAction
 import com.afollestad.aesthetic.actions.ViewTextColorAction
 import com.afollestad.aesthetic.utils.TintHelper
+import com.afollestad.aesthetic.utils.TintHelper.setCursorTint
+import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
 import com.afollestad.aesthetic.utils.ViewUtil
+import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import io.reactivex.Observable
+import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 
@@ -47,29 +51,33 @@ class AestheticEditText(
   }
 
   private fun invalidateColors(state: ColorIsDarkState) {
-    TintHelper.setTintAuto(this, state.color, true, state.isDark)
-    TintHelper.setCursorTint(this, state.color)
+    setTintAuto(this, state.color, true, state.isDark)
+    setCursorTint(this, state.color)
   }
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     subscriptions = CompositeDisposable()
     subscriptions!! +=
-        Observable.combineLatest(
-            ViewUtil.getObservableForResId(
-                context, backgroundResId, Aesthetic.get().colorAccent()
+        combineLatest(
+            getObservableForResId(
+                context,
+                backgroundResId,
+                Aesthetic.get().colorAccent()
             )!!,
             Aesthetic.get().isDark,
             ColorIsDarkState.creator()
         )
             .distinctToMainThread()
             .subscribe(
-                Consumer { this.invalidateColors(it) },
+                Consumer { invalidateColors(it) },
                 onErrorLogAndRethrow()
             )
     subscriptions!! +=
-        ViewUtil.getObservableForResId(
-            context, textColorResId, Aesthetic.get().textColorPrimary()
+        getObservableForResId(
+            context,
+            textColorResId,
+            Aesthetic.get().textColorPrimary()
         )!!
             .distinctToMainThread()
             .subscribe(
@@ -77,8 +85,10 @@ class AestheticEditText(
                 onErrorLogAndRethrow()
             )
     subscriptions!! +=
-        ViewUtil.getObservableForResId(
-            context, textColorHintResId, Aesthetic.get().textColorSecondary()
+        getObservableForResId(
+            context,
+            textColorHintResId,
+            Aesthetic.get().textColorSecondary()
         )!!
             .distinctToMainThread()
             .subscribe(

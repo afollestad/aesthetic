@@ -27,7 +27,10 @@ internal class AestheticSnackBarTextView(
     subscription = Aesthetic.get()
         .snackbarTextColor()
         .distinctToMainThread()
-        .subscribe(ViewTextColorAction(this), onErrorLogAndRethrow())
+        .subscribe(
+            ViewTextColorAction(this),
+            onErrorLogAndRethrow()
+        )
   }
 
   override fun onDetachedFromWindow() {

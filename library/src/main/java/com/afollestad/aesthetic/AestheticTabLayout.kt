@@ -19,7 +19,9 @@ import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.one
+import com.afollestad.aesthetic.utils.plusAssign
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 
@@ -29,8 +31,7 @@ class AestheticTabLayout(
   attrs: AttributeSet? = null
 ) : TabLayout(context, attrs) {
 
-  private var indicatorModeSubscription: Disposable? = null
-  private var bgModeSubscription: Disposable? = null
+  private var topLevelSubs: CompositeDisposable? = null
   private var indicatorColorSubscription: Disposable? = null
   private var bgColorSubscription: Disposable? = null
 
@@ -70,8 +71,9 @@ class AestheticTabLayout(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
+    topLevelSubs = CompositeDisposable()
 
-    bgModeSubscription = Aesthetic.get()
+    topLevelSubs!! += Aesthetic.get()
         .tabLayoutBackgroundMode()
         .distinctToMainThread()
         .subscribe(
@@ -104,7 +106,7 @@ class AestheticTabLayout(
             onErrorLogAndRethrow()
         )
 
-    indicatorModeSubscription = Aesthetic.get()
+    topLevelSubs!! += Aesthetic.get()
         .tabLayoutIndicatorMode()
         .distinctToMainThread()
         .subscribe(
@@ -116,7 +118,7 @@ class AestheticTabLayout(
                       .colorPrimary()
                       .distinctToMainThread()
                       .subscribe(
-                          Consumer { this.setSelectedTabIndicatorColor(it) },
+                          Consumer { color -> setSelectedTabIndicatorColor(color) },
                           onErrorLogAndRethrow()
                       )
                 ACCENT ->
@@ -124,7 +126,7 @@ class AestheticTabLayout(
                       .colorAccent()
                       .distinctToMainThread()
                       .subscribe(
-                          Consumer { this.setSelectedTabIndicatorColor(it) },
+                          Consumer { color -> setSelectedTabIndicatorColor(color) },
                           onErrorLogAndRethrow()
                       )
                 else -> throw IllegalStateException("Unimplemented bg mode: $it")
@@ -135,8 +137,7 @@ class AestheticTabLayout(
   }
 
   override fun onDetachedFromWindow() {
-    bgModeSubscription?.dispose()
-    indicatorModeSubscription?.dispose()
+    topLevelSubs?.dispose()
     bgColorSubscription?.dispose()
     indicatorColorSubscription?.dispose()
     super.onDetachedFromWindow()

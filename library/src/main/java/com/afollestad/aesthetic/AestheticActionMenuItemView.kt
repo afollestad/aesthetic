@@ -53,6 +53,7 @@ internal class AestheticActionMenuItemView(
         )
   }
 
+  @Suppress("MemberVisibilityCanBePrivate")
   fun setIcon(
     icon: Drawable,
     colors: ColorStateList

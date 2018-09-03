@@ -8,12 +8,12 @@ package com.afollestad.aesthetic
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.Switch
-import com.afollestad.aesthetic.utils.TintHelper
-import com.afollestad.aesthetic.utils.ViewUtil
+import com.afollestad.aesthetic.utils.TintHelper.setTint
+import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
-import io.reactivex.Observable
+import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 
@@ -32,15 +32,14 @@ class AestheticSwitch(
     }
   }
 
-  private fun invalidateColors(state: ColorIsDarkState) {
-    TintHelper.setTint(this, state.color, state.isDark)
-  }
+  private fun invalidateColors(state: ColorIsDarkState) =
+    setTint(this, state.color, state.isDark)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    subscription = Observable.combineLatest(
-        ViewUtil.getObservableForResId(
+    subscription = combineLatest(
+        getObservableForResId(
             context, backgroundResId, Aesthetic.get().colorAccent()
         )!!,
         Aesthetic.get().isDark,
@@ -48,7 +47,7 @@ class AestheticSwitch(
     )
         .distinctToMainThread()
         .subscribe(
-            Consumer { this.invalidateColors(it) },
+            Consumer { invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }

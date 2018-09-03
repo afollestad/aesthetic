@@ -31,9 +31,7 @@ class AestheticDrawerLayout(
       return
     }
     this.lastState = colors
-    if (this.arrowDrawable != null) {
-      this.arrowDrawable!!.color = lastState!!.activeColor
-    }
+    this.arrowDrawable?.color = lastState!!.activeColor
   }
 
   override fun onAttachedToWindow() {
@@ -42,13 +40,13 @@ class AestheticDrawerLayout(
         .colorIconTitle(null)
         .distinctToMainThread()
         .subscribe(
-            Consumer { this.invalidateColor(it) },
+            Consumer { invalidateColor(it) },
             onErrorLogAndRethrow()
         )
   }
 
   override fun onDetachedFromWindow() {
-    subscription!!.dispose()
+    subscription?.dispose()
     super.onDetachedFromWindow()
   }
 

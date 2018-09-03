@@ -10,13 +10,14 @@ import android.support.design.widget.TextInputEditText
 import android.util.AttributeSet
 import com.afollestad.aesthetic.actions.ViewHintTextColorAction
 import com.afollestad.aesthetic.actions.ViewTextColorAction
-import com.afollestad.aesthetic.utils.TintHelper
-import com.afollestad.aesthetic.utils.ViewUtil
+import com.afollestad.aesthetic.utils.TintHelper.setCursorTint
+import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
+import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
-import io.reactivex.Observable
+import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 
@@ -38,13 +39,14 @@ class AestheticTextInputEditText(
 
   private fun invalidateColors(state: ColorIsDarkState) {
     this.lastState = state
-    TintHelper.setTintAuto(this, state.color, true, state.isDark)
-    TintHelper.setCursorTint(this, state.color)
+    setTintAuto(this, state.color, true, state.isDark)
+    setCursorTint(this, state.color)
   }
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     subs = CompositeDisposable()
+
     subs!! +=
         Aesthetic.get()
             .textColorPrimary()
@@ -62,9 +64,11 @@ class AestheticTextInputEditText(
                 onErrorLogAndRethrow()
             )
     subs!! +=
-        Observable.combineLatest(
-            ViewUtil.getObservableForResId(
-                context, backgroundResId, Aesthetic.get().colorAccent()
+        combineLatest(
+            getObservableForResId(
+                context,
+                backgroundResId,
+                Aesthetic.get().colorAccent()
             )!!,
             Aesthetic.get().isDark,
             ColorIsDarkState.creator()

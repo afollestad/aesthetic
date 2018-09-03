@@ -9,6 +9,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.ScrollView
 import com.afollestad.aesthetic.utils.EdgeGlowUtil
+import com.afollestad.aesthetic.utils.EdgeGlowUtil.setEdgeGlowColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import io.reactivex.disposables.Disposable
@@ -22,9 +23,8 @@ class AestheticScrollView(
 
   private var subscription: Disposable? = null
 
-  private fun invalidateColors(color: Int) {
-    EdgeGlowUtil.setEdgeGlowColor(this, color)
-  }
+  private fun invalidateColors(color: Int) =
+    setEdgeGlowColor(this, color)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -32,7 +32,7 @@ class AestheticScrollView(
         .colorAccent()
         .distinctToMainThread()
         .subscribe(
-            Consumer { this.invalidateColors(it) },
+            Consumer { invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }

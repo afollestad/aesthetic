@@ -10,13 +10,16 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.support.design.widget.FloatingActionButton
 import android.util.AttributeSet
-import com.afollestad.aesthetic.utils.TintHelper
+import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
+import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
 import com.afollestad.aesthetic.utils.ViewUtil
+import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
 import io.reactivex.Observable
+import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 
@@ -38,29 +41,29 @@ class AestheticFab(
   }
 
   private fun invalidateColors(state: ColorIsDarkState) {
-    TintHelper.setTintAuto(this, state.color, true, state.isDark)
+    setTintAuto(this, state.color, true, state.isDark)
     iconColor = if (state.color.isColorLight()) Color.BLACK else Color.WHITE
     setImageDrawable(drawable)
   }
 
   override fun setImageDrawable(drawable: Drawable?) {
-    super.setImageDrawable(
-        TintHelper.createTintedDrawable(drawable, iconColor)
-    )
+    super.setImageDrawable(createTintedDrawable(drawable, iconColor))
   }
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscription = Observable.combineLatest(
-        ViewUtil.getObservableForResId(
-            context, backgroundResId, Aesthetic.get().colorAccent()
+    subscription = combineLatest(
+        getObservableForResId(
+            context,
+            backgroundResId,
+            Aesthetic.get().colorAccent()
         ),
         Aesthetic.get().isDark,
         ColorIsDarkState.creator()
     )
         .distinctToMainThread()
         .subscribe(
-            Consumer { this.invalidateColors(it) },
+            Consumer { invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }

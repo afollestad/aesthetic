@@ -21,7 +21,7 @@ import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
 import android.view.Menu
 import android.view.View
-import com.afollestad.aesthetic.utils.TintHelper
+import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.blendWith
 import com.afollestad.aesthetic.utils.distinctToMainThread
@@ -29,10 +29,13 @@ import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.setOverflowButtonColor
 import com.afollestad.aesthetic.utils.tintMenu
-import io.reactivex.Observable
+import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
+
+private typealias ToolbarIconTitleFunc =
+    BiFunction<Int, ActiveInactiveColors, Pair<Int, ActiveInactiveColors>>
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticCoordinatorLayout(
@@ -66,7 +69,7 @@ class AestheticCoordinatorLayout(
       field.isAccessible = true
       val collapseIcon = field.get(toolbar) as? Drawable
       if (collapseIcon != null) {
-        field.set(toolbar, TintHelper.createTintedDrawable(collapseIcon, colors.toEnabledSl()))
+        field.set(toolbar, createTintedDrawable(collapseIcon, colors.toEnabledSl()))
       }
     } catch (e: Exception) {
       e.printStackTrace()
@@ -123,14 +126,11 @@ class AestheticCoordinatorLayout(
     if (toolbar != null && colorView != null) {
       this.appBarLayout!!.addOnOffsetChangedListener(this)
       toolbarColorSubscription =
-          Observable.combineLatest<Int, ActiveInactiveColors, Pair<Int, ActiveInactiveColors>>(
+          combineLatest<Int, ActiveInactiveColors, Pair<Int, ActiveInactiveColors>>(
               toolbar!!.colorUpdated(),
               Aesthetic.get().colorIconTitle(toolbar!!.colorUpdated()),
-              BiFunction<Int, ActiveInactiveColors, Pair<Int, ActiveInactiveColors>> { a, b ->
-                Pair.create(
-                    a, b
-                )
-              })
+              ToolbarIconTitleFunc { a, b -> Pair.create(a, b) }
+          )
               .distinctToMainThread()
               .subscribe(
                   Consumer {
@@ -148,8 +148,10 @@ class AestheticCoordinatorLayout(
           .distinctToMainThread()
           .subscribe(
               Consumer {
-                collapsingToolbarLayout!!.setContentScrimColor(it)
-                collapsingToolbarLayout!!.setStatusBarScrimColor(it)
+                collapsingToolbarLayout!!.apply {
+                  setContentScrimColor(it)
+                  setStatusBarScrimColor(it)
+                }
               },
               onErrorLogAndRethrow()
           )
@@ -192,9 +194,10 @@ class AestheticCoordinatorLayout(
     val blendedTitleColor = expandedTitleColor.blendWith(collapsedTitleColor, ratio)
 
     toolbar!!.setBackgroundColor(blendedColor)
-
-    collapsingToolbarLayout!!.setCollapsedTitleTextColor(collapsedTitleColor)
-    collapsingToolbarLayout!!.setExpandedTitleColor(expandedTitleColor)
+    collapsingToolbarLayout!!.apply {
+      setCollapsedTitleTextColor(collapsedTitleColor)
+      setExpandedTitleColor(expandedTitleColor)
+    }
 
     tintMenu(
         toolbar!!,

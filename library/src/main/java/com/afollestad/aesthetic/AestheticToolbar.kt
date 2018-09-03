@@ -10,12 +10,14 @@ import android.graphics.drawable.Drawable
 import android.support.annotation.ColorInt
 import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
+import com.afollestad.aesthetic.BgIconColorState.Companion.creator
 import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.setOverflowButtonColor
 import com.afollestad.aesthetic.utils.tintMenu
 import io.reactivex.Observable
+import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
@@ -72,14 +74,14 @@ class AestheticToolbar(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscription = Observable.combineLatest(
+    subscription = combineLatest(
         Aesthetic.get().colorPrimary(),
         Aesthetic.get().colorIconTitle(null),
-        BgIconColorState.creator()
+        creator()
     )
         .distinctToMainThread()
         .subscribe(
-            Consumer { this.invalidateColors(it) },
+            Consumer { invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }

@@ -9,7 +9,9 @@ import android.content.Context
 import android.support.v7.widget.AppCompatSpinner
 import android.util.AttributeSet
 import com.afollestad.aesthetic.utils.TintHelper
+import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
 import com.afollestad.aesthetic.utils.ViewUtil
+import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
@@ -33,15 +35,14 @@ class AestheticSpinner(
     }
   }
 
-  private fun invalidateColors(state: ColorIsDarkState) {
-    TintHelper.setTintAuto(this, state.color, true, state.isDark)
-  }
+  private fun invalidateColors(state: ColorIsDarkState) =
+    setTintAuto(this, state.color, true, state.isDark)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
     subscription = Observable.combineLatest(
-        ViewUtil.getObservableForResId(
+        getObservableForResId(
             context, backgroundResId, Aesthetic.get().colorAccent()
         )!!,
         Aesthetic.get().isDark,
@@ -49,7 +50,7 @@ class AestheticSpinner(
     )
         .distinctToMainThread()
         .subscribe(
-            Consumer { this.invalidateColors(it) },
+            Consumer { invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }

@@ -8,7 +8,7 @@ package com.afollestad.aesthetic
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.ProgressBar
-import com.afollestad.aesthetic.utils.TintHelper
+import com.afollestad.aesthetic.utils.TintHelper.setTint
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import io.reactivex.disposables.Disposable
@@ -22,9 +22,8 @@ class AestheticProgressBar(
 
   private var subscription: Disposable? = null
 
-  private fun invalidateColors(color: Int) {
-    TintHelper.setTint(this, color)
-  }
+  private fun invalidateColors(color: Int) =
+    setTint(this, color)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -32,7 +31,7 @@ class AestheticProgressBar(
         .colorAccent()
         .distinctToMainThread()
         .subscribe(
-            Consumer { this.invalidateColors(it) },
+            Consumer { invalidateColors(it) },
             onErrorLogAndRethrow()
         )
   }

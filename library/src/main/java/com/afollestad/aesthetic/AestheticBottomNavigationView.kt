@@ -11,6 +11,7 @@ import android.graphics.Color
 import android.support.annotation.ColorInt
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.ContextCompat.getColor
 import android.util.AttributeSet
 import com.afollestad.aesthetic.actions.ViewBackgroundAction
 import com.afollestad.aesthetic.utils.adjustAlpha
@@ -19,6 +20,7 @@ import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import io.reactivex.Observable
+import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
@@ -39,7 +41,7 @@ class AestheticBottomNavigationView(
     backgroundColor: Int,
     selectedColor: Int
   ) {
-    val baseColor = ContextCompat.getColor(
+    val baseColor = getColor(
         context,
         if (backgroundColor.isColorLight()) R.color.ate_icon_light else R.color.ate_icon_dark
     )
@@ -125,7 +127,7 @@ class AestheticBottomNavigationView(
               )
       BottomNavBgMode.BLACK_WHITE_AUTO ->
         setBackgroundColor(
-            ContextCompat.getColor(
+            getColor(
                 context,
                 if (state.isDark)
                   R.color.ate_bottom_nav_default_dark_bg
@@ -139,7 +141,7 @@ class AestheticBottomNavigationView(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     modesSubscription =
-        Observable.combineLatest(
+        combineLatest(
             Aesthetic.get().bottomNavigationBackgroundMode(),
             Aesthetic.get().bottomNavigationIconTextMode(),
             Aesthetic.get().isDark,
@@ -147,7 +149,7 @@ class AestheticBottomNavigationView(
         )
             .distinctToMainThread()
             .subscribe(
-                Consumer { this.onState(it) },
+                Consumer { onState(it) },
                 onErrorLogAndRethrow()
             )
   }
