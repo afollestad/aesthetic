@@ -14,6 +14,6 @@ ext.versions = [
     supportLib        : '28.0.0-rc01',
     rxJava            : '2.2.0',
     rxAndroid         : '2.0.2',
-    rxPrefs           : '2.0.0',
+    rxkPrefs          : '1.0.1',
     leakCanary        : '1.6.1'
 ]

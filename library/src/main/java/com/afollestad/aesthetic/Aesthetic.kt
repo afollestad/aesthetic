@@ -10,7 +10,6 @@ package com.afollestad.aesthetic
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -65,7 +64,7 @@ import com.afollestad.aesthetic.utils.setStatusBarColorCompat
 import com.afollestad.aesthetic.utils.setTaskDescriptionColor
 import com.afollestad.aesthetic.utils.splitToInts
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
-import com.f2prateek.rx.preferences2.RxSharedPreferences
+import com.afollestad.rxkprefs.RxkPrefs
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
@@ -80,7 +79,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   private var subs: CompositeDisposable? = null
   private var prefs: SharedPreferences? = null
   private var editor: SharedPreferences.Editor? = null
-  private var rxPrefs: RxSharedPreferences? = null
+  private var rxfPrefs: RxkPrefs? = null
   private var isResumed: Boolean = false
 
   init {
@@ -89,17 +88,15 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @SuppressLint("CommitPrefEdits")
   private fun initPrefs() {
-    prefs = context
-        .applicationContext
-        .getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+    rxfPrefs = RxkPrefs(context, PREFS_NAME)
+    prefs = rxfPrefs!!.getSharedPrefs()
     editor = prefs!!.edit()
-    rxPrefs = RxSharedPreferences.create(prefs!!)
   }
 
   private fun deinitPrefs() {
     prefs = null
     editor = null
-    rxPrefs = null
+    rxfPrefs = null
   }
 
   internal val context
@@ -108,7 +105,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   val isDark: Observable<Boolean>
     @CheckResult
-    get() = rxPrefs!!.getBoolean(KEY_IS_DARK, false).asObservable()
+    get() = rxfPrefs!!.boolean(KEY_IS_DARK).asObservable()
 
   internal fun addBackgroundSubscriber(
     view: View,
@@ -130,8 +127,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   @CheckResult
   fun activityTheme(): Observable<Int> {
     val key = format(KEY_ACTIVITY_THEME, key(context))
-    return rxPrefs!!
-        .getInteger(key, 0)
+    return rxfPrefs!!
+        .integer(key, 0)
         .asObservable()
         .filter { it != 0 && it != getLastActivityTheme(context) }
   }
@@ -158,8 +155,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun colorPrimary(): Observable<Int> {
-    return rxPrefs!!
-        .getInteger(KEY_PRIMARY_COLOR, context.colorAttr(R.attr.colorPrimary))
+    return rxfPrefs!!
+        .integer(KEY_PRIMARY_COLOR, context.colorAttr(R.attr.colorPrimary))
         .asObservable()
   }
 
@@ -178,8 +175,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun colorPrimaryDark(): Observable<Int> {
-    return rxPrefs!!
-        .getInteger(
+    return rxfPrefs!!
+        .integer(
             KEY_PRIMARY_DARK_COLOR, context.colorAttr(R.attr.colorPrimaryDark)
         )
         .asObservable()
@@ -199,8 +196,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun colorAccent(): Observable<Int> {
-    return rxPrefs!!
-        .getInteger(KEY_ACCENT_COLOR, context.colorAttr(R.attr.colorAccent))
+    return rxfPrefs!!
+        .integer(KEY_ACCENT_COLOR, context.colorAttr(R.attr.colorAccent))
         .asObservable()
   }
 
@@ -217,8 +214,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun textColorPrimary(): Observable<Int> {
-    return rxPrefs!!
-        .getInteger(
+    return rxfPrefs!!
+        .integer(
             KEY_PRIMARY_TEXT_COLOR,
             context.colorAttr(android.R.attr.textColorPrimary)
         )
@@ -238,8 +235,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun textColorSecondary(): Observable<Int> {
-    return rxPrefs!!
-        .getInteger(
+    return rxfPrefs!!
+        .integer(
             KEY_SECONDARY_TEXT_COLOR,
             context.colorAttr(android.R.attr.textColorSecondary)
         )
@@ -259,8 +256,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun textColorPrimaryInverse(): Observable<Int> {
-    return rxPrefs!!
-        .getInteger(
+    return rxfPrefs!!
+        .integer(
             KEY_PRIMARY_TEXT_INVERSE_COLOR,
             context.colorAttr(android.R.attr.textColorPrimaryInverse)
         )
@@ -280,8 +277,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun textColorSecondaryInverse(): Observable<Int> {
-    return rxPrefs!!
-        .getInteger(
+    return rxfPrefs!!
+        .integer(
             KEY_SECONDARY_TEXT_INVERSE_COLOR,
             context.colorAttr(android.R.attr.textColorSecondaryInverse)
         )
@@ -302,8 +299,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun colorWindowBackground(): Observable<Int> {
-    return rxPrefs!!
-        .getInteger(
+    return rxfPrefs!!
+        .integer(
             KEY_WINDOW_BG_COLOR,
             context.colorAttr(android.R.attr.windowBackground)
         )
@@ -338,7 +335,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   fun colorStatusBar(): Observable<Int> {
     return colorPrimaryDark().flatMap {
       val key = format(KEY_STATUS_BAR_COLOR, key(context))
-      rxPrefs!!.getInteger(key, it)
+      rxfPrefs!!.integer(key, it)
           .asObservable()
     }
   }
@@ -367,7 +364,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   @CheckResult
   fun colorNavigationBar(): Observable<Int> {
     val key = format(KEY_NAV_BAR_COLOR, key(context))
-    return rxPrefs!!.getInteger(key, Color.BLACK)
+    return rxfPrefs!!.integer(key, Color.BLACK)
         .asObservable()
   }
 
@@ -379,8 +376,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun lightStatusBarMode(): Observable<Int> {
-    return rxPrefs!!
-        .getInteger(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
+    return rxfPrefs!!
+        .integer(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
         .asObservable()
   }
 
@@ -393,8 +390,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun tabLayoutIndicatorMode(): Observable<TabLayoutIndicatorMode> {
-    return rxPrefs!!
-        .getInteger(
+    return rxfPrefs!!
+        .integer(
             KEY_TAB_LAYOUT_INDICATOR_MODE, TabLayoutIndicatorMode.ACCENT.value
         )
         .asObservable()
@@ -410,8 +407,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun tabLayoutBackgroundMode(): Observable<TabLayoutBgMode> {
-    return rxPrefs!!
-        .getInteger(KEY_TAB_LAYOUT_BG_MODE, TabLayoutBgMode.PRIMARY.value)
+    return rxfPrefs!!
+        .integer(KEY_TAB_LAYOUT_BG_MODE, TabLayoutBgMode.PRIMARY.value)
         .asObservable()
         .map { TabLayoutBgMode.fromInt(it) }
   }
@@ -425,8 +422,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun navigationViewMode(): Observable<NavigationViewMode> {
-    return rxPrefs!!
-        .getInteger(KEY_NAV_VIEW_MODE, NavigationViewMode.SELECTED_PRIMARY.value)
+    return rxfPrefs!!
+        .integer(KEY_NAV_VIEW_MODE, NavigationViewMode.SELECTED_PRIMARY.value)
         .asObservable()
         .map { NavigationViewMode.fromInt(it) }
   }
@@ -440,8 +437,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun bottomNavigationBackgroundMode(): Observable<BottomNavBgMode> {
-    return rxPrefs!!
-        .getInteger(KEY_BOTTOM_NAV_BG_MODE, BottomNavBgMode.BLACK_WHITE_AUTO.value)
+    return rxfPrefs!!
+        .integer(KEY_BOTTOM_NAV_BG_MODE, BottomNavBgMode.BLACK_WHITE_AUTO.value)
         .asObservable()
         .map { BottomNavBgMode.fromInt(it) }
   }
@@ -455,8 +452,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun bottomNavigationIconTextMode(): Observable<BottomNavIconTextMode> {
-    return rxPrefs!!
-        .getInteger(
+    return rxfPrefs!!
+        .integer(
             KEY_BOTTOM_NAV_ICONTEXT_MODE,
             BottomNavIconTextMode.SELECTED_ACCENT.value
         )
@@ -467,8 +464,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   @CheckResult
   fun colorCardViewBackground(): Observable<Int> {
     return isDark.flatMap {
-      rxPrefs!!
-          .getInteger(
+      rxfPrefs!!
+          .integer(
               KEY_CARD_VIEW_BG_COLOR,
               ContextCompat.getColor(
                   context,
@@ -505,16 +502,16 @@ class Aesthetic private constructor(private var ctxt: Context?) {
     return backgroundObservable.flatMap {
       val isDark = !it.isColorLight()
       Observable.zip(
-          rxPrefs!!
-              .getInteger(
+          rxfPrefs!!
+              .integer(
                   KEY_ICON_TITLE_ACTIVE_COLOR,
                   ContextCompat.getColor(
                       context, if (isDark) R.color.ate_icon_dark else R.color.ate_icon_light
                   )
               )
               .asObservable(),
-          rxPrefs!!
-              .getInteger(
+          rxfPrefs!!
+              .integer(
                   KEY_ICON_TITLE_INACTIVE_COLOR,
                   ContextCompat.getColor(
                       context,
@@ -564,7 +561,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
           } else {
             textColorPrimaryInverse()
                 .flatMap { defaultTextColor ->
-                  rxPrefs!!.getInteger(
+                  rxfPrefs!!.integer(
                       KEY_SNACKBAR_TEXT, defaultTextColor
                   )
                       .asObservable()
@@ -588,8 +585,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   fun snackbarActionTextColor(): Observable<Int> {
     return colorAccent()
         .flatMap {
-          rxPrefs!!
-              .getInteger(KEY_SNACKBAR_ACTION_TEXT, it)
+          rxfPrefs!!
+              .integer(KEY_SNACKBAR_ACTION_TEXT, it)
               .asObservable()
         }
   }
@@ -608,9 +605,9 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   @CheckResult
   fun swipeRefreshLayoutColors(): Observable<IntArray> {
     return colorAccent()
-        .flatMap {
-          rxPrefs!!
-              .getString(KEY_SWIPEREFRESH_COLORS, "$it")
+        .flatMap { accent ->
+          rxfPrefs!!
+              .string(KEY_SWIPEREFRESH_COLORS, "$accent")
               .asObservable()
               .map { it.splitToInts() }
         }

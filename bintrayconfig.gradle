@@ -1,5 +1,5 @@
 if (!project.rootProject.file('local.properties').exists()) {
-  println "Not applying install.gradle"
+  println "Not applying bintrayconfig.gradle"
   return
 }
 apply plugin: 'com.novoda.bintray-release'
