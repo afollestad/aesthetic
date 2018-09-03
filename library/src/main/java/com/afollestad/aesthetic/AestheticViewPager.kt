@@ -8,7 +8,6 @@ package com.afollestad.aesthetic
 import android.content.Context
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
-import com.afollestad.aesthetic.utils.EdgeGlowUtil
 import com.afollestad.aesthetic.utils.EdgeGlowUtil.setEdgeGlowColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow

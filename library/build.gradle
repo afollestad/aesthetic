@@ -28,6 +28,10 @@ android {
         'src/main/res-public'
     ]
   }
+
+  packagingOptions {
+    exclude 'META-INF/library_release.kotlin_module'
+  }
 }
 
 dependencies {

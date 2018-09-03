@@ -8,9 +8,7 @@ package com.afollestad.aesthetic
 import android.content.Context
 import android.support.v7.widget.AppCompatSpinner
 import android.util.AttributeSet
-import com.afollestad.aesthetic.utils.TintHelper
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
-import com.afollestad.aesthetic.utils.ViewUtil
 import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow

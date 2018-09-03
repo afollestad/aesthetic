@@ -22,6 +22,10 @@ android {
     versionName versions.publishVersion
     vectorDrawables.useSupportLibrary = true
   }
+
+  packagingOptions {
+    exclude 'META-INF/library_release.kotlin_module'
+  }
 }
 
 dependencies {

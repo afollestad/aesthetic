@@ -10,7 +10,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.support.annotation.ColorInt
 import android.support.design.widget.BottomNavigationView
-import android.support.v4.content.ContextCompat
 import android.support.v4.content.ContextCompat.getColor
 import android.util.AttributeSet
 import com.afollestad.aesthetic.actions.ViewBackgroundAction
@@ -19,7 +18,6 @@ import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
-import io.reactivex.Observable
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable

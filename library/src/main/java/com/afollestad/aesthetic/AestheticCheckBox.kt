@@ -9,15 +9,12 @@ import android.content.Context
 import android.support.v7.widget.AppCompatCheckBox
 import android.util.AttributeSet
 import com.afollestad.aesthetic.actions.ViewTextColorAction
-import com.afollestad.aesthetic.utils.TintHelper
 import com.afollestad.aesthetic.utils.TintHelper.setTint
-import com.afollestad.aesthetic.utils.ViewUtil
 import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
-import io.reactivex.Observable
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer

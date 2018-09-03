@@ -12,15 +12,12 @@ import android.support.v7.widget.AppCompatEditText
 import android.util.AttributeSet
 import com.afollestad.aesthetic.actions.ViewHintTextColorAction
 import com.afollestad.aesthetic.actions.ViewTextColorAction
-import com.afollestad.aesthetic.utils.TintHelper
 import com.afollestad.aesthetic.utils.TintHelper.setCursorTint
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
-import com.afollestad.aesthetic.utils.ViewUtil
 import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
-import io.reactivex.Observable
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer

@@ -43,4 +43,5 @@ publish {
       '[BETA] A fast and easy to use plug-and-play dynamic theme engine. Powered by Rx, for Android apps.'
   website = 'https://github.com/afollestad/aesthetic'
   dryRun = false
+  override = true
 }

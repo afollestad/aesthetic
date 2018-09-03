@@ -10,15 +10,12 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.support.v7.widget.AppCompatButton
 import android.util.AttributeSet
-import com.afollestad.aesthetic.utils.TintHelper
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
-import com.afollestad.aesthetic.utils.ViewUtil
 import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
-import io.reactivex.Observable
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
