@@ -121,8 +121,8 @@ Aesthetic.get()
     .apply()
 ```
 
-However, the static `config` method is provided for convenience. It's a syntax-sugar shortcut to
-apply multiple properties on your instance and automatically apply them.
+In addition, a static `config` method is provided for convenience. It's a syntax-sugar shortcut to
+set multiple properties to your instance and automatically apply them.
 
 ```kotlin
 Aesthetic.config {
