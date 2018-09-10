@@ -104,7 +104,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
     rxkPrefs = null
   }
 
-  private fun waitForAttach() = onAttached.filter { it }.map { rxkPrefs }
+  private fun waitForAttach() = onAttached.filter { it }.map { rxkPrefs!! }
 
   internal val context
     @CheckResult
