@@ -219,30 +219,58 @@ internal class InflationInterceptor(
 
     // If view is null, let the activity try to create it
     if (view == null) {
-      view = activity.onCreateView(parent, name, context, attrs)
-      if (view == null) activity.onCreateView(name, context, attrs)
+      try {
+        view = activity.onCreateView(
+            parent,
+            name,
+            context,
+            attrs
+        )
+        if (view == null) {
+          activity.onCreateView(
+              name,
+              context,
+              attrs
+          )
+        }
+      } catch (e: Throwable) {
+        throw IllegalStateException("Unable to delegate inflation of $name to your Activity.", e)
+      }
     }
     // If it's still null, try the AppCompat delegate
     if (view == null && delegate != null && attrs != null) {
-      view = delegate.createView(parent, name, context, attrs)
+      try {
+        view = delegate.createView(
+            parent,
+            name,
+            context,
+            attrs
+        )
+      } catch (e: Throwable) {
+        throw IllegalStateException("Unable to delegate inflation of $name to AppCompat.", e)
+      }
     }
     // If it's still null, use the LayoutInflater directly
     if (view == null) {
-      view = layoutInflater.createView(name,
-          getViewPrefix(name), attrs)
+      try {
+        view = layoutInflater.createView(
+            name,
+            getViewPrefix(name),
+            attrs
+        )
+      } catch (e: Throwable) {
+        throw IllegalStateException(
+            "Unable to delegate inflation of $name to normal LayoutInflater.", e
+        )
+      }
     }
     // If it's still null, explode
     if (view == null) {
-      throw IllegalStateException(
-          "Totally unable to inflate $name! Please report as a GitHub issue."
-      )
+      throw IllegalStateException("Unable to inflate $name! Please report as a GitHub issue.")
     }
 
     // If the view is blacklisted for apply, don't try to apply background theming, etc.
-    if (isBlackListedForApply(
-            name
-        )
-    ) {
+    if (isBlackListedForApply(name)) {
       return view
     }
 
@@ -260,9 +288,7 @@ internal class InflationInterceptor(
     } catch (ignored: Throwable) {
     }
 
-    log(
-        "Inflated -> $idName${view.javaClass.name}"
-    )
+    log("Inflated -> $idName${view.javaClass.name}")
 
     return view
   }
