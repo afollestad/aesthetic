@@ -55,7 +55,6 @@ import com.afollestad.aesthetic.utils.resId
 /** @author Aidan Follestad (afollestad) */
 internal class InflationInterceptor(
   private val activity: AppCompatActivity,
-  private val layoutInflater: LayoutInflater,
   private val delegate: AppCompatDelegate?
 ) : LayoutInflater.Factory2 {
 
@@ -227,7 +226,7 @@ internal class InflationInterceptor(
             attrs
         )
         if (view == null) {
-          activity.onCreateView(
+          view = activity.onCreateView(
               name,
               context,
               attrs
@@ -253,6 +252,7 @@ internal class InflationInterceptor(
     // If it's still null, use the LayoutInflater directly
     if (view == null) {
       try {
+        val layoutInflater = LayoutInflater.from(context)
         view = layoutInflater.createView(
             name,
             getViewPrefix(name),

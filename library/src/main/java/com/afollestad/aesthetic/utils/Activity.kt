@@ -21,7 +21,7 @@ import com.afollestad.aesthetic.internal.InflationInterceptor
 
 internal fun AppCompatActivity.setInflaterFactory(li: LayoutInflater) {
   LayoutInflaterCompat.setFactory2(li,
-      InflationInterceptor(this, li, delegate)
+      InflationInterceptor(this, delegate)
   )
 }
 
