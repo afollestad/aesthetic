@@ -6,7 +6,7 @@
 package com.afollestad.aestheticsample
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.aesthetic.AestheticActivity
 import kotlinx.android.synthetic.main.activity_recyclerview.recycler_view
 import kotlinx.android.synthetic.main.activity_recyclerview.toolbar

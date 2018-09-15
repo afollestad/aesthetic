@@ -6,11 +6,11 @@
 package com.afollestad.aesthetic
 
 import android.content.Context
-import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatImageView
 import com.afollestad.aesthetic.actions.ImageViewTintAction
 import com.afollestad.aesthetic.actions.ViewBackgroundAction
-import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
+import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
@@ -41,9 +41,9 @@ class AestheticImageView(
     super.onAttachedToWindow()
     subs = CompositeDisposable()
 
-    val backgroundObs = getObservableForResId(context, backgroundResId, null)
+    val backgroundObs = watchColor(context, backgroundResId, null)
     if (backgroundObs != null) {
-      subs!! += backgroundObs
+      subs += backgroundObs
           .distinctToMainThread()
           .subscribe(
               ViewBackgroundAction(this),
@@ -51,9 +51,9 @@ class AestheticImageView(
           )
     }
 
-    val tintObs = getObservableForResId(context, tintResId, null)
+    val tintObs = watchColor(context, tintResId, null)
     if (tintObs != null) {
-      subs!! += tintObs
+      subs += tintObs
           .distinctToMainThread()
           .subscribe(
               ImageViewTintAction(this),

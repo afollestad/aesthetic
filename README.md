@@ -390,7 +390,7 @@ when `isDark()` is false. By default, the action text color will match `colorAcc
 
 # Tab Layouts
 
-Tab Layouts from the Design Support library are automatically themed. The main screen in the 
+Tab Layouts from the Google Material library are automatically themed. The main screen in the 
  sample project is an example of this, you see the two tabs under the toolbar at the top.
 
 You can customize background theming behavior:
@@ -456,7 +456,7 @@ In addition, unselected nav drawer items will be shades of white or black based 
 
 # Bottom Navigation
 
-Bottom Navigation Views from the Design Support library are automatically themed.
+Bottom Navigation Views from the Google Material library are automatically themed.
 
 <img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/4.jpg" />
 
@@ -521,7 +521,7 @@ also notice that the icons and title color are updated to be most visible over t
 
 # Swipe Refresh Layouts
 
-Swipe Refresh Layouts from the Design Support library are automatically themed.
+Swipe Refresh Layouts from the Google Material library are automatically themed.
 
 <img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/6.jpg" />
 
@@ -589,12 +589,3 @@ adopt the same window theme properties as the main activity.
 
 If you do not use `AestheticActivity`, your custom Activity can implement the `AestheticKeyProvider` 
 interface.
-
-# Proguard
-
-In case you are using views from the support library (e.g. TextInputLayout & TextInputEditText), you will
-need to add the following to your proguard:
-
-```
--keep class android.support.design.widget.** { *; }
-```

@@ -6,16 +6,16 @@
 package com.afollestad.aestheticsample
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.BottomNavBgMode
 import com.afollestad.aesthetic.BottomNavIconTextMode
+import com.google.android.material.snackbar.Snackbar
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_main.btn_black
 import kotlinx.android.synthetic.main.fragment_main.btn_blue
@@ -122,6 +122,7 @@ class MainFragment : Fragment() {
         colorNavigationBarAuto()
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
         bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+        swipeRefreshLayoutColorsRes(R.color.md_purple)
       }
       R.id.btn_red -> Aesthetic.config {
         colorPrimaryRes(R.color.md_red)
@@ -130,6 +131,7 @@ class MainFragment : Fragment() {
         colorNavigationBarAuto()
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
         bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+        swipeRefreshLayoutColorsRes(R.color.md_red, R.color.md_amber)
       }
       R.id.btn_purple -> Aesthetic.config {
         colorPrimaryRes(R.color.md_purple)
@@ -138,6 +140,7 @@ class MainFragment : Fragment() {
         colorNavigationBarAuto()
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
         bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+        swipeRefreshLayoutColorsRes(R.color.md_purple, R.color.md_lime)
       }
       R.id.btn_blue -> Aesthetic.config {
         colorPrimaryRes(R.color.md_blue)
@@ -146,6 +149,7 @@ class MainFragment : Fragment() {
         colorNavigationBarAuto()
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
         bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+        swipeRefreshLayoutColorsRes(R.color.md_blue, R.color.md_pink)
       }
       R.id.btn_green -> Aesthetic.config {
         colorPrimaryRes(R.color.md_green)
@@ -154,6 +158,7 @@ class MainFragment : Fragment() {
         colorNavigationBarAuto()
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
         bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+        swipeRefreshLayoutColorsRes(R.color.md_green, R.color.md_blue_grey)
       }
       R.id.btn_white -> Aesthetic.config {
         colorPrimaryRes(R.color.md_white)
@@ -162,6 +167,7 @@ class MainFragment : Fragment() {
         colorNavigationBarAuto()
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
         bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
+        swipeRefreshLayoutColorsRes(R.color.md_blue)
       }
     }
   }

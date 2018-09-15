@@ -8,14 +8,14 @@ package com.afollestad.aesthetic
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.support.v7.widget.AppCompatButton
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatButton
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
-import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
@@ -56,7 +56,7 @@ class AestheticButton(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     subscription = combineLatest(
-        getObservableForResId(
+        watchColor(
             context, backgroundResId, Aesthetic.get().colorAccent()
         )!!,
         Aesthetic.get().isDark,

@@ -7,7 +7,7 @@ package com.afollestad.aestheticsample
 
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v7.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.AestheticActivity
 import com.afollestad.aesthetic.BottomNavBgMode

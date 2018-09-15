@@ -6,10 +6,10 @@
 package com.afollestad.aesthetic
 
 import android.content.Context
-import android.support.v7.widget.AppCompatSpinner
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatSpinner
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
-import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
+import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
@@ -40,7 +40,7 @@ class AestheticSpinner(
     super.onAttachedToWindow()
 
     subscription = Observable.combineLatest(
-        getObservableForResId(
+        watchColor(
             context, backgroundResId, Aesthetic.get().colorAccent()
         )!!,
         Aesthetic.get().isDark,

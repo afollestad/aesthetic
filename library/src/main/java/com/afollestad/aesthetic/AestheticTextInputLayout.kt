@@ -6,9 +6,8 @@
 package com.afollestad.aesthetic
 
 import android.content.Context
-import android.support.design.widget.TextInputLayout
 import android.util.AttributeSet
-import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
+import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
@@ -16,6 +15,7 @@ import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.setAccentColor
 import com.afollestad.aesthetic.utils.setHintColor
+import com.google.android.material.textfield.TextInputLayout
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 
@@ -40,7 +40,7 @@ class AestheticTextInputLayout(
     super.onAttachedToWindow()
     subs = CompositeDisposable()
 
-    subs!! +=
+    subs +=
         Aesthetic.get()
             .textColorSecondary()
             .distinctToMainThread()
@@ -48,8 +48,8 @@ class AestheticTextInputLayout(
                 Consumer { setHintColor(it.adjustAlpha(0.7f)) },
                 onErrorLogAndRethrow()
             )
-    subs!! +=
-        getObservableForResId(
+    subs +=
+        watchColor(
             context,
             backgroundResId,
             Aesthetic.get().colorAccent()

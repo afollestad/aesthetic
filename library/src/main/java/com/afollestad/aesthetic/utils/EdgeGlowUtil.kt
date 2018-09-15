@@ -10,13 +10,13 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.support.annotation.ColorInt
-import android.support.v4.view.ViewPager
-import android.support.v4.widget.EdgeEffectCompat
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.widget.RecyclerView
 import android.widget.AbsListView
 import android.widget.EdgeEffect
 import android.widget.ScrollView
+import androidx.core.widget.EdgeEffectCompat
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.afollestad.aesthetic.BuildConfig
 import java.lang.reflect.Field
 

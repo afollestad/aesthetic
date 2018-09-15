@@ -11,15 +11,15 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.StateListDrawable
-import android.support.design.widget.NavigationView
-import android.support.v4.content.ContextCompat.getColor
 import android.util.AttributeSet
 import com.afollestad.aesthetic.ColorIsDarkState.Companion.creator
 import com.afollestad.aesthetic.NavigationViewMode.SELECTED_ACCENT
 import com.afollestad.aesthetic.NavigationViewMode.SELECTED_PRIMARY
 import com.afollestad.aesthetic.utils.adjustAlpha
+import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
+import com.google.android.material.navigation.NavigationView
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
@@ -40,8 +40,7 @@ class AestheticNavigationView(
     val baseColor = if (isDark) Color.WHITE else Color.BLACK
     val unselectedIconColor = baseColor.adjustAlpha(.54f)
     val unselectedTextColor = baseColor.adjustAlpha(.87f)
-    val selectedItemBgColor = getColor(
-        context,
+    val selectedItemBgColor = context.color(
         if (isDark)
           R.color.ate_navigation_drawer_selected_dark
         else
@@ -77,8 +76,8 @@ class AestheticNavigationView(
         .navigationViewMode()
         .distinctToMainThread()
         .subscribe(
-            Consumer {
-              when (it) {
+            Consumer { mode ->
+              when (mode) {
                 SELECTED_PRIMARY ->
                   colorSubscription = combineLatest(
                       Aesthetic.get().colorPrimary(),
@@ -101,7 +100,7 @@ class AestheticNavigationView(
                           Consumer { colors -> invalidateColors(colors) },
                           onErrorLogAndRethrow()
                       )
-                else -> throw IllegalStateException("Unknown nav view mode: $it")
+                else -> throw IllegalStateException("Unknown nav view mode: $mode")
               }
             },
             onErrorLogAndRethrow()

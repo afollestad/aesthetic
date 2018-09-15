@@ -6,10 +6,10 @@
 package com.afollestad.aesthetic
 
 import android.content.Context
-import android.support.v7.widget.AppCompatSeekBar
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatSeekBar
 import com.afollestad.aesthetic.utils.TintHelper.setTint
-import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
+import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
@@ -39,7 +39,7 @@ class AestheticSeekBar(
     super.onAttachedToWindow()
 
     subscription = combineLatest(
-        getObservableForResId(
+        watchColor(
             context, backgroundResId, Aesthetic.get().colorAccent()
         ),
         Aesthetic.get().isDark,

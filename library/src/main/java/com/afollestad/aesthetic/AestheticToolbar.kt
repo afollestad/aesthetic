@@ -8,8 +8,8 @@ package com.afollestad.aesthetic
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.annotation.ColorInt
-import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
+import androidx.appcompat.widget.Toolbar
 import com.afollestad.aesthetic.BgIconColorState.Companion.creator
 import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.distinctToMainThread

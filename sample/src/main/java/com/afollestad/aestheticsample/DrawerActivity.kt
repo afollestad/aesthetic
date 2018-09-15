@@ -7,8 +7,8 @@ package com.afollestad.aestheticsample
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
 import com.afollestad.aesthetic.AestheticActivity
 import kotlinx.android.synthetic.main.activity_drawer.drawer_layout
 import kotlinx.android.synthetic.main.activity_drawer.navigation_view

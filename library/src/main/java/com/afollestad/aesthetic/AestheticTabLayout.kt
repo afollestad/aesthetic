@@ -9,7 +9,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.support.annotation.ColorInt
-import android.support.design.widget.TabLayout
 import android.util.AttributeSet
 import com.afollestad.aesthetic.TabLayoutBgMode.ACCENT
 import com.afollestad.aesthetic.TabLayoutBgMode.PRIMARY
@@ -20,6 +19,7 @@ import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.one
 import com.afollestad.aesthetic.utils.plusAssign
+import com.google.android.material.tabs.TabLayout
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -73,7 +73,7 @@ class AestheticTabLayout(
     super.onAttachedToWindow()
     topLevelSubs = CompositeDisposable()
 
-    topLevelSubs!! += Aesthetic.get()
+    topLevelSubs += Aesthetic.get()
         .tabLayoutBackgroundMode()
         .distinctToMainThread()
         .subscribe(
@@ -106,7 +106,7 @@ class AestheticTabLayout(
             onErrorLogAndRethrow()
         )
 
-    topLevelSubs!! += Aesthetic.get()
+    topLevelSubs += Aesthetic.get()
         .tabLayoutIndicatorMode()
         .distinctToMainThread()
         .subscribe(

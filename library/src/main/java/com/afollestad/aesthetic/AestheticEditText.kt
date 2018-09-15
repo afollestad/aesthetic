@@ -8,13 +8,13 @@ package com.afollestad.aesthetic
 import android.annotation.SuppressLint
 
 import android.content.Context
-import android.support.v7.widget.AppCompatEditText
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatEditText
 import com.afollestad.aesthetic.actions.ViewHintTextColorAction
 import com.afollestad.aesthetic.actions.ViewTextColorAction
 import com.afollestad.aesthetic.utils.TintHelper.setCursorTint
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
-import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
+import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
@@ -29,7 +29,7 @@ class AestheticEditText(
   attrs: AttributeSet? = null
 ) : AppCompatEditText(context, attrs) {
 
-  private var subscriptions: CompositeDisposable? = null
+  private var subs: CompositeDisposable? = null
   private var backgroundResId: Int = 0
   private var textColorResId: Int = 0
   private var textColorHintResId: Int = 0
@@ -54,10 +54,10 @@ class AestheticEditText(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscriptions = CompositeDisposable()
-    subscriptions!! +=
+    subs = CompositeDisposable()
+    subs +=
         combineLatest(
-            getObservableForResId(
+            watchColor(
                 context,
                 backgroundResId,
                 Aesthetic.get().colorAccent()
@@ -70,8 +70,8 @@ class AestheticEditText(
                 Consumer { invalidateColors(it) },
                 onErrorLogAndRethrow()
             )
-    subscriptions!! +=
-        getObservableForResId(
+    subs +=
+        watchColor(
             context,
             textColorResId,
             Aesthetic.get().textColorPrimary()
@@ -81,8 +81,8 @@ class AestheticEditText(
                 ViewTextColorAction(this),
                 onErrorLogAndRethrow()
             )
-    subscriptions!! +=
-        getObservableForResId(
+    subs +=
+        watchColor(
             context,
             textColorHintResId,
             Aesthetic.get().textColorSecondary()
@@ -95,7 +95,7 @@ class AestheticEditText(
   }
 
   override fun onDetachedFromWindow() {
-    subscriptions?.clear()
+    subs?.clear()
     super.onDetachedFromWindow()
   }
 }

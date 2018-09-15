@@ -5,7 +5,7 @@
  */
 package com.afollestad.aesthetic.utils
 
-import android.support.v4.util.ArrayMap
+import androidx.collection.ArrayMap
 
 internal fun String.splitToInts(delimiter: String = ","): IntArray {
   return split(delimiter).map { it.toInt() }

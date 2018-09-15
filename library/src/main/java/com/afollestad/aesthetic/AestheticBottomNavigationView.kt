@@ -9,15 +9,15 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.support.annotation.ColorInt
-import android.support.design.widget.BottomNavigationView
-import android.support.v4.content.ContextCompat.getColor
 import android.util.AttributeSet
 import com.afollestad.aesthetic.actions.ViewBackgroundAction
 import com.afollestad.aesthetic.utils.adjustAlpha
+import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -32,15 +32,14 @@ class AestheticBottomNavigationView(
 ) : BottomNavigationView(context, attrs) {
 
   private var modesSubscription: Disposable? = null
-  private var colorSubscriptions: CompositeDisposable? = null
+  private var colorSubs: CompositeDisposable? = null
   private var lastTextIconColor: Int = 0
 
   private fun invalidateIconTextColor(
     backgroundColor: Int,
     selectedColor: Int
   ) {
-    val baseColor = getColor(
-        context,
+    val baseColor = context.color(
         if (backgroundColor.isColorLight()) R.color.ate_icon_light else R.color.ate_icon_dark
     )
     val unselectedIconTextColor = baseColor.adjustAlpha(.87f)
@@ -69,12 +68,12 @@ class AestheticBottomNavigationView(
   }
 
   private fun onState(state: State) {
-    colorSubscriptions?.clear()
-    colorSubscriptions = CompositeDisposable()
+    colorSubs?.clear()
+    colorSubs = CompositeDisposable()
 
     when (state.iconTextMode) {
       BottomNavIconTextMode.SELECTED_PRIMARY ->
-        colorSubscriptions!! +=
+        colorSubs +=
             Aesthetic.get()
                 .colorPrimary()
                 .distinctToMainThread()
@@ -84,7 +83,7 @@ class AestheticBottomNavigationView(
                 )
 
       BottomNavIconTextMode.SELECTED_ACCENT ->
-        colorSubscriptions!! +=
+        colorSubs +=
             Aesthetic.get()
                 .colorAccent()
                 .distinctToMainThread()
@@ -99,7 +98,7 @@ class AestheticBottomNavigationView(
 
     when (state.bgMode) {
       BottomNavBgMode.PRIMARY ->
-        colorSubscriptions!! +=
+        colorSubs +=
             Aesthetic.get()
                 .colorPrimary()
                 .distinctToMainThread()
@@ -107,7 +106,7 @@ class AestheticBottomNavigationView(
                     ViewBackgroundAction(this),
                     onErrorLogAndRethrow()
                 )
-      BottomNavBgMode.PRIMARY_DARK -> colorSubscriptions!! +=
+      BottomNavBgMode.PRIMARY_DARK -> colorSubs +=
           Aesthetic.get()
               .colorStatusBar()
               .distinctToMainThread()
@@ -115,7 +114,7 @@ class AestheticBottomNavigationView(
                   ViewBackgroundAction(this),
                   onErrorLogAndRethrow()
               )
-      BottomNavBgMode.ACCENT -> colorSubscriptions!! +=
+      BottomNavBgMode.ACCENT -> colorSubs +=
           Aesthetic.get()
               .colorAccent()
               .distinctToMainThread()
@@ -125,8 +124,7 @@ class AestheticBottomNavigationView(
               )
       BottomNavBgMode.BLACK_WHITE_AUTO ->
         setBackgroundColor(
-            getColor(
-                context,
+            context.color(
                 if (state.isDark)
                   R.color.ate_bottom_nav_default_dark_bg
                 else
@@ -154,7 +152,7 @@ class AestheticBottomNavigationView(
 
   override fun onDetachedFromWindow() {
     modesSubscription?.dispose()
-    colorSubscriptions?.clear()
+    colorSubs?.clear()
     super.onDetachedFromWindow()
   }
 

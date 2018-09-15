@@ -7,8 +7,8 @@ package com.afollestad.aesthetic
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v4.widget.SwipeRefreshLayout
 import android.util.AttributeSet
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import io.reactivex.disposables.Disposable

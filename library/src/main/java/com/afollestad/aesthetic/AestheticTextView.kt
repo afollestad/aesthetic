@@ -6,10 +6,10 @@
 package com.afollestad.aesthetic
 
 import android.content.Context
-import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatTextView
 import com.afollestad.aesthetic.actions.ViewTextColorAction
-import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
+import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
@@ -32,7 +32,7 @@ class AestheticTextView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    val obs = getObservableForResId(
+    val obs = watchColor(
         context,
         textColorResId,
         if (id == android.R.id.title)

@@ -6,14 +6,20 @@
 package com.afollestad.aesthetic.utils
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.support.annotation.AttrRes
 import android.support.annotation.ColorInt
 import android.support.annotation.ColorRes
-import android.support.v4.content.ContextCompat
+import android.support.annotation.DrawableRes
 import android.util.AttributeSet
+import androidx.core.content.ContextCompat
 
 @ColorInt internal fun Context.color(@ColorRes color: Int): Int {
   return ContextCompat.getColor(this, color)
+}
+
+internal fun Context.drawable(@DrawableRes drawable: Int): Drawable? {
+  return ContextCompat.getDrawable(this, drawable)
 }
 
 @ColorInt internal fun Context.colorAttr(@AttrRes attr: Int, @ColorInt fallback: Int = 0): Int {

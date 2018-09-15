@@ -7,9 +7,9 @@ package com.afollestad.aesthetic
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v7.widget.CardView
 import android.util.AttributeSet
-import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
+import androidx.cardview.widget.CardView
+import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
@@ -34,7 +34,7 @@ class AestheticCardView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    val obs = getObservableForResId(
+    val obs = watchColor(
         context, backgroundResId, Aesthetic.get().colorCardViewBackground()
     )!!
     bgSubscription = obs

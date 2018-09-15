@@ -6,7 +6,7 @@
 package com.afollestad.aesthetic
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 
 /** @author Aidan Follestad (afollestad) */
 open class AestheticActivity : AppCompatActivity(), AestheticKeyProvider {

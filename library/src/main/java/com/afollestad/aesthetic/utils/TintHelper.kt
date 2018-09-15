@@ -14,13 +14,6 @@ import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.support.annotation.CheckResult
 import android.support.annotation.ColorInt
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.TextInputEditText
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v4.view.TintableBackgroundView
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.SwitchCompat
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
@@ -31,9 +24,13 @@ import android.widget.RadioButton
 import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
+import androidx.appcompat.widget.SwitchCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.TintableBackgroundView
+import androidx.core.view.ViewCompat
 import com.afollestad.aesthetic.R
-import com.afollestad.aesthetic.R.color
-import com.afollestad.aesthetic.R.drawable
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
 
 /** @author Aidan Follestad (afollestad) */
 internal object TintHelper {
@@ -45,8 +42,8 @@ internal object TintHelper {
     useDarkRipple: Boolean
   ): Int {
     // Light ripple is actually translucent black, and vice versa
-    return ContextCompat.getColor(
-        context, if (useDarkRipple) color.ripple_material_light else color.ripple_material_dark
+    return context.color(
+        if (useDarkRipple) R.color.ripple_material_light else R.color.ripple_material_dark
     )
   }
 
@@ -69,58 +66,57 @@ internal object TintHelper {
     useDarkTheme: Boolean
   ) {
     val isColorLight = color.isColorLight()
-    val disabled = ContextCompat.getColor(
-        view.context,
+    val disabled = view.context.color(
         if (useDarkTheme) R.color.ate_button_disabled_dark else R.color.ate_button_disabled_light
     )
     val pressed = color.shiftColor(if (darker) 0.9f else 1.1f)
     val activated = color.shiftColor(if (darker) 1.1f else 0.9f)
     val rippleColor =
       getDefaultRippleColor(view.context, isColorLight)
-    val textColor = ContextCompat.getColor(
-        view.context,
+    val textColor = view.context.color(
         if (isColorLight) R.color.ate_primary_text_light else R.color.ate_primary_text_dark
     )
 
     val sl: ColorStateList
-    if (view is Button) {
-      sl = getDisabledColorStateList(color, disabled)
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && view.getBackground() is RippleDrawable) {
-        val rd = view.getBackground() as RippleDrawable
-        rd.setColor(ColorStateList.valueOf(rippleColor))
-      }
+    when (view) {
+      is Button -> {
+        sl = getDisabledColorStateList(color, disabled)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && view.getBackground() is RippleDrawable) {
+          val rd = view.getBackground() as RippleDrawable
+          rd.setColor(ColorStateList.valueOf(rippleColor))
+        }
 
-      // Disabled text color state for buttons, may get overridden later by ATE tags
-      view.setTextColor(
-          getDisabledColorStateList(
-              textColor,
-              ContextCompat.getColor(
-                  view.getContext(),
-                  if (useDarkTheme)
-                    R.color.ate_button_text_disabled_dark
-                  else
-                    R.color.ate_button_text_disabled_light
-              )
-          )
-      )
-    } else if (view is FloatingActionButton) {
-      // FloatingActionButton doesn't support disabled state?
-      sl = ColorStateList(
-          arrayOf(
-              intArrayOf(-android.R.attr.state_pressed), intArrayOf(android.R.attr.state_pressed)
-          ),
-          intArrayOf(color, pressed)
-      )
-
-      view.rippleColor = rippleColor
-      view.backgroundTintList = sl
-      if (view.drawable != null)
-        view.setImageDrawable(
-            createTintedDrawable(view.drawable, textColor)
+        // Disabled text color state for buttons, may get overridden later by ATE tags
+        view.setTextColor(
+            getDisabledColorStateList(
+                textColor,
+                view.getContext().color(
+                    if (useDarkTheme)
+                      R.color.ate_button_text_disabled_dark
+                    else
+                      R.color.ate_button_text_disabled_light
+                )
+            )
         )
-      return
-    } else {
-      sl = ColorStateList(
+      }
+      is FloatingActionButton -> {
+        // FloatingActionButton doesn't support disabled state?
+        sl = ColorStateList(
+            arrayOf(
+                intArrayOf(-android.R.attr.state_pressed), intArrayOf(android.R.attr.state_pressed)
+            ),
+            intArrayOf(color, pressed)
+        )
+
+        view.rippleColor = rippleColor
+        view.backgroundTintList = sl
+        if (view.drawable != null)
+          view.setImageDrawable(
+              createTintedDrawable(view.drawable, textColor)
+          )
+        return
+      }
+      else -> sl = ColorStateList(
           arrayOf(
               intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_enabled),
               intArrayOf(android.R.attr.state_enabled, android.R.attr.state_pressed),
@@ -141,8 +137,7 @@ internal object TintHelper {
       view.setTextColor(
           getDisabledColorStateList(
               textColor,
-              ContextCompat.getColor(
-                  view.getContext(),
+              view.getContext().color(
                   if (isColorLight)
                     R.color.ate_text_disabled_light
                   else
@@ -180,8 +175,7 @@ internal object TintHelper {
       ) {
         // Ripples for the above views (e.g. when you tap and hold a switch or checkbox)
         val rd = view.background as RippleDrawable
-        val unchecked = ContextCompat.getColor(
-            view.context,
+        val unchecked = view.context.color(
             if (isDark) R.color.ripple_material_dark else R.color.ripple_material_light
         )
         val checked = color.adjustAlpha(0.4f)
@@ -244,9 +238,7 @@ internal object TintHelper {
     } else {
       @SuppressLint("PrivateResource")
       val d = createTintedDrawable(
-          ContextCompat.getDrawable(
-              radioButton.context, drawable.abc_btn_radio_material
-          ),
+          radioButton.context.drawable(R.drawable.abc_btn_radio_material),
           sl
       )
       radioButton.buttonDrawable = d
@@ -260,8 +252,7 @@ internal object TintHelper {
   ) {
     val s1 = getDisabledColorStateList(
         color,
-        ContextCompat.getColor(
-            seekBar.context,
+        seekBar.context.color(
             if (useDarker)
               R.color.ate_control_disabled_dark
             else
@@ -323,13 +314,13 @@ internal object TintHelper {
         ), intArrayOf()
         ),
         intArrayOf(
-            ContextCompat.getColor(
-                editText.context,
+            editText.context.color(
                 if (useDarker) R.color.ate_text_disabled_dark else R.color.ate_text_disabled_light
-            ), ContextCompat.getColor(
-            editText.context,
-            if (useDarker) R.color.ate_control_normal_dark else R.color.ate_control_normal_light
-        ), color
+            ),
+            editText.context.color(
+                if (useDarker) R.color.ate_control_normal_dark else R.color.ate_control_normal_light
+            ),
+            color
         )
     )
     if (editText is TintableBackgroundView) {
@@ -352,16 +343,16 @@ internal object TintHelper {
             intArrayOf(android.R.attr.state_enabled, android.R.attr.state_checked)
         ),
         intArrayOf(
-            ContextCompat.getColor(
-                box.context,
+            box.context.color(
                 if (useDarker)
                   R.color.ate_control_disabled_dark
                 else
                   R.color.ate_control_disabled_light
-            ), ContextCompat.getColor(
-            box.context,
-            if (useDarker) R.color.ate_control_normal_dark else R.color.ate_control_normal_light
-        ), color
+            ),
+            box.context.color(
+                if (useDarker) R.color.ate_control_normal_dark else R.color.ate_control_normal_light
+            ),
+            color
         )
     )
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -369,9 +360,7 @@ internal object TintHelper {
     } else {
       @SuppressLint("PrivateResource")
       val drawable = createTintedDrawable(
-          ContextCompat.getDrawable(
-              box.context, drawable.abc_btn_check_material
-          ), sl
+          box.context.drawable(R.drawable.abc_btn_check_material), sl
       )
       box.buttonDrawable = drawable
     }
@@ -397,34 +386,30 @@ internal object TintHelper {
     val disabled: Int
     var normal: Int
     if (thumb) {
-      disabled = ContextCompat.getColor(
-          context,
+      disabled = context.color(
           if (useDarker)
-            color.ate_switch_thumb_disabled_dark
+            R.color.ate_switch_thumb_disabled_dark
           else
-            color.ate_switch_thumb_disabled_light
+            R.color.ate_switch_thumb_disabled_light
       )
-      normal = ContextCompat.getColor(
-          context,
+      normal = context.color(
           if (useDarker)
-            color.ate_switch_thumb_normal_dark
+            R.color.ate_switch_thumb_normal_dark
           else
-            color.ate_switch_thumb_normal_light
+            R.color.ate_switch_thumb_normal_light
       )
     } else {
-      disabled = ContextCompat.getColor(
-          context,
+      disabled = context.color(
           if (useDarker)
-            color.ate_switch_track_disabled_dark
+            R.color.ate_switch_track_disabled_dark
           else
-            color.ate_switch_track_disabled_light
+            R.color.ate_switch_track_disabled_light
       )
-      normal = ContextCompat.getColor(
-          context,
+      normal = context.color(
           if (useDarker)
-            color.ate_switch_track_normal_dark
+            R.color.ate_switch_track_normal_dark
           else
-            color.ate_switch_track_normal_light
+            R.color.ate_switch_track_normal_light
       )
     }
 
@@ -536,10 +521,10 @@ internal object TintHelper {
       val fCursorDrawable = clazz.getDeclaredField("mCursorDrawable")
       fCursorDrawable.isAccessible = true
       val drawables = arrayOfNulls<Drawable>(2)
-      drawables[0] = ContextCompat.getDrawable(editText.context, mCursorDrawableRes)
+      drawables[0] = editText.context.drawable(mCursorDrawableRes)
       drawables[0] =
           createTintedDrawable(drawables[0], color)
-      drawables[1] = ContextCompat.getDrawable(editText.context, mCursorDrawableRes)
+      drawables[1] = editText.context.drawable(mCursorDrawableRes)
       drawables[1] =
           createTintedDrawable(drawables[1], color)
       fCursorDrawable.set(editor, drawables)

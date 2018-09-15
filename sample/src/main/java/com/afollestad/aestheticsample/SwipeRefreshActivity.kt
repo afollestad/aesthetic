@@ -7,11 +7,11 @@ package com.afollestad.aestheticsample
 
 import android.os.Bundle
 import com.afollestad.aesthetic.AestheticActivity
-import io.reactivex.Observable
+import io.reactivex.Observable.just
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_swipe_refresh.swipe_refresh_layout
 import kotlinx.android.synthetic.main.activity_swipe_refresh.toolbar
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.SECONDS
 
 /** @author Aidan Follestad (afollestad) */
 class SwipeRefreshActivity : AestheticActivity() {
@@ -24,8 +24,8 @@ class SwipeRefreshActivity : AestheticActivity() {
 
     toolbar.setNavigationOnClickListener { finish() }
     swipe_refresh_layout.setOnRefreshListener {
-      delayed = Observable.just(true)
-          .delay(2, TimeUnit.SECONDS)
+      delayed = just(true)
+          .delay(2, SECONDS)
           .subscribe { swipe_refresh_layout.isRefreshing = false }
     }
   }

@@ -17,11 +17,9 @@ import android.support.annotation.CheckResult
 import android.support.annotation.ColorInt
 import android.support.annotation.ColorRes
 import android.support.annotation.StyleRes
-import android.support.v4.content.ContextCompat
-import android.support.v4.util.Pair
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import com.afollestad.aesthetic.actions.ViewBackgroundSubscriber
 import com.afollestad.aesthetic.internal.PrefNames.KEY_ACCENT_COLOR
 import com.afollestad.aesthetic.internal.PrefNames.KEY_ACTIVITY_THEME
@@ -516,8 +514,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
       rxkPrefs!!
           .integer(
               KEY_CARD_VIEW_BG_COLOR,
-              ContextCompat.getColor(
-                  context,
+              context.color(
                   if (it)
                     R.color.ate_cardview_bg_dark
                   else
@@ -555,16 +552,15 @@ class Aesthetic private constructor(private var ctxt: Context?) {
           rxkPrefs!!
               .integer(
                   KEY_ICON_TITLE_ACTIVE_COLOR,
-                  ContextCompat.getColor(
-                      context, if (isDark) R.color.ate_icon_dark else R.color.ate_icon_light
+                  context.color(
+                      if (isDark) R.color.ate_icon_dark else R.color.ate_icon_light
                   )
               )
               .asObservable(),
           rxkPrefs!!
               .integer(
                   KEY_ICON_TITLE_INACTIVE_COLOR,
-                  ContextCompat.getColor(
-                      context,
+                  context.color(
                       if (isDark)
                         R.color.ate_icon_dark_inactive
                       else
@@ -810,7 +806,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
               )
           subs += combineLatest<Int, Int, Pair<Int, Int>>(
               colorStatusBar(), lightStatusBarMode(),
-              BiFunction<Int, Int, Pair<Int, Int>> { a, b -> Pair.create(a, b) })
+              BiFunction<Int, Int, Pair<Int, Int>> { a, b -> Pair(a, b) })
               .distinctToMainThread()
               .subscribe(
                   Consumer { invalidateStatusBar() },

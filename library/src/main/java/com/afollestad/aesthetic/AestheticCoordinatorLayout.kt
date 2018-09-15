@@ -11,16 +11,13 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CollapsingToolbarLayout
-import android.support.design.widget.CoordinatorLayout
-import android.support.v4.util.Pair
-import android.support.v7.view.menu.ActionMenuItemView
-import android.support.v7.widget.ActionMenuView
-import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
 import android.view.Menu
 import android.view.View
+import androidx.appcompat.view.menu.ActionMenuItemView
+import androidx.appcompat.widget.ActionMenuView
+import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.blendWith
@@ -29,6 +26,8 @@ import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.setOverflowButtonColor
 import com.afollestad.aesthetic.utils.tintMenu
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
@@ -129,13 +128,13 @@ class AestheticCoordinatorLayout(
           combineLatest<Int, ActiveInactiveColors, Pair<Int, ActiveInactiveColors>>(
               toolbar!!.colorUpdated(),
               Aesthetic.get().colorIconTitle(toolbar!!.colorUpdated()),
-              ToolbarIconTitleFunc { a, b -> Pair.create(a, b) }
+              ToolbarIconTitleFunc { a, b -> Pair(a, b) }
           )
               .distinctToMainThread()
               .subscribe(
                   Consumer {
-                    toolbarColor = it.first!!
-                    iconTextColors = it.second!!
+                    toolbarColor = it.first
+                    iconTextColors = it.second
                     invalidateColors()
                   },
                   onErrorLogAndRethrow()

@@ -6,17 +6,17 @@
 package com.afollestad.aesthetic
 
 import android.content.Context
-import android.support.design.widget.TextInputEditText
 import android.util.AttributeSet
 import com.afollestad.aesthetic.actions.ViewHintTextColorAction
 import com.afollestad.aesthetic.actions.ViewTextColorAction
 import com.afollestad.aesthetic.utils.TintHelper.setCursorTint
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
-import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
+import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
+import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
@@ -65,7 +65,7 @@ class AestheticTextInputEditText(
             )
     subs!! +=
         combineLatest(
-            getObservableForResId(
+            watchColor(
                 context,
                 backgroundResId,
                 Aesthetic.get().colorAccent()

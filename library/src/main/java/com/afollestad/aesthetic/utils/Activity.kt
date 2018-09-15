@@ -12,11 +12,11 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.support.annotation.ColorInt
-import android.support.v4.view.LayoutInflaterCompat
-import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.LayoutInflaterCompat
 import com.afollestad.aesthetic.internal.InflationInterceptor
 
 internal fun AppCompatActivity.setInflaterFactory(li: LayoutInflater) {
@@ -73,6 +73,7 @@ internal fun Activity.setTaskDescriptionColor(@ColorInt requestedColor: Int) {
   }
   if (icon != null) {
     // Sets color of entry in the system recents page
+    @Suppress("DEPRECATION")
     val td = ActivityManager.TaskDescription(title as String, icon, color)
     setTaskDescription(td)
   }

@@ -8,21 +8,20 @@ package com.afollestad.aesthetic
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.support.design.widget.FloatingActionButton
 import android.util.AttributeSet
 import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
-import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
+import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 
-/** @author Aidan Follestad (afollestad)
- */
+/** @author Aidan Follestad (afollestad) */
 class AestheticFab(
   context: Context,
   attrs: AttributeSet? = null
@@ -51,7 +50,7 @@ class AestheticFab(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     subscription = combineLatest(
-        getObservableForResId(
+        watchColor(
             context,
             backgroundResId,
             Aesthetic.get().colorAccent()

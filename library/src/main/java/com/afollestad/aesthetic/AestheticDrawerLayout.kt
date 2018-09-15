@@ -6,10 +6,10 @@
 package com.afollestad.aesthetic
 
 import android.content.Context
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.graphics.drawable.DrawerArrowDrawable
 import android.util.AttributeSet
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
+import androidx.drawerlayout.widget.DrawerLayout
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import io.reactivex.disposables.Disposable

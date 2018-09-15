@@ -31,17 +31,21 @@ android {
 
   packagingOptions {
     exclude 'META-INF/library_release.kotlin_module'
+    exclude 'META-INF/proguard/androidx-annotations.pro'
   }
 }
 
-dependencies {
-  implementation 'com.android.support:appcompat-v7:' + versions.supportLib
-  implementation 'com.android.support:cardview-v7:' + versions.supportLib
-  implementation 'com.android.support:support-compat:' + versions.supportLib
+repositories {
+  google()
+  jcenter()
+}
 
-  implementation 'com.android.support:design:' + versions.supportLib
-  implementation 'com.android.support:recyclerview-v7:' + versions.supportLib
-  implementation 'com.android.support:support-v13:' + versions.supportLib
+dependencies {
+  implementation 'androidx.appcompat:appcompat:' + versions.androidx
+  implementation 'androidx.cardview:cardview:' + versions.androidx
+  implementation 'androidx.recyclerview:recyclerview:' + versions.androidx
+
+  implementation 'com.google.android.material:material:' + versions.androidx
 
   implementation 'io.reactivex.rxjava2:rxjava:' + versions.rxJava
   implementation 'io.reactivex.rxjava2:rxandroid:' + versions.rxAndroid

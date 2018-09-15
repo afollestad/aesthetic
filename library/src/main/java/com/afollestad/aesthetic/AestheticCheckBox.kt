@@ -6,11 +6,11 @@
 package com.afollestad.aesthetic
 
 import android.content.Context
-import android.support.v7.widget.AppCompatCheckBox
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatCheckBox
 import com.afollestad.aesthetic.actions.ViewTextColorAction
 import com.afollestad.aesthetic.utils.TintHelper.setTint
-import com.afollestad.aesthetic.utils.ViewUtil.getObservableForResId
+import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
@@ -25,7 +25,7 @@ class AestheticCheckBox(
   attrs: AttributeSet? = null
 ) : AppCompatCheckBox(context, attrs) {
 
-  private var subscriptions: CompositeDisposable? = null
+  private var subs: CompositeDisposable? = null
   private var backgroundResId: Int = 0
 
   init {
@@ -39,11 +39,10 @@ class AestheticCheckBox(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscriptions = CompositeDisposable()
-
-    subscriptions!! +=
+    subs = CompositeDisposable()
+    subs +=
         combineLatest(
-            getObservableForResId(
+            watchColor(
                 context, backgroundResId, Aesthetic.get().colorAccent()
             )!!,
             Aesthetic.get().isDark,
@@ -54,7 +53,7 @@ class AestheticCheckBox(
                 Consumer { this.invalidateColors(it) },
                 onErrorLogAndRethrow()
             )
-    subscriptions!! +=
+    subs +=
         Aesthetic.get()
             .textColorPrimary()
             .distinctToMainThread()
@@ -62,7 +61,7 @@ class AestheticCheckBox(
   }
 
   override fun onDetachedFromWindow() {
-    subscriptions?.clear()
+    subs?.clear()
     super.onDetachedFromWindow()
   }
 }
