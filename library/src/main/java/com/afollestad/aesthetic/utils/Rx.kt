@@ -16,8 +16,8 @@ internal fun <T> Observable<T>.distinctToMainThread(): Observable<T> {
   return observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged()
 }
 
-internal operator fun CompositeDisposable.plusAssign(disposable: Disposable) {
-  add(disposable)
+internal operator fun CompositeDisposable?.plusAssign(disposable: Disposable) {
+  this?.add(disposable)
 }
 
 internal fun onErrorLogAndRethrow(): Consumer<Throwable> {

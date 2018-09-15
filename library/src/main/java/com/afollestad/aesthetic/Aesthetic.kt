@@ -67,6 +67,7 @@ import com.afollestad.aesthetic.utils.splitToInts
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.rxkprefs.RxkPrefs
 import io.reactivex.Observable
+import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
@@ -93,7 +94,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   private fun initPrefs() {
     rxkPrefs = RxkPrefs(context, PREFS_NAME)
     prefs = rxkPrefs!!.getSharedPrefs()
-    editor = prefs!!.edit()
+    editor = safePrefs.edit()
     onAttached.onNext(true)
   }
 
@@ -108,12 +109,18 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   internal val context
     @CheckResult
-    get() = ctxt!!
+    get() = ctxt ?: throw IllegalStateException("Not attached")
+  private val safePrefs
+    @CheckResult
+    get() = prefs ?: throw IllegalStateException("Not attached")
+  private val safePrefsEditor
+    @CheckResult
+    get() = editor ?: throw IllegalStateException("Not attached")
 
   val isDark: Observable<Boolean>
     @CheckResult
     get() = waitForAttach().flatMap {
-      rxkPrefs!!.boolean(KEY_IS_DARK)
+      it.boolean(KEY_IS_DARK)
           .asObservable()
     }
 
@@ -130,7 +137,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   @CheckResult
   fun activityTheme(@StyleRes theme: Int): Aesthetic {
     val key = format(KEY_ACTIVITY_THEME, key(context))
-    editor!!.putInt(key, theme)
+    safePrefsEditor.putInt(key, theme)
     return this
   }
 
@@ -147,7 +154,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun isDark(isDark: Boolean): Aesthetic {
-    editor!!.putBoolean(KEY_IS_DARK, isDark)
+    safePrefsEditor.putBoolean(KEY_IS_DARK, isDark)
         .commit()
     return this
   }
@@ -155,7 +162,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   @CheckResult
   fun colorPrimary(@ColorInt color: Int): Aesthetic {
     // needs to be committed immediately so that for statusBarColorAuto() and other auto methods
-    editor!!.putInt(KEY_PRIMARY_COLOR, color)
+    safePrefsEditor.putInt(KEY_PRIMARY_COLOR, color)
         .commit()
     return this
   }
@@ -177,7 +184,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   @CheckResult
   fun colorPrimaryDark(@ColorInt color: Int): Aesthetic {
     // needs to be committed immediately so that for statusBarColorAuto() and other auto methods
-    editor!!.putInt(KEY_PRIMARY_DARK_COLOR, color)
+    safePrefsEditor.putInt(KEY_PRIMARY_DARK_COLOR, color)
         .commit()
     return this
   }
@@ -200,7 +207,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun colorAccent(@ColorInt color: Int): Aesthetic {
-    editor!!.putInt(KEY_ACCENT_COLOR, color)
+    safePrefsEditor.putInt(KEY_ACCENT_COLOR, color)
         .commit()
     return this
   }
@@ -221,7 +228,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun textColorPrimary(@ColorInt color: Int): Aesthetic {
-    editor!!.putInt(KEY_PRIMARY_TEXT_COLOR, color)
+    safePrefsEditor.putInt(KEY_PRIMARY_TEXT_COLOR, color)
     return this
   }
 
@@ -244,7 +251,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun textColorSecondary(@ColorInt color: Int): Aesthetic {
-    editor!!.putInt(KEY_SECONDARY_TEXT_COLOR, color)
+    safePrefsEditor.putInt(KEY_SECONDARY_TEXT_COLOR, color)
     return this
   }
 
@@ -267,7 +274,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun textColorPrimaryInverse(@ColorInt color: Int): Aesthetic {
-    editor!!.putInt(KEY_PRIMARY_TEXT_INVERSE_COLOR, color)
+    safePrefsEditor.putInt(KEY_PRIMARY_TEXT_INVERSE_COLOR, color)
     return this
   }
 
@@ -290,7 +297,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun textColorSecondaryInverse(@ColorInt color: Int): Aesthetic {
-    editor!!.putInt(KEY_SECONDARY_TEXT_INVERSE_COLOR, color)
+    safePrefsEditor.putInt(KEY_SECONDARY_TEXT_INVERSE_COLOR, color)
     return this
   }
 
@@ -313,7 +320,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun colorWindowBackground(@ColorInt color: Int): Aesthetic {
-    editor!!.putInt(KEY_WINDOW_BG_COLOR, color)
+    safePrefsEditor.putInt(KEY_WINDOW_BG_COLOR, color)
         .commit()
     return this
   }
@@ -338,7 +345,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   @CheckResult
   fun colorStatusBar(@ColorInt color: Int): Aesthetic {
     val key = format(KEY_STATUS_BAR_COLOR, key(context))
-    editor!!.putInt(key, color)
+    safePrefsEditor.putInt(key, color)
     return this
   }
 
@@ -350,9 +357,9 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   @CheckResult
   fun colorStatusBarAuto(): Aesthetic {
     val key = format(KEY_STATUS_BAR_COLOR, key(context))
-    editor!!.putInt(
+    safePrefsEditor.putInt(
         key,
-        prefs!!.getInt(
+        safePrefs.getInt(
             KEY_PRIMARY_COLOR, context.colorAttr(R.attr.colorPrimary)
         ).darkenColor()
     )
@@ -371,7 +378,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   @CheckResult
   fun colorNavigationBar(@ColorInt color: Int): Aesthetic {
     val key = format(KEY_NAV_BAR_COLOR, key(context))
-    editor!!.putInt(key, color)
+    safePrefsEditor.putInt(key, color)
     return this
   }
 
@@ -383,31 +390,31 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   @CheckResult
   fun colorNavigationBarAuto(): Aesthetic {
     val color =
-      prefs!!.getInt(KEY_PRIMARY_COLOR, context.colorAttr(R.attr.colorPrimary))
+      safePrefs.getInt(KEY_PRIMARY_COLOR, context.colorAttr(R.attr.colorPrimary))
     val key = format(KEY_NAV_BAR_COLOR, key(context))
-    editor!!.putInt(key, if (color.isColorLight()) Color.BLACK else color)
+    safePrefsEditor.putInt(key, if (color.isColorLight()) Color.BLACK else color)
     return this
   }
 
   @CheckResult
   fun colorNavigationBar(): Observable<Int> {
     val key = format(KEY_NAV_BAR_COLOR, key(context))
-    return waitForAttach().flatMap { _ ->
-      rxkPrefs!!.integer(key, Color.BLACK)
+    return waitForAttach().flatMap { rxPrefs ->
+      rxPrefs.integer(key, Color.BLACK)
           .asObservable()
     }
   }
 
   @CheckResult
   fun lightStatusBarMode(mode: AutoSwitchMode): Aesthetic {
-    editor!!.putInt(KEY_LIGHT_STATUS_MODE, mode.value)
+    safePrefsEditor.putInt(KEY_LIGHT_STATUS_MODE, mode.value)
     return this
   }
 
   @CheckResult
   fun lightStatusBarMode(): Observable<Int> {
-    return waitForAttach().flatMap { _ ->
-      rxkPrefs!!
+    return waitForAttach().flatMap { rxPrefs ->
+      rxPrefs
           .integer(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
           .asObservable()
     }
@@ -415,7 +422,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun tabLayoutIndicatorMode(mode: TabLayoutIndicatorMode): Aesthetic {
-    editor!!.putInt(KEY_TAB_LAYOUT_INDICATOR_MODE, mode.value)
+    safePrefsEditor.putInt(KEY_TAB_LAYOUT_INDICATOR_MODE, mode.value)
         .commit()
     return this
   }
@@ -434,7 +441,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun tabLayoutBackgroundMode(mode: TabLayoutBgMode): Aesthetic {
-    editor!!.putInt(KEY_TAB_LAYOUT_BG_MODE, mode.value)
+    safePrefsEditor.putInt(KEY_TAB_LAYOUT_BG_MODE, mode.value)
         .commit()
     return this
   }
@@ -451,7 +458,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun navigationViewMode(mode: NavigationViewMode): Aesthetic {
-    editor!!.putInt(KEY_NAV_VIEW_MODE, mode.value)
+    safePrefsEditor.putInt(KEY_NAV_VIEW_MODE, mode.value)
         .commit()
     return this
   }
@@ -468,7 +475,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun bottomNavigationBackgroundMode(mode: BottomNavBgMode): Aesthetic {
-    editor!!.putInt(KEY_BOTTOM_NAV_BG_MODE, mode.value)
+    safePrefsEditor.putInt(KEY_BOTTOM_NAV_BG_MODE, mode.value)
         .commit()
     return this
   }
@@ -485,7 +492,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun bottomNavigationIconTextMode(mode: BottomNavIconTextMode): Aesthetic {
-    editor!!.putInt(KEY_BOTTOM_NAV_ICONTEXT_MODE, mode.value)
+    safePrefsEditor.putInt(KEY_BOTTOM_NAV_ICONTEXT_MODE, mode.value)
         .commit()
     return this
   }
@@ -523,7 +530,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun colorCardViewBackground(@ColorInt color: Int): Aesthetic {
-    editor!!.putInt(KEY_CARD_VIEW_BG_COLOR, color)
+    safePrefsEditor.putInt(KEY_CARD_VIEW_BG_COLOR, color)
     return this
   }
 
@@ -577,7 +584,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun colorIconTitleActive(@ColorInt color: Int): Aesthetic {
-    editor!!.putInt(KEY_ICON_TITLE_ACTIVE_COLOR, color)
+    safePrefsEditor.putInt(KEY_ICON_TITLE_ACTIVE_COLOR, color)
     return this
   }
 
@@ -588,7 +595,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun colorIconTitleInactive(@ColorInt color: Int): Aesthetic {
-    editor!!.putInt(KEY_ICON_TITLE_INACTIVE_COLOR, color)
+    safePrefsEditor.putInt(KEY_ICON_TITLE_INACTIVE_COLOR, color)
     return this
   }
 
@@ -617,7 +624,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun snackbarTextColor(@ColorInt color: Int): Aesthetic {
-    editor!!.putInt(KEY_SNACKBAR_TEXT, color)
+    safePrefsEditor.putInt(KEY_SNACKBAR_TEXT, color)
     return this
   }
 
@@ -637,7 +644,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun snackbarActionTextColor(@ColorInt color: Int): Aesthetic {
-    editor!!.putInt(KEY_SNACKBAR_ACTION_TEXT, color)
+    safePrefsEditor.putInt(KEY_SNACKBAR_ACTION_TEXT, color)
     return this
   }
 
@@ -658,13 +665,13 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult
   fun swipeRefreshLayoutColors(@ColorInt vararg colors: Int): Aesthetic {
-    editor!!.putString(KEY_SWIPEREFRESH_COLORS, colors.joinToString(","))
+    safePrefsEditor.putString(KEY_SWIPEREFRESH_COLORS, colors.joinToString(","))
     return this
   }
 
   @CheckResult
   fun swipeRefreshLayoutColorsRes(@ColorRes vararg colorsRes: Int): Aesthetic {
-    editor!!.putString(
+    safePrefsEditor.putString(
         KEY_SWIPEREFRESH_COLORS, colorsRes.map { context.color(it) }.joinToString(",")
     )
     return this
@@ -672,13 +679,13 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   /** Notifies all listening views that theme properties have been updated.  */
   fun apply() {
-    editor!!.commit()
+    safePrefsEditor.commit()
   }
 
   private fun invalidateStatusBar() {
     with(context as? Activity ?: return) {
       val key = format(KEY_STATUS_BAR_COLOR, key(context))
-      val color = prefs!!.getInt(key, context.colorAttr(R.attr.colorPrimaryDark))
+      val color = safePrefs.getInt(key, context.colorAttr(R.attr.colorPrimaryDark))
 
       val rootView = getRootView()
       if (rootView is DrawerLayout) {
@@ -691,7 +698,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
       }
 
       val mode = AutoSwitchMode.fromInt(
-          prefs!!.getInt(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
+          safePrefs.getInt(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
       )
       when (mode) {
         AutoSwitchMode.OFF -> setLightStatusBarCompat(false)
@@ -734,7 +741,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
           (this as? AppCompatActivity)?.setInflaterFactory(li)
 
           val activityThemeKey = format(KEY_ACTIVITY_THEME, key(this))
-          val latestActivityTheme = prefs!!.getInt(activityThemeKey, 0)
+          val latestActivityTheme = safePrefs.getInt(activityThemeKey, 0)
           lastActivityThemes[context.javaClass.name] = latestActivityTheme
           if (latestActivityTheme != 0) {
             setTheme(latestActivityTheme)
@@ -786,52 +793,43 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
         subs = CompositeDisposable()
         if (context is Activity) {
-          subs!! +=
-              instance!!
-                  .colorPrimary()
-                  .distinctToMainThread()
-                  .subscribe(
-                      Consumer { (context as Activity).setTaskDescriptionColor(it) },
-                      onErrorLogAndRethrow()
-                  )
-          subs!! +=
-              instance!!
-                  .activityTheme()
-                  .distinctToMainThread()
-                  .subscribe(
-                      Consumer {
-                        lastActivityThemes[context.javaClass.name] = it
-                        (context as Activity).recreate()
-                      },
-                      onErrorLogAndRethrow()
-                  )
-          subs!! +=
-              Observable.combineLatest<Int, Int, Pair<Int, Int>>(
-                  colorStatusBar(), lightStatusBarMode(),
-                  BiFunction<Int, Int, Pair<Int, Int>> { a, b -> Pair.create(a, b) })
-                  .distinctToMainThread()
-                  .subscribe(
-                      Consumer { invalidateStatusBar() },
-                      onErrorLogAndRethrow()
-                  )
-          subs!! +=
-              instance!!
-                  .colorNavigationBar()
-                  .distinctToMainThread()
-                  .subscribe(
-                      Consumer { (context as Activity).setNavBarColorCompat(it) },
-                      onErrorLogAndRethrow()
-                  )
-          subs!! +=
-              instance!!
-                  .colorWindowBackground()
-                  .distinctToMainThread()
-                  .subscribe(
-                      Consumer {
-                        (context as Activity).window?.setBackgroundDrawable(ColorDrawable(it))
-                      },
-                      onErrorLogAndRethrow()
-                  )
+          subs += colorPrimary()
+              .distinctToMainThread()
+              .subscribe(
+                  Consumer { (context as Activity).setTaskDescriptionColor(it) },
+                  onErrorLogAndRethrow()
+              )
+          subs += activityTheme()
+              .distinctToMainThread()
+              .subscribe(
+                  Consumer {
+                    lastActivityThemes[context.javaClass.name] = it
+                    (context as Activity).recreate()
+                  },
+                  onErrorLogAndRethrow()
+              )
+          subs += combineLatest<Int, Int, Pair<Int, Int>>(
+              colorStatusBar(), lightStatusBarMode(),
+              BiFunction<Int, Int, Pair<Int, Int>> { a, b -> Pair.create(a, b) })
+              .distinctToMainThread()
+              .subscribe(
+                  Consumer { invalidateStatusBar() },
+                  onErrorLogAndRethrow()
+              )
+          subs += colorNavigationBar()
+              .distinctToMainThread()
+              .subscribe(
+                  Consumer { (context as Activity).setNavBarColorCompat(it) },
+                  onErrorLogAndRethrow()
+              )
+          subs += colorWindowBackground()
+              .distinctToMainThread()
+              .subscribe(
+                  Consumer {
+                    (context as Activity).window?.setBackgroundDrawable(ColorDrawable(it))
+                  },
+                  onErrorLogAndRethrow()
+              )
         }
       }
     }
@@ -840,8 +838,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
     val isFirstTime: Boolean
       get() {
         with(instance ?: throw IllegalStateException("Not attached")) {
-          val firstTime = prefs!!.getBoolean(KEY_FIRST_TIME, true)
-          editor!!.putBoolean(KEY_FIRST_TIME, false)
+          val firstTime = safePrefs.getBoolean(KEY_FIRST_TIME, true)
+          safePrefsEditor.putBoolean(KEY_FIRST_TIME, false)
               .apply()
           return firstTime
         }
