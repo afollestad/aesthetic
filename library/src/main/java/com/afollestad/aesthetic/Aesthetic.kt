@@ -111,7 +111,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
    */
   private fun waitForAttach() = onAttached.filter { it }.map { rxkPrefs!! }
 
-  // The 4 fields below allow us to avoid using !!, and provide indication if we access them 
+  // The 4 fields below allow us to avoid using !!, and provide indication if we access them
   // before we should.
   internal val context
     @CheckResult
