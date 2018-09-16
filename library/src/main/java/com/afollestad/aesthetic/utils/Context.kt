@@ -49,11 +49,11 @@ internal fun Context.resId(
   attrs: AttributeSet?,
   @AttrRes attrId: Int
 ): Int {
-  if (attrs == null) {
-    return 0
-  }
+  if (attrs == null) return 0
   val ta = obtainStyledAttributes(attrs, intArrayOf(attrId))
-  val result = ta.getResourceId(0, 0)
-  ta.recycle()
-  return result
+  try {
+    return ta.getResourceId(0, 0)
+  } finally {
+    ta.recycle()
+  }
 }
