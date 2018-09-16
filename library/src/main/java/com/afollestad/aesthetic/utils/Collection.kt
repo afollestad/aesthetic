@@ -12,6 +12,6 @@ internal fun String.splitToInts(delimiter: String = ","): IntArray {
       .toIntArray()
 }
 
-internal fun <K, V> mutableArrayMapOf(initialCapacity: Int = 0): MutableMap<K, V> {
+internal fun <K, V> mutableArrayMap(initialCapacity: Int = 0): MutableMap<K, V> {
   return ArrayMap<K, V>(initialCapacity)
 }

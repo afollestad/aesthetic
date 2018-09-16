@@ -53,7 +53,7 @@ import com.afollestad.aesthetic.utils.darkenColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.getRootView
 import com.afollestad.aesthetic.utils.isColorLight
-import com.afollestad.aesthetic.utils.mutableArrayMapOf
+import com.afollestad.aesthetic.utils.mutableArrayMap
 import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.setInflaterFactory
@@ -76,7 +76,7 @@ import java.lang.String.format
 /** @author Aidan Follestad (afollestad) */
 class Aesthetic private constructor(private var ctxt: Context?) {
 
-  private val lastActivityThemes = mutableArrayMapOf<String, Int>(2)
+  private val lastActivityThemes = mutableArrayMap<String, Int>(2)
   private val onAttached = BehaviorSubject.create<Boolean>()
 
   private var subs: CompositeDisposable? = null
