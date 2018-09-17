@@ -30,7 +30,7 @@ fun watchColor(
 
       context.resId(android.R.attr.statusBarColor) -> colorStatusBar()
       context.resId(android.R.attr.windowBackground) -> colorWindowBackground()
-      
+
       context.resId(android.R.attr.textColorPrimary) -> textColorPrimary()
       context.resId(android.R.attr.textColorPrimaryInverse) -> textColorPrimaryInverse()
       context.resId(android.R.attr.textColorSecondary) -> textColorSecondary()
