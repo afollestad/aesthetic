@@ -5,6 +5,7 @@
  */
 package com.afollestad.aestheticsample
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.widget.SearchView
@@ -25,6 +26,13 @@ class MainActivity : AestheticActivity() {
     setContentView(R.layout.activity_main)
 
     toolbar.inflateMenu(R.menu.main)
+    toolbar.setOnMenuItemClickListener {
+      if (it.itemId == R.id.settings) {
+        startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
+      }
+      true
+    }
+
     val searchItem = toolbar.menu.findItem(R.id.search)
     val searchView = searchItem.actionView as SearchView
     searchView.queryHint = getString(R.string.search_view_example)

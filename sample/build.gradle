@@ -9,11 +9,6 @@ android {
   compileSdkVersion versions.compileSdk
   buildToolsVersion versions.buildTools
 
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-  }
-
   defaultConfig {
     applicationId "com.afollestad.aestheticsample"
     minSdkVersion versions.minSdk
@@ -23,9 +18,12 @@ android {
     vectorDrawables.useSupportLibrary = true
   }
 
+  compileOptions {
+    kotlinOptions.freeCompilerArgs += ['-module-name', "com.afollestad.aestheticsample"]
+  }
+
   packagingOptions {
-    exclude 'META-INF/library_release.kotlin_module'
-    exclude 'META-INF/proguard/androidx-annotations.pro'
+    pickFirst 'META-INF/proguard/androidx-annotations.pro'
   }
 }
 
@@ -38,6 +36,7 @@ dependencies {
   implementation project(':library')
 
   implementation 'androidx.appcompat:appcompat:' + versions.androidx
+  implementation 'androidx.preference:preference:' + versions.androidx
   implementation 'com.google.android.material:material:' + versions.androidx
 
   implementation 'io.reactivex.rxjava2:rxjava:' + versions.rxJava

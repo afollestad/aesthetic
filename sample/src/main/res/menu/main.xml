@@ -12,10 +12,6 @@
       app:showAsAction="ifRoom|collapseActionView"
       tools:ignore="AppCompatResource"/>
 
-  <item
-      android:id="@+id/hello_world"
-      android:title="@string/hello_world"/>
-
   <group
       android:checkableBehavior="single">
 
@@ -35,5 +31,9 @@
         android:title="@string/hello_world"/>
 
   </group>
+
+  <item
+      android:id="@+id/settings"
+      android:title="@string/settings"/>
 
 </menu>

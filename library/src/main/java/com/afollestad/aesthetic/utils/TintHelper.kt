@@ -17,6 +17,7 @@ import android.support.annotation.ColorInt
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.CheckedTextView
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -67,14 +68,16 @@ internal object TintHelper {
   ) {
     val isColorLight = color.isColorLight()
     val disabled = view.context.color(
-        if (useDarkTheme) R.color.ate_button_disabled_dark else R.color.ate_button_disabled_light
+        if (useDarkTheme) R.color.ate_button_disabled_dark
+        else R.color.ate_button_disabled_light
     )
     val pressed = color.shiftColor(if (darker) 0.9f else 1.1f)
     val activated = color.shiftColor(if (darker) 1.1f else 0.9f)
     val rippleColor =
       getDefaultRippleColor(view.context, isColorLight)
     val textColor = view.context.color(
-        if (isColorLight) R.color.ate_primary_text_light else R.color.ate_primary_text_dark
+        if (isColorLight) R.color.ate_primary_text_light
+        else R.color.ate_primary_text_dark
     )
 
     val sl: ColorStateList
@@ -91,10 +94,8 @@ internal object TintHelper {
             getDisabledColorStateList(
                 textColor,
                 view.getContext().color(
-                    if (useDarkTheme)
-                      R.color.ate_button_text_disabled_dark
-                    else
-                      R.color.ate_button_text_disabled_light
+                    if (useDarkTheme) R.color.ate_button_text_disabled_dark
+                    else R.color.ate_button_text_disabled_light
                 )
             )
         )
@@ -138,10 +139,8 @@ internal object TintHelper {
           getDisabledColorStateList(
               textColor,
               view.getContext().color(
-                  if (isColorLight)
-                    R.color.ate_text_disabled_light
-                  else
-                    R.color.ate_text_disabled_dark
+                  if (isColorLight) R.color.ate_text_disabled_light
+                  else R.color.ate_text_disabled_dark
               )
           )
       )
@@ -166,6 +165,7 @@ internal object TintHelper {
         is ImageView -> setTint(view, color)
         is Switch -> setTint(view, color, isDark)
         is SwitchCompat -> setTint(view, color, isDark)
+        is CheckedTextView -> setTint(view, color, isDark)
         else -> background = true
       }
 
@@ -378,38 +378,48 @@ internal object TintHelper {
     compatSwitch: Boolean,
     useDarker: Boolean
   ): Drawable? {
+    val sl = getCheckableColorStateList(
+        context = context,
+        requestedTint = requestedTint,
+        thumb = thumb,
+        compatSwitch = compatSwitch,
+        useDarker = useDarker
+    )
+    return createTintedDrawable(from, sl)
+  }
+
+  private fun getCheckableColorStateList(
+    context: Context,
+    @ColorInt requestedTint: Int,
+    thumb: Boolean,
+    compatSwitch: Boolean,
+    useDarker: Boolean
+  ): ColorStateList {
     var tint = requestedTint
     if (useDarker) {
       tint = tint.shiftColor(1.1f)
     }
     tint = tint.adjustAlpha(if (compatSwitch && !thumb) 0.5f else 1.0f)
+
     val disabled: Int
     var normal: Int
     if (thumb) {
       disabled = context.color(
-          if (useDarker)
-            R.color.ate_switch_thumb_disabled_dark
-          else
-            R.color.ate_switch_thumb_disabled_light
+          if (useDarker) R.color.ate_switch_thumb_disabled_dark
+          else R.color.ate_switch_thumb_disabled_light
       )
       normal = context.color(
-          if (useDarker)
-            R.color.ate_switch_thumb_normal_dark
-          else
-            R.color.ate_switch_thumb_normal_light
+          if (useDarker) R.color.ate_switch_thumb_normal_dark
+          else R.color.ate_switch_thumb_normal_light
       )
     } else {
       disabled = context.color(
-          if (useDarker)
-            R.color.ate_switch_track_disabled_dark
-          else
-            R.color.ate_switch_track_disabled_light
+          if (useDarker) R.color.ate_switch_track_disabled_dark
+          else R.color.ate_switch_track_disabled_light
       )
       normal = context.color(
-          if (useDarker)
-            R.color.ate_switch_track_normal_dark
-          else
-            R.color.ate_switch_track_normal_light
+          if (useDarker) R.color.ate_switch_track_normal_dark
+          else R.color.ate_switch_track_normal_light
       )
     }
 
@@ -418,7 +428,7 @@ internal object TintHelper {
       normal = normal.stripAlpha()
     }
 
-    val sl = ColorStateList(
+    return ColorStateList(
         arrayOf(
             intArrayOf(-android.R.attr.state_enabled), intArrayOf(
             android.R.attr.state_enabled, -android.R.attr.state_activated,
@@ -428,7 +438,6 @@ internal object TintHelper {
         ),
         intArrayOf(disabled, normal, tint, tint)
     )
-    return createTintedDrawable(from, sl)
   }
 
   fun setTint(
@@ -483,6 +492,22 @@ internal object TintHelper {
           useDarker
       )
     }
+  }
+
+  fun setTint(
+    textView: CheckedTextView,
+    @ColorInt color: Int,
+    useDarker: Boolean
+  ) {
+    val currentDrawable = textView.checkMarkDrawable ?: return
+    textView.checkMarkDrawable = modifySwitchDrawable(
+        context = textView.context,
+        from = currentDrawable,
+        requestedTint = color,
+        thumb = false,
+        compatSwitch = false,
+        useDarker = useDarker
+    )
   }
 
   // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary

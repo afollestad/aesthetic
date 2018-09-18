@@ -15,12 +15,16 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.R.id
+import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.views.AestheticActionMenuItemView
 import com.afollestad.aesthetic.views.AestheticBorderlessButton
 import com.afollestad.aesthetic.views.AestheticBottomNavigationView
 import com.afollestad.aesthetic.views.AestheticButton
 import com.afollestad.aesthetic.views.AestheticCardView
 import com.afollestad.aesthetic.views.AestheticCheckBox
+import com.afollestad.aesthetic.views.AestheticCheckedTextView
 import com.afollestad.aesthetic.views.AestheticCoordinatorLayout
 import com.afollestad.aesthetic.views.AestheticDialogButton
 import com.afollestad.aesthetic.views.AestheticDrawerLayout
@@ -48,9 +52,6 @@ import com.afollestad.aesthetic.views.AestheticTextInputLayout
 import com.afollestad.aesthetic.views.AestheticTextView
 import com.afollestad.aesthetic.views.AestheticToolbar
 import com.afollestad.aesthetic.views.AestheticViewPager
-import com.afollestad.aesthetic.R.id
-import com.afollestad.aesthetic.utils.resId
-import com.afollestad.aesthetic.utils.watchColor
 
 /** @author Aidan Follestad (afollestad) */
 internal class InflationInterceptor(
@@ -179,6 +180,8 @@ internal class InflationInterceptor(
         view = AestheticProgressBar(context, attrs)
       "$APPCOMPAT_VIEW.ActionMenuItemView" ->
         view = AestheticActionMenuItemView(context, attrs)
+      "CheckedTextView", "$APPCOMPAT_WIDGET.AppCompatCheckedTextView" ->
+        view = AestheticCheckedTextView(context, attrs)
 
       "$APPCOMPAT_WIDGET.RecyclerView" ->
         view = AestheticRecyclerView(context, attrs)

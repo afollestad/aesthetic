@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="My Preferences">
+
+  <Preference
+      android:key="basic_preference"
+      android:summary="Hello world, testing 1 2 1 2"
+      android:title="Basic Preference"
+      />
+
+  <PreferenceCategory
+      android:title="Category One">
+
+    <CheckBoxPreference
+        android:key="checkbox_preference"
+        android:summary="Hello world, testing 1 2 1 2"
+        android:title="CheckBox Preference"
+        />
+
+    <SwitchPreference
+        android:key="switch_preference"
+        android:summary="Hello world, testing 1 2 1 2"
+        android:title="Switch Preference"
+        />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:title="Category Two">
+
+    <DropDownPreference
+        android:entries="@array/entries"
+        android:entryValues="@array/entry_values"
+        android:key="dropdown_preference"
+        android:summary="Hello world, testing 1 2 1 2"
+        android:title="Dropdown Preference"
+        />
+
+    <SeekBarPreference
+        android:defaultValue="5"
+        android:key="seekbar_preference"
+        android:max="10"
+        android:summary="Hello world, testing 1 2 1 2"
+        android:title="SeekBar Preference"
+        />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:title="Category Three">
+
+    <EditTextPreference
+        android:dialogTitle="EditText Dialog"
+        android:key="edittext_preference"
+        android:summary="Hello world, testing 1 2 1 2"
+        android:title="EditText Preference"/>
+
+    <ListPreference
+        android:dialogTitle="List Dialog"
+        android:entries="@array/entries"
+        android:entryValues="@array/entry_values"
+        android:key="list_preference"
+        android:summary="Hello world, testing 1 2 1 2"
+        android:title="List Preference"/>
+
+    <MultiSelectListPreference
+        android:dialogTitle="Multi-select List Dialog"
+        android:entries="@array/entries"
+        android:entryValues="@array/entry_values"
+        android:key="multi_select_list_preference"
+        android:summary="Hello world, testing 1 2 1 2"
+        android:title="Mutli-Select Preference"/>
+
+  </PreferenceCategory>
+
+</PreferenceScreen>
