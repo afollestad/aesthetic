@@ -5,8 +5,11 @@
  */
 package com.afollestad.aestheticsample
 
+import android.graphics.Color
 import android.os.Bundle
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.AestheticActivity
+import kotlinx.android.synthetic.main.activity_bottom_nav.center_body
 import kotlinx.android.synthetic.main.activity_bottom_nav.toolbar
 
 /** @author Aidan Follestad (afollestad) */
@@ -17,5 +20,9 @@ class BottomNavActivity : AestheticActivity() {
     setContentView(R.layout.activity_bottom_nav)
 
     toolbar.setNavigationOnClickListener { finish() }
+
+    center_body.setOnClickListener {
+      get().colorAccent(Color.YELLOW)
+    }
   }
 }

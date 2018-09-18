@@ -71,6 +71,7 @@ class AestheticBottomNavigationView(
   override fun setBackgroundColor(@ColorInt color: Int) {
     super.setBackgroundColor(color)
     this.backgroundColor = color
+    this.itemBackground = null
     if (lastTextIconColor == Color.TRANSPARENT) {
       lastTextIconColor = if (color.isColorLight()) BLACK else WHITE
     }
