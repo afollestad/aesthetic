@@ -8,18 +8,14 @@ package com.afollestad.aesthetic.views
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Color.BLACK
+import android.graphics.Color.WHITE
 import android.support.annotation.ColorInt
 import android.util.AttributeSet
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.BottomNavBgMode
-import com.afollestad.aesthetic.BottomNavBgMode.ACCENT
-import com.afollestad.aesthetic.BottomNavBgMode.PRIMARY
-import com.afollestad.aesthetic.BottomNavBgMode.PRIMARY_DARK
 import com.afollestad.aesthetic.BottomNavIconTextMode
-import com.afollestad.aesthetic.BottomNavIconTextMode.BLACK_WHITE_AUTO
-import com.afollestad.aesthetic.BottomNavIconTextMode.SELECTED_ACCENT
-import com.afollestad.aesthetic.BottomNavIconTextMode.SELECTED_PRIMARY
-import com.afollestad.aesthetic.R.color
+import com.afollestad.aesthetic.R
 import com.afollestad.aesthetic.actions.ViewBackgroundAction
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.color
@@ -34,8 +30,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.functions.Function3
 
-/** @author Aidan Follestad (afollestad)
- */
+/** @author Aidan Follestad (afollestad) */
 class AestheticBottomNavigationView(
   context: Context?,
   attrs: AttributeSet? = null
@@ -44,24 +39,28 @@ class AestheticBottomNavigationView(
   private var modesSubscription: Disposable? = null
   private var colorSubs: CompositeDisposable? = null
   private var lastTextIconColor: Int = 0
+  private var backgroundColor: Int? = null
 
   private fun invalidateIconTextColor(
     backgroundColor: Int,
     selectedColor: Int
   ) {
     val baseColor = context.color(
-        if (backgroundColor.isColorLight()) color.ate_icon_light else color.ate_icon_dark
+        if (backgroundColor.isColorLight()) R.color.ate_icon_light
+        else R.color.ate_icon_dark
     )
     val unselectedIconTextColor = baseColor.adjustAlpha(.87f)
     val iconColor = ColorStateList(
         arrayOf(
-            intArrayOf(-android.R.attr.state_checked), intArrayOf(android.R.attr.state_checked)
+            intArrayOf(-android.R.attr.state_checked),
+            intArrayOf(android.R.attr.state_checked)
         ),
         intArrayOf(unselectedIconTextColor, selectedColor)
     )
     val textColor = ColorStateList(
         arrayOf(
-            intArrayOf(-android.R.attr.state_checked), intArrayOf(android.R.attr.state_checked)
+            intArrayOf(-android.R.attr.state_checked),
+            intArrayOf(android.R.attr.state_checked)
         ),
         intArrayOf(unselectedIconTextColor, selectedColor)
     )
@@ -71,8 +70,9 @@ class AestheticBottomNavigationView(
 
   override fun setBackgroundColor(@ColorInt color: Int) {
     super.setBackgroundColor(color)
+    this.backgroundColor = color
     if (lastTextIconColor == Color.TRANSPARENT) {
-      lastTextIconColor = if (color.isColorLight()) Color.BLACK else Color.WHITE
+      lastTextIconColor = if (color.isColorLight()) BLACK else WHITE
     }
     invalidateIconTextColor(color, lastTextIconColor)
   }
@@ -82,63 +82,65 @@ class AestheticBottomNavigationView(
     colorSubs = CompositeDisposable()
 
     when (state.iconTextMode) {
-      SELECTED_PRIMARY ->
-        colorSubs +=
-            Aesthetic.get()
-                .colorPrimary()
-                .distinctToMainThread()
-                .subscribe(
-                    Consumer { lastTextIconColor = it },
-                    onErrorLogAndRethrow()
-                )
+      BottomNavIconTextMode.SELECTED_PRIMARY ->
+        colorSubs += get().colorPrimary()
+            .distinctToMainThread()
+            .subscribe(
+                Consumer {
+                  lastTextIconColor = it
+                  invalidateWithBackgroundColor()
+                },
+                onErrorLogAndRethrow()
+            )
 
-      SELECTED_ACCENT ->
-        colorSubs +=
-            Aesthetic.get()
-                .colorAccent()
-                .distinctToMainThread()
-                .subscribe(
-                    Consumer { lastTextIconColor = it },
-                    onErrorLogAndRethrow()
-                )
-      BLACK_WHITE_AUTO ->
+      BottomNavIconTextMode.SELECTED_ACCENT ->
+        colorSubs += get().colorAccent()
+            .distinctToMainThread()
+            .subscribe(
+                Consumer {
+                  lastTextIconColor = it
+                  invalidateWithBackgroundColor()
+                },
+                onErrorLogAndRethrow()
+            )
+
+      BottomNavIconTextMode.BLACK_WHITE_AUTO -> {
         // We will automatically set the icon/text color when the background color is set
         lastTextIconColor = Color.TRANSPARENT
+        invalidateWithBackgroundColor()
+      }
     }
 
     when (state.bgMode) {
-      PRIMARY ->
-        colorSubs +=
-            Aesthetic.get()
-                .colorPrimary()
-                .distinctToMainThread()
-                .subscribe(
-                    ViewBackgroundAction(this),
-                    onErrorLogAndRethrow()
-                )
-      PRIMARY_DARK -> colorSubs +=
-          Aesthetic.get()
-              .colorStatusBar()
-              .distinctToMainThread()
-              .subscribe(
-                  ViewBackgroundAction(this),
-                  onErrorLogAndRethrow()
-              )
-      ACCENT -> colorSubs +=
-          Aesthetic.get()
-              .colorAccent()
-              .distinctToMainThread()
-              .subscribe(
-                  ViewBackgroundAction(this),
-                  onErrorLogAndRethrow()
-              )
+      BottomNavBgMode.PRIMARY ->
+        colorSubs += get().colorPrimary()
+            .distinctToMainThread()
+            .subscribe(
+                ViewBackgroundAction(this),
+                onErrorLogAndRethrow()
+            )
+
+      BottomNavBgMode.PRIMARY_DARK ->
+        colorSubs += get().colorStatusBar()
+            .distinctToMainThread()
+            .subscribe(
+                ViewBackgroundAction(this),
+                onErrorLogAndRethrow()
+            )
+
+      BottomNavBgMode.ACCENT ->
+        colorSubs += get().colorAccent()
+            .distinctToMainThread()
+            .subscribe(
+                ViewBackgroundAction(this),
+                onErrorLogAndRethrow()
+            )
+
       BottomNavBgMode.BLACK_WHITE_AUTO ->
         setBackgroundColor(
             context.color(
-                if (state.isDark)
-                  color.ate_bottom_nav_default_dark_bg
-                else
-                  color.ate_bottom_nav_default_light_bg
+                if (state.isDark) R.color.ate_bottom_nav_default_dark_bg
+                else R.color.ate_bottom_nav_default_light_bg
             )
         )
     }
@@ -146,24 +148,31 @@ class AestheticBottomNavigationView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    modesSubscription =
-        combineLatest(
-            Aesthetic.get().bottomNavigationBackgroundMode(),
-            Aesthetic.get().bottomNavigationIconTextMode(),
-            Aesthetic.get().isDark,
-            State.creator()
-        )
-            .distinctToMainThread()
-            .subscribe(
-                Consumer { onState(it) },
-                onErrorLogAndRethrow()
-            )
+    with(get()) {
+      modesSubscription =
+          combineLatest(
+              bottomNavigationBackgroundMode(),
+              bottomNavigationIconTextMode(),
+              isDark,
+              State.creator()
+          ).distinctToMainThread()
+              .subscribe(
+                  Consumer { onState(it) },
+                  onErrorLogAndRethrow()
+              )
+    }
   }
 
   override fun onDetachedFromWindow() {
     modesSubscription?.dispose()
     colorSubs?.clear()
     super.onDetachedFromWindow()
+  }
+
+  private fun invalidateWithBackgroundColor() {
+    if (backgroundColor != null) {
+      setBackgroundColor(backgroundColor!!)
+    }
   }
 
   private data class State(
