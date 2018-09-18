@@ -1,37 +1,32 @@
-- [ ] I have verified there are no duplicate active or recent bugs, questions, or requests
-- [ ] I have verified that I am using the latest version of Aesthetic (see the README)
-- [ ] I have given my issue a description and title
-- [ ] I have read over the documentation (before asking questions on how to do something).
+(`[x]` becomes a filled in checkbox, `[ ]` is an empty one)
 
-###### Include the following:
- - Aesthetic version: `0.x.x.x`
- - Device OS version: `7.1.2`
- - Device Manufacturer: `Google`
- - Device Name: `Pixel XL`
+- [ ] I have verified there are [no duplicate active or recent bugs, questions, or requests](https://github.com/afollestad/aesthetic/issues?q=is%3Aissue+is%3Aclosed)
+- [ ] I have verified that I am using the latest version of Aesthetic (see the README).
+- [ ] I have given my issue a non-generic title.
+- [ ] I have [read over the documentation](https://github.com/afollestad/aesthetic/blob/master/README.md) (before asking questions on how to do something).
 
-Also, **please wrap Java and Logcats with syntax highlighting:**
+---
 
-```java
-System.out.println("Hello, world!");
-```
+**If this is a feature request, you can clear everything below.**
 
-```gradle
-java.lang.RuntimeException: Oh no, an unknown error occurred!
-    at com.example.helloworld.MainActivity.onCreate()
-    at com.example.helloworld.idkHey()
+##### Include the following:
+
+ - Affected device(s): Google Pixel 2 XL, Android 9
+
+Also, please wrap your code with correct syntax highlighting (not just indents).
+
+```kotlin
+println("Hello, world!")
 ```
 
 ```xml
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+<LinearLayout ...></LinearLayout>
 ```
  
-###### Reproduction Steps
+---
+ 
+##### Reproduction Steps
 
+##### Expected Result
 
-###### Expected Result
-
-
-###### Actual Result
-
+##### Actual Result
