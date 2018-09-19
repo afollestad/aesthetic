@@ -9,15 +9,17 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
+import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.M
 import android.support.annotation.CheckResult
 import android.support.annotation.ColorInt
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
-import android.widget.CheckedTextView
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -25,6 +27,7 @@ import android.widget.RadioButton
 import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatCheckedTextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.TintableBackgroundView
@@ -165,7 +168,7 @@ internal object TintHelper {
         is ImageView -> setTint(view, color)
         is Switch -> setTint(view, color, isDark)
         is SwitchCompat -> setTint(view, color, isDark)
-        is CheckedTextView -> setTint(view, color, isDark)
+        is AppCompatCheckedTextView -> setTint(view, color, isDark)
         else -> background = true
       }
 
@@ -495,19 +498,24 @@ internal object TintHelper {
   }
 
   fun setTint(
-    textView: CheckedTextView,
+    textView: AppCompatCheckedTextView,
     @ColorInt color: Int,
     useDarker: Boolean
   ) {
-    val currentDrawable = textView.checkMarkDrawable ?: return
-    textView.checkMarkDrawable = modifySwitchDrawable(
+    val sl = getCheckableColorStateList(
         context = textView.context,
-        from = currentDrawable,
         requestedTint = color,
         thumb = false,
         compatSwitch = false,
         useDarker = useDarker
     )
+    if (SDK_INT >= M) {
+      textView.compoundDrawableTintList = sl
+    } else {
+      for (compoundDrawable in textView.compoundDrawables) {
+        compoundDrawable.setColorFilter(color, SRC_IN)
+      }
+    }
   }
 
   // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary

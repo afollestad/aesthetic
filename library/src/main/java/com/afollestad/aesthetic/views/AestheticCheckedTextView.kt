@@ -8,19 +8,17 @@ package com.afollestad.aesthetic.views
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatCheckedTextView
-import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
 import com.afollestad.aesthetic.actions.ViewTextColorAction
-import com.afollestad.aesthetic.utils.TintHelper
+import com.afollestad.aesthetic.utils.TintHelper.setTint
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.subscribeWith
 import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticCheckedTextView(
@@ -38,25 +36,22 @@ class AestheticCheckedTextView(
   }
 
   private fun invalidateColors(state: ColorIsDarkState) =
-    TintHelper.setTint(this, state.color, state.isDark)
+    setTint(this, state.color, state.isDark)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     subs = CompositeDisposable()
-    subs +=
-        combineLatest(
-            watchColor(
-                context,
-                backgroundResId,
-                get().colorAccent()
-            )!!,
-            Aesthetic.get().isDark,
-            ColorIsDarkState.creator()
-        ).distinctToMainThread()
-            .subscribe(
-                Consumer { this.invalidateColors(it) },
-                onErrorLogAndRethrow()
-            )
+    subs += combineLatest(
+        watchColor(
+            context,
+            backgroundResId,
+            get().colorAccent()
+        )!!,
+        get().isDark,
+        ColorIsDarkState.creator()
+    )
+        .distinctToMainThread()
+        .subscribeWith(::invalidateColors)
     subs += get().textColorPrimary()
         .distinctToMainThread()
         .subscribe(ViewTextColorAction(this))

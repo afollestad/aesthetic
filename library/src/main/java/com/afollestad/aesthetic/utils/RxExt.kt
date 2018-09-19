@@ -12,6 +12,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.Exceptions
 import io.reactivex.functions.Consumer
 
+typealias KotlinSubscriber<T> = (T) -> Unit
+
 internal fun <T> Observable<T>.distinctToMainThread(): Observable<T> {
   return observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged()
 }
@@ -33,4 +35,13 @@ internal fun <T> Observable<T>.one(): Observable<T> {
 
 internal fun <T> Observable<T>.onMainThread(): Observable<T> {
   return observeOn(AndroidSchedulers.mainThread())
+}
+
+internal inline fun <T> Observable<T>.subscribeWith(
+  crossinline subscriber: KotlinSubscriber<T>
+): Disposable {
+  return this.subscribe(
+      Consumer { subscriber(it) },
+      onErrorLogAndRethrow()
+  )
 }
