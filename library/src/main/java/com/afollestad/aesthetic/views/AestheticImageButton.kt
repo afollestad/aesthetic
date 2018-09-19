@@ -45,7 +45,6 @@ class AestheticImageButton(
         .distinctToMainThread()
         .subscribeBackgroundColor(this)
 
-
     subs += watchColor(context, tintResId)
         .distinctToMainThread()
         .subscribeImageViewTint(this)
