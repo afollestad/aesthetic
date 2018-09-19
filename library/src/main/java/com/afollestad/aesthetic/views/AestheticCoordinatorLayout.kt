@@ -20,20 +20,20 @@ import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.afollestad.aesthetic.ActiveInactiveColors
 import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.blendWith
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.setOverflowButtonColor
+import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.tintMenu
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
-import io.reactivex.functions.Consumer
 
 private typealias ToolbarIconTitleFunc =
     BiFunction<Int, ActiveInactiveColors, Pair<Int, ActiveInactiveColors>>
@@ -125,7 +125,8 @@ class AestheticCoordinatorLayout(
     }
 
     if (toolbar != null && colorView != null) {
-      this.appBarLayout!!.addOnOffsetChangedListener(this)
+      this.appBarLayout?.addOnOffsetChangedListener(this)
+
       toolbarColorSubscription =
           combineLatest<Int, ActiveInactiveColors, Pair<Int, ActiveInactiveColors>>(
               toolbar!!.colorUpdated(),
@@ -133,29 +134,23 @@ class AestheticCoordinatorLayout(
               ToolbarIconTitleFunc { a, b -> Pair(a, b) }
           )
               .distinctToMainThread()
-              .subscribe(
-                  Consumer {
-                    toolbarColor = it.first
-                    iconTextColors = it.second
-                    invalidateColors()
-                  },
-                  onErrorLogAndRethrow()
-              )
+              .subscribeTo {
+                toolbarColor = it.first
+                iconTextColors = it.second
+                invalidateColors()
+              }
     }
 
     if (collapsingToolbarLayout != null) {
-      statusBarColorSubscription = Aesthetic.get()
+      statusBarColorSubscription = get()
           .colorStatusBar()
           .distinctToMainThread()
-          .subscribe(
-              Consumer {
-                collapsingToolbarLayout!!.apply {
-                  setContentScrimColor(it)
-                  setStatusBarScrimColor(it)
-                }
-              },
-              onErrorLogAndRethrow()
-          )
+          .subscribeTo {
+            collapsingToolbarLayout?.apply {
+              setContentScrimColor(it)
+              setStatusBarScrimColor(it)
+            }
+          }
     }
   }
 
@@ -173,9 +168,7 @@ class AestheticCoordinatorLayout(
     appBarLayout: AppBarLayout,
     verticalOffset: Int
   ) {
-    if (lastOffset == Math.abs(verticalOffset)) {
-      return
-    }
+    if (lastOffset == Math.abs(verticalOffset)) return
     lastOffset = Math.abs(verticalOffset)
     invalidateColors()
   }
@@ -194,18 +187,21 @@ class AestheticCoordinatorLayout(
     val expandedTitleColor = if (colorViewColor.isColorLight()) Color.BLACK else Color.WHITE
     val blendedTitleColor = expandedTitleColor.blendWith(collapsedTitleColor, ratio)
 
-    toolbar!!.setBackgroundColor(blendedColor)
-    collapsingToolbarLayout!!.apply {
+    toolbar?.apply {
+      setBackgroundColor(blendedColor)
+      tintMenu(
+          this,
+          menu,
+          ActiveInactiveColors(
+              blendedTitleColor,
+              blendedColor.adjustAlpha(0.7f)
+          )
+      )
+    }
+
+    collapsingToolbarLayout?.apply {
       setCollapsedTitleTextColor(collapsedTitleColor)
       setExpandedTitleColor(expandedTitleColor)
     }
-
-    tintMenu(
-        toolbar!!,
-        toolbar!!.menu,
-        ActiveInactiveColors(
-            blendedTitleColor, blendedColor.adjustAlpha(0.7f)
-        )
-    )
   }
 }

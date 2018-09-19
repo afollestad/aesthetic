@@ -7,21 +7,20 @@ package com.afollestad.aesthetic.views
 
 import android.content.Context
 import android.util.AttributeSet
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
-import com.afollestad.aesthetic.actions.ViewHintTextColorAction
-import com.afollestad.aesthetic.actions.ViewTextColorAction
 import com.afollestad.aesthetic.utils.TintHelper.setCursorTint
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
-import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.subscribeHintTextColor
+import com.afollestad.aesthetic.utils.subscribeTextColor
+import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.watchColor
 import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticTextInputEditText(
@@ -49,37 +48,25 @@ class AestheticTextInputEditText(
     super.onAttachedToWindow()
     subs = CompositeDisposable()
 
-    subs!! +=
-        Aesthetic.get()
-            .textColorPrimary()
-            .distinctToMainThread()
-            .subscribe(
-                ViewTextColorAction(this),
-                onErrorLogAndRethrow()
-            )
-    subs!! +=
-        Aesthetic.get()
-            .textColorSecondary()
-            .distinctToMainThread()
-            .subscribe(
-                ViewHintTextColorAction(this),
-                onErrorLogAndRethrow()
-            )
-    subs!! +=
-        combineLatest(
-            watchColor(
-                context,
-                backgroundResId,
-                Aesthetic.get().colorAccent()
-            )!!,
-            Aesthetic.get().isDark,
-            ColorIsDarkState.creator()
-        )
-            .distinctToMainThread()
-            .subscribe(
-                Consumer { this.invalidateColors(it) },
-                onErrorLogAndRethrow()
-            )
+    subs += get().textColorPrimary()
+        .distinctToMainThread()
+        .subscribeTextColor(this)
+
+    subs += get().textColorSecondary()
+        .distinctToMainThread()
+        .subscribeHintTextColor(this)
+
+    subs += combineLatest(
+        watchColor(
+            context,
+            backgroundResId,
+            get().colorAccent()
+        ),
+        get().isDark,
+        ColorIsDarkState.creator()
+    )
+        .distinctToMainThread()
+        .subscribeTo(::invalidateColors)
   }
 
   override fun onDetachedFromWindow() {

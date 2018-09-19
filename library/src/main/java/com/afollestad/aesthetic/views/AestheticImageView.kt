@@ -9,13 +9,12 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import com.afollestad.aesthetic.R.attr
-import com.afollestad.aesthetic.actions.ImageViewTintAction
-import com.afollestad.aesthetic.actions.ViewBackgroundAction
-import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.subscribeBackgroundColor
+import com.afollestad.aesthetic.utils.subscribeImageViewTint
+import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.disposables.CompositeDisposable
 
 /** @author Aidan Follestad (afollestad) */
@@ -42,25 +41,13 @@ class AestheticImageView(
     super.onAttachedToWindow()
     subs = CompositeDisposable()
 
-    val backgroundObs = watchColor(context, backgroundResId, null)
-    if (backgroundObs != null) {
-      subs += backgroundObs
-          .distinctToMainThread()
-          .subscribe(
-              ViewBackgroundAction(this),
-              onErrorLogAndRethrow()
-          )
-    }
+    subs += watchColor(context, backgroundResId)
+        .distinctToMainThread()
+        .subscribeBackgroundColor(this)
 
-    val tintObs = watchColor(context, tintResId, null)
-    if (tintObs != null) {
-      subs += tintObs
-          .distinctToMainThread()
-          .subscribe(
-              ImageViewTintAction(this),
-              onErrorLogAndRethrow()
-          )
-    }
+    subs += watchColor(context, tintResId)
+        .distinctToMainThread()
+        .subscribeImageViewTint(this)
   }
 
   override fun onDetachedFromWindow() {

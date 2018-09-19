@@ -8,12 +8,11 @@ package com.afollestad.aesthetic.views
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
-import com.afollestad.aesthetic.Aesthetic
-import com.afollestad.aesthetic.actions.ViewTextColorAction
-import com.afollestad.aesthetic.utils.watchColor
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.subscribeTextColor
+import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad) */
@@ -33,17 +32,17 @@ class AestheticTextView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    val obs = watchColor(
+
+    subscription = watchColor(
         context,
         textColorResId,
         if (id == android.R.id.title)
-          Aesthetic.get().textColorPrimary()
+          get().textColorPrimary()
         else
-          Aesthetic.get().textColorSecondary()
-    )!!
-    subscription = obs
+          get().textColorSecondary()
+    )
         .distinctToMainThread()
-        .subscribe(ViewTextColorAction(this), onErrorLogAndRethrow())
+        .subscribeTextColor(this)
   }
 
   override fun onDetachedFromWindow() {

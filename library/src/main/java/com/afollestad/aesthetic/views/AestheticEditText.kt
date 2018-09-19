@@ -6,23 +6,21 @@
 package com.afollestad.aesthetic.views
 
 import android.annotation.SuppressLint
-
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
-import com.afollestad.aesthetic.actions.ViewHintTextColorAction
-import com.afollestad.aesthetic.actions.ViewTextColorAction
 import com.afollestad.aesthetic.utils.TintHelper.setCursorTint
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
-import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
+import com.afollestad.aesthetic.utils.subscribeHintTextColor
+import com.afollestad.aesthetic.utils.subscribeTextColor
+import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressLint("ResourceType")
@@ -39,13 +37,18 @@ class AestheticEditText(
   init {
     if (attrs != null) {
       val attrsArray = intArrayOf(
-          android.R.attr.background, android.R.attr.textColor, android.R.attr.textColorHint
+          android.R.attr.background,
+          android.R.attr.textColor,
+          android.R.attr.textColorHint
       )
       val ta = context.obtainStyledAttributes(attrs, attrsArray)
-      backgroundResId = ta.getResourceId(0, 0)
-      textColorResId = ta.getResourceId(1, 0)
-      textColorHintResId = ta.getResourceId(2, 0)
-      ta.recycle()
+      try {
+        backgroundResId = ta.getResourceId(0, 0)
+        textColorResId = ta.getResourceId(1, 0)
+        textColorHintResId = ta.getResourceId(2, 0)
+      } finally {
+        ta.recycle()
+      }
     }
   }
 
@@ -57,43 +60,35 @@ class AestheticEditText(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     subs = CompositeDisposable()
-    subs +=
-        combineLatest(
-            watchColor(
-                context,
-                backgroundResId,
-                Aesthetic.get().colorAccent()
-            )!!,
-            Aesthetic.get().isDark,
-            ColorIsDarkState.creator()
-        )
-            .distinctToMainThread()
-            .subscribe(
-                Consumer { invalidateColors(it) },
-                onErrorLogAndRethrow()
-            )
-    subs +=
+
+    subs += combineLatest(
         watchColor(
             context,
-            textColorResId,
-            Aesthetic.get().textColorPrimary()
-        )!!
-            .distinctToMainThread()
-            .subscribe(
-                ViewTextColorAction(this),
-                onErrorLogAndRethrow()
-            )
+            backgroundResId,
+            get().colorAccent()
+        ),
+        get().isDark,
+        ColorIsDarkState.creator()
+    )
+        .distinctToMainThread()
+        .subscribeTo(::invalidateColors)
+
+    subs += watchColor(
+        context,
+        textColorResId,
+        get().textColorPrimary()
+    )
+        .distinctToMainThread()
+        .subscribeTextColor(this)
+
     subs +=
         watchColor(
             context,
             textColorHintResId,
-            Aesthetic.get().textColorSecondary()
-        )!!
+            get().textColorSecondary()
+        )
             .distinctToMainThread()
-            .subscribe(
-                ViewHintTextColorAction(this),
-                onErrorLogAndRethrow()
-            )
+            .subscribeHintTextColor(this)
   }
 
   override fun onDetachedFromWindow() {

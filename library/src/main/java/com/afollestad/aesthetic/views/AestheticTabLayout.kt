@@ -10,21 +10,20 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.support.annotation.ColorInt
 import android.util.AttributeSet
-import com.afollestad.aesthetic.Aesthetic
-import com.afollestad.aesthetic.TabLayoutBgMode.ACCENT
-import com.afollestad.aesthetic.TabLayoutBgMode.PRIMARY
-import com.afollestad.aesthetic.actions.ViewBackgroundAction
+import com.afollestad.aesthetic.Aesthetic.Companion.get
+import com.afollestad.aesthetic.TabLayoutBgMode
+import com.afollestad.aesthetic.TabLayoutIndicatorMode
 import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.one
 import com.afollestad.aesthetic.utils.plusAssign
+import com.afollestad.aesthetic.utils.subscribeBackgroundColor
+import com.afollestad.aesthetic.utils.subscribeTo
 import com.google.android.material.tabs.TabLayout
-import io.reactivex.Observable
+import io.reactivex.Observable.just
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticTabLayout(
@@ -43,12 +42,16 @@ class AestheticTabLayout(
   private fun setIconsColor(color: Int) {
     val sl = ColorStateList(
         arrayOf(
-            intArrayOf(-android.R.attr.state_selected), intArrayOf(android.R.attr.state_selected)
+            intArrayOf(-android.R.attr.state_selected),
+            intArrayOf(android.R.attr.state_selected)
         ),
-        intArrayOf(color.adjustAlpha(
-            UNFOCUSED_ALPHA
-        ), color)
+        intArrayOf(
+            color.adjustAlpha(
+                UNFOCUSED_ALPHA
+            ), color
+        )
     )
+
     for (i in 0 until tabCount) {
       val tab = getTabAt(i)
       if (tab != null && tab.icon != null) {
@@ -60,8 +63,8 @@ class AestheticTabLayout(
   @SuppressLint("CheckResult")
   override fun setBackgroundColor(@ColorInt color: Int) {
     super.setBackgroundColor(color)
-    Aesthetic.get()
-        .colorIconTitle(Observable.just(color))
+
+    get().colorIconTitle(just(color))
         .one()
         .subscribe { (activeColor, inactiveColor) ->
           setIconsColor(activeColor)
@@ -78,67 +81,39 @@ class AestheticTabLayout(
     super.onAttachedToWindow()
     topLevelSubs = CompositeDisposable()
 
-    topLevelSubs += Aesthetic.get()
-        .tabLayoutBackgroundMode()
+    topLevelSubs += get().tabLayoutBackgroundMode()
         .distinctToMainThread()
-        .subscribe(
-            Consumer {
-              bgColorSubscription?.dispose()
-              when (it) {
-                PRIMARY ->
-                  bgColorSubscription = Aesthetic.get()
-                      .colorPrimary()
-                      .distinctToMainThread()
-                      .subscribe(
-                          ViewBackgroundAction(
-                              this@AestheticTabLayout
-                          ),
-                          onErrorLogAndRethrow()
-                      )
-                ACCENT ->
-                  bgColorSubscription = Aesthetic.get()
-                      .colorAccent()
-                      .distinctToMainThread()
-                      .subscribe(
-                          ViewBackgroundAction(
-                              this@AestheticTabLayout
-                          ),
-                          onErrorLogAndRethrow()
-                      )
-                else -> throw IllegalStateException("Unimplemented bg mode: $it")
-              }
-            },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo {
+          bgColorSubscription?.dispose()
+          bgColorSubscription = when (it) {
+            TabLayoutBgMode.PRIMARY ->
+              get().colorPrimary()
+                  .distinctToMainThread()
+                  .subscribeBackgroundColor(this@AestheticTabLayout)
 
-    topLevelSubs += Aesthetic.get()
-        .tabLayoutIndicatorMode()
+            TabLayoutBgMode.ACCENT ->
+              get().colorAccent()
+                  .distinctToMainThread()
+                  .subscribeBackgroundColor(this@AestheticTabLayout)
+          }
+        }
+
+    topLevelSubs += get().tabLayoutIndicatorMode()
         .distinctToMainThread()
-        .subscribe(
-            Consumer {
-              indicatorColorSubscription?.dispose()
-              when (it) {
-                PRIMARY ->
-                  indicatorColorSubscription = Aesthetic.get()
-                      .colorPrimary()
-                      .distinctToMainThread()
-                      .subscribe(
-                          Consumer { color -> setSelectedTabIndicatorColor(color) },
-                          onErrorLogAndRethrow()
-                      )
-                ACCENT ->
-                  indicatorColorSubscription = Aesthetic.get()
-                      .colorAccent()
-                      .distinctToMainThread()
-                      .subscribe(
-                          Consumer { color -> setSelectedTabIndicatorColor(color) },
-                          onErrorLogAndRethrow()
-                      )
-                else -> throw IllegalStateException("Unimplemented bg mode: $it")
-              }
-            },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo {
+          indicatorColorSubscription?.dispose()
+          indicatorColorSubscription = when (it) {
+            TabLayoutIndicatorMode.PRIMARY ->
+              get().colorPrimary()
+                  .distinctToMainThread()
+                  .subscribeTo(::setSelectedTabIndicatorColor)
+
+            TabLayoutIndicatorMode.ACCENT ->
+              get().colorAccent()
+                  .distinctToMainThread()
+                  .subscribeTo(::setSelectedTabIndicatorColor)
+          }
+        }
   }
 
   override fun onDetachedFromWindow() {

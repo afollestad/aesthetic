@@ -14,7 +14,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.R.id
 import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.watchColor
@@ -283,11 +283,9 @@ internal class InflationInterceptor(
     }
 
     if (viewBackgroundRes != 0) {
-      val obs = watchColor(context, viewBackgroundRes, null)
-      if (obs != null) {
-        Aesthetic.get()
-            .addBackgroundSubscriber(view, obs)
-      }
+      get().addBackgroundSubscriber(
+          view, watchColor(context, viewBackgroundRes)
+      )
     }
 
     var idName = ""

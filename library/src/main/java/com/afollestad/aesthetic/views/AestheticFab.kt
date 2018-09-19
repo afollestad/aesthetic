@@ -9,19 +9,18 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
 import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
-import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.watchColor
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticFab(
@@ -51,20 +50,18 @@ class AestheticFab(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
+
     subscription = combineLatest(
         watchColor(
             context,
             backgroundResId,
-            Aesthetic.get().colorAccent()
+            get().colorAccent()
         ),
-        Aesthetic.get().isDark,
+        get().isDark,
         ColorIsDarkState.creator()
     )
         .distinctToMainThread()
-        .subscribe(
-            Consumer { invalidateColors(it) },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo(::invalidateColors)
   }
 
   override fun onDetachedFromWindow() {

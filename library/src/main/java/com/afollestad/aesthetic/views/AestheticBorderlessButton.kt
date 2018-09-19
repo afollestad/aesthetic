@@ -12,9 +12,8 @@ import androidx.appcompat.widget.AppCompatButton
 import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
+import com.afollestad.aesthetic.utils.subscribeTo
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticBorderlessButton(
@@ -27,10 +26,12 @@ class AestheticBorderlessButton(
   private fun invalidateColors(accentColor: Int) {
     val textColorSl = ColorStateList(
         arrayOf(
-            intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)
+            intArrayOf(android.R.attr.state_enabled),
+            intArrayOf(-android.R.attr.state_enabled)
         ),
         intArrayOf(
-            accentColor, accentColor.adjustAlpha(0.56f)
+            accentColor,
+            accentColor.adjustAlpha(0.56f)
         )
     )
     setTextColor(textColorSl)
@@ -45,10 +46,7 @@ class AestheticBorderlessButton(
     subscription = Aesthetic.get()
         .colorAccent()
         .distinctToMainThread()
-        .subscribe(
-            Consumer { invalidateColors(it) },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo(::invalidateColors)
   }
 
   override fun onDetachedFromWindow() {

@@ -7,20 +7,20 @@ package com.afollestad.aesthetic.views
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
+import android.graphics.Color.BLACK
+import android.graphics.Color.WHITE
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticButton(
@@ -41,11 +41,12 @@ class AestheticButton(
     setTintAuto(this, state.color, true, state.isDark)
     val textColorSl = ColorStateList(
         arrayOf(
-            intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)
+            intArrayOf(android.R.attr.state_enabled),
+            intArrayOf(-android.R.attr.state_enabled)
         ),
         intArrayOf(
-            if (state.color.isColorLight()) Color.BLACK else Color.WHITE,
-            if (state.isDark) Color.WHITE else Color.BLACK
+            if (state.color.isColorLight()) BLACK else WHITE,
+            if (state.isDark) WHITE else BLACK
         )
     )
     setTextColor(textColorSl)
@@ -59,16 +60,15 @@ class AestheticButton(
     super.onAttachedToWindow()
     subscription = combineLatest(
         watchColor(
-            context, backgroundResId, Aesthetic.get().colorAccent()
-        )!!,
-        Aesthetic.get().isDark,
+            context,
+            backgroundResId,
+            get().colorAccent()
+        ),
+        get().isDark,
         ColorIsDarkState.creator()
     )
         .distinctToMainThread()
-        .subscribe(
-            Consumer { invalidateColors(it) },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo(::invalidateColors)
   }
 
   override fun onDetachedFromWindow() {

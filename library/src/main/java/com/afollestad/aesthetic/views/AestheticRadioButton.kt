@@ -8,18 +8,17 @@ package com.afollestad.aesthetic.views
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatRadioButton
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
-import com.afollestad.aesthetic.actions.ViewTextColorAction
 import com.afollestad.aesthetic.utils.TintHelper.setTint
-import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.subscribeTextColor
+import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticRadioButton(
@@ -42,26 +41,22 @@ class AestheticRadioButton(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     subs = CompositeDisposable()
-    subs +=
-        combineLatest(
-            watchColor(
-                context,
-                backgroundResId,
-                Aesthetic.get().colorAccent()
-            ),
-            Aesthetic.get().isDark,
-            ColorIsDarkState.creator()
-        )
-            .distinctToMainThread()
-            .subscribe(
-                Consumer { invalidateColors(it) },
-                onErrorLogAndRethrow()
-            )
-    subs +=
-        Aesthetic.get()
-            .textColorPrimary()
-            .distinctToMainThread()
-            .subscribe(ViewTextColorAction(this))
+
+    subs += combineLatest(
+        watchColor(
+            context,
+            backgroundResId,
+            get().colorAccent()
+        ),
+        get().isDark,
+        ColorIsDarkState.creator()
+    )
+        .distinctToMainThread()
+        .subscribeTo(::invalidateColors)
+
+    subs += get().textColorPrimary()
+        .distinctToMainThread()
+        .subscribeTextColor(this)
   }
 
   override fun onDetachedFromWindow() {

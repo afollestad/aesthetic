@@ -8,19 +8,17 @@ package com.afollestad.aesthetic.views
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatSpinner
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
 import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
-import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
-import io.reactivex.Observable
+import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.watchColor
+import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 
-/** @author Aidan Follestad (afollestad)
- */
+/** @author Aidan Follestad (afollestad) */
 class AestheticSpinner(
   context: Context,
   attrs: AttributeSet? = null
@@ -41,18 +39,17 @@ class AestheticSpinner(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    subscription = Observable.combineLatest(
+    subscription = combineLatest(
         watchColor(
-            context, backgroundResId, Aesthetic.get().colorAccent()
-        )!!,
-        Aesthetic.get().isDark,
+            context,
+            backgroundResId,
+            get().colorAccent()
+        ),
+        get().isDark,
         ColorIsDarkState.creator()
     )
         .distinctToMainThread()
-        .subscribe(
-            Consumer { invalidateColors(it) },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo(::invalidateColors)
   }
 
   override fun onDetachedFromWindow() {

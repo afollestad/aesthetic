@@ -8,16 +8,15 @@ package com.afollestad.aesthetic.views
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.Switch
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
 import com.afollestad.aesthetic.utils.TintHelper.setTint
-import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticSwitch(
@@ -42,16 +41,15 @@ class AestheticSwitch(
 
     subscription = combineLatest(
         watchColor(
-            context, backgroundResId, Aesthetic.get().colorAccent()
-        )!!,
-        Aesthetic.get().isDark,
+            context,
+            backgroundResId,
+            get().colorAccent()
+        ),
+        get().isDark,
         ColorIsDarkState.creator()
     )
         .distinctToMainThread()
-        .subscribe(
-            Consumer { invalidateColors(it) },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo(::invalidateColors)
   }
 
   override fun onDetachedFromWindow() {

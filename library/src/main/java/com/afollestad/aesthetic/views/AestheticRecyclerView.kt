@@ -8,12 +8,11 @@ package com.afollestad.aesthetic.views
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.EdgeGlowUtil.setEdgeGlowColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
+import com.afollestad.aesthetic.utils.subscribeTo
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticRecyclerView(
@@ -28,13 +27,10 @@ class AestheticRecyclerView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscription = Aesthetic.get()
-        .colorAccent()
+
+    subscription = get().colorAccent()
         .distinctToMainThread()
-        .subscribe(
-            Consumer { invalidateColors(it) },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo(::invalidateColors)
   }
 
   override fun onDetachedFromWindow() {

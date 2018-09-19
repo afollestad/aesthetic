@@ -9,14 +9,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import androidx.cardview.widget.CardView
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.R.attr
-import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.subscribeBackgroundColor
+import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressLint("PrivateResource")
@@ -36,15 +35,14 @@ class AestheticCardView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    val obs = watchColor(
-        context, backgroundResId, Aesthetic.get().colorCardViewBackground()
-    )!!
-    bgSubscription = obs
+
+    bgSubscription = watchColor(
+        context,
+        backgroundResId,
+        get().colorCardViewBackground()
+    )
         .distinctToMainThread()
-        .subscribe(
-            Consumer { setCardBackgroundColor(it) },
-            onErrorLogAndRethrow()
-        )
+        .subscribeBackgroundColor(this)
   }
 
   override fun onDetachedFromWindow() {

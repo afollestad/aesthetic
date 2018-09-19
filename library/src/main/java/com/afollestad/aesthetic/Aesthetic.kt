@@ -20,7 +20,6 @@ import android.support.annotation.StyleRes
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import com.afollestad.aesthetic.actions.ViewBackgroundSubscriber
 import com.afollestad.aesthetic.internal.PrefNames.KEY_ACCENT_COLOR
 import com.afollestad.aesthetic.internal.PrefNames.KEY_ACTIVITY_THEME
 import com.afollestad.aesthetic.internal.PrefNames.KEY_BOTTOM_NAV_BG_MODE
@@ -54,7 +53,6 @@ import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.getRootView
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.mutableArrayMap
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.setInflaterFactory
 import com.afollestad.aesthetic.utils.setLightStatusBarCompat
@@ -62,6 +60,8 @@ import com.afollestad.aesthetic.utils.setNavBarColorCompat
 import com.afollestad.aesthetic.utils.setStatusBarColorCompat
 import com.afollestad.aesthetic.utils.setTaskDescriptionColor
 import com.afollestad.aesthetic.utils.splitToInts
+import com.afollestad.aesthetic.utils.subscribeBackgroundColor
+import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.rxkprefs.RxkPrefs
 import io.reactivex.Observable
@@ -69,7 +69,6 @@ import io.reactivex.Observable.combineLatest
 import io.reactivex.Observable.zip
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
-import io.reactivex.functions.Consumer
 import io.reactivex.subjects.BehaviorSubject
 import java.lang.String.format
 
@@ -642,7 +641,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   ) {
     colorObservable
         .distinctToMainThread()
-        .subscribeWith(ViewBackgroundSubscriber(view))
+        .subscribeBackgroundColor(view)
         .unsubscribeOnDetach(view)
   }
 
@@ -743,41 +742,30 @@ class Aesthetic private constructor(private var ctxt: Context?) {
         if (context is Activity) {
           subs += colorPrimary()
               .distinctToMainThread()
-              .subscribe(
-                  Consumer { (context as Activity).setTaskDescriptionColor(it) },
-                  onErrorLogAndRethrow()
-              )
+              .subscribeTo {
+                (context as Activity).setTaskDescriptionColor(it)
+              }
           subs += activityTheme()
               .distinctToMainThread()
-              .subscribe(
-                  Consumer {
-                    lastActivityThemes[context.javaClass.name] = it
-                    (context as Activity).recreate()
-                  },
-                  onErrorLogAndRethrow()
-              )
+              .subscribeTo {
+                lastActivityThemes[context.javaClass.name] = it
+                (context as Activity).recreate()
+              }
           subs += combineLatest<Int, Int, Pair<Int, Int>>(
               colorStatusBar(), lightStatusBarMode(),
               BiFunction<Int, Int, Pair<Int, Int>> { a, b -> Pair(a, b) })
               .distinctToMainThread()
-              .subscribe(
-                  Consumer { invalidateStatusBar() },
-                  onErrorLogAndRethrow()
-              )
+              .subscribeTo { invalidateStatusBar() }
           subs += colorNavigationBar()
               .distinctToMainThread()
-              .subscribe(
-                  Consumer { (context as Activity).setNavBarColorCompat(it) },
-                  onErrorLogAndRethrow()
-              )
+              .subscribeTo {
+                (context as Activity).setNavBarColorCompat(it)
+              }
           subs += colorWindowBackground()
               .distinctToMainThread()
-              .subscribe(
-                  Consumer {
-                    (context as Activity).window?.setBackgroundDrawable(ColorDrawable(it))
-                  },
-                  onErrorLogAndRethrow()
-              )
+              .subscribeTo {
+                (context as Activity).window?.setBackgroundDrawable(ColorDrawable(it))
+              }
         }
       }
     }

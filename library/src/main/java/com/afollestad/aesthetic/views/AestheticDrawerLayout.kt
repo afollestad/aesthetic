@@ -11,12 +11,10 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.drawerlayout.widget.DrawerLayout
 import com.afollestad.aesthetic.ActiveInactiveColors
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
+import com.afollestad.aesthetic.utils.subscribeTo
 import io.reactivex.disposables.Disposable
-
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticDrawerLayout(
@@ -38,13 +36,9 @@ class AestheticDrawerLayout(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscription = Aesthetic.get()
-        .colorIconTitle(null)
+    subscription = get().colorIconTitle(null)
         .distinctToMainThread()
-        .subscribe(
-            Consumer { invalidateColor(it) },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo(::invalidateColor)
   }
 
   override fun onDetachedFromWindow() {

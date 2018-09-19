@@ -9,11 +9,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
+import com.afollestad.aesthetic.utils.subscribeTo
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressLint("PrivateResource")
@@ -26,13 +25,10 @@ class AestheticSwipeRefreshLayout(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    colorSubscription = Aesthetic.get()
-        .swipeRefreshLayoutColors()
+
+    colorSubscription = get().swipeRefreshLayoutColors()
         .distinctToMainThread()
-        .subscribe(
-            Consumer { setColorSchemeColors(*it) },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo(::setColorSchemeColors)
   }
 
   override fun onDetachedFromWindow() {

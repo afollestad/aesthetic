@@ -15,12 +15,11 @@ import com.afollestad.aesthetic.ActiveInactiveColors
 import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
+import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.onMainThread
 import com.afollestad.aesthetic.utils.one
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressLint("RestrictedApi")
@@ -49,10 +48,7 @@ internal class AestheticActionMenuItemView(
         .colorIconTitle(null)
         .onMainThread()
         .one()
-        .subscribe(
-            Consumer { invalidateColors(it) },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo(::invalidateColors)
   }
 
   @Suppress("MemberVisibilityCanBePrivate")
@@ -69,10 +65,7 @@ internal class AestheticActionMenuItemView(
     subscription = Aesthetic.get()
         .colorIconTitle(null)
         .distinctToMainThread()
-        .subscribe(
-            Consumer { invalidateColors(it) },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo(::invalidateColors)
   }
 
   override fun onDetachedFromWindow() {

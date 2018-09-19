@@ -10,18 +10,16 @@ import android.graphics.drawable.Drawable
 import android.support.annotation.ColorInt
 import android.util.AttributeSet
 import androidx.appcompat.widget.Toolbar
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.BgIconColorState
 import com.afollestad.aesthetic.BgIconColorState.Companion.creator
 import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.setOverflowButtonColor
+import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.tintMenu
-import io.reactivex.Observable
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 
 /** @author Aidan Follestad (afollestad) */
@@ -49,9 +47,7 @@ class AestheticToolbar(
     onColorUpdated.onNext(state.bgColor)
   }
 
-  fun colorUpdated(): Observable<Int>? {
-    return onColorUpdated
-  }
+  fun colorUpdated() = onColorUpdated
 
   override fun setNavigationIcon(icon: Drawable?) {
     if (lastState == null) {
@@ -76,16 +72,14 @@ class AestheticToolbar(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
+
     subscription = combineLatest(
-        Aesthetic.get().colorPrimary(),
-        Aesthetic.get().colorIconTitle(null),
+        get().colorPrimary(),
+        get().colorIconTitle(null),
         creator()
     )
         .distinctToMainThread()
-        .subscribe(
-            Consumer { invalidateColors(it) },
-            onErrorLogAndRethrow()
-        )
+        .subscribeTo(::invalidateColors)
   }
 
   override fun onDetachedFromWindow() {

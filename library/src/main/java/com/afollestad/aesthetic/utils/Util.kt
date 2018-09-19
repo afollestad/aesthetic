@@ -6,16 +6,18 @@
 package com.afollestad.aesthetic.utils
 
 import android.content.Context
+import android.support.annotation.CheckResult
 import android.support.annotation.IdRes
 import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.R.attr
 import io.reactivex.Observable
+import io.reactivex.Observable.empty
 
-fun watchColor(
+@CheckResult fun watchColor(
   context: Context,
   @IdRes resId: Int,
-  fallback: Observable<Int>?
-): Observable<Int>? {
+  fallback: Observable<Int> = empty()
+): Observable<Int> {
   with(Aesthetic.get()) {
     return when (resId) {
       0 -> fallback

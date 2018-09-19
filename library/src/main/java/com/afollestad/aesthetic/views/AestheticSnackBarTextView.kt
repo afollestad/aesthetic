@@ -8,10 +8,9 @@ package com.afollestad.aesthetic.views
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
-import com.afollestad.aesthetic.Aesthetic
-import com.afollestad.aesthetic.actions.ViewTextColorAction
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
+import com.afollestad.aesthetic.utils.subscribeTextColor
 import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad)
@@ -25,13 +24,10 @@ internal class AestheticSnackBarTextView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscription = Aesthetic.get()
-        .snackbarTextColor()
+
+    subscription = get().snackbarTextColor()
         .distinctToMainThread()
-        .subscribe(
-            ViewTextColorAction(this),
-            onErrorLogAndRethrow()
-        )
+        .subscribeTextColor(this)
   }
 
   override fun onDetachedFromWindow() {

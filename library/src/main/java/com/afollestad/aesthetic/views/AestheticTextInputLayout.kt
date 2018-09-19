@@ -8,17 +8,16 @@ package com.afollestad.aesthetic.views
 import android.content.Context
 import android.util.AttributeSet
 import com.afollestad.aesthetic.Aesthetic
-import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.setAccentColor
 import com.afollestad.aesthetic.utils.setHintColor
+import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.watchColor
 import com.google.android.material.textfield.TextInputLayout
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticTextInputLayout(
@@ -45,21 +44,16 @@ class AestheticTextInputLayout(
         Aesthetic.get()
             .textColorSecondary()
             .distinctToMainThread()
-            .subscribe(
-                Consumer { setHintColor(it.adjustAlpha(0.7f)) },
-                onErrorLogAndRethrow()
-            )
+            .subscribeTo { setHintColor(it.adjustAlpha(0.7f)) }
+
     subs +=
         watchColor(
             context,
             backgroundResId,
             Aesthetic.get().colorAccent()
-        )!!
+        )
             .distinctToMainThread()
-            .subscribe(
-                Consumer { this.invalidateColors(it) },
-                onErrorLogAndRethrow()
-            )
+            .subscribeTo(::invalidateColors)
   }
 
   override fun onDetachedFromWindow() {

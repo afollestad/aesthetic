@@ -16,18 +16,17 @@ import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.BottomNavBgMode
 import com.afollestad.aesthetic.BottomNavIconTextMode
 import com.afollestad.aesthetic.R
-import com.afollestad.aesthetic.actions.ViewBackgroundAction
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
-import com.afollestad.aesthetic.utils.onErrorLogAndRethrow
 import com.afollestad.aesthetic.utils.plusAssign
+import com.afollestad.aesthetic.utils.subscribeBackgroundColor
+import com.afollestad.aesthetic.utils.subscribeTo
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 import io.reactivex.functions.Function3
 
 /** @author Aidan Follestad (afollestad) */
@@ -86,24 +85,18 @@ class AestheticBottomNavigationView(
       BottomNavIconTextMode.SELECTED_PRIMARY ->
         colorSubs += get().colorPrimary()
             .distinctToMainThread()
-            .subscribe(
-                Consumer {
-                  lastTextIconColor = it
-                  invalidateWithBackgroundColor()
-                },
-                onErrorLogAndRethrow()
-            )
+            .subscribeTo {
+              lastTextIconColor = it
+              invalidateWithBackgroundColor()
+            }
 
       BottomNavIconTextMode.SELECTED_ACCENT ->
         colorSubs += get().colorAccent()
             .distinctToMainThread()
-            .subscribe(
-                Consumer {
-                  lastTextIconColor = it
-                  invalidateWithBackgroundColor()
-                },
-                onErrorLogAndRethrow()
-            )
+            .subscribeTo {
+              lastTextIconColor = it
+              invalidateWithBackgroundColor()
+            }
 
       BottomNavIconTextMode.BLACK_WHITE_AUTO -> {
         // We will automatically set the icon/text color when the background color is set
@@ -116,26 +109,17 @@ class AestheticBottomNavigationView(
       BottomNavBgMode.PRIMARY ->
         colorSubs += get().colorPrimary()
             .distinctToMainThread()
-            .subscribe(
-                ViewBackgroundAction(this),
-                onErrorLogAndRethrow()
-            )
+            .subscribeBackgroundColor(this)
 
       BottomNavBgMode.PRIMARY_DARK ->
         colorSubs += get().colorStatusBar()
             .distinctToMainThread()
-            .subscribe(
-                ViewBackgroundAction(this),
-                onErrorLogAndRethrow()
-            )
+            .subscribeBackgroundColor(this)
 
       BottomNavBgMode.ACCENT ->
         colorSubs += get().colorAccent()
             .distinctToMainThread()
-            .subscribe(
-                ViewBackgroundAction(this),
-                onErrorLogAndRethrow()
-            )
+            .subscribeBackgroundColor(this)
 
       BottomNavBgMode.BLACK_WHITE_AUTO ->
         setBackgroundColor(
@@ -156,11 +140,9 @@ class AestheticBottomNavigationView(
               bottomNavigationIconTextMode(),
               isDark,
               State.creator()
-          ).distinctToMainThread()
-              .subscribe(
-                  Consumer { onState(it) },
-                  onErrorLogAndRethrow()
-              )
+          )
+              .distinctToMainThread()
+              .subscribeTo(::onState)
     }
   }
 
@@ -182,13 +164,8 @@ class AestheticBottomNavigationView(
     val isDark: Boolean
   ) {
     companion object {
-
       internal fun creator(): Function3<BottomNavBgMode, BottomNavIconTextMode, Boolean, State> {
-        return Function3 { bgMode, iconTextMode, isDark ->
-          State(
-              bgMode, iconTextMode, isDark
-          )
-        }
+        return Function3 { bgMode, iconTextMode, isDark -> State(bgMode, iconTextMode, isDark) }
       }
     }
   }
