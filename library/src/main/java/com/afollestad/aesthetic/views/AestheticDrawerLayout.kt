@@ -36,7 +36,7 @@ class AestheticDrawerLayout(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscription = get().colorIconTitle(null)
+    subscription = get().colorIconTitle()
         .distinctToMainThread()
         .subscribeTo(::invalidateColor)
   }

@@ -10,10 +10,10 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatCheckedTextView
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
-import com.afollestad.aesthetic.utils.TintHelper.setTint
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.setTint
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.watchColor
@@ -35,8 +35,7 @@ class AestheticCheckedTextView(
     }
   }
 
-  private fun invalidateColors(state: ColorIsDarkState) =
-    setTint(this, state.color, state.isDark)
+  private fun invalidateColors(state: ColorIsDarkState) = setTint(state.color, state.isDark)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()

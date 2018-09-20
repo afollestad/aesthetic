@@ -9,11 +9,10 @@ import android.content.Context
 import android.util.AttributeSet
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
-import com.afollestad.aesthetic.utils.TintHelper.setCursorTint
-import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.setTintAuto
 import com.afollestad.aesthetic.utils.subscribeHintTextColor
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.subscribeTo
@@ -40,8 +39,7 @@ class AestheticTextInputEditText(
 
   private fun invalidateColors(state: ColorIsDarkState) {
     this.lastState = state
-    setTintAuto(this, state.color, true, state.isDark)
-    setCursorTint(this, state.color)
+    setTintAuto(state.color, true, state.isDark)
   }
 
   override fun onAttachedToWindow() {

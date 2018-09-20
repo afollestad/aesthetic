@@ -13,13 +13,14 @@ import android.util.AttributeSet
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.TabLayoutBgMode
 import com.afollestad.aesthetic.TabLayoutIndicatorMode
-import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.one
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.subscribeBackgroundColor
 import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.tint
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.Observable.just
 import io.reactivex.disposables.CompositeDisposable
@@ -46,16 +47,15 @@ class AestheticTabLayout(
             intArrayOf(android.R.attr.state_selected)
         ),
         intArrayOf(
-            color.adjustAlpha(
-                UNFOCUSED_ALPHA
-            ), color
+            color.adjustAlpha(UNFOCUSED_ALPHA),
+            color
         )
     )
 
     for (i in 0 until tabCount) {
       val tab = getTabAt(i)
       if (tab != null && tab.icon != null) {
-        tab.icon = createTintedDrawable(tab.icon, sl)
+        tab.icon = tab.icon.tint(sl)
       }
     }
   }
@@ -69,12 +69,11 @@ class AestheticTabLayout(
         .subscribe { (activeColor, inactiveColor) ->
           setIconsColor(activeColor)
           setTabTextColors(
-              inactiveColor.adjustAlpha(
-                  UNFOCUSED_ALPHA
-              ),
+              inactiveColor.adjustAlpha(UNFOCUSED_ALPHA),
               activeColor
           )
         }
+        .unsubscribeOnDetach(this)
   }
 
   override fun onAttachedToWindow() {
@@ -85,6 +84,7 @@ class AestheticTabLayout(
         .distinctToMainThread()
         .subscribeTo {
           bgColorSubscription?.dispose()
+
           bgColorSubscription = when (it) {
             TabLayoutBgMode.PRIMARY ->
               get().colorPrimary()
@@ -102,6 +102,7 @@ class AestheticTabLayout(
         .distinctToMainThread()
         .subscribeTo {
           indicatorColorSubscription?.dispose()
+
           indicatorColorSubscription = when (it) {
             TabLayoutIndicatorMode.PRIMARY ->
               get().colorPrimary()

@@ -511,7 +511,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   }
 
   @CheckResult fun colorIconTitle(
-    requestedBackgroundObservable: Observable<Int>?
+    requestedBackgroundObservable: Observable<Int>? = null
   ): Observable<ActiveInactiveColors> {
     val backgroundObservable = requestedBackgroundObservable ?: colorPrimary()
     val iconTitleObs = backgroundObservable.flatMap {

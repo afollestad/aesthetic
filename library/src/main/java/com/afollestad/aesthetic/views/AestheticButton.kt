@@ -13,10 +13,10 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
-import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.setTintAuto
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.Observable.combineLatest
@@ -38,7 +38,7 @@ class AestheticButton(
   }
 
   private fun invalidateColors(state: ColorIsDarkState) {
-    setTintAuto(this, state.color, true, state.isDark)
+    setTintAuto(state.color, true, state.isDark)
     val textColorSl = ColorStateList(
         arrayOf(
             intArrayOf(android.R.attr.state_enabled),

@@ -35,7 +35,7 @@ internal fun View.setBackgroundCompat(drawable: Drawable?) {
 internal fun Toolbar.setOverflowButtonColor(@ColorInt color: Int) {
   val overflowDrawable = overflowIcon
   if (overflowDrawable != null) {
-    overflowIcon = TintHelper.createTintedDrawable(overflowDrawable, color)
+    overflowIcon = overflowDrawable.tint(color)
   }
 }
 
@@ -49,10 +49,7 @@ internal fun Toolbar.tintMenu(
     field.isAccessible = true
     val collapseIcon = field.get(this) as? Drawable
     if (collapseIcon != null) {
-      field.set(
-          this,
-          TintHelper.createTintedDrawable(collapseIcon, titleIconColors.toEnabledSl())
-      )
+      field.set(this, collapseIcon.tint(titleIconColors.toEnabledSl()))
     }
   } catch (e: Exception) {
     e.printStackTrace()
@@ -66,9 +63,7 @@ internal fun Toolbar.tintMenu(
       actionView.setColors(titleIconColors)
     }
     if (menu.getItem(i).icon != null) {
-      menuItem.icon = TintHelper.createTintedDrawable(
-          menuItem.icon, titleIconColors.toEnabledSl()
-      )
+      menuItem.icon = menuItem.icon.tint(titleIconColors.toEnabledSl())
     }
   }
 }
@@ -81,7 +76,7 @@ internal fun SearchView.setColors(tintColors: ActiveInactiveColors) {
     val mSearchSrcTextView = mSearchSrcTextViewField.get(this) as EditText
     mSearchSrcTextView.setTextColor(tintColors.activeColor)
     mSearchSrcTextView.setHintTextColor(tintColors.inactiveColor)
-    TintHelper.setCursorTint(mSearchSrcTextView, tintColors.activeColor)
+    mSearchSrcTextView.setCursorTint(tintColors.activeColor)
 
     var field = cls.getDeclaredField("mSearchButton")
     tintImageView(this, field, tintColors)
@@ -94,19 +89,24 @@ internal fun SearchView.setColors(tintColors: ActiveInactiveColors) {
 
     field = cls.getDeclaredField("mSearchPlate")
     field.isAccessible = true
-    TintHelper.setTintAuto(
-        field.get(this) as View,
-        tintColors.activeColor,
-        true,
-        !tintColors.activeColor.isColorLight()
-    )
+
+    (field.get(this) as View).apply {
+      setTintAuto(
+          color = tintColors.activeColor,
+          requestBackground = true,
+          isDark = !tintColors.activeColor.isColorLight()
+      )
+    }
 
     field = cls.getDeclaredField("mSearchHintIcon")
     field.isAccessible = true
-    field.set(
-        this,
-        TintHelper.createTintedDrawable(field.get(this) as Drawable, tintColors.toEnabledSl())
-    )
+
+    (field.get(this) as Drawable).apply {
+      field.set(
+          this@setColors,
+          this@apply.tint(tintColors.toEnabledSl())
+      )
+    }
   } catch (e: Exception) {
     e.printStackTrace()
   }
@@ -121,9 +121,7 @@ internal fun tintImageView(
   field.isAccessible = true
   val imageView = field.get(target) as ImageView
   if (imageView.drawable != null) {
-    imageView.setImageDrawable(
-        TintHelper.createTintedDrawable(imageView.drawable, tintColors.toEnabledSl())
-    )
+    imageView.setImageDrawable(imageView.drawable.tint(tintColors.toEnabledSl()))
   }
 }
 
@@ -282,9 +280,4 @@ private class AttachedDisposables : View.OnAttachStateChangeListener {
   }
 
   override fun onViewDetachedFromWindow(v: View) = disposables.clear()
-
-//  fun clearAllDisposables() {
-//    disposableFactory.clear()
-//    disposables.clear()
-//  }
 }

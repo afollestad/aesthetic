@@ -11,12 +11,12 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
-import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
-import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.setTintAuto
 import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.tint
 import com.afollestad.aesthetic.utils.watchColor
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.Observable.combineLatest
@@ -39,14 +39,13 @@ class AestheticFab(
   }
 
   private fun invalidateColors(state: ColorIsDarkState) {
-    setTintAuto(this, state.color, true, state.isDark)
+    setTintAuto(state.color, true, state.isDark)
     iconColor = if (state.color.isColorLight()) Color.BLACK else Color.WHITE
     setImageDrawable(drawable)
   }
 
-  override fun setImageDrawable(drawable: Drawable?) {
-    super.setImageDrawable(createTintedDrawable(drawable, iconColor))
-  }
+  override fun setImageDrawable(drawable: Drawable?) =
+    super.setImageDrawable(drawable.tint(iconColor))
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()

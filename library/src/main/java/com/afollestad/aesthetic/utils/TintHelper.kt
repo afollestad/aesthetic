@@ -8,12 +8,14 @@ package com.afollestad.aesthetic.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.PorterDuff
+import android.graphics.PorterDuff.Mode.SRC_ATOP
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.M
 import android.support.annotation.CheckResult
 import android.support.annotation.ColorInt
@@ -36,533 +38,505 @@ import com.afollestad.aesthetic.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 
-/** @author Aidan Follestad (afollestad) */
-internal object TintHelper {
+@SuppressLint("PrivateResource")
+internal fun View.setTintAuto(
+  @ColorInt color: Int,
+  requestBackground: Boolean,
+  isDark: Boolean
+) {
+  var background = requestBackground
+  if (!background) {
+    when (this) {
+      is RadioButton -> setTint(color, isDark)
+      is SeekBar -> setTint(color, isDark)
+      is ProgressBar -> setTint(color)
+      is EditText -> setTint(color, isDark)
+      is CheckBox -> setTint(color, isDark)
+      is ImageView -> setTint(color)
+      is Switch -> setTint(color, isDark)
+      is SwitchCompat -> setTint(color, isDark)
+      is AppCompatCheckedTextView -> setTint(color, isDark)
+      else -> background = true
+    }
 
-  @SuppressLint("PrivateResource")
-  @ColorInt
-  private fun getDefaultRippleColor(
-    context: Context,
-    useDarkRipple: Boolean
-  ): Int {
-    // Light ripple is actually translucent black, and vice versa
-    return context.color(
-        if (useDarkRipple) R.color.ripple_material_light else R.color.ripple_material_dark
-    )
-  }
-
-  private fun getDisabledColorStateList(
-    @ColorInt normal: Int,
-    @ColorInt disabled: Int
-  ): ColorStateList {
-    return ColorStateList(
-        arrayOf(
-            intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_enabled)
-        ),
-        intArrayOf(disabled, normal)
-    )
-  }
-
-  private fun setTintSelector(
-    view: View,
-    @ColorInt color: Int,
-    darker: Boolean,
-    useDarkTheme: Boolean
-  ) {
-    val isColorLight = color.isColorLight()
-    val disabled = view.context.color(
-        if (useDarkTheme) R.color.ate_button_disabled_dark
-        else R.color.ate_button_disabled_light
-    )
-    val pressed = color.shiftColor(if (darker) 0.9f else 1.1f)
-    val activated = color.shiftColor(if (darker) 1.1f else 0.9f)
-    val rippleColor =
-      getDefaultRippleColor(view.context, isColorLight)
-    val textColor = view.context.color(
-        if (isColorLight) R.color.ate_primary_text_light
-        else R.color.ate_primary_text_dark
-    )
-
-    val sl: ColorStateList
-    when (view) {
-      is Button -> {
-        sl = getDisabledColorStateList(color, disabled)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && view.getBackground() is RippleDrawable) {
-          val rd = view.getBackground() as RippleDrawable
-          rd.setColor(ColorStateList.valueOf(rippleColor))
-        }
-
-        // Disabled text color state for buttons, may get overridden later by ATE tags
-        view.setTextColor(
-            getDisabledColorStateList(
-                textColor,
-                view.getContext().color(
-                    if (useDarkTheme) R.color.ate_button_text_disabled_dark
-                    else R.color.ate_button_text_disabled_light
-                )
-            )
-        )
-      }
-      is FloatingActionButton -> {
-        // FloatingActionButton doesn't support disabled state?
-        sl = ColorStateList(
-            arrayOf(
-                intArrayOf(-android.R.attr.state_pressed), intArrayOf(android.R.attr.state_pressed)
-            ),
-            intArrayOf(color, pressed)
-        )
-
-        view.rippleColor = rippleColor
-        view.backgroundTintList = sl
-        if (view.drawable != null)
-          view.setImageDrawable(
-              createTintedDrawable(view.drawable, textColor)
-          )
-        return
-      }
-      else -> sl = ColorStateList(
-          arrayOf(
-              intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_enabled),
-              intArrayOf(android.R.attr.state_enabled, android.R.attr.state_pressed),
-              intArrayOf(android.R.attr.state_enabled, android.R.attr.state_activated),
-              intArrayOf(android.R.attr.state_enabled, android.R.attr.state_checked)
-          ),
-          intArrayOf(disabled, color, pressed, activated, activated)
+    if (SDK_INT >= LOLLIPOP && !background && this.background is RippleDrawable) {
+      // Ripples for the above views (e.g. when you tap and hold a switch or checkbox)
+      val rd = this.background as RippleDrawable
+      val unchecked = context.color(
+          if (isDark) R.color.ripple_material_dark
+          else R.color.ripple_material_light
       )
+      val checked = color.adjustAlpha(0.4f)
+      val sl = ColorStateList(
+          arrayOf(
+              intArrayOf(
+                  -android.R.attr.state_activated,
+                  -android.R.attr.state_checked
+              ),
+              intArrayOf(android.R.attr.state_activated),
+              intArrayOf(android.R.attr.state_checked)
+          ),
+          intArrayOf(unchecked, checked, checked)
+      )
+      rd.setColor(sl)
     }
-
-    var drawable: Drawable? = view.background
-    if (drawable != null) {
-      drawable = createTintedDrawable(drawable, sl)
-      view.setBackgroundCompat(drawable)
+  }
+  if (background) {
+    // Need to tint the background of a view
+    if (this is FloatingActionButton || this is Button) {
+      setTintSelector(color, false, isDark)
+    } else if (this.background != null) {
+      val drawable: Drawable? = this.background
+      if (drawable != null) {
+        if (this is TextInputEditText) {
+          drawable.setColorFilter(color, SRC_IN)
+        } else {
+          setBackgroundCompat(drawable.tint(color))
+        }
+      }
     }
+  }
+}
 
-    if (view is TextView && view !is Button) {
-      view.setTextColor(
-          getDisabledColorStateList(
+internal fun View.setTintSelector(
+  @ColorInt color: Int,
+  darker: Boolean,
+  useDarkTheme: Boolean
+) {
+  val isColorLight = color.isColorLight()
+  val disabled = context.color(
+      if (useDarkTheme) R.color.ate_button_disabled_dark
+      else R.color.ate_button_disabled_light
+  )
+  val pressed = color.shiftColor(if (darker) 0.9f else 1.1f)
+  val activated = color.shiftColor(if (darker) 1.1f else 0.9f)
+  val rippleColor = defaultRippleColor(context, isColorLight)
+  val textColor = context.color(
+      if (isColorLight) R.color.ate_primary_text_light
+      else R.color.ate_primary_text_dark
+  )
+
+  val sl: ColorStateList
+  when (this) {
+    is Button -> {
+      sl = disabledColorStateList(color, disabled)
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && this.background is RippleDrawable) {
+        val rd = this.background as RippleDrawable
+        rd.setColor(ColorStateList.valueOf(rippleColor))
+      }
+
+      // Disabled text color state for buttons, may get overridden later by ATE tags
+      setTextColor(
+          disabledColorStateList(
               textColor,
-              view.getContext().color(
-                  if (isColorLight) R.color.ate_text_disabled_light
-                  else R.color.ate_text_disabled_dark
+              context.color(
+                  if (useDarkTheme) R.color.ate_button_text_disabled_dark
+                  else R.color.ate_button_text_disabled_light
               )
           )
       )
     }
-  }
+    is FloatingActionButton -> {
+      // FloatingActionButton doesn't support disabled state?
+      sl = ColorStateList(
+          arrayOf(
+              intArrayOf(-android.R.attr.state_pressed), intArrayOf(android.R.attr.state_pressed)
+          ),
+          intArrayOf(color, pressed)
+      )
 
-  @SuppressLint("PrivateResource")
-  fun setTintAuto(
-    view: View,
-    @ColorInt color: Int,
-    requestBackground: Boolean,
-    isDark: Boolean
-  ) {
-    var background = requestBackground
-    if (!background) {
-      when (view) {
-        is RadioButton -> setTint(view, color, isDark)
-        is SeekBar -> setTint(view, color, isDark)
-        is ProgressBar -> setTint(view, color)
-        is EditText -> setTint(view, color, isDark)
-        is CheckBox -> setTint(view, color, isDark)
-        is ImageView -> setTint(view, color)
-        is Switch -> setTint(view, color, isDark)
-        is SwitchCompat -> setTint(view, color, isDark)
-        is AppCompatCheckedTextView -> setTint(view, color, isDark)
-        else -> background = true
+      this.rippleColor = rippleColor
+      this.backgroundTintList = sl
+      if (this.drawable != null) {
+        setImageDrawable(drawable.tint(textColor))
       }
-
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
-          !background &&
-          view.background is RippleDrawable
-      ) {
-        // Ripples for the above views (e.g. when you tap and hold a switch or checkbox)
-        val rd = view.background as RippleDrawable
-        val unchecked = view.context.color(
-            if (isDark) R.color.ripple_material_dark else R.color.ripple_material_light
-        )
-        val checked = color.adjustAlpha(0.4f)
-        val sl = ColorStateList(
-            arrayOf(
-                intArrayOf(-android.R.attr.state_activated, -android.R.attr.state_checked),
-                intArrayOf(android.R.attr.state_activated), intArrayOf(android.R.attr.state_checked)
-            ),
-            intArrayOf(unchecked, checked, checked)
-        )
-        rd.setColor(sl)
-      }
+      return
     }
-    if (background) {
-      // Need to tint the background of a view
-      if (view is FloatingActionButton || view is Button) {
-        setTintSelector(view, color, false, isDark)
-      } else if (view.background != null) {
-        var drawable: Drawable? = view.background
-        if (drawable != null) {
-          if (view is TextInputEditText) {
-            drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
-          } else {
-            drawable =
-                createTintedDrawable(drawable, color)
-            view.setBackgroundCompat(drawable)
-          }
-        }
-      }
-    }
-  }
-
-  fun setTint(
-    radioButton: RadioButton,
-    @ColorInt color: Int,
-    useDarker: Boolean
-  ) {
-    val sl = ColorStateList(
+    else -> sl = ColorStateList(
         arrayOf(
-            intArrayOf(-android.R.attr.state_enabled),
-            intArrayOf(android.R.attr.state_enabled, -android.R.attr.state_checked),
+            intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_enabled),
+            intArrayOf(android.R.attr.state_enabled, android.R.attr.state_pressed),
+            intArrayOf(android.R.attr.state_enabled, android.R.attr.state_activated),
             intArrayOf(android.R.attr.state_enabled, android.R.attr.state_checked)
         ),
-        intArrayOf(
-            // Radio button includes own alpha for disabled state
-            radioButton.context.color(
-                if (useDarker)
-                  R.color.ate_control_disabled_dark
-                else
-                  R.color.ate_control_disabled_light
-            ).stripAlpha(),
-            radioButton.context.color(
-                if (useDarker) R.color.ate_control_normal_dark else R.color.ate_control_normal_light
-            ),
-            color
+        intArrayOf(disabled, color, pressed, activated, activated)
+    )
+  }
+
+  val drawable: Drawable? = this.background
+  if (drawable != null) {
+    setBackgroundCompat(drawable.tint(sl))
+  }
+
+  if (this is TextView && this !is Button) {
+    setTextColor(
+        disabledColorStateList(
+            textColor,
+            context.color(
+                if (isColorLight) R.color.ate_text_disabled_light
+                else R.color.ate_text_disabled_dark
+            )
         )
     )
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      radioButton.buttonTintList = sl
-    } else {
-      @SuppressLint("PrivateResource")
-      val d = createTintedDrawable(
-          radioButton.context.drawable(R.drawable.abc_btn_radio_material),
-          sl
+  }
+}
+
+internal fun RadioButton.setTint(
+  @ColorInt tintColor: Int,
+  useDarker: Boolean
+) {
+  val disabledColor = context.color(
+      if (useDarker) R.color.ate_control_disabled_dark
+      else R.color.ate_control_disabled_light
+  )
+  val defaultColor = context.color(
+      if (useDarker) R.color.ate_control_normal_dark
+      else R.color.ate_control_normal_light
+  )
+  val sl = ColorStateList(
+      arrayOf(
+          intArrayOf(-android.R.attr.state_enabled),
+          intArrayOf(android.R.attr.state_enabled, -android.R.attr.state_checked),
+          intArrayOf(android.R.attr.state_enabled, android.R.attr.state_checked)
+      ),
+      intArrayOf(
+          // Radio button includes own alpha for disabled state
+          disabledColor.stripAlpha(),
+          defaultColor,
+          tintColor
       )
-      radioButton.buttonDrawable = d
-    }
+  )
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    this.buttonTintList = sl
+  } else {
+    @SuppressLint("PrivateResource")
+    this.buttonDrawable = context.drawable(R.drawable.abc_btn_radio_material)
+        .tint(sl)
   }
+}
 
-  fun setTint(
-    seekBar: SeekBar,
-    @ColorInt color: Int,
-    useDarker: Boolean
-  ) {
-    val s1 = getDisabledColorStateList(
-        color,
-        seekBar.context.color(
-            if (useDarker)
-              R.color.ate_control_disabled_dark
-            else
-              R.color.ate_control_disabled_light
-        )
-    )
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      seekBar.thumbTintList = s1
-      seekBar.progressTintList = s1
-    } else {
-      val progressDrawable =
-        createTintedDrawable(seekBar.progressDrawable, s1)
-      seekBar.progressDrawable = progressDrawable
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-        val thumbDrawable =
-          createTintedDrawable(seekBar.thumb, s1)
-        seekBar.thumb = thumbDrawable
-      }
-    }
-  }
-
-  fun setTint(progressBar: ProgressBar, @ColorInt color: Int) {
-    setTint(progressBar, color, false)
-  }
-
-  private fun setTint(
-    progressBar: ProgressBar,
-    @ColorInt color: Int,
-    skipIndeterminate: Boolean
-  ) {
-    val sl = ColorStateList.valueOf(color)
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      progressBar.progressTintList = sl
-      progressBar.secondaryProgressTintList = sl
-      if (!skipIndeterminate) {
-        progressBar.indeterminateTintList = sl
-      }
-    } else {
-      val mode = PorterDuff.Mode.SRC_IN
-      if (!skipIndeterminate && progressBar.indeterminateDrawable != null) {
-        progressBar.indeterminateDrawable.setColorFilter(color, mode)
-      }
-      if (progressBar.progressDrawable != null) {
-        progressBar.progressDrawable.setColorFilter(color, mode)
-      }
-    }
-  }
-
-  private fun setTint(
-    editText: EditText,
-    @ColorInt color: Int,
-    useDarker: Boolean
-  ) {
-    val editTextColorStateList = ColorStateList(
-        arrayOf(
-            intArrayOf(-android.R.attr.state_enabled), intArrayOf(
-            android.R.attr.state_enabled, -android.R.attr.state_pressed,
-            -android.R.attr.state_focused
-        ), intArrayOf()
-        ),
-        intArrayOf(
-            editText.context.color(
-                if (useDarker) R.color.ate_text_disabled_dark else R.color.ate_text_disabled_light
-            ),
-            editText.context.color(
-                if (useDarker) R.color.ate_control_normal_dark else R.color.ate_control_normal_light
-            ),
-            color
-        )
-    )
-    if (editText is TintableBackgroundView) {
-      ViewCompat.setBackgroundTintList(editText, editTextColorStateList)
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      editText.backgroundTintList = editTextColorStateList
-    }
-    setCursorTint(editText, color)
-  }
-
-  fun setTint(
-    box: CheckBox,
-    @ColorInt color: Int,
-    useDarker: Boolean
-  ) {
-    val sl = ColorStateList(
-        arrayOf(
-            intArrayOf(-android.R.attr.state_enabled),
-            intArrayOf(android.R.attr.state_enabled, -android.R.attr.state_checked),
-            intArrayOf(android.R.attr.state_enabled, android.R.attr.state_checked)
-        ),
-        intArrayOf(
-            box.context.color(
-                if (useDarker)
-                  R.color.ate_control_disabled_dark
-                else
-                  R.color.ate_control_disabled_light
-            ),
-            box.context.color(
-                if (useDarker) R.color.ate_control_normal_dark else R.color.ate_control_normal_light
-            ),
-            color
-        )
-    )
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      box.buttonTintList = sl
-    } else {
-      @SuppressLint("PrivateResource")
-      val drawable = createTintedDrawable(
-          box.context.drawable(R.drawable.abc_btn_check_material), sl
+internal fun SeekBar.setTint(
+  @ColorInt color: Int,
+  useDarker: Boolean
+) {
+  val s1 = disabledColorStateList(
+      color,
+      context.color(
+          if (useDarker) R.color.ate_control_disabled_dark
+          else R.color.ate_control_disabled_light
       )
-      box.buttonDrawable = drawable
+  )
+  if (SDK_INT >= LOLLIPOP) {
+    this.thumbTintList = s1
+    this.progressTintList = s1
+  } else {
+    this.progressDrawable = this.progressDrawable.tint(s1)
+    if (SDK_INT >= JELLY_BEAN) {
+      this.thumb = this.thumb.tint(s1)
     }
   }
+}
 
-  private fun setTint(image: ImageView, @ColorInt color: Int) {
-    image.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+internal fun ProgressBar.setTint(@ColorInt color: Int) = setTint(color, false)
+
+internal fun CheckBox.setTint(
+  @ColorInt tintColor: Int,
+  useDarker: Boolean
+) {
+  val disabledColor = context.color(
+      if (useDarker) R.color.ate_control_disabled_dark
+      else R.color.ate_control_disabled_light
+  )
+  val defaultColor = context.color(
+      if (useDarker) R.color.ate_control_normal_dark
+      else R.color.ate_control_normal_light
+  )
+  val sl = ColorStateList(
+      arrayOf(
+          intArrayOf(-android.R.attr.state_enabled),
+          intArrayOf(android.R.attr.state_enabled, -android.R.attr.state_checked),
+          intArrayOf(android.R.attr.state_enabled, android.R.attr.state_checked)
+      ),
+      intArrayOf(
+          disabledColor,
+          defaultColor,
+          tintColor
+      )
+  )
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    this.buttonTintList = sl
+  } else {
+    @SuppressLint("PrivateResource")
+    this.buttonDrawable = context.drawable(R.drawable.abc_btn_check_material)
+        .tint(sl)
   }
+}
 
-  private fun modifySwitchDrawable(
-    context: Context,
-    from: Drawable,
-    @ColorInt requestedTint: Int,
-    thumb: Boolean,
-    compatSwitch: Boolean,
-    useDarker: Boolean
-  ): Drawable? {
-    val sl = getCheckableColorStateList(
+internal fun Switch.setTint(
+  @ColorInt tintColor: Int,
+  useDarker: Boolean
+) {
+  if (trackDrawable != null) {
+    trackDrawable = trackDrawable.modifySwitchDrawable(
         context = context,
-        requestedTint = requestedTint,
-        thumb = thumb,
-        compatSwitch = compatSwitch,
-        useDarker = useDarker
-    )
-    return createTintedDrawable(from, sl)
-  }
-
-  private fun getCheckableColorStateList(
-    context: Context,
-    @ColorInt requestedTint: Int,
-    thumb: Boolean,
-    compatSwitch: Boolean,
-    useDarker: Boolean
-  ): ColorStateList {
-    var tint = requestedTint
-    if (useDarker) {
-      tint = tint.shiftColor(1.1f)
-    }
-    tint = tint.adjustAlpha(if (compatSwitch && !thumb) 0.5f else 1.0f)
-
-    val disabled: Int
-    var normal: Int
-    if (thumb) {
-      disabled = context.color(
-          if (useDarker) R.color.ate_switch_thumb_disabled_dark
-          else R.color.ate_switch_thumb_disabled_light
-      )
-      normal = context.color(
-          if (useDarker) R.color.ate_switch_thumb_normal_dark
-          else R.color.ate_switch_thumb_normal_light
-      )
-    } else {
-      disabled = context.color(
-          if (useDarker) R.color.ate_switch_track_disabled_dark
-          else R.color.ate_switch_track_disabled_light
-      )
-      normal = context.color(
-          if (useDarker) R.color.ate_switch_track_normal_dark
-          else R.color.ate_switch_track_normal_light
-      )
-    }
-
-    // Stock switch includes its own alpha
-    if (!compatSwitch) {
-      normal = normal.stripAlpha()
-    }
-
-    return ColorStateList(
-        arrayOf(
-            intArrayOf(-android.R.attr.state_enabled), intArrayOf(
-            android.R.attr.state_enabled, -android.R.attr.state_activated,
-            -android.R.attr.state_checked
-        ), intArrayOf(android.R.attr.state_enabled, android.R.attr.state_activated),
-            intArrayOf(android.R.attr.state_enabled, android.R.attr.state_checked)
-        ),
-        intArrayOf(disabled, normal, tint, tint)
-    )
-  }
-
-  fun setTint(
-    switchView: Switch,
-    @ColorInt color: Int,
-    useDarker: Boolean
-  ) {
-    if (switchView.trackDrawable != null) {
-      switchView.trackDrawable = modifySwitchDrawable(
-          switchView.context,
-          switchView.trackDrawable,
-          color,
-          false,
-          false,
-          useDarker
-      )
-    }
-    if (switchView.thumbDrawable != null) {
-      switchView.thumbDrawable = modifySwitchDrawable(
-          switchView.context,
-          switchView.thumbDrawable,
-          color,
-          true,
-          false,
-          useDarker
-      )
-    }
-  }
-
-  fun setTint(
-    switchView: SwitchCompat,
-    @ColorInt color: Int,
-    useDarker: Boolean
-  ) {
-    if (switchView.trackDrawable != null) {
-      switchView.trackDrawable = modifySwitchDrawable(
-          switchView.context,
-          switchView.trackDrawable,
-          color,
-          false,
-          true,
-          useDarker
-      )
-    }
-    if (switchView.thumbDrawable != null) {
-      switchView.thumbDrawable = modifySwitchDrawable(
-          switchView.context,
-          switchView.thumbDrawable,
-          color,
-          true,
-          true,
-          useDarker
-      )
-    }
-  }
-
-  fun setTint(
-    textView: AppCompatCheckedTextView,
-    @ColorInt color: Int,
-    useDarker: Boolean
-  ) {
-    val sl = getCheckableColorStateList(
-        context = textView.context,
-        requestedTint = color,
+        requestedTint = tintColor,
         thumb = false,
         compatSwitch = false,
         useDarker = useDarker
     )
-    if (SDK_INT >= M) {
-      textView.compoundDrawableTintList = sl
-    } else {
-      for (compoundDrawable in textView.compoundDrawables) {
-        compoundDrawable.setColorFilter(color, SRC_IN)
-      }
+  }
+  if (thumbDrawable != null) {
+    thumbDrawable = thumbDrawable.modifySwitchDrawable(
+        context = context,
+        requestedTint = tintColor,
+        thumb = true,
+        compatSwitch = false,
+        useDarker = useDarker
+    )
+  }
+}
+
+internal fun SwitchCompat.setTint(
+  @ColorInt color: Int,
+  useDarker: Boolean
+) {
+  if (trackDrawable != null) {
+    trackDrawable = trackDrawable.modifySwitchDrawable(
+        context = context,
+        requestedTint = color,
+        thumb = false,
+        compatSwitch = true,
+        useDarker = useDarker
+    )
+  }
+  if (thumbDrawable != null) {
+    thumbDrawable = thumbDrawable.modifySwitchDrawable(
+        context = context,
+        requestedTint = color,
+        thumb = true,
+        compatSwitch = true,
+        useDarker = useDarker
+    )
+  }
+}
+
+internal fun AppCompatCheckedTextView.setTint(
+  @ColorInt tintColor: Int,
+  useDarker: Boolean
+) {
+  val sl = checkableColorStateList(
+      context = context,
+      requestedTint = tintColor,
+      thumb = false,
+      compatSwitch = false,
+      useDarker = useDarker
+  )
+  if (SDK_INT >= M) {
+    compoundDrawableTintList = sl
+  } else {
+    for (compoundDrawable in compoundDrawables) {
+      compoundDrawable.setColorFilter(tintColor, SRC_IN)
     }
   }
+}
 
-  // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary
-  // because Drawables with the same resource have shared states otherwise.
-  @CheckResult
-  fun createTintedDrawable(drawable: Drawable?, @ColorInt color: Int): Drawable? {
-    var result: Drawable = drawable ?: return null
-    result = DrawableCompat.wrap(result.mutate())
-    DrawableCompat.setTintMode(result, PorterDuff.Mode.SRC_IN)
-    DrawableCompat.setTint(result, color)
-    return drawable
+internal fun EditText.setTint(
+  @ColorInt tintColor: Int,
+  useDarker: Boolean
+) {
+  val disabledColor = context.color(
+      if (useDarker) R.color.ate_text_disabled_dark
+      else R.color.ate_text_disabled_light
+  )
+  val defaultColor = context.color(
+      if (useDarker) R.color.ate_control_normal_dark
+      else R.color.ate_control_normal_light
+  )
+  val editTextColorStateList = ColorStateList(
+      arrayOf(
+          intArrayOf(-android.R.attr.state_enabled),
+          intArrayOf(
+              android.R.attr.state_enabled,
+              -android.R.attr.state_pressed,
+              -android.R.attr.state_focused
+          ),
+          intArrayOf()
+      ),
+      intArrayOf(
+          disabledColor,
+          defaultColor,
+          tintColor
+      )
+  )
+  if (this is TintableBackgroundView) {
+    ViewCompat.setBackgroundTintList(this, editTextColorStateList)
+  } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    this.backgroundTintList = editTextColorStateList
   }
+  setCursorTint(tintColor)
+}
 
-  // This returns a NEW Drawable because of the mutate() call. The mutate() call is necessary
-  // because Drawables with the same resource have shared states otherwise.
-  @CheckResult
-  fun createTintedDrawable(
-    drawable: Drawable?,
-    sl: ColorStateList
-  ): Drawable? {
-    var result: Drawable = drawable ?: return null
-    result = DrawableCompat.wrap(result.mutate())
-    DrawableCompat.setTintList(result, sl)
-    return result
+internal fun EditText.setCursorTint(@ColorInt color: Int) {
+  try {
+    val fCursorDrawableRes = TextView::class.java.getDeclaredField("mCursorDrawableRes")
+    fCursorDrawableRes.isAccessible = true
+    val mCursorDrawableRes = fCursorDrawableRes.getInt(this)
+    val fEditor = TextView::class.java.getDeclaredField("mEditor")
+    fEditor.isAccessible = true
+    val editor = fEditor.get(this)
+    val clazz = editor.javaClass
+    val fCursorDrawable = clazz.getDeclaredField("mCursorDrawable")
+    fCursorDrawable.isAccessible = true
+    val drawables = arrayOfNulls<Drawable>(2)
+    drawables[0] = this.context.drawable(mCursorDrawableRes)
+    drawables[0] = drawables[0].tint(color)
+    drawables[1] = this.context.drawable(mCursorDrawableRes)
+    drawables[1] = drawables[1].tint(color)
+    fCursorDrawable.set(editor, drawables)
+  } catch (e: Exception) {
+    // TODO FIX    e.printStackTrace()
   }
+}
 
-  fun setCursorTint(editText: EditText, @ColorInt color: Int) {
-    try {
-      val fCursorDrawableRes = TextView::class.java.getDeclaredField("mCursorDrawableRes")
-      fCursorDrawableRes.isAccessible = true
-      val mCursorDrawableRes = fCursorDrawableRes.getInt(editText)
-      val fEditor = TextView::class.java.getDeclaredField("mEditor")
-      fEditor.isAccessible = true
-      val editor = fEditor.get(editText)
-      val clazz = editor.javaClass
-      val fCursorDrawable = clazz.getDeclaredField("mCursorDrawable")
-      fCursorDrawable.isAccessible = true
-      val drawables = arrayOfNulls<Drawable>(2)
-      drawables[0] = editText.context.drawable(mCursorDrawableRes)
-      drawables[0] =
-          createTintedDrawable(drawables[0], color)
-      drawables[1] = editText.context.drawable(mCursorDrawableRes)
-      drawables[1] =
-          createTintedDrawable(drawables[1], color)
-      fCursorDrawable.set(editor, drawables)
-    } catch (e: Exception) {
-      // TODO FIX    e.printStackTrace()
+internal fun ProgressBar.setTint(
+  @ColorInt color: Int,
+  skipIndeterminate: Boolean
+) {
+  val sl = ColorStateList.valueOf(color)
+  if (SDK_INT >= LOLLIPOP) {
+    this.progressTintList = sl
+    this.secondaryProgressTintList = sl
+    if (!skipIndeterminate) {
+      this.indeterminateTintList = sl
     }
+    return
   }
+
+  if (!skipIndeterminate && this.indeterminateDrawable != null) {
+    this.indeterminateDrawable.setColorFilter(color, SRC_IN)
+  }
+  if (this.progressDrawable != null) {
+    this.progressDrawable.setColorFilter(color, SRC_IN)
+  }
+}
+
+internal fun ImageView.setTint(@ColorInt color: Int) = setColorFilter(color, SRC_ATOP)
+
+@CheckResult fun Drawable?.tint(@ColorInt color: Int): Drawable? {
+  var result: Drawable = this ?: return null
+  result = DrawableCompat.wrap(result.mutate())
+  DrawableCompat.setTintMode(result, SRC_IN)
+  DrawableCompat.setTint(result, color)
+  return result
+}
+
+@CheckResult fun Drawable?.tint(sl: ColorStateList): Drawable? {
+  var result: Drawable = this ?: return null
+  result = DrawableCompat.wrap(result.mutate())
+  DrawableCompat.setTintList(result, sl)
+  return result
+}
+
+@SuppressLint("PrivateResource")
+@ColorInt
+private fun defaultRippleColor(
+  context: Context,
+  useDarkRipple: Boolean
+): Int {
+  // Light ripple is actually translucent black, and vice versa
+  return context.color(
+      if (useDarkRipple) R.color.ripple_material_light
+      else R.color.ripple_material_dark
+  )
+}
+
+private fun disabledColorStateList(
+  @ColorInt normal: Int,
+  @ColorInt disabled: Int
+): ColorStateList {
+  return ColorStateList(
+      arrayOf(
+          intArrayOf(-android.R.attr.state_enabled),
+          intArrayOf(android.R.attr.state_enabled)
+      ),
+      intArrayOf(disabled, normal)
+  )
+}
+
+private fun Drawable.modifySwitchDrawable(
+  context: Context,
+  @ColorInt requestedTint: Int,
+  thumb: Boolean,
+  compatSwitch: Boolean,
+  useDarker: Boolean
+): Drawable? {
+  val sl = checkableColorStateList(
+      context = context,
+      requestedTint = requestedTint,
+      thumb = thumb,
+      compatSwitch = compatSwitch,
+      useDarker = useDarker
+  )
+  return this.tint(sl)
+}
+
+private fun checkableColorStateList(
+  context: Context,
+  @ColorInt requestedTint: Int,
+  thumb: Boolean,
+  compatSwitch: Boolean,
+  useDarker: Boolean
+): ColorStateList {
+  var tint = requestedTint
+  if (useDarker) {
+    tint = tint.shiftColor(1.1f)
+  }
+  tint = tint.adjustAlpha(if (compatSwitch && !thumb) 0.5f else 1.0f)
+
+  val disabled: Int
+  var normal: Int
+  if (thumb) {
+    disabled = context.color(
+        if (useDarker) R.color.ate_switch_thumb_disabled_dark
+        else R.color.ate_switch_thumb_disabled_light
+    )
+    normal = context.color(
+        if (useDarker) R.color.ate_switch_thumb_normal_dark
+        else R.color.ate_switch_thumb_normal_light
+    )
+  } else {
+    disabled = context.color(
+        if (useDarker) R.color.ate_switch_track_disabled_dark
+        else R.color.ate_switch_track_disabled_light
+    )
+    normal = context.color(
+        if (useDarker) R.color.ate_switch_track_normal_dark
+        else R.color.ate_switch_track_normal_light
+    )
+  }
+
+  // Stock switch includes its own alpha
+  if (!compatSwitch) {
+    normal = normal.stripAlpha()
+  }
+
+  return ColorStateList(
+      arrayOf(
+          intArrayOf(-android.R.attr.state_enabled),
+          intArrayOf(
+              android.R.attr.state_enabled,
+              -android.R.attr.state_activated,
+              -android.R.attr.state_checked
+          ),
+          intArrayOf(
+              android.R.attr.state_enabled,
+              android.R.attr.state_activated
+          ),
+          intArrayOf(
+              android.R.attr.state_enabled,
+              android.R.attr.state_checked
+          )
+      ),
+      intArrayOf(disabled, normal, tint, tint)
+  )
 }

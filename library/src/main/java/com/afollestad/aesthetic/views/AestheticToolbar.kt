@@ -13,10 +13,10 @@ import androidx.appcompat.widget.Toolbar
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.BgIconColorState
 import com.afollestad.aesthetic.BgIconColorState.Companion.creator
-import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.setOverflowButtonColor
 import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.tint
 import com.afollestad.aesthetic.utils.tintMenu
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
@@ -56,7 +56,7 @@ class AestheticToolbar(
     }
     val iconTitleColors = lastState!!.iconTitleColor
     if (iconTitleColors != null) {
-      super.setNavigationIcon(createTintedDrawable(icon, iconTitleColors.toEnabledSl()))
+      super.setNavigationIcon(icon.tint(iconTitleColors.toEnabledSl()))
     } else {
       super.setNavigationIcon(icon)
     }
@@ -67,7 +67,7 @@ class AestheticToolbar(
       super.setNavigationIcon(icon)
       return
     }
-    super.setNavigationIcon(createTintedDrawable(icon, color))
+    super.setNavigationIcon(icon.tint(color))
   }
 
   override fun onAttachedToWindow() {

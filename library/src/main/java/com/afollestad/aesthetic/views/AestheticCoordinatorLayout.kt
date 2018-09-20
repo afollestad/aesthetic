@@ -21,13 +21,13 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.afollestad.aesthetic.ActiveInactiveColors
 import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.Aesthetic.Companion.get
-import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.blendWith
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.setOverflowButtonColor
 import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.tint
 import com.afollestad.aesthetic.utils.tintMenu
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -70,7 +70,7 @@ class AestheticCoordinatorLayout(
       field.isAccessible = true
       val collapseIcon = field.get(toolbar) as? Drawable
       if (collapseIcon != null) {
-        field.set(toolbar, createTintedDrawable(collapseIcon, colors.toEnabledSl()))
+        field.set(toolbar, collapseIcon.tint(colors.toEnabledSl()))
       }
     } catch (e: Exception) {
       e.printStackTrace()

@@ -43,6 +43,7 @@ class AestheticNavigationView(
     val baseColor = if (isDark) Color.WHITE else Color.BLACK
     val unselectedIconColor = baseColor.adjustAlpha(.54f)
     val unselectedTextColor = baseColor.adjustAlpha(.87f)
+
     val selectedItemBgColor = context.color(
         if (isDark) R.color.ate_navigation_drawer_selected_dark
         else R.color.ate_navigation_drawer_selected_light
@@ -62,6 +63,7 @@ class AestheticNavigationView(
         ),
         intArrayOf(unselectedTextColor, selectedColor)
     )
+
     itemTextColor = textSl
     itemIconTintList = iconSl
 

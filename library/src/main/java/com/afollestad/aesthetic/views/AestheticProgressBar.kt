@@ -9,8 +9,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.ProgressBar
 import com.afollestad.aesthetic.Aesthetic.Companion.get
-import com.afollestad.aesthetic.utils.TintHelper.setTint
 import com.afollestad.aesthetic.utils.distinctToMainThread
+import com.afollestad.aesthetic.utils.setTint
 import com.afollestad.aesthetic.utils.subscribeTo
 import io.reactivex.disposables.Disposable
 
@@ -22,8 +22,7 @@ class AestheticProgressBar(
 
   private var subscription: Disposable? = null
 
-  private fun invalidateColors(color: Int) =
-    setTint(this, color)
+  private fun invalidateColors(color: Int) = setTint(color)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()

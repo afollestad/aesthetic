@@ -13,11 +13,11 @@ import android.util.AttributeSet
 import androidx.appcompat.view.menu.ActionMenuItemView
 import com.afollestad.aesthetic.ActiveInactiveColors
 import com.afollestad.aesthetic.Aesthetic
-import com.afollestad.aesthetic.utils.TintHelper.createTintedDrawable
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.onMainThread
 import com.afollestad.aesthetic.utils.one
+import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.tint
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 
@@ -57,7 +57,7 @@ internal class AestheticActionMenuItemView(
     colors: ColorStateList
   ) {
     this.icon = icon
-    super.setIcon(createTintedDrawable(icon, colors))
+    super.setIcon(icon.tint(colors))
   }
 
   override fun onAttachedToWindow() {

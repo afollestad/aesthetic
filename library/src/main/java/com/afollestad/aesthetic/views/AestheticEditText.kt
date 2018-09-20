@@ -11,10 +11,9 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
-import com.afollestad.aesthetic.utils.TintHelper.setCursorTint
-import com.afollestad.aesthetic.utils.TintHelper.setTintAuto
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.plusAssign
+import com.afollestad.aesthetic.utils.setTintAuto
 import com.afollestad.aesthetic.utils.subscribeHintTextColor
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.subscribeTo
@@ -52,10 +51,8 @@ class AestheticEditText(
     }
   }
 
-  private fun invalidateColors(state: ColorIsDarkState) {
-    setTintAuto(this, state.color, true, state.isDark)
-    setCursorTint(this, state.color)
-  }
+  private fun invalidateColors(state: ColorIsDarkState) =
+    setTintAuto(state.color, true, state.isDark)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
