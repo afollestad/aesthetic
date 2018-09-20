@@ -162,12 +162,11 @@ If you were to leave `take(1)` out, you need to manage the subscription. You wil
 updates every time the primary color is changed, until you unsubscribe.
 
 ```kotlin
-val subscription = 
-  Aesthetic.get()
-      .colorPrimary()
-      .subscribe {
-        // Use color (an integer)
-      }
+val subscription = Aesthetic.get()
+    .colorPrimary()
+    .subscribe {
+      // Use color (an integer)
+    }
       
 // Later, you should unsubscribe, e.g. when your Activity pauses or your View detaches from its Window
 subscription.dispose();
