@@ -10,12 +10,11 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import com.afollestad.aesthetic.R.attr
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.subscribeBackgroundColor
 import com.afollestad.aesthetic.utils.subscribeImageViewTint
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
-import io.reactivex.disposables.CompositeDisposable
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticImageView(
@@ -23,7 +22,6 @@ class AestheticImageView(
   attrs: AttributeSet? = null
 ) : AppCompatImageView(context, attrs) {
 
-  private var subs: CompositeDisposable? = null
   private var backgroundResId: Int = 0
   private var tintResId: Int = 0
 
@@ -39,19 +37,15 @@ class AestheticImageView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subs = CompositeDisposable()
 
-    subs += watchColor(context, backgroundResId)
+    watchColor(context, backgroundResId)
         .distinctToMainThread()
         .subscribeBackgroundColor(this)
+        .unsubscribeOnDetach(this)
 
-    subs += watchColor(context, tintResId)
+    watchColor(context, tintResId)
         .distinctToMainThread()
         .subscribeImageViewTint(this)
-  }
-
-  override fun onDetachedFromWindow() {
-    subs?.dispose()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 }

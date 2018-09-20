@@ -12,7 +12,7 @@ import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.setTint
 import com.afollestad.aesthetic.utils.subscribeTo
-import io.reactivex.disposables.Disposable
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticProgressBar(
@@ -20,20 +20,14 @@ class AestheticProgressBar(
   attrs: AttributeSet? = null
 ) : ProgressBar(context, attrs) {
 
-  private var subscription: Disposable? = null
-
   private fun invalidateColors(color: Int) = setTint(color)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    subscription = get().colorAccent()
+    get().colorAccent()
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
-  }
-
-  override fun onDetachedFromWindow() {
-    subscription?.dispose()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 }

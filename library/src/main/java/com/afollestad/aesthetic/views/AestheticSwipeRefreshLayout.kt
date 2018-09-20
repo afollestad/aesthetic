@@ -12,7 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.subscribeTo
-import io.reactivex.disposables.Disposable
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressLint("PrivateResource")
@@ -21,18 +21,12 @@ class AestheticSwipeRefreshLayout(
   attrs: AttributeSet? = null
 ) : SwipeRefreshLayout(context, attrs) {
 
-  private var colorSubscription: Disposable? = null
-
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    colorSubscription = get().swipeRefreshLayoutColors()
+    get().swipeRefreshLayoutColors()
         .distinctToMainThread()
         .subscribeTo(::setColorSchemeColors)
-  }
-
-  override fun onDetachedFromWindow() {
-    colorSubscription?.dispose()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 }

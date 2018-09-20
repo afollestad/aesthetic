@@ -11,14 +11,13 @@ import androidx.appcompat.widget.AppCompatRadioButton
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.setTint
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.Observable.combineLatest
-import io.reactivex.disposables.CompositeDisposable
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticRadioButton(
@@ -26,7 +25,6 @@ class AestheticRadioButton(
   attrs: AttributeSet? = null
 ) : AppCompatRadioButton(context, attrs) {
 
-  private var subs: CompositeDisposable? = null
   private var backgroundResId: Int = 0
 
   init {
@@ -39,9 +37,8 @@ class AestheticRadioButton(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subs = CompositeDisposable()
 
-    subs += combineLatest(
+    combineLatest(
         watchColor(
             context,
             backgroundResId,
@@ -52,14 +49,11 @@ class AestheticRadioButton(
     )
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
+        .unsubscribeOnDetach(this)
 
-    subs += get().textColorPrimary()
+    get().textColorPrimary()
         .distinctToMainThread()
         .subscribeTextColor(this)
-  }
-
-  override fun onDetachedFromWindow() {
-    subs?.clear()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 }

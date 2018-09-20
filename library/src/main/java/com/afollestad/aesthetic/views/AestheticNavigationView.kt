@@ -23,6 +23,7 @@ import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.google.android.material.navigation.NavigationView
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
@@ -34,7 +35,6 @@ class AestheticNavigationView(
   attrs: AttributeSet? = null
 ) : NavigationView(context, attrs) {
 
-  private var modeSubscription: Disposable? = null
   private var colorSubscription: Disposable? = null
 
   private fun invalidateColors(state: ColorIsDarkState) {
@@ -78,10 +78,12 @@ class AestheticNavigationView(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    modeSubscription = Aesthetic.get()
+    Aesthetic.get()
         .navigationViewMode()
         .distinctToMainThread()
         .subscribeTo {
+          colorSubscription?.dispose()
+
           when (it) {
             SELECTED_PRIMARY ->
               colorSubscription = combineLatest(
@@ -102,10 +104,10 @@ class AestheticNavigationView(
                   .subscribeTo(::invalidateColors)
           }
         }
+        .unsubscribeOnDetach(this)
   }
 
   override fun onDetachedFromWindow() {
-    modeSubscription?.dispose()
     colorSubscription?.dispose()
     super.onDetachedFromWindow()
   }

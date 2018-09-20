@@ -18,8 +18,8 @@ import com.afollestad.aesthetic.utils.setOverflowButtonColor
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.tint
 import com.afollestad.aesthetic.utils.tintMenu
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import io.reactivex.Observable.combineLatest
-import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 
 /** @author Aidan Follestad (afollestad) */
@@ -29,7 +29,6 @@ class AestheticToolbar(
 ) : Toolbar(context, attrs) {
 
   private var lastState: BgIconColorState? = null
-  private var subscription: Disposable? = null
   private var onColorUpdated = PublishSubject.create<Int>()
 
   private fun invalidateColors(state: BgIconColorState) {
@@ -54,7 +53,7 @@ class AestheticToolbar(
       super.setNavigationIcon(icon)
       return
     }
-    val iconTitleColors = lastState!!.iconTitleColor
+    val iconTitleColors = lastState?.iconTitleColor
     if (iconTitleColors != null) {
       super.setNavigationIcon(icon.tint(iconTitleColors.toEnabledSl()))
     } else {
@@ -73,18 +72,18 @@ class AestheticToolbar(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    subscription = combineLatest(
+    combineLatest(
         get().colorPrimary(),
-        get().colorIconTitle(null),
+        get().colorIconTitle(),
         creator()
     )
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
+        .unsubscribeOnDetach(this)
   }
 
   override fun onDetachedFromWindow() {
     lastState = null
-    subscription?.dispose()
     super.onDetachedFromWindow()
   }
 }

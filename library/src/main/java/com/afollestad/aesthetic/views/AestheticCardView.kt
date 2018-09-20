@@ -14,6 +14,7 @@ import com.afollestad.aesthetic.R.attr
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.subscribeBackgroundColor
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.disposables.Disposable
 
@@ -24,7 +25,6 @@ class AestheticCardView(
   attrs: AttributeSet? = null
 ) : CardView(context, attrs) {
 
-  private var bgSubscription: Disposable? = null
   private var backgroundResId: Int = 0
 
   init {
@@ -36,17 +36,13 @@ class AestheticCardView(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    bgSubscription = watchColor(
+    watchColor(
         context,
         backgroundResId,
         get().colorCardViewBackground()
     )
         .distinctToMainThread()
         .subscribeBackgroundColor(this)
-  }
-
-  override fun onDetachedFromWindow() {
-    bgSubscription?.dispose()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 }

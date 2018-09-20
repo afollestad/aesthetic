@@ -13,15 +13,13 @@ import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.subscribeTo
-import io.reactivex.disposables.Disposable
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticBorderlessButton(
   context: Context,
   attrs: AttributeSet? = null
 ) : AppCompatButton(context, attrs) {
-
-  private var subscription: Disposable? = null
 
   private fun invalidateColors(accentColor: Int) {
     val textColorSl = ColorStateList(
@@ -43,14 +41,11 @@ class AestheticBorderlessButton(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscription = Aesthetic.get()
+
+    Aesthetic.get()
         .colorAccent()
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
-  }
-
-  override fun onDetachedFromWindow() {
-    subscription?.dispose()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 }

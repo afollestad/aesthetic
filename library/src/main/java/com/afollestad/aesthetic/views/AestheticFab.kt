@@ -17,10 +17,10 @@ import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.setTintAuto
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.tint
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.Observable.combineLatest
-import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticFab(
@@ -28,7 +28,6 @@ class AestheticFab(
   attrs: AttributeSet? = null
 ) : FloatingActionButton(context, attrs) {
 
-  private var subscription: Disposable? = null
   private var backgroundResId: Int = 0
   private var iconColor: Int = 0
 
@@ -50,7 +49,7 @@ class AestheticFab(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    subscription = combineLatest(
+    combineLatest(
         watchColor(
             context,
             backgroundResId,
@@ -61,10 +60,6 @@ class AestheticFab(
     )
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
-  }
-
-  override fun onDetachedFromWindow() {
-    subscription?.dispose()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 }

@@ -19,7 +19,6 @@ import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.afollestad.aesthetic.ActiveInactiveColors
-import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.blendWith
@@ -29,10 +28,10 @@ import com.afollestad.aesthetic.utils.setOverflowButtonColor
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.tint
 import com.afollestad.aesthetic.utils.tintMenu
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import io.reactivex.Observable.combineLatest
-import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 
 private typealias ToolbarIconTitleFunc =
@@ -44,8 +43,6 @@ class AestheticCoordinatorLayout(
   attrs: AttributeSet? = null
 ) : CoordinatorLayout(context, attrs), AppBarLayout.OnOffsetChangedListener {
 
-  private var toolbarColorSubscription: Disposable? = null
-  private var statusBarColorSubscription: Disposable? = null
   private var appBarLayout: AppBarLayout? = null
   private var colorView: View? = null
   private var toolbar: AestheticToolbar? = null
@@ -127,23 +124,23 @@ class AestheticCoordinatorLayout(
     if (toolbar != null && colorView != null) {
       this.appBarLayout?.addOnOffsetChangedListener(this)
 
-      toolbarColorSubscription =
-          combineLatest<Int, ActiveInactiveColors, Pair<Int, ActiveInactiveColors>>(
-              toolbar!!.colorUpdated(),
-              Aesthetic.get().colorIconTitle(toolbar!!.colorUpdated()),
-              ToolbarIconTitleFunc { a, b -> Pair(a, b) }
-          )
-              .distinctToMainThread()
-              .subscribeTo {
-                toolbarColor = it.first
-                iconTextColors = it.second
-                invalidateColors()
-              }
+      val onColorUpdated = toolbar!!.colorUpdated()
+      combineLatest<Int, ActiveInactiveColors, Pair<Int, ActiveInactiveColors>>(
+          onColorUpdated,
+          get().colorIconTitle(onColorUpdated),
+          ToolbarIconTitleFunc { a, b -> Pair(a, b) }
+      )
+          .distinctToMainThread()
+          .subscribeTo {
+            toolbarColor = it.first
+            iconTextColors = it.second
+            invalidateColors()
+          }
+          .unsubscribeOnDetach(this)
     }
 
     if (collapsingToolbarLayout != null) {
-      statusBarColorSubscription = get()
-          .colorStatusBar()
+      get().colorStatusBar()
           .distinctToMainThread()
           .subscribeTo {
             collapsingToolbarLayout?.apply {
@@ -151,12 +148,11 @@ class AestheticCoordinatorLayout(
               setStatusBarScrimColor(it)
             }
           }
+          .unsubscribeOnDetach(this)
     }
   }
 
   override fun onDetachedFromWindow() {
-    toolbarColorSubscription?.dispose()
-    statusBarColorSubscription?.dispose()
     this.appBarLayout?.removeOnOffsetChangedListener(this)
     this.appBarLayout = null
     this.toolbar = null

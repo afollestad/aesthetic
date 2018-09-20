@@ -18,9 +18,9 @@ import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.setTintAuto
 import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.Observable.combineLatest
-import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticButton(
@@ -28,7 +28,6 @@ class AestheticButton(
   attrs: AttributeSet? = null
 ) : AppCompatButton(context, attrs) {
 
-  private var subscription: Disposable? = null
   private var backgroundResId: Int = 0
 
   init {
@@ -58,7 +57,8 @@ class AestheticButton(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscription = combineLatest(
+
+    combineLatest(
         watchColor(
             context,
             backgroundResId,
@@ -69,10 +69,6 @@ class AestheticButton(
     )
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
-  }
-
-  override fun onDetachedFromWindow() {
-    subscription?.dispose()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 }

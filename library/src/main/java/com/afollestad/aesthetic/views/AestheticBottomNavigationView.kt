@@ -23,10 +23,10 @@ import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.subscribeBackgroundColor
 import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function3
 
 /** @author Aidan Follestad (afollestad) */
@@ -35,7 +35,6 @@ class AestheticBottomNavigationView(
   attrs: AttributeSet? = null
 ) : BottomNavigationView(context, attrs) {
 
-  private var modesSubscription: Disposable? = null
   private var colorSubs: CompositeDisposable? = null
   private var lastTextIconColor: Int = 0
   private var backgroundColor: Int? = null
@@ -133,21 +132,18 @@ class AestheticBottomNavigationView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    with(get()) {
-      modesSubscription =
-          combineLatest(
-              bottomNavigationBackgroundMode(),
-              bottomNavigationIconTextMode(),
-              isDark,
-              State.creator()
-          )
-              .distinctToMainThread()
-              .subscribeTo(::onState)
-    }
+    combineLatest(
+        get().bottomNavigationBackgroundMode(),
+        get().bottomNavigationIconTextMode(),
+        get().isDark,
+        State.creator()
+    )
+        .distinctToMainThread()
+        .subscribeTo(::onState)
+        .unsubscribeOnDetach(this)
   }
 
   override fun onDetachedFromWindow() {
-    modesSubscription?.dispose()
     colorSubs?.clear()
     super.onDetachedFromWindow()
   }

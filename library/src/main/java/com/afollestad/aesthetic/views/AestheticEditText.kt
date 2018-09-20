@@ -12,11 +12,11 @@ import androidx.appcompat.widget.AppCompatEditText
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.setTintAuto
 import com.afollestad.aesthetic.utils.subscribeHintTextColor
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
@@ -56,9 +56,8 @@ class AestheticEditText(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subs = CompositeDisposable()
 
-    subs += combineLatest(
+    combineLatest(
         watchColor(
             context,
             backgroundResId,
@@ -69,23 +68,25 @@ class AestheticEditText(
     )
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
+        .unsubscribeOnDetach(this)
 
-    subs += watchColor(
+    watchColor(
         context,
         textColorResId,
         get().textColorPrimary()
     )
         .distinctToMainThread()
         .subscribeTextColor(this)
+        .unsubscribeOnDetach(this)
 
-    subs +=
-        watchColor(
-            context,
-            textColorHintResId,
-            get().textColorSecondary()
-        )
-            .distinctToMainThread()
-            .subscribeHintTextColor(this)
+    watchColor(
+        context,
+        textColorHintResId,
+        get().textColorSecondary()
+    )
+        .distinctToMainThread()
+        .subscribeHintTextColor(this)
+        .unsubscribeOnDetach(this)
   }
 
   override fun onDetachedFromWindow() {

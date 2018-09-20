@@ -16,14 +16,12 @@ import com.afollestad.aesthetic.TabLayoutIndicatorMode
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.one
-import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.subscribeBackgroundColor
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.tint
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.Observable.just
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad) */
@@ -32,7 +30,6 @@ class AestheticTabLayout(
   attrs: AttributeSet? = null
 ) : TabLayout(context, attrs) {
 
-  private var topLevelSubs: CompositeDisposable? = null
   private var indicatorColorSubscription: Disposable? = null
   private var bgColorSubscription: Disposable? = null
 
@@ -78,9 +75,8 @@ class AestheticTabLayout(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    topLevelSubs = CompositeDisposable()
 
-    topLevelSubs += get().tabLayoutBackgroundMode()
+    get().tabLayoutBackgroundMode()
         .distinctToMainThread()
         .subscribeTo {
           bgColorSubscription?.dispose()
@@ -97,8 +93,9 @@ class AestheticTabLayout(
                   .subscribeBackgroundColor(this@AestheticTabLayout)
           }
         }
+        .unsubscribeOnDetach(this)
 
-    topLevelSubs += get().tabLayoutIndicatorMode()
+    get().tabLayoutIndicatorMode()
         .distinctToMainThread()
         .subscribeTo {
           indicatorColorSubscription?.dispose()
@@ -115,10 +112,10 @@ class AestheticTabLayout(
                   .subscribeTo(::setSelectedTabIndicatorColor)
           }
         }
+        .unsubscribeOnDetach(this)
   }
 
   override fun onDetachedFromWindow() {
-    topLevelSubs?.dispose()
     bgColorSubscription?.dispose()
     indicatorColorSubscription?.dispose()
     super.onDetachedFromWindow()

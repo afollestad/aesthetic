@@ -14,7 +14,7 @@ import com.afollestad.aesthetic.ActiveInactiveColors
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.subscribeTo
-import io.reactivex.disposables.Disposable
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticDrawerLayout(
@@ -24,7 +24,6 @@ class AestheticDrawerLayout(
 
   private var lastState: ActiveInactiveColors? = null
   private var arrowDrawable: DrawerArrowDrawable? = null
-  private var subscription: Disposable? = null
 
   private fun invalidateColor(colors: ActiveInactiveColors?) {
     if (colors == null) {
@@ -36,14 +35,11 @@ class AestheticDrawerLayout(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscription = get().colorIconTitle()
+
+    get().colorIconTitle()
         .distinctToMainThread()
         .subscribeTo(::invalidateColor)
-  }
-
-  override fun onDetachedFromWindow() {
-    subscription?.dispose()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 
   override fun addDrawerListener(listener: DrawerLayout.DrawerListener) {

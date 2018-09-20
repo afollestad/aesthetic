@@ -18,6 +18,7 @@ import com.afollestad.aesthetic.utils.onMainThread
 import com.afollestad.aesthetic.utils.one
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.tint
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 
@@ -29,7 +30,6 @@ internal class AestheticActionMenuItemView(
 ) : ActionMenuItemView(context, attrs) {
 
   private var icon: Drawable? = null
-  private var subscription: Disposable? = null
 
   private fun invalidateColors(@NonNull colors: ActiveInactiveColors) {
     if (icon != null) {
@@ -45,10 +45,11 @@ internal class AestheticActionMenuItemView(
     // For some reason, without this, a transparent color is used and the icon disappears
     // when the overflow menu opens.
     Aesthetic.get()
-        .colorIconTitle(null)
+        .colorIconTitle()
         .onMainThread()
         .one()
         .subscribeTo(::invalidateColors)
+        .unsubscribeOnDetach(this)
   }
 
   @Suppress("MemberVisibilityCanBePrivate")
@@ -62,14 +63,11 @@ internal class AestheticActionMenuItemView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subscription = Aesthetic.get()
-        .colorIconTitle(null)
+
+    Aesthetic.get()
+        .colorIconTitle()
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
-  }
-
-  override fun onDetachedFromWindow() {
-    subscription?.dispose()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 }

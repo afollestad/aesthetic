@@ -11,7 +11,7 @@ import androidx.appcompat.widget.AppCompatButton
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.subscribeTextColor
-import io.reactivex.disposables.Disposable
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 
 /** @author Aidan Follestad (afollestad) */
 internal class AestheticSnackBarButton(
@@ -19,18 +19,12 @@ internal class AestheticSnackBarButton(
   attrs: AttributeSet? = null
 ) : AppCompatButton(context, attrs) {
 
-  private var subscription: Disposable? = null
-
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    subscription = get().snackbarActionTextColor()
+    get().snackbarActionTextColor()
         .distinctToMainThread()
         .subscribeTextColor(this)
-  }
-
-  override fun onDetachedFromWindow() {
-    subscription?.dispose()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 }

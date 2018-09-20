@@ -10,16 +10,15 @@ import android.util.AttributeSet
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.setTintAuto
 import com.afollestad.aesthetic.utils.subscribeHintTextColor
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
 import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.Observable.combineLatest
-import io.reactivex.disposables.CompositeDisposable
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticTextInputEditText(
@@ -27,7 +26,6 @@ class AestheticTextInputEditText(
   attrs: AttributeSet? = null
 ) : TextInputEditText(context, attrs) {
 
-  private var subs: CompositeDisposable? = null
   private var backgroundResId: Int = 0
   private var lastState: ColorIsDarkState? = null
 
@@ -44,17 +42,18 @@ class AestheticTextInputEditText(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subs = CompositeDisposable()
 
-    subs += get().textColorPrimary()
+    get().textColorPrimary()
         .distinctToMainThread()
         .subscribeTextColor(this)
+        .unsubscribeOnDetach(this)
 
-    subs += get().textColorSecondary()
+    get().textColorSecondary()
         .distinctToMainThread()
         .subscribeHintTextColor(this)
+        .unsubscribeOnDetach(this)
 
-    subs += combineLatest(
+    combineLatest(
         watchColor(
             context,
             backgroundResId,
@@ -65,11 +64,7 @@ class AestheticTextInputEditText(
     )
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
-  }
-
-  override fun onDetachedFromWindow() {
-    subs?.clear()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 
   override fun refreshDrawableState() {

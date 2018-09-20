@@ -16,6 +16,7 @@ import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.setTint
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.subscribeTo
+import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
@@ -26,7 +27,6 @@ class AestheticCheckBox(
   attrs: AttributeSet? = null
 ) : AppCompatCheckBox(context, attrs) {
 
-  private var subs: CompositeDisposable? = null
   private var backgroundResId: Int = 0
 
   init {
@@ -39,9 +39,8 @@ class AestheticCheckBox(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    subs = CompositeDisposable()
 
-    subs += combineLatest(
+    combineLatest(
         watchColor(
             context,
             backgroundResId,
@@ -52,14 +51,11 @@ class AestheticCheckBox(
     )
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
+        .unsubscribeOnDetach(this)
 
-    subs += get().textColorPrimary()
+    get().textColorPrimary()
         .distinctToMainThread()
         .subscribeTextColor(this)
-  }
-
-  override fun onDetachedFromWindow() {
-    subs?.clear()
-    super.onDetachedFromWindow()
+        .unsubscribeOnDetach(this)
   }
 }
