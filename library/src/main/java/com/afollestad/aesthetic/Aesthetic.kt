@@ -54,6 +54,7 @@ import com.afollestad.aesthetic.utils.getRootView
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.mutableArrayMap
 import com.afollestad.aesthetic.utils.plusAssign
+import com.afollestad.aesthetic.utils.save
 import com.afollestad.aesthetic.utils.setInflaterFactory
 import com.afollestad.aesthetic.utils.setLightStatusBarCompat
 import com.afollestad.aesthetic.utils.setNavBarColorCompat
@@ -146,15 +147,13 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   }
 
   @CheckResult fun isDark(isDark: Boolean): Aesthetic {
-    safePrefsEditor.putBoolean(KEY_IS_DARK, isDark)
-        .apply()
+    safePrefsEditor.save { putBoolean(KEY_IS_DARK, isDark) }
     return this
   }
 
   @CheckResult fun colorPrimary(@ColorInt color: Int): Aesthetic {
     // needs to be committed immediately so that for statusBarColorAuto() and other auto methods
-    safePrefsEditor.putInt(KEY_PRIMARY_COLOR, color)
-        .apply()
+    safePrefsEditor.save { putInt(KEY_PRIMARY_COLOR, color) }
     return this
   }
 
@@ -175,8 +174,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult fun colorPrimaryDark(@ColorInt color: Int): Aesthetic {
     // needs to be committed immediately so that for statusBarColorAuto() and other auto methods
-    safePrefsEditor.putInt(KEY_PRIMARY_DARK_COLOR, color)
-        .apply()
+    safePrefsEditor.save { putInt(KEY_PRIMARY_DARK_COLOR, color) }
     return this
   }
 
@@ -196,8 +194,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   }
 
   @CheckResult fun colorAccent(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.putInt(KEY_ACCENT_COLOR, color)
-        .apply()
+    safePrefsEditor.save { putInt(KEY_ACCENT_COLOR, color) }
     return this
   }
 
@@ -297,8 +294,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   }
 
   @CheckResult fun colorWindowBackground(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.putInt(KEY_WINDOW_BG_COLOR, color)
-        .apply()
+    safePrefsEditor.save { putInt(KEY_WINDOW_BG_COLOR, color) }
     return this
   }
 
@@ -393,8 +389,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   }
 
   @CheckResult fun tabLayoutIndicatorMode(mode: TabLayoutIndicatorMode): Aesthetic {
-    safePrefsEditor.putInt(KEY_TAB_LAYOUT_INDICATOR_MODE, mode.value)
-        .apply()
+    safePrefsEditor.save { putInt(KEY_TAB_LAYOUT_INDICATOR_MODE, mode.value) }
     return this
   }
 
@@ -411,8 +406,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   }
 
   @CheckResult fun tabLayoutBackgroundMode(mode: TabLayoutBgMode): Aesthetic {
-    safePrefsEditor.putInt(KEY_TAB_LAYOUT_BG_MODE, mode.value)
-        .apply()
+    safePrefsEditor.save { putInt(KEY_TAB_LAYOUT_BG_MODE, mode.value) }
     return this
   }
 
@@ -429,11 +423,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   }
 
   @CheckResult fun navigationViewMode(mode: NavigationViewMode): Aesthetic {
-    safePrefsEditor.putInt(
-        KEY_NAV_VIEW_MODE,
-        mode.value
-    )
-        .apply()
+    safePrefsEditor.save { putInt(KEY_NAV_VIEW_MODE, mode.value) }
     return this
   }
 
@@ -450,8 +440,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   }
 
   @CheckResult fun bottomNavigationBackgroundMode(mode: BottomNavBgMode): Aesthetic {
-    safePrefsEditor.putInt(KEY_BOTTOM_NAV_BG_MODE, mode.value)
-        .apply()
+    safePrefsEditor.save { putInt(KEY_BOTTOM_NAV_BG_MODE, mode.value) }
     return this
   }
 
@@ -468,8 +457,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   }
 
   @CheckResult fun bottomNavigationIconTextMode(mode: BottomNavIconTextMode): Aesthetic {
-    safePrefsEditor.putInt(KEY_BOTTOM_NAV_ICONTEXT_MODE, mode.value)
-        .apply()
+    safePrefsEditor.save { putInt(KEY_BOTTOM_NAV_ICONTEXT_MODE, mode.value) }
     return this
   }
 
@@ -491,10 +479,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
           .integer(
               KEY_CARD_VIEW_BG_COLOR,
               context.color(
-                  if (dark)
-                    R.color.ate_cardview_bg_dark
-                  else
-                    R.color.ate_cardview_bg_light
+                  if (dark) R.color.ate_cardview_bg_dark
+                  else R.color.ate_cardview_bg_light
               )
           )
           .asObservable()
@@ -625,7 +611,8 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   @CheckResult fun swipeRefreshLayoutColorsRes(@ColorRes vararg colorsRes: Int): Aesthetic {
     safePrefsEditor.putString(
-        KEY_SWIPEREFRESH_COLORS, colorsRes.map { context.color(it) }.joinToString(",")
+        KEY_SWIPEREFRESH_COLORS,
+        colorsRes.map { context.color(it) }.joinToString(",")
     )
     return this
   }
@@ -775,8 +762,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
       get() {
         with(instance ?: throw IllegalStateException("Not attached")) {
           val firstTime = safePrefs.getBoolean(KEY_FIRST_TIME, true)
-          safePrefsEditor.putBoolean(KEY_FIRST_TIME, false)
-              .apply()
+          safePrefsEditor.save { putBoolean(KEY_FIRST_TIME, false) }
           return firstTime
         }
       }
