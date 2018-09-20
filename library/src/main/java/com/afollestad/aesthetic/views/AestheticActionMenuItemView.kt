@@ -20,7 +20,6 @@ import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.tint
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import io.reactivex.annotations.NonNull
-import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressLint("RestrictedApi")

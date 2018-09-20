@@ -16,7 +16,6 @@ import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.subscribeBackgroundColor
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
-import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressLint("PrivateResource")

@@ -19,7 +19,6 @@ import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
 import io.reactivex.Observable.combineLatest
-import io.reactivex.disposables.CompositeDisposable
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticCheckBox(
