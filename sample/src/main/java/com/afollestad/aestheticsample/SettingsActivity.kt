@@ -8,6 +8,7 @@ package com.afollestad.aestheticsample
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
 import com.afollestad.aesthetic.AestheticActivity
+import kotlinx.android.synthetic.main.activity_settings.toolbar
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -22,6 +23,8 @@ class SettingsActivity : AestheticActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_settings)
+
+    toolbar.setOnClickListener { finish() }
 
     if (savedInstanceState == null) {
       supportFragmentManager
