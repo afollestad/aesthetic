@@ -10,15 +10,14 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatCheckBox
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
+import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.setTint
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
-import io.reactivex.Observable.combineLatest
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticCheckBox(
@@ -39,15 +38,14 @@ class AestheticCheckBox(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    combineLatest(
+    allOf(
         watchColor(
             context,
             backgroundResId,
             get().colorAccent()
         ),
-        get().isDark,
-        ColorIsDarkState.creator()
-    )
+        get().isDark
+    ) { color, isDark -> ColorIsDarkState(color, isDark) }
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
         .unsubscribeOnDetach(this)

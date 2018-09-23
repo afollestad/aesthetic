@@ -46,6 +46,7 @@ import com.afollestad.aesthetic.internal.KEY_TAB_LAYOUT_BG_MODE
 import com.afollestad.aesthetic.internal.KEY_TAB_LAYOUT_INDICATOR_MODE
 import com.afollestad.aesthetic.internal.KEY_WINDOW_BG_COLOR
 import com.afollestad.aesthetic.internal.PREFS_NAME
+import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.colorAttr
 import com.afollestad.aesthetic.utils.darkenColor
@@ -66,7 +67,6 @@ import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.rxkprefs.RxkPrefs
 import io.reactivex.Observable
-import io.reactivex.Observable.combineLatest
 import io.reactivex.Observable.zip
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
@@ -736,9 +736,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
                 lastActivityThemes[context.javaClass.name] = it
                 (context as Activity).recreate()
               }
-          subs += combineLatest<Int, Int, Pair<Int, Int>>(
-              colorStatusBar(), lightStatusBarMode(),
-              BiFunction<Int, Int, Pair<Int, Int>> { a, b -> Pair(a, b) })
+          subs += allOf(colorStatusBar(), lightStatusBarMode())
               .distinctToMainThread()
               .subscribeTo { invalidateStatusBar() }
           subs += colorNavigationBar()

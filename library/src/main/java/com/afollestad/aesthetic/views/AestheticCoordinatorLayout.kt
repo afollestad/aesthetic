@@ -21,6 +21,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.afollestad.aesthetic.ActiveInactiveColors
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.adjustAlpha
+import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.blendWith
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
@@ -31,11 +32,6 @@ import com.afollestad.aesthetic.utils.tintMenu
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import io.reactivex.Observable.combineLatest
-import io.reactivex.functions.BiFunction
-
-private typealias ToolbarIconTitleFunc =
-    BiFunction<Int, ActiveInactiveColors, Pair<Int, ActiveInactiveColors>>
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticCoordinatorLayout(
@@ -125,11 +121,10 @@ class AestheticCoordinatorLayout(
       this.appBarLayout?.addOnOffsetChangedListener(this)
 
       val onColorUpdated = toolbar!!.colorUpdated()
-      combineLatest<Int, ActiveInactiveColors, Pair<Int, ActiveInactiveColors>>(
+      allOf(
           onColorUpdated,
-          get().colorIconTitle(onColorUpdated),
-          ToolbarIconTitleFunc { a, b -> Pair(a, b) }
-      )
+          get().colorIconTitle(onColorUpdated)
+      ) { a, b -> Pair(a, b) }
           .distinctToMainThread()
           .subscribeTo {
             toolbarColor = it.first

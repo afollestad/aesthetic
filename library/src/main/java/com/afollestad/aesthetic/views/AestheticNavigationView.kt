@@ -15,17 +15,16 @@ import android.util.AttributeSet
 import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
-import com.afollestad.aesthetic.ColorIsDarkState.Companion.creator
 import com.afollestad.aesthetic.NavigationViewMode.SELECTED_ACCENT
 import com.afollestad.aesthetic.NavigationViewMode.SELECTED_PRIMARY
 import com.afollestad.aesthetic.R
 import com.afollestad.aesthetic.utils.adjustAlpha
+import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.google.android.material.navigation.NavigationView
-import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad) */
@@ -86,20 +85,18 @@ class AestheticNavigationView(
 
           when (it) {
             SELECTED_PRIMARY ->
-              colorSubscription = combineLatest(
+              colorSubscription = allOf(
                   get().colorPrimary(),
-                  get().isDark,
-                  creator()
-              )
+                  get().isDark
+              ) { color, isDark -> ColorIsDarkState(color, isDark) }
                   .distinctToMainThread()
                   .subscribeTo(::invalidateColors)
 
             SELECTED_ACCENT ->
-              colorSubscription = combineLatest(
+              colorSubscription = allOf(
                   get().colorAccent(),
-                  get().isDark,
-                  creator()
-              )
+                  get().isDark
+              ) { color, isDark -> ColorIsDarkState(color, isDark) }
                   .distinctToMainThread()
                   .subscribeTo(::invalidateColors)
           }

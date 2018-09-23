@@ -17,6 +17,7 @@ import com.afollestad.aesthetic.BottomNavBgMode
 import com.afollestad.aesthetic.BottomNavIconTextMode
 import com.afollestad.aesthetic.R
 import com.afollestad.aesthetic.utils.adjustAlpha
+import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
@@ -25,9 +26,7 @@ import com.afollestad.aesthetic.utils.subscribeBackgroundColor
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Function3
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticBottomNavigationView(
@@ -132,12 +131,11 @@ class AestheticBottomNavigationView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    combineLatest(
+    allOf(
         get().bottomNavigationBackgroundMode(),
         get().bottomNavigationIconTextMode(),
-        get().isDark,
-        State.creator()
-    )
+        get().isDark
+    ) { bgMode, iconTextMode, isDark -> State(bgMode, iconTextMode, isDark) }
         .distinctToMainThread()
         .subscribeTo(::onState)
         .unsubscribeOnDetach(this)
@@ -158,11 +156,5 @@ class AestheticBottomNavigationView(
     val bgMode: BottomNavBgMode,
     val iconTextMode: BottomNavIconTextMode,
     val isDark: Boolean
-  ) {
-    companion object {
-      internal fun creator(): Function3<BottomNavBgMode, BottomNavIconTextMode, Boolean, State> {
-        return Function3 { bgMode, iconTextMode, isDark -> State(bgMode, iconTextMode, isDark) }
-      }
-    }
-  }
+  )
 }

@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
+import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.setTintAuto
 import com.afollestad.aesthetic.utils.subscribeHintTextColor
@@ -18,7 +19,6 @@ import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
-import io.reactivex.Observable.combineLatest
 import io.reactivex.disposables.CompositeDisposable
 
 /** @author Aidan Follestad (afollestad) */
@@ -57,15 +57,14 @@ class AestheticEditText(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    combineLatest(
+    allOf(
         watchColor(
             context,
             backgroundResId,
             get().colorAccent()
         ),
-        get().isDark,
-        ColorIsDarkState.creator()
-    )
+        get().isDark
+    ) { color, isDark -> ColorIsDarkState(color, isDark) }
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
         .unsubscribeOnDetach(this)

@@ -12,14 +12,13 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.Toolbar
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.BgIconColorState
-import com.afollestad.aesthetic.BgIconColorState.Companion.creator
+import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.setOverflowButtonColor
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.tint
 import com.afollestad.aesthetic.utils.tintMenu
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
-import io.reactivex.Observable.combineLatest
 import io.reactivex.subjects.PublishSubject
 
 /** @author Aidan Follestad (afollestad) */
@@ -72,11 +71,10 @@ class AestheticToolbar(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    combineLatest(
+    allOf(
         get().colorPrimary(),
-        get().colorIconTitle(),
-        creator()
-    )
+        get().colorIconTitle()
+    ) { color, iconTitleColors -> BgIconColorState(color, iconTitleColors) }
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
         .unsubscribeOnDetach(this)

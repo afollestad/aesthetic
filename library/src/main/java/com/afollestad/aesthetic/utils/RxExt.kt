@@ -10,11 +10,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import io.reactivex.Observable
+import io.reactivex.Observable.combineLatest
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.Exceptions
+import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
+import io.reactivex.functions.Function3
 
 typealias KotlinSubscriber<T> = (T) -> Unit
 
@@ -70,3 +73,22 @@ internal fun Observable<Int>.subscribeHintTextColor(view: TextView): Disposable 
 internal fun Observable<Int>.subscribeImageViewTint(view: ImageView): Disposable {
   return subscribeTo(view::setColorFilter)
 }
+
+internal inline fun <T1, T2, R> allOf(
+  source1: Observable<T1>,
+  source2: Observable<T2>,
+  crossinline combineFunction: (T1, T2) -> R
+) = combineLatest(source1, source2, BiFunction<T1, T2, R> { t1, t2 -> combineFunction(t1, t2) })!!
+
+internal fun <T1, T2> allOf(
+  source1: Observable<T1>,
+  source2: Observable<T2>
+) = combineLatest(source1, source2, BiFunction<T1, T2, Pair<T1, T2>> { t1, t2 -> t1 to t2 })!!
+
+inline fun <T1, T2, T3, R> allOf(
+  source1: Observable<T1>,
+  source2: Observable<T2>,
+  source3: Observable<T3>,
+  crossinline combineFunction: (T1, T2, T3) -> R
+) = combineLatest(source1, source2, source3,
+    Function3 { t1: T1, t2: T2, t3: T3 -> combineFunction(t1, t2, t3) })!!
