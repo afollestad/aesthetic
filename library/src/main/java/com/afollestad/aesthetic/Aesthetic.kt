@@ -618,9 +618,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   }
 
   /** Notifies all listening views that theme properties have been updated.  */
-  fun apply() {
-    safePrefsEditor.apply()
-  }
+  fun apply() = safePrefsEditor.putBoolean(KEY_FIRST_TIME, false).apply()
 
   internal fun addBackgroundSubscriber(
     view: View,
@@ -757,14 +755,10 @@ class Aesthetic private constructor(private var ctxt: Context?) {
       }
     }
 
-    /** Returns true if this field has never been accessed before.  */
+    /** Returns true if Aesthetic has not been configured before. */
     val isFirstTime: Boolean
-      get() {
-        with(instance ?: throw IllegalStateException("Not attached")) {
-          val firstTime = safePrefs.getBoolean(KEY_FIRST_TIME, true)
-          safePrefsEditor.save { putBoolean(KEY_FIRST_TIME, false) }
-          return firstTime
-        }
+      get() = with(instance ?: throw IllegalStateException("Not attached")) {
+        return safePrefs.getBoolean(KEY_FIRST_TIME, true)
       }
 
     private fun getLastActivityTheme(forContext: Context?): Int {
