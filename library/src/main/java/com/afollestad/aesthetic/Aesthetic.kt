@@ -18,9 +18,7 @@ import android.support.annotation.CheckResult
 import android.support.annotation.ColorInt
 import android.support.annotation.ColorRes
 import android.support.annotation.StyleRes
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
 import com.afollestad.aesthetic.internal.KEY_ACCENT_COLOR
 import com.afollestad.aesthetic.internal.KEY_ACTIVITY_THEME
 import com.afollestad.aesthetic.internal.KEY_BOTTOM_NAV_BG_MODE
@@ -46,26 +44,20 @@ import com.afollestad.aesthetic.internal.KEY_SWIPEREFRESH_COLORS
 import com.afollestad.aesthetic.internal.KEY_TAB_LAYOUT_BG_MODE
 import com.afollestad.aesthetic.internal.KEY_TAB_LAYOUT_INDICATOR_MODE
 import com.afollestad.aesthetic.internal.KEY_WINDOW_BG_COLOR
-import com.afollestad.aesthetic.internal.PREFS_NAME
 import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.colorAttr
 import com.afollestad.aesthetic.utils.darkenColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.getRootView
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.mutableArrayMap
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.save
 import com.afollestad.aesthetic.utils.setInflaterFactory
-import com.afollestad.aesthetic.utils.setLightStatusBarCompat
 import com.afollestad.aesthetic.utils.setNavBarColorCompat
-import com.afollestad.aesthetic.utils.setStatusBarColorCompat
 import com.afollestad.aesthetic.utils.setTaskDescriptionColor
 import com.afollestad.aesthetic.utils.splitToInts
-import com.afollestad.aesthetic.utils.subscribeBackgroundColor
 import com.afollestad.aesthetic.utils.subscribeTo
-import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.rxkprefs.RxkPrefs
 import io.reactivex.Observable
 import io.reactivex.Observable.zip
@@ -77,13 +69,14 @@ import java.lang.String.format
 /** @author Aidan Follestad (afollestad) */
 class Aesthetic private constructor(private var ctxt: Context?) {
 
+  internal val onAttached = BehaviorSubject.create<Boolean>()
+  internal var rxkPrefs: RxkPrefs? = null
+  internal var prefs: SharedPreferences? = null
+  internal var editor: SharedPreferences.Editor? = null
+
   private val lastActivityThemes = mutableArrayMap<String, Int>(2)
-  private val onAttached = BehaviorSubject.create<Boolean>()
 
   private var subs: CompositeDisposable? = null
-  private var prefs: SharedPreferences? = null
-  private var editor: SharedPreferences.Editor? = null
-  private var rxkPrefs: RxkPrefs? = null
   private var isResumed: Boolean = false
 
   init {
@@ -95,7 +88,7 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   internal val context
     @CheckResult
     get() = ctxt ?: throw IllegalStateException("Not attached")
-  private val safePrefs
+  internal val safePrefs
     @CheckResult
     get() = prefs ?: throw IllegalStateException("Not attached")
   private val safePrefsEditor
@@ -484,64 +477,6 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   /** Notifies all listening views that theme properties have been updated.  */
   fun apply() = safePrefsEditor.putBoolean(KEY_FIRST_TIME, false).apply()
 
-  internal fun addBackgroundSubscriber(
-    view: View,
-    colorObservable: Observable<Int>
-  ) {
-    colorObservable
-        .distinctToMainThread()
-        .subscribeBackgroundColor(view)
-        .unsubscribeOnDetach(view)
-  }
-
-  @SuppressLint("CommitPrefEdits")
-  private fun initPrefs() {
-    rxkPrefs = RxkPrefs(context, PREFS_NAME)
-    prefs = rxkPrefs!!.getSharedPrefs()
-    editor = safePrefs.edit()
-    onAttached.onNext(true)
-  }
-
-  private fun deInitPrefs() {
-    onAttached.onNext(false)
-    prefs = null
-    editor = null
-    rxkPrefs = null
-  }
-
-  /**
-   * Emits the current reactive shared preferences value if and when the instance is attached to
-   * an Activity, when the preferences are actually initialized and populated. Without this,
-   * we can get Kotlin null exceptions due the instance being unexpectedly null.
-   */
-  private fun waitForAttach() = onAttached.filter { it }.map { rxkPrefs!! }
-
-  private fun invalidateStatusBar() {
-    with(context as? Activity ?: return) {
-      val key = format(KEY_STATUS_BAR_COLOR, key(context))
-      val primaryDarkDefault = context.colorAttr(R.attr.colorPrimaryDark)
-      val color = safePrefs.getInt(key, primaryDarkDefault)
-
-      val rootView = getRootView()
-      if (rootView is DrawerLayout) {
-        // Color is set to DrawerLayout, Activity gets transparent status bar
-        setLightStatusBarCompat(false)
-        setStatusBarColorCompat(Color.TRANSPARENT)
-        rootView.setStatusBarBackgroundColor(color)
-      } else {
-        setStatusBarColorCompat(color)
-      }
-
-      val modeRaw = safePrefs.getInt(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
-      val mode = AutoSwitchMode.fromInt(modeRaw)
-      when (mode) {
-        AutoSwitchMode.OFF -> setLightStatusBarCompat(false)
-        AutoSwitchMode.ON -> setLightStatusBarCompat(true)
-        else -> setLightStatusBarCompat(color.isColorLight())
-      }
-    }
-  }
-
   companion object {
 
     @SuppressLint("StaticFieldLeak")
@@ -647,6 +582,6 @@ class Aesthetic private constructor(private var ctxt: Context?) {
       return instance?.lastActivityThemes?.get(forContext?.javaClass?.name ?: "") ?: return 0
     }
 
-    private fun key(whereAmI: Context?) = (whereAmI as? AestheticKeyProvider)?.key() ?: "default"
+    internal fun key(whereAmI: Context?) = (whereAmI as? AestheticKeyProvider)?.key() ?: "default"
   }
 }
