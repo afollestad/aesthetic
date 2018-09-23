@@ -73,7 +73,7 @@ internal object EdgeGlowUtil {
 
     var efc: Field? = null
     try {
-      efc = EdgeEffectCompat::class.java.getDeclaredField("mEdgeEffect")
+      efc = EdgeEffectCompat::class.findField("mEdgeEffect")
     } catch (e: NoSuchFieldException) {
       if (BuildConfig.DEBUG) e.printStackTrace()
     }

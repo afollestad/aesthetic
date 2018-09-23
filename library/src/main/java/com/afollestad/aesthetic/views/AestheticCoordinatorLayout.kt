@@ -24,6 +24,7 @@ import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.blendWith
 import com.afollestad.aesthetic.utils.distinctToMainThread
+import com.afollestad.aesthetic.utils.findField
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.setOverflowButtonColor
 import com.afollestad.aesthetic.utils.subscribeTo
@@ -59,8 +60,7 @@ class AestheticCoordinatorLayout(
     toolbar.setOverflowButtonColor(colors.activeColor)
 
     try {
-      val field = Toolbar::class.java.getDeclaredField("mCollapseIcon")
-      field.isAccessible = true
+      val field = Toolbar::class.findField("mCollapseIcon")
       val collapseIcon = field.get(toolbar) as? Drawable
       if (collapseIcon != null) {
         field.set(toolbar, collapseIcon.tint(colors.toEnabledSl()))

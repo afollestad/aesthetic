@@ -45,8 +45,7 @@ internal fun Toolbar.tintMenu(
 ) {
   // The collapse icon displays when action views are expanded (e.g. SearchView)
   try {
-    val field = Toolbar::class.java.getDeclaredField("mCollapseIcon")
-    field.isAccessible = true
+    val field = Toolbar::class.findField("mCollapseIcon")
     val collapseIcon = field.get(this) as? Drawable
     if (collapseIcon != null) {
       field.set(this, collapseIcon.tint(titleIconColors.toEnabledSl()))
@@ -69,27 +68,24 @@ internal fun Toolbar.tintMenu(
 }
 
 internal fun SearchView.setColors(tintColors: ActiveInactiveColors) {
-  val cls = javaClass
   try {
-    val mSearchSrcTextViewField = cls.getDeclaredField("mSearchSrcTextView")
+    val mSearchSrcTextViewField = this::class.findField("mSearchSrcTextView")
     mSearchSrcTextViewField.isAccessible = true
     val mSearchSrcTextView = mSearchSrcTextViewField.get(this) as EditText
     mSearchSrcTextView.setTextColor(tintColors.activeColor)
     mSearchSrcTextView.setHintTextColor(tintColors.inactiveColor)
     mSearchSrcTextView.setCursorTint(tintColors.activeColor)
 
-    var field = cls.getDeclaredField("mSearchButton")
+    var field = this::class.findField("mSearchButton")
     tintImageView(this, field, tintColors)
-    field = cls.getDeclaredField("mGoButton")
+    field = this::class.findField("mGoButton")
     tintImageView(this, field, tintColors)
-    field = cls.getDeclaredField("mCloseButton")
+    field = this::class.findField("mCloseButton")
     tintImageView(this, field, tintColors)
-    field = cls.getDeclaredField("mVoiceButton")
+    field = this::class.findField("mVoiceButton")
     tintImageView(this, field, tintColors)
 
-    field = cls.getDeclaredField("mSearchPlate")
-    field.isAccessible = true
-
+    field = this::class.findField("mSearchPlate")
     (field.get(this) as View).apply {
       setTintAuto(
           color = tintColors.activeColor,
@@ -98,8 +94,7 @@ internal fun SearchView.setColors(tintColors: ActiveInactiveColors) {
       )
     }
 
-    field = cls.getDeclaredField("mSearchHintIcon")
-    field.isAccessible = true
+    field = this::class.findField("mSearchHintIcon")
 
     (field.get(this) as Drawable).apply {
       field.set(
@@ -127,10 +122,9 @@ internal fun tintImageView(
 
 internal fun TextInputLayout.setHintColor(@ColorInt hintColor: Int) {
   try {
-    val defaultHintColorField = TextInputLayout::class.java.findField(
+    val defaultHintColorField = TextInputLayout::class.findField(
         "defaultHintTextColor", "mDefaultTextColor"
     )
-    defaultHintColorField.isAccessible = true
     defaultHintColorField.set(this, ColorStateList.valueOf(hintColor))
     val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
         "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType
@@ -146,10 +140,9 @@ internal fun TextInputLayout.setHintColor(@ColorInt hintColor: Int) {
 
 internal fun TextInputLayout.setAccentColor(@ColorInt accentColor: Int) {
   try {
-    val focusedTextColor = TextInputLayout::class.java.findField(
+    val focusedTextColor = TextInputLayout::class.findField(
         "focusedTextColor", "mFocusedTextColor"
     )
-    focusedTextColor.isAccessible = true
     focusedTextColor.set(this, ColorStateList.valueOf(accentColor))
     val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
         "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType
@@ -165,8 +158,7 @@ internal fun TextInputLayout.setAccentColor(@ColorInt accentColor: Int) {
 
 internal fun TextInputLayout.setStrokeColor(@ColorInt accentColor: Int) {
   try {
-    val disabledTextColor = TextInputLayout::class.java.findField("defaultStrokeColor")
-    disabledTextColor.isAccessible = true
+    val disabledTextColor = TextInputLayout::class.findField("defaultStrokeColor")
     disabledTextColor.set(this, accentColor)
     val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
         "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType
@@ -182,8 +174,7 @@ internal fun TextInputLayout.setStrokeColor(@ColorInt accentColor: Int) {
 
 internal fun TextInputLayout.setStrokeColorHover(@ColorInt accentColor: Int) {
   try {
-    val disabledTextColor = TextInputLayout::class.java.findField("hoveredStrokeColor")
-    disabledTextColor.isAccessible = true
+    val disabledTextColor = TextInputLayout::class.findField("hoveredStrokeColor")
     disabledTextColor.set(this, accentColor)
     val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
         "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType
@@ -199,8 +190,7 @@ internal fun TextInputLayout.setStrokeColorHover(@ColorInt accentColor: Int) {
 
 internal fun TextInputLayout.setStrokeColorFocused(@ColorInt accentColor: Int) {
   try {
-    val disabledTextColor = TextInputLayout::class.java.findField("focusedStrokeColor")
-    disabledTextColor.isAccessible = true
+    val disabledTextColor = TextInputLayout::class.findField("focusedStrokeColor")
     disabledTextColor.set(this, accentColor)
     val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
         "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType
@@ -216,8 +206,7 @@ internal fun TextInputLayout.setStrokeColorFocused(@ColorInt accentColor: Int) {
 
 internal fun TextInputLayout.setDisabledColor(@ColorInt accentColor: Int) {
   try {
-    val disabledTextColor = TextInputLayout::class.java.findField("disabledColor")
-    disabledTextColor.isAccessible = true
+    val disabledTextColor = TextInputLayout::class.findField("disabledColor")
     disabledTextColor.set(this, accentColor)
     val updateLabelStateMethod = TextInputLayout::class.java.getDeclaredMethod(
         "updateLabelState", Boolean::class.javaPrimitiveType, Boolean::class.javaPrimitiveType

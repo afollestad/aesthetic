@@ -61,7 +61,7 @@ internal class InflationInterceptor(
 
   companion object {
 
-    private const val LOGGING_ENABLED = true
+    private const val LOGGING_ENABLED = false
 
     private const val ANDROIDX_WIDGET = "androidx.core.widget"
     private const val APPCOMPAT_WIDGET = "androidx.appcompat.widget"

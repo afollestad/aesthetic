@@ -328,14 +328,14 @@ internal fun AppCompatCheckedTextView.setTint(
       context = context,
       requestedTint = tintColor,
       thumb = false,
-      compatSwitch = false,
+      compatSwitch = true,
       useDarker = useDarker
   )
   if (SDK_INT >= M) {
     compoundDrawableTintList = sl
   } else {
     for (compoundDrawable in compoundDrawables) {
-      compoundDrawable.setColorFilter(tintColor, SRC_IN)
+      compoundDrawable?.setColorFilter(tintColor, SRC_IN)
     }
   }
 }
@@ -378,23 +378,22 @@ internal fun EditText.setTint(
 
 internal fun EditText.setCursorTint(@ColorInt color: Int) {
   try {
-    val fCursorDrawableRes = TextView::class.java.getDeclaredField("mCursorDrawableRes")
-    fCursorDrawableRes.isAccessible = true
+    val fCursorDrawableRes = TextView::class.findField("mCursorDrawableRes")
     val mCursorDrawableRes = fCursorDrawableRes.getInt(this)
-    val fEditor = TextView::class.java.getDeclaredField("mEditor")
-    fEditor.isAccessible = true
-    val editor = fEditor.get(this)
-    val clazz = editor.javaClass
-    val fCursorDrawable = clazz.getDeclaredField("mCursorDrawable")
-    fCursorDrawable.isAccessible = true
-    val drawables = arrayOfNulls<Drawable>(2)
-    drawables[0] = this.context.drawable(mCursorDrawableRes)
-    drawables[0] = drawables[0].tint(color)
-    drawables[1] = this.context.drawable(mCursorDrawableRes)
-    drawables[1] = drawables[1].tint(color)
+
+    val fEditor = TextView::class.findField("mEditor")
+    val editor = fEditor.get(this)!!
+    val fCursorDrawable = editor::class.findField(
+        "mDrawableForCursor", "mCursorDrawable"
+    )
+
+    val drawables = arrayOf(
+        context.drawable(mCursorDrawableRes).tint(color),
+        context.drawable(mCursorDrawableRes).tint(color)
+    )
     fCursorDrawable.set(editor, drawables)
   } catch (e: Exception) {
-    // TODO FIX    e.printStackTrace()
+    e.printStackTrace()
   }
 }
 
