@@ -5,6 +5,7 @@
  */
 package com.afollestad.aesthetic.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
@@ -12,6 +13,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 
 @ColorInt internal fun Context.color(@ColorRes color: Int): Int {
@@ -33,27 +35,21 @@ internal fun Context.drawable(@DrawableRes drawable: Int): Drawable? {
   }
 }
 
+@SuppressLint("Recycle")
+@IdRes
 internal fun Context.resId(
-  @AttrRes attr: Int,
+  attrs: AttributeSet? = null,
+  @AttrRes attrId: Int,
   fallback: Int = 0
 ): Int {
-  val a = theme.obtainStyledAttributes(intArrayOf(attr))
-  try {
-    return a.getResourceId(0, fallback)
-  } finally {
-    a.recycle()
+  val typedArray = if (attrs != null) {
+    obtainStyledAttributes(attrs, intArrayOf(attrId))
+  } else {
+    theme.obtainStyledAttributes(intArrayOf(attrId))
   }
-}
-
-internal fun Context.resId(
-  attrs: AttributeSet?,
-  @AttrRes attrId: Int
-): Int {
-  if (attrs == null) return 0
-  val ta = obtainStyledAttributes(attrs, intArrayOf(attrId))
   try {
-    return ta.getResourceId(0, 0)
+    return typedArray.getResourceId(0, fallback)
   } finally {
-    ta.recycle()
+    typedArray.recycle()
   }
 }

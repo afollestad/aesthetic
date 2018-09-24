@@ -6,7 +6,6 @@
 package com.afollestad.aesthetic.views
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Color.BLACK
 import android.graphics.Color.WHITE
 import android.graphics.drawable.Drawable

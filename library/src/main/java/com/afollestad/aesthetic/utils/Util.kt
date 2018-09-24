@@ -21,22 +21,24 @@ import io.reactivex.Observable.empty
   with(Aesthetic.get()) {
     return when (resId) {
       0 -> fallback
-      context.resId(attr.colorPrimary),
-      context.resId(android.R.attr.colorPrimary) -> colorPrimary()
+      context.resId(attrId = attr.colorPrimary),
+      context.resId(attrId = android.R.attr.colorPrimary) -> colorPrimary()
 
-      context.resId(attr.colorPrimaryDark),
-      context.resId(android.R.attr.colorPrimaryDark) -> colorPrimaryDark()
+      context.resId(attrId = attr.colorPrimaryDark),
+      context.resId(attrId = android.R.attr.colorPrimaryDark) -> colorPrimaryDark()
 
-      context.resId(attr.colorAccent),
-      context.resId(android.R.attr.colorAccent) -> colorAccent()
+      context.resId(attrId = attr.colorAccent),
+      context.resId(attrId = android.R.attr.colorAccent) -> colorAccent()
 
-      context.resId(android.R.attr.statusBarColor) -> colorStatusBar()
-      context.resId(android.R.attr.windowBackground) -> colorWindowBackground()
+      context.resId(attrId = android.R.attr.statusBarColor) -> colorStatusBar()
+      context.resId(attrId = android.R.attr.windowBackground) -> colorWindowBackground()
 
-      context.resId(android.R.attr.textColorPrimary) -> textColorPrimary()
-      context.resId(android.R.attr.textColorPrimaryInverse) -> textColorPrimaryInverse()
-      context.resId(android.R.attr.textColorSecondary) -> textColorSecondary()
-      context.resId(android.R.attr.textColorSecondaryInverse) -> textColorSecondaryInverse()
+      context.resId(attrId = android.R.attr.textColorPrimary) -> textColorPrimary()
+      context.resId(attrId = android.R.attr.textColorPrimaryInverse) -> textColorPrimaryInverse()
+
+      context.resId(attrId = android.R.attr.textColorSecondary) -> textColorSecondary()
+      context.resId(attrId = android.R.attr.textColorSecondaryInverse) ->
+        textColorSecondaryInverse()
 
       else -> fallback
     }
