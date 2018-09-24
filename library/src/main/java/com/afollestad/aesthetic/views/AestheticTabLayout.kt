@@ -22,16 +22,12 @@ import com.afollestad.aesthetic.utils.tint
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.Observable.just
-import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticTabLayout(
   context: Context,
   attrs: AttributeSet? = null
 ) : TabLayout(context, attrs) {
-
-  private var indicatorColorSubscription: Disposable? = null
-  private var bgColorSubscription: Disposable? = null
 
   companion object {
     const val UNFOCUSED_ALPHA = 0.5f
@@ -78,46 +74,26 @@ class AestheticTabLayout(
 
     get().tabLayoutBackgroundMode()
         .distinctToMainThread()
-        .subscribeTo {
-          bgColorSubscription?.dispose()
-
-          bgColorSubscription = when (it!!) {
-            TabLayoutBgMode.PRIMARY ->
-              get().colorPrimary()
-                  .distinctToMainThread()
-                  .subscribeBackgroundColor(this@AestheticTabLayout)
-
-            TabLayoutBgMode.ACCENT ->
-              get().colorAccent()
-                  .distinctToMainThread()
-                  .subscribeBackgroundColor(this@AestheticTabLayout)
+        .flatMap {
+          when (it) {
+            TabLayoutBgMode.PRIMARY -> get().colorPrimary()
+            TabLayoutBgMode.ACCENT -> get().colorAccent()
           }
         }
+        .distinctToMainThread()
+        .subscribeBackgroundColor(this@AestheticTabLayout)
         .unsubscribeOnDetach(this)
 
     get().tabLayoutIndicatorMode()
         .distinctToMainThread()
-        .subscribeTo {
-          indicatorColorSubscription?.dispose()
-
-          indicatorColorSubscription = when (it!!) {
-            TabLayoutIndicatorMode.PRIMARY ->
-              get().colorPrimary()
-                  .distinctToMainThread()
-                  .subscribeTo(::setSelectedTabIndicatorColor)
-
-            TabLayoutIndicatorMode.ACCENT ->
-              get().colorAccent()
-                  .distinctToMainThread()
-                  .subscribeTo(::setSelectedTabIndicatorColor)
+        .flatMap {
+          when (it) {
+            TabLayoutIndicatorMode.PRIMARY -> get().colorPrimary()
+            TabLayoutIndicatorMode.ACCENT -> get().colorAccent()
           }
         }
+        .distinctToMainThread()
+        .subscribeTo(::setSelectedTabIndicatorColor)
         .unsubscribeOnDetach(this)
-  }
-
-  override fun onDetachedFromWindow() {
-    bgColorSubscription?.dispose()
-    indicatorColorSubscription?.dispose()
-    super.onDetachedFromWindow()
   }
 }
