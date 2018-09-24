@@ -11,7 +11,7 @@ enum class TabLayoutBgMode(val value: Int) {
   ACCENT(1);
 
   companion object {
-    fun fromInt(value: Int): TabLayoutBgMode {
+    internal fun fromInt(value: Int): TabLayoutBgMode {
       return when (value) {
         0 -> PRIMARY
         else -> ACCENT
@@ -26,7 +26,7 @@ enum class NavigationViewMode(val value: Int) {
   SELECTED_ACCENT(1);
 
   companion object {
-    fun fromInt(value: Int): NavigationViewMode {
+    internal fun fromInt(value: Int): NavigationViewMode {
       return when (value) {
         0 -> SELECTED_PRIMARY
         else -> SELECTED_ACCENT
@@ -42,7 +42,7 @@ enum class AutoSwitchMode(val value: Int) {
   AUTO(2);
 
   companion object {
-    fun fromInt(value: Int): AutoSwitchMode {
+    internal fun fromInt(value: Int): AutoSwitchMode {
       return when (value) {
         0 -> OFF
         1 -> ON
@@ -60,7 +60,7 @@ enum class BottomNavBgMode(val value: Int) {
   ACCENT(3);
 
   companion object {
-    fun fromInt(value: Int): BottomNavBgMode {
+    internal fun fromInt(value: Int): BottomNavBgMode {
       return when (value) {
         0 -> BLACK_WHITE_AUTO
         1 -> PRIMARY
@@ -77,7 +77,7 @@ enum class TabLayoutIndicatorMode(val value: Int) {
   ACCENT(1);
 
   companion object {
-    fun fromInt(value: Int): TabLayoutIndicatorMode {
+    internal fun fromInt(value: Int): TabLayoutIndicatorMode {
       return when (value) {
         0 -> PRIMARY
         else -> ACCENT
@@ -93,7 +93,7 @@ enum class BottomNavIconTextMode(val value: Int) {
   BLACK_WHITE_AUTO(2);
 
   companion object {
-    fun fromInt(value: Int): BottomNavIconTextMode {
+    internal fun fromInt(value: Int): BottomNavIconTextMode {
       return when (value) {
         0 -> SELECTED_PRIMARY
         1 -> SELECTED_ACCENT
