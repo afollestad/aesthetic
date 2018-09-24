@@ -11,16 +11,17 @@ import android.app.ActivityManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
-import android.support.annotation.ColorInt
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.LayoutInflaterCompat
 import com.afollestad.aesthetic.internal.InflationInterceptor
 
 internal fun AppCompatActivity.setInflaterFactory(li: LayoutInflater) {
-  LayoutInflaterCompat.setFactory2(li,
+  LayoutInflaterCompat.setFactory2(
+      li,
       InflationInterceptor(this, delegate)
   )
 }

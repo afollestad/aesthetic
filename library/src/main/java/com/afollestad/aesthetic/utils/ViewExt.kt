@@ -8,11 +8,11 @@ package com.afollestad.aesthetic.utils
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.support.annotation.ColorInt
 import android.view.Menu
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat

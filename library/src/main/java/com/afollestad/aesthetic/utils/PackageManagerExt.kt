@@ -12,7 +12,7 @@ import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 internal fun PackageManager.getAppIcon(packageName: String): Bitmap? {

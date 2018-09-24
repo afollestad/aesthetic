@@ -7,8 +7,8 @@ package com.afollestad.aesthetic.views
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.support.annotation.ColorInt
 import android.util.AttributeSet
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.BgIconColorState

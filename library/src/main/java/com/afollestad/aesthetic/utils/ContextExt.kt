@@ -7,11 +7,11 @@ package com.afollestad.aesthetic.utils
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.support.annotation.AttrRes
-import android.support.annotation.ColorInt
-import android.support.annotation.ColorRes
-import android.support.annotation.DrawableRes
 import android.util.AttributeSet
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 
 @ColorInt internal fun Context.color(@ColorRes color: Int): Int {

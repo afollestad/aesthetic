@@ -6,8 +6,8 @@
 package com.afollestad.aesthetic.utils
 
 import android.graphics.Color
-import android.support.annotation.ColorInt
-import android.support.annotation.FloatRange
+import androidx.annotation.ColorInt
+import androidx.annotation.FloatRange
 
 @ColorInt internal fun Int.blendWith(
   @ColorInt otherColor: Int,

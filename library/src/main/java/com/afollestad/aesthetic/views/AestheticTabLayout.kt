@@ -8,8 +8,8 @@ package com.afollestad.aesthetic.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
-import android.support.annotation.ColorInt
 import android.util.AttributeSet
+import androidx.annotation.ColorInt
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.TabLayoutBgMode
 import com.afollestad.aesthetic.TabLayoutIndicatorMode

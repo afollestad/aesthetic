@@ -6,8 +6,8 @@
 package com.afollestad.aesthetic.utils
 
 import android.content.Context
-import android.support.annotation.CheckResult
-import android.support.annotation.IdRes
+import androidx.annotation.CheckResult
+import androidx.annotation.IdRes
 import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.R.attr
 import io.reactivex.Observable

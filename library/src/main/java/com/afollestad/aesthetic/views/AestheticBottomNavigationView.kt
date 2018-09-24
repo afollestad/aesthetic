@@ -10,8 +10,8 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Color.BLACK
 import android.graphics.Color.WHITE
-import android.support.annotation.ColorInt
 import android.util.AttributeSet
+import androidx.annotation.ColorInt
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.BottomNavBgMode
 import com.afollestad.aesthetic.BottomNavIconTextMode

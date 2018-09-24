@@ -14,10 +14,10 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Color.BLACK
 import android.graphics.drawable.ColorDrawable
-import android.support.annotation.CheckResult
-import android.support.annotation.ColorInt
-import android.support.annotation.ColorRes
-import android.support.annotation.StyleRes
+import androidx.annotation.CheckResult
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.aesthetic.internal.KEY_ACCENT_COLOR
 import com.afollestad.aesthetic.internal.KEY_ACTIVITY_THEME

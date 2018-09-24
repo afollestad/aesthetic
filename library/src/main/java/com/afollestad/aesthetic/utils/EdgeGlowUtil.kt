@@ -9,10 +9,10 @@ import android.annotation.TargetApi
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.support.annotation.ColorInt
 import android.widget.AbsListView
 import android.widget.EdgeEffect
 import android.widget.ScrollView
+import androidx.annotation.ColorInt
 import androidx.core.widget.EdgeEffectCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView

@@ -17,8 +17,6 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.M
-import android.support.annotation.CheckResult
-import android.support.annotation.ColorInt
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
@@ -29,6 +27,8 @@ import android.widget.RadioButton
 import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
+import androidx.annotation.CheckResult
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatCheckedTextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.graphics.drawable.DrawableCompat
