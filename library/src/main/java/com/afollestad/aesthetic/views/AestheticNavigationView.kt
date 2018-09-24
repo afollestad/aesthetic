@@ -83,7 +83,7 @@ class AestheticNavigationView(
         .subscribeTo {
           colorSubscription?.dispose()
 
-          when (it) {
+          when (it!!) {
             SELECTED_PRIMARY ->
               colorSubscription = allOf(
                   get().colorPrimary(),

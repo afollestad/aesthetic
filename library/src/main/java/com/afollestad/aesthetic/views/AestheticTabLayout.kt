@@ -81,7 +81,7 @@ class AestheticTabLayout(
         .subscribeTo {
           bgColorSubscription?.dispose()
 
-          bgColorSubscription = when (it) {
+          bgColorSubscription = when (it!!) {
             TabLayoutBgMode.PRIMARY ->
               get().colorPrimary()
                   .distinctToMainThread()
@@ -100,7 +100,7 @@ class AestheticTabLayout(
         .subscribeTo {
           indicatorColorSubscription?.dispose()
 
-          indicatorColorSubscription = when (it) {
+          indicatorColorSubscription = when (it!!) {
             TabLayoutIndicatorMode.PRIMARY ->
               get().colorPrimary()
                   .distinctToMainThread()

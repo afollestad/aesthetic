@@ -14,7 +14,6 @@ import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.aesthetic.utils.watchColor
-import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticTextView(
@@ -22,7 +21,6 @@ class AestheticTextView(
   attrs: AttributeSet? = null
 ) : AppCompatTextView(context, attrs) {
 
-  private var subscription: Disposable? = null
   private var textColorResId: Int = 0
 
   init {
@@ -43,10 +41,5 @@ class AestheticTextView(
         .distinctToMainThread()
         .subscribeTextColor(this)
         .unsubscribeOnDetach(this)
-  }
-
-  override fun onDetachedFromWindow() {
-    subscription?.dispose()
-    super.onDetachedFromWindow()
   }
 }
