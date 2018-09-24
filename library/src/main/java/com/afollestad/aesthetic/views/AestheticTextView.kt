@@ -34,14 +34,12 @@ class AestheticTextView(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    watchColor(
-        context,
-        textColorResId,
-        if (id == android.R.id.title)
-          get().textColorPrimary()
-        else
-          get().textColorSecondary()
-    )
+    val defaultObs = if (id == android.R.id.title) {
+      get().textColorPrimary()
+    } else {
+      get().textColorSecondary()
+    }
+    watchColor(context, textColorResId, defaultObs)
         .distinctToMainThread()
         .subscribeTextColor(this)
         .unsubscribeOnDetach(this)
