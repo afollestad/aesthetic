@@ -2,9 +2,11 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    tools:ignore="UnusedAttribute"
     >
 
   <androidx.appcompat.widget.Toolbar
@@ -12,7 +14,18 @@
       android:layout_width="match_parent"
       android:layout_height="?actionBarSize"
       android:background="?colorPrimary"
+      android:elevation="@dimen/toolbar_elevation"
       app:title="@string/app_name"
+      />
+
+  <com.google.android.material.tabs.TabLayout
+      android:id="@+id/tabs"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="top"
+      android:background="?colorPrimary"
+      android:elevation="@dimen/toolbar_elevation"
+      app:tabIndicatorHeight="3dp"
       />
 
   <androidx.viewpager.widget.ViewPager
@@ -20,15 +33,6 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       >
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:background="?colorPrimary"
-        app:tabIndicatorHeight="3dp"
-        />
 
   </androidx.viewpager.widget.ViewPager>
 
