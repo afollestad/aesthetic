@@ -34,6 +34,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.TintableBackgroundView
 import androidx.core.view.ViewCompat
+import com.afollestad.aesthetic.BuildConfig.DEBUG
 import com.afollestad.aesthetic.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
@@ -393,7 +394,7 @@ internal fun EditText.setCursorTint(@ColorInt color: Int) {
     )
     fCursorDrawable.set(editor, drawables)
   } catch (e: Exception) {
-    e.printStackTrace()
+    if (DEBUG) e.printStackTrace()
   }
 }
 
