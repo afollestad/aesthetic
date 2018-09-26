@@ -546,13 +546,13 @@ class Aesthetic private constructor(private var ctxt: Context?) {
           subs += colorPrimary()
               .distinctToMainThread()
               .subscribeTo {
-                (context as Activity).setTaskDescriptionColor(it)
+                (context as? Activity)?.setTaskDescriptionColor(it)
               }
           subs += activityTheme()
               .distinctToMainThread()
               .subscribeTo {
                 lastActivityThemes[context.javaClass.name] = it
-                (context as Activity).recreate()
+                (context as? Activity)?.recreate()
               }
           subs += allOf(colorStatusBar(), lightStatusBarMode())
               .distinctToMainThread()
@@ -560,12 +560,12 @@ class Aesthetic private constructor(private var ctxt: Context?) {
           subs += colorNavigationBar()
               .distinctToMainThread()
               .subscribeTo {
-                (context as Activity).setNavBarColorCompat(it)
+                (context as? Activity)?.setNavBarColorCompat(it)
               }
           subs += colorWindowBackground()
               .distinctToMainThread()
               .subscribeTo {
-                (context as Activity).window?.setBackgroundDrawable(ColorDrawable(it))
+                (context as? Activity)?.window?.setBackgroundDrawable(ColorDrawable(it))
               }
         }
       }

@@ -11,42 +11,40 @@ import android.app.ActivityManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.LayoutInflaterCompat
+import androidx.core.view.LayoutInflaterCompat.setFactory2
 import com.afollestad.aesthetic.internal.InflationInterceptor
 
-internal fun AppCompatActivity.setInflaterFactory(li: LayoutInflater) {
-  LayoutInflaterCompat.setFactory2(
-      li,
-      InflationInterceptor(this, delegate)
-  )
-}
+internal fun AppCompatActivity.setInflaterFactory(li: LayoutInflater) =
+  setFactory2(li, InflationInterceptor(this, delegate))
 
 internal fun Activity.setStatusBarColorCompat(@ColorInt color: Int) {
-  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+  if (SDK_INT >= LOLLIPOP) {
     window.statusBarColor = color
   }
 }
 
 internal fun Activity.getRootView(): ViewGroup {
-  return (findViewById<ViewGroup>(android.R.id.content)).getChildAt(
-      0
-  ) as ViewGroup
+  val content = findViewById<ViewGroup>(android.R.id.content)
+  return content.getChildAt(0) as ViewGroup
 }
 
-internal fun Activity.setNavBarColorCompat(@ColorInt color: Int) {
-  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-    window.navigationBarColor = color
+internal fun Activity?.setNavBarColorCompat(@ColorInt color: Int) {
+  if (SDK_INT >= LOLLIPOP) {
+    this?.window?.navigationBarColor = color
   }
 }
 
-internal fun Activity.setLightStatusBarCompat(lightMode: Boolean) {
-  val view = window.decorView
-  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+internal fun Activity?.setLightStatusBarCompat(lightMode: Boolean) {
+  val view = this?.window?.decorView ?: return
+  if (SDK_INT >= M) {
     var flags = view.systemUiVisibility
     flags = if (lightMode) {
       flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -58,11 +56,10 @@ internal fun Activity.setLightStatusBarCompat(lightMode: Boolean) {
 }
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-internal fun Activity.setTaskDescriptionColor(@ColorInt requestedColor: Int) {
+internal fun Activity?.setTaskDescriptionColor(@ColorInt requestedColor: Int) {
+  if (this == null || SDK_INT <= LOLLIPOP) return
   var color = requestedColor
-  if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
-    return
-  }
+
   // Task description requires fully opaque color
   color = color.stripAlpha()
   // Default is app's launcher icon
