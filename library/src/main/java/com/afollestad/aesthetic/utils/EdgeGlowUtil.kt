@@ -17,7 +17,6 @@ import androidx.core.widget.EdgeEffectCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-import com.afollestad.aesthetic.BuildConfig
 import com.afollestad.aesthetic.BuildConfig.DEBUG
 import java.lang.reflect.Field
 
@@ -76,7 +75,7 @@ internal object EdgeGlowUtil {
     try {
       efc = EdgeEffectCompat::class.findField("mEdgeEffect")
     } catch (e: NoSuchFieldException) {
-      if (DEBUG)  e.printStackTrace()
+      if (DEBUG) e.printStackTrace()
     }
 
     EDGE_EFFECT_COMPAT_FIELD_EDGE_EFFECT = efc
@@ -211,7 +210,7 @@ internal object EdgeGlowUtil {
       ee = SCROLL_VIEW_FIELD_EDGE_GLOW_BOTTOM!!.get(scrollView)
       setEffectColor(ee, color)
     } catch (ex: Exception) {
-      if (DEBUG)  ex.printStackTrace()
+      if (DEBUG) ex.printStackTrace()
     }
   }
 
@@ -223,7 +222,7 @@ internal object EdgeGlowUtil {
       ee = NESTED_SCROLL_VIEW_FIELD_EDGE_GLOW_BOTTOM!!.get(scrollView)
       setEffectColor(ee, color)
     } catch (ex: Exception) {
-      if (DEBUG)  ex.printStackTrace()
+      if (DEBUG) ex.printStackTrace()
     }
   }
 
@@ -235,7 +234,7 @@ internal object EdgeGlowUtil {
       ee = LIST_VIEW_FIELD_EDGE_GLOW_BOTTOM!!.get(listView)
       setEffectColor(ee, color)
     } catch (ex: Exception) {
-      if (DEBUG)  ex.printStackTrace()
+      if (DEBUG) ex.printStackTrace()
     }
   }
 

@@ -5,22 +5,23 @@
  */
 package com.afollestad.aesthetic.utils
 
+import android.annotation.TargetApi
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.LayerDrawable
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.O
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+@TargetApi(O)
 internal fun PackageManager.getAppIcon(packageName: String): Bitmap? {
   try {
     val drawable = getApplicationIcon(packageName)
     if (drawable is BitmapDrawable) {
       return drawable.bitmap
-    } else if (drawable is AdaptiveIconDrawable) {
+    } else if (SDK_INT >= O && drawable is AdaptiveIconDrawable) {
       val drr = arrayOf(drawable.background, drawable.foreground)
       val layerDrawable = LayerDrawable(drr)
 
