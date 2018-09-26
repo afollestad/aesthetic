@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.aesthetic.R.id
 import com.afollestad.aesthetic.addBackgroundSubscriber
+import com.afollestad.aesthetic.utils.fixedLayoutInflater
 import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.views.AestheticActionMenuItemView
@@ -260,7 +261,7 @@ internal class InflationInterceptor(
     // If it's still null, use the LayoutInflater directly
     if (view == null) {
       try {
-        val layoutInflater = LayoutInflater.from(context)
+        val layoutInflater = context.fixedLayoutInflater()
         view = layoutInflater.createView(
             name,
             getViewPrefix(name),
