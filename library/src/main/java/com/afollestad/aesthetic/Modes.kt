@@ -3,15 +3,23 @@
  *
  * Designed and developed by Aidan Follestad (@afollestad)
  */
+@file:Suppress("unused")
+
 package com.afollestad.aesthetic
 
+@Deprecated(message = "Use ColorMode instead.")
+typealias TabLayoutBgMode = ColorMode
+
+@Deprecated(message = "Use ColorMode instead.")
+typealias TabLayoutIndicatorMode = ColorMode
+
 /** @author Aidan Follestad (afollestad)*/
-enum class TabLayoutBgMode(val value: Int) {
+enum class ColorMode(val value: Int) {
   PRIMARY(0),
   ACCENT(1);
 
   companion object {
-    internal fun fromInt(value: Int): TabLayoutBgMode {
+    internal fun fromInt(value: Int): ColorMode {
       return when (value) {
         0 -> PRIMARY
         else -> ACCENT
@@ -65,21 +73,6 @@ enum class BottomNavBgMode(val value: Int) {
         0 -> BLACK_WHITE_AUTO
         1 -> PRIMARY
         2 -> PRIMARY_DARK
-        else -> ACCENT
-      }
-    }
-  }
-}
-
-/** @author Aidan Follestad (afollestad) */
-enum class TabLayoutIndicatorMode(val value: Int) {
-  PRIMARY(0),
-  ACCENT(1);
-
-  companion object {
-    internal fun fromInt(value: Int): TabLayoutIndicatorMode {
-      return when (value) {
-        0 -> PRIMARY
         else -> ACCENT
       }
     }

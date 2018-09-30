@@ -7,6 +7,8 @@ package com.afollestad.aesthetic.views
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Color.BLACK
+import android.graphics.Color.WHITE
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
@@ -21,7 +23,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.afollestad.aesthetic.ActiveInactiveColors
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.adjustAlpha
-import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.blendWith
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.findField
@@ -39,6 +40,10 @@ class AestheticCoordinatorLayout(
   context: Context,
   attrs: AttributeSet? = null
 ) : CoordinatorLayout(context, attrs), AppBarLayout.OnOffsetChangedListener {
+
+  companion object {
+    const val UNFOCUSED_ALPHA = 0.5f
+  }
 
   private var appBarLayout: AppBarLayout? = null
   private var colorView: View? = null
@@ -89,7 +94,7 @@ class AestheticCoordinatorLayout(
         }
       }
     }
-    toolbar.tintMenu(menu ?: toolbar.menu, colors)
+    toolbar.tintMenu(menu ?: toolbar.menu, colors.activeColor, colors.inactiveColor)
   }
 
   override fun onAttachedToWindow() {
@@ -120,15 +125,12 @@ class AestheticCoordinatorLayout(
     if (toolbar != null && colorView != null) {
       this.appBarLayout?.addOnOffsetChangedListener(this)
 
-      val onColorUpdated = toolbar!!.colorUpdated()
-      allOf(
-          onColorUpdated,
-          get().colorIconTitle(onColorUpdated)
-      ) { a, b -> Pair(a, b) }
+      toolbar!!.colorUpdated()
           .distinctToMainThread()
           .subscribeTo {
-            toolbarColor = it.first
-            iconTextColors = it.second
+            toolbarColor = it
+            val baseColor = if (it.isColorLight()) BLACK else WHITE
+            iconTextColors = ActiveInactiveColors(baseColor, baseColor.adjustAlpha(UNFOCUSED_ALPHA))
             invalidateColors()
           }
           .unsubscribeOnDetach(this)

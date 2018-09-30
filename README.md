@@ -1,8 +1,6 @@
 # Aesthetic
 
-Aesthetic is an easy to use, fast, Rx-powered theme engine for Android applications.
-
-It dynamically themes your apps at runtime, supporting AndroidX and Google Material widgets.
+/esˈTHedik/: *adjective*, concerned with beauty or the appreciation of beauty. 
 
 [ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/aesthetic/images/download.svg) ](https://bintray.com/drummer-aidan/maven/aesthetic/_latestVersion)
 [![Build Status](https://travis-ci.org/afollestad/aesthetic.svg)](https://travis-ci.org/afollestad/aesthetic)
@@ -11,7 +9,7 @@ It dynamically themes your apps at runtime, supporting AndroidX and Google Mater
 
 You can download an <a href="https://raw.githubusercontent.com/afollestad/aesthetic/master/sample.apk">APK of the sample project</a>.
 
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/1.jpg" />
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/1.jpg" width="800" />
 
 ---
 
@@ -19,39 +17,33 @@ You can download an <a href="https://raw.githubusercontent.com/afollestad/aesthe
 
 1. [Gradle Dependency](#gradle-dependency)
 2. [Integration](#integration)
-3. [Basics](#basics) 
-    1. [Basic Theme Colors](#basic-theme-colors)
-    2. [Retrieving Current Values](#retrieving-current-values)
-    3. [Status Bar](#status-bar)
-    4. [Navigation Bar](#navigation-bar)
-    5. [Text Colors](#text-colors)
-    6. [Icon and Title Colors](#icon-and-title-colors)
-    7. [Activity Styles](#activity-styles)
-    8. [Window Background](#window-background)
-4. [View Backgrounds](#view-backgrounds)
-5. [Ignoring Views](#ignoring-views)
-5. [Snackbars](#snackbars)
-6. [Tab Layouts](#tab-layouts)
-7. [Drawer Layouts](#drawer-layouts)
-8. [Bottom Navigation](#bottom-navigation)
-9. [Collapsible Toolbar Layouts](#collapsible-toolbar-layouts)
-10. [Swipe Refresh Layouts](#swipe-refresh-layouts)
-11. [Custom View Subclasses](#custom-view-subclasses)
-12. [Activity Keys](#activity-keys)
+3. [Configuration](#configuration)
+4. [Attributes](#attributes)
+    1. [Base Values](#base-values)
+    2. [Standard Colors](#standard-colors)
+    3. [Standard Text Colors](#standard-text-colors)
+    4. [Custom Attributes](#custom-attributes)
+5. [Advanced Views](#advanced-views)
+    1. [Toolbars](#toolbars)
+    2. [Snackbars](#snackbars)
+    3. [CardViews](#cardviews)
+    4. [TabLayouts](#tablayouts)
+    5. [BottomNavigationViews](#bottomnavigationviews)
+    6. [NavigationViews](#navigationviews)
+    7. [SwipeRefreshLayouts](#swiperefreshlayouts)
+6. [Custom Views and Manual Application][#custom-views-and-manual-application]
+7. [Ignoring Views](#ignoring-views)
 
 ---
 
 # Gradle Dependency
 
-The Gradle dependency is available via [jCenter](https://bintray.com/drummer-aidan/maven/aesthetic/view).
-jCenter is the default Maven repository used by Android Studio.
-
-Add this to your module's `build.gradle` file:
+Add this to your app module's `build.gradle` file:
 
 ```gradle
 dependencies {
-    // ... other dependencies
-    implementation 'com.afollestad:aesthetic:0.7.2'
+  
+  implementation 'com.afollestad:aesthetic:1.0.0-beta1'
 }
 ```
 
@@ -59,30 +51,23 @@ dependencies {
 
 # Integration
 
-The easiest way to integrate the library is to have your Activities extend `AestheticActivity`. 
-This allows the library to handle lifecycle changes for you:
+Aesthetic is integrated at a per-Activity level. The simplest way is 
+to have your Activities extend `AestheticActivity`.
 
 ```kotlin
-class MainActivity : AestheticActivity() {
-  
+class MyActivity : AestheticActivity() {
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    // setContentView(...), etc.
-    
-    // If we haven't set any defaults, do that now
-    if (Aesthetic.isFirstTime) {
-        Aesthetic.config {
-          ...
-        }
-    }
   }
 }
 ```
 
-If you don't want to extend `AestheticActivity`, there are a few methods you need to call:
+If you *don't want to or cannot extend this class*, you can manually 
+tell Aesthetic about lifecycle events:
 
 ```kotlin
-class AestheticActivity : AppCompatActivity() {
+class MyActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     Aesthetic.attach(this)  // MUST come before super.onCreate(...)
@@ -99,494 +84,396 @@ class AestheticActivity : AppCompatActivity() {
     super.onPause()
   }
 }
-
 ```
 
 ---
 
-# Basics
+# Configuration
 
-### Basic Theme Colors
+Aesthetic provides a `isFirstTime` field which returns true until 
+you apply theme configuration at least once.
 
-The primary color and accent color are the two base theme colors used by apps. Generally, you 
-see the primary color on things such as `Toolbar`'s, and the accent color on widgets such as 
-`EditText`'s, `CheckBox`'s, `RadioButton`'s, `Switch`'s, `SeekBar`'s, `ProgressBar`'s, etc.
-
-You use `Aesthetic.get()` to retrieve the current attached `Aesthetic` instance. You can call
-the individual property setters on that instance, followed by `apply()`.
+You can use this to setup defaults on app launch.
 
 ```kotlin
-Aesthetic.get()
-    .colorPrimaryRes(R.color.md_indigo)
-    .colorPrimaryDarkRes(R.color.md_indigo_dark)
-    .colorAccentRes(R.color.md_yellow)
-    .apply()
-```
+class MyActivity : AestheticActivity() {
 
-In addition, a static `config` method is provided for convenience. It's a syntax-sugar shortcut to
-set multiple properties to your instance and automatically apply them.
-
-```kotlin
-Aesthetic.config {
-    colorPrimaryRes(R.color.md_indigo)
-    colorPrimaryDarkRes(R.color.md_indigo_dark)
-    colorAccentRes(R.color.md_yellow)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    
+    // If we haven't set any defaults, do that now
+    if (Aesthetic.isFirstTime) {
+        Aesthetic.config {
+          ...
+        }
+    }
+  }
 }
 ```
 
-**In any case, this will trigger color changes in the visible Activity WITHOUT recreating it.
-The set theme properties will also be persisted automatically.** The methods above end with `Res`,
-indicating they take a color resource. If you remove the `Res` suffix, you can pass a literal color
-integer.
+There are two ways to "configure" Aesthetic, with the `config` method:
 
----
+```kotlin
+Aesthetic.config {
+  colorPrimaryRes(R.color.blue)
+  ...
+}
+```
 
-### Retrieving Current Values
-
-All the setter methods also have equivalent getters. For an example, you can get the current 
-primary theme color:
+Or by chaining the setters and calling `apply()`:
 
 ```kotlin
 Aesthetic.get()
-    .colorPrimary()
-    .take(1)
-    .subscribe {
-      // Use color (an integer)
-    }
+  .colorPrimaryRes(R.color.blue)
+  ...
+  .apply() // don't forget apply() with this way
 ```
 
-`colorPrimary()` returns an RxJava `Observable<Integer>`. `take(1)` here retrieves the latest value, and 
-automatically un-subscribes so you don't continue to receive updates when the primary color changes.
+*If you are using Java*, you cannot use the `config` method.
 
-If you were to leave `take(1)` out, you need to manage the subscription. You will continue to receive 
-updates every time the primary color is changed, until you unsubscribe.
+---
+
+# Attributes
+
+Attributes are the foundation of this library. They link your UI to dynamically changing colors.
+
+Attributes exist natively on Android, but they are not dynamic - they are rather set in your Activity 
+themes and are pre-determined at compile-time. This library gets around that.
+
+### Base Values
+
+```kotlin
+Aesthetic.config {
+  // Set to false for light themes, true for dark.
+  // By default, is based on whether textColorPrimary is light/dark.
+  isDark(false)
+  
+  // Causes an Activity recreate, calls setTheme(Int) on it.
+  activityTheme(R.style.MyActivityTheme)
+  
+  // ON makes status bar icons black, and vice versa. AUTO bases it on 
+  // the status bar color, e.g. white -> light mode, black -> normal mode.
+  // This has no effect below API 23 (Marshmallow). 
+  lightStatusBarMode(AutoSwitchMode.AUTO)
+  
+  // ON makes navigation bar icons black, and vice versa. AUTO bases it on 
+  // the navigation bar color, e.g. white -> light mode, black -> normal mode.
+  // This has no effect below API 26 (Oreo).
+  lightNavigationBarMode(AutoSwitchMode.AUTO)
+}
+```
+
+---
+
+### Standard Colors
+
+```kotlin
+Aesthetic.config {
+  // ?colorPrimary, used for Toolbars, etc.
+  colorPrimaryRes(R.color.blue)
+  // ?colorPrimaryDark, used for status bars, etc.
+  colorPrimaryDark(R.color.blue)
+  // ?colorAccent, used for input fields, buttons, etc.
+  colorAccentRes(R.color.blue)
+  
+  // Defaults to colorPrimaryDark.
+  colorStatusBarRes(R.color.blue)
+  // Sets to colorPrimaryDark. 
+  colorStatusBarAuto() 
+  
+  // Defaults to the value in your activity theme, or black.
+  colorNavigationBarRes(R.color.blue)
+  // Sets nav bar color to match ?colorPrimaryDark. 
+  // If the color is light and light nav bar mode is disabled, it is forced to black.
+  colorNavigationBarAuto()
+  
+  // Defaults to the value in your activity theme.
+  colorWindowBackgroundRes(R.color.blue)
+}
+```
+
+The methods which end with `Res` take a color resource. Remove `Res` to 
+pass a literal (hardcoded) color integer.
+
+---
+
+### Standard Text Colors
+
+```kotlin
+Aesthetic.config {
+  // ?android:textColorPrimary
+  textColorPrimaryRes(R.color.black)
+  // ?android:textColorSecondary
+  textColorSecondaryRes(R.color.dark_gray)
+  
+  // ?android:textColorPrimaryInverse
+  textColorPrimaryInverseRes(R.color.white)
+  // ?android:textColorSecondaryInverse
+  textColorSecondaryInverseRes(R.color.light_gray)
+}
+```
+
+The methods which end with `Res` take a color resource. Remove `Res` to 
+pass a literal (hardcoded) color integer.
+
+---
+
+### Custom Attributes
+
+All of the "attributes" shown and used in examples above are shown with shortcut methods that 
+assign a color to a specific pre-existing attribute, such as `colorPrimary` from AndroidX.
+
+You can define custom attributes that are usable in layouts. You can 
+assign colors to theme like you would the predefined attributes above.
+
+First, you need to define the attribute in `/values/attrs.xml`:
+
+```xml
+<resources>
+  <attr format="color" name="my_custom_attr"/>
+</resources>
+```
+
+Then you need to define a default in your Activity's theme so that 
+Android's LayoutInflater can resolve something initially:
+
+```xml
+<style name="MyActivityTheme" parent="Theme.AppCompat.Light">
+  <item name="my_custom_attr">#000000</item>
+</style>
+```
+
+You can use this attribute in your layouts:
+
+```xml
+<TextView
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:text="Hello, World!"
+  android:textColor="?my_custom_attr"
+  />
+```
+
+And you can assign dynamic values to it with Aesthetic:
+
+```kotlin
+Aesthetic.config {
+
+   attributeRes(R.attr.your_attribute, R.color.blue)
+}
+```
+
+The methods which end with `Res` take a color resource. Remove `Res` to 
+pass a literal (hardcoded) color integer.
+
+---
+
+# Advanced Views
+
+To make Aesthetic a bit more plug-and-play, and to support views that 
+can't necessarily be color-themed from XML, additional options are 
+available for certain types of views.
+
+### Toolbars
+
+Special properties are provided for Toolbar icons (navigation icon, overflow icon, etc.) and the 
+title and subtitle colors, so that they don't have to be paired with `textColorPrimary`, etc.
+
+```kotlin
+Aesthetic.config {
+
+  // Defaults to black or white based on the darkness of ?colorPrimary.
+  toolbarIconColorRes(R.color.white)
+   
+  // Defaults to black or white based on the darkness of ?colorPrimary. 
+  toolbarTitleColorRes(R.color.white)
+  // Defaults to a faded version of the title color.
+  toolbarSubtitleColorRes(R.color.light_gray)
+}
+```
+
+You can override these (not including the icon color) at a per-layout basis as well:
+
+```xml
+<androidx.appcompat.widget.Toolbar
+  ...
+  android:background="?some_color"
+  app:titleTextColor="?some_color"
+  app:subtitleTextColor="?some_color"
+  />
+```
+
+If you **do not** manually override background, the Toolbar will automatically 
+default to the value of `?colorPrimary`.
+
+---
+
+### Snackbars
+
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/2.jpg" width="400" />
+
+```kotlin
+Aesthetic.config {
+  // The color of the main text on a Snackbar
+  snackbarTextColorRes(R.color.white)
+  
+  // The color of the action on a Snackbar, if there is one.
+  snackbarActionTextColorRes(R.color.blue)
+}
+```
+
+---
+
+### CardViews
+
+```kotlin
+Aesthetic.config {
+  // The background of CardViews is different because of the 
+  // rounding and elevation. This supports those elements.
+  colorCardViewBackgroundRes(R.color.white)
+}
+```
+
+---
+
+### TabLayouts
+
+*Note*: the color of text and icons in tab layouts will match that of Toolbars (using the 
+`toolbarIconColor` and `toolbarTitleColor` attributes).
+
+```kotlin
+Aesthetic.config {  
+  // The selected tab's underline will be the primary color.
+  tabLayoutIndicatorMode(ColorMode.PRIMARY)
+  // The selected tab's underline will be the accent color.
+  tabLayoutIndicatorMode(ColorMode.ACCENT)
+  
+  // The tab layout's background will be the primary color.
+  tabLayoutBackgroundMode(ColorMode.PRIMARY)
+  // The tab layout's background will be the accent color.
+  tabLayoutBackgroundMode(ColorMode.ACCENT)
+}
+```
+---
+
+### BottomNavigationViews
+
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/4.jpg" width="400" />
+
+```kotlin
+Aesthetic.config {
+  // The tabs' background will be black or white based on the darkness 
+  // of the overall theme.
+  bottomNavigationBackgroundMode(BottomNavBgMode.BLACK_WHITE_AUTO)
+  // The tabs' background will be the primary color.
+  bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
+  // The tabs' background will be the dark primary color.
+  bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
+  // The tabs' background will be the accent color.
+  bottomNavigationBackgroundMode(BottomNavBgMode.ACCENT)
+  
+  // The selected tab's icon will be tinted with the primary color.
+  bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_PRIMARY)
+  // The selected tab's icon will be tinted with the accent color. 
+  bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
+  // The selected tab's icon will be tinted black or white based on 
+  // the darkness of the overall theme.
+  bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+}
+```
+
+---
+
+### NavigationViews
+
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/3.jpg" width="400" />
+
+```kotlin
+Aesthetic.config {  
+  // The selected drawer item will be tinted with the primary color.
+  navigationViewMode(NavigationViewMode.SELECTED_PRIMARY)
+  
+  // The selected drawer item will be tinted with the accent color. 
+  navigationViewMode(NavigationViewMode.SELECTED_ACCENT)
+}
+```
+
+---
+
+### SwipeRefreshLayouts
+
+<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/6.jpg" width="400" />
+
+```kotlin
+Aesthetic.config {
+
+  // You can pass one more more comma-separated colors. 
+  // The colors that the refreshing indicator rotates through in a loop.
+  swipeRefreshLayoutColorsRes(R.color.red, R.color.blue)
+}
+```
+
+---
+
+# Custom Views and Manual Application
+
+Aesthetic will not automatically theme most custom views, with some exceptions such as background
+color. 
+
+Aesthetic makes it easy to subscribe to color changes so that you can manually apply colors to 
+views that need them. This library also provides some useful extension methods to help with the
+application of these colors.
+
+For an example, you can subscribe to pre-defined attributes, such as `colorPrimary()`:
 
 ```kotlin
 val subscription = Aesthetic.get()
-    .colorPrimary()
-    .subscribe {
+  .colorPrimary()
+  .subscribe { color ->
       // Use color (an integer)
-    }
+  }
       
 // Later, you should unsubscribe, e.g. when your Activity pauses or your View detaches from its Window
-subscription.dispose();
+subscription.dispose()
 ```
+
+If you only need the latest value and no further updates:
+
+```kotlin
+Aesthetic.get()
+  .colorPrimary()
+  .take(1)
+  .subscribe { color ->
+      // Use color (an integer)
+  }
+```
+
+You can do the same with custom attributes by switching `colorPrimary()` with 
+`attribute(R.attr.your_attr)`.
 
 ---
 
-### Status Bar
-
-The status bar is the bar on the top of your screen that shows notifications, the time, etc. (I'm 
-sure you're aware of that). Per the Material Design guidelines, the status bar color should be a slightly
- darker version of the primary color. You can manually set the color:
+With that, you can apply this color to your views. If you wanted a custom TextView to always 
+have its text color set to your accent color:
 
 ```kotlin
-Aesthetic.config {
-    colorStatusBar(R.color.md_indigo_dark)
-}
+val yourTextView: MySpecialTextView = // ...
+
+Aesthetic.get()
+  .colorAccent()
+  .distinctUntilChanged()
+  .subscribeTextColor(yourTextView)
+  .unsubscribeOnDetach(yourTextView)
 ```
 
-Or you can have it automatically generated from the primary color (**you need to set the primary color first**):
-
-```kotlin
-Aesthetic.config {
-    colorStatusBarAuto()
-}
-```
-
-Aesthetic will automatically use light status bar mode (on Android Marshmallow and above) 
-if your status bar color is light. You can modify this behavior:
-
-```kotlin
-// AUTO is the default. ON forces light status bar mode, OFF forces it to stay disabled.
-Aesthetic.config {
-    lightStatusBarMode(AutoSwitchMode.AUTO)
-}
-```
-
----
-
-### Navigation Bar
-
-By default, the navigation bar on the bottom of your screen is black. You can set it to any color 
-you wish, although generally it should be the same as your primary color if not black or transparent:
-
-```kotlin
-Aesthetic.config {
-    colorNavigationBarRes(R.color.md_indigo)
-}
-```
-
-You can automatically set it to the primary color, also (**you need to set the primary color first**):
-
-```kotlin
-Aesthetic.config {
-    colorNavigationBarAuto()
-}
-```
-
----
-
-### Text Colors
-
-You can customize text colors which are used on `TextView`'s, `EditText`'s, etc.
-
-```kotlin
-Aesthetic.config {
-    textColorPrimaryRes(android.R.color.black)
-    textColorPrimaryInverseRes(android.R.color.white)
-    textColorSecondaryRes(R.color.dark_gray)
-    textColorSecondaryInverseRes(R.color.lesser_white)
-}
-```
-
-Take this layout:
-
-```xml
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:orientation="vertical">
-
-  <TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Hello, world!"
-    android:textColor="?android:textColorPrimary"
-    android:textSize="24sp"/>
-
-  <TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="My name is Aidan."
-    android:textColor="?android:textColorSecondary"
-    android:textSize="16sp"/>
-
-</LinearLayout>
-```
-
-The first `TextView` uses the stock Android framework attribute `?android:textColorPrimary`, this library 
- will see that and automatically swap it out with whatever value you set to `textColorPrimary`. 
- The second `TextView` also uses a stock framework attribute, `?android:textColorSecondary`. It will 
- be swapped out with whatever you set to `textColorSecondary` in this library. **If you do not specify a 
- `textColor` attribute at all, TextView's will use the secondary text color as a default.**
-
-You can set the text color and hint text color on `EditText`'s too. **By default, the text 
-color will match your primary text color, and the hint text color will match your secondary text 
-color.**
-
-In addition to the two stock attributes above, these are some other attributes that are auto swappable: 
-`?colorPrimary`, `?colorPrimaryDark`, `?colorAccent`, `?android:windowBackground`, 
-`?android:textColorPrimaryInverse`, `?android:textColorSecondaryInverse`.
-
----
-
-### Icon and Title Colors
-
-You can modify the "icon and title" colors which are used in various places. A main example is on 
-toolbars. The color of the toolbar title and the menu icons are taken from this theme value. **By 
-default, the Material Design guideline colors are used, when isDark() is true and when it's false.**
-
-```kotlin
-Aesthetic.config {
-    colorIconTitleActiveRes(R.color.md_black)
-    colorIconTitleInactiveRes(R.color.md_dark_gray)
-}
-```
-
-The getter for these methods are combined into one: `Observable<ActiveInactiveColors> colorIconTitle(Observable<Integer>)`.
-
-Another example of where this is used is the text color for Tab Layout tabs. There are others that 
-you will see if you change these values and observe differences.
-
----
-
-### Activity Styles
-
-Aesthetic allows you to change the actual styles.xml theme applied to Activities:
-
-```kotlin
-// Apply an overall light theme
-Aesthetic.config {
-    activityTheme(R.style.Theme_AppCompat_Light_NoActionBar)
-    isDark(false)
-}
-
-// Apply an overall dark theme
-Aesthetic.config {
-    activityTheme(R.style.Theme_AppCompat_NoActionBar)
-    isDark(false)
-}
-```
-
-`isDark` is important, it's used as a hint by this library for various things. For an example, 
-with a `Switch` widget, the unchecked state is either light gray or dark gray based on whether it's 
-being used with a dark theme or light theme.
-
-**When the `activityTheme` property is changed, the visible `Activity` will be recreated.
-This is the ONLY property which requires a recreate.**
-
----
-
-### Window Background
-
-Aside from changing the entire base theme of an `Activity`, you can also change just the window background:
-
-```kotlin
-Aesthetic.config {
-    colorWindowBackgroundRes(R.color.window_background_gray)
-}
-```
-
----
-
-# View Backgrounds
-
-When you set stock or AppCompat attributes to the background of certain views, Aesthetic will
-swap out the attribute with your dynamic theme colors at inflation time:
-
-```kotlin
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="196dp"
-  android:background="?colorAccent"
-  android:orientation="vertical" />
-```
-
-Above, `?colorAccent` is an attribute provided by AppCompat. Aesthetic will automatically set the 
-background to whatever `accentColor` you have set.
-
-You could also use: `?colorPrimary`, `?colorPrimaryDark`, `?android:windowBackground`, 
-`?android:textColorPrimary`, `?android:textColorPrimaryInverse`, 
-`?android:textColorSecondary`, `?android:textColorSecondaryInverse`.
+The example here uses a few extension methods. `subscribeTextColor` wraps `subscribe { }` and 
+calls `setTextColor` on the text view passed as a parameter. `unsubscribeOnDetach` automatically
+manages the subscription and disposes of it when the view is detached from its window. You should
+resubscribe when the view is attached. Ideally this would happen within the views lifecycle method, 
+`onAttachedToWindow()`.
 
 ---
 
 # Ignoring Views
 
 You can make this library ignore views from being themed by setting the view's tag to `:aesthetic_ignore`.
-
----
-
-# Snackbars
-
-Snackbar theming is pretty simple. You can change the color of the message text and the color of the 
-(optional) action button.
-
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/2.jpg" />
-
-```kotlin
-Aesthetic.config {
-    snackbarTextColorRes(R.color.white)
-    snackbarActionTextColorRes(R.color.md_blue)
-}
-```
-
-By default, the text color will match `textColorPrimary` when `isDark()` is true, or `textColorPrimaryInverse` 
-when `isDark()` is false. By default, the action text color will match `colorAccent()`.
-
----
-
-# Tab Layouts
-
-Tab Layouts from the Google Material library are automatically themed. The main screen in the 
- sample project is an example of this, you see the two tabs under the toolbar at the top.
-
-You can customize background theming behavior:
-
-```kotlin
-// The background of the tab layout will match your primary theme color. This is the default.
-Aesthetic.config {
-    tabLayoutBackgroundMode(TabLayoutBgMode.PRIMARY)
-}
-
-// The background of the tab layout will match your accent theme color.
-Aesthetic.config {
-    tabLayoutBackgroundMode(TabLayoutBgMode.ACCENT)
-}
-```
-
-And indicator (underline) theming behavior:
-
-```kotlin
-// The selected tab underline will match your primary theme color.
-Aesthetic.config {
-    tabLayoutIndicatorMode(TabLayoutIndicatorMode.PRIMARY)
-}
-
-// The selected tab underline will match your accent theme color. This is the default.
-Aesthetic.config {
-    tabLayoutIndicatorMode(TabLayoutIndicatorMode.ACCENT)
-}
-```
-
-*The color of icons and text in your tab layout will automatically be white or black, depending on 
-what is more visible over the set background color.*
-
----
-
-# Drawer Layouts
-
-When your `Activity` has a `DrawerLayout` at its root, your status bar color will get set to the 
-`DrawerLayout` instead of the `Activity`, and the `Activity`'s status bar color will be made 
-transparent per the Material Design guidelines (so that the drawer goes behind the status bar).
- 
-If you use `NavigationView`, it will be themed automatically, also. 
-
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/3.jpg" />
-
-You can customize behavior:
-
-```kotlin
-// Checked nav drawer item will use your set primary color
-Aesthetic.config {
-    navigationViewMode(NavigationViewMode.SELECTED_PRIMARY)
-}
-
-// Or checked nav drawer item will use your set accent color
-Aesthetic.config {
-    navigationViewMode(NavigationViewMode.SELECTED_ACCENT)
-}
-```
-
-In addition, unselected nav drawer items will be shades of white or black based on the set `isDark` value.
-
----
-
-# Bottom Navigation
-
-Bottom Navigation Views from the Google Material library are automatically themed.
-
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/4.jpg" />
-
-You can customize background theming behavior:
-
-```kotlin
-// The background of the bottom tabs will match your primary theme color.
-Aesthetic.config {
-    bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
-}
-
-// The background of the bottom tabs will match your status bar theme color.
-Aesthetic.config {
-    bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
-}
-
-// The background of the bottom tabs will match your accent theme color.
-Aesthetic.config {
-    bottomNavigationBackgroundMode(BottomNavBgMode.ACCENT)
-}
-
-// The background of the bottom tabs will be dark gray or white depending on the isDark() property.
-// This is the default.
-Aesthetic.config {
-    bottomNavigationBackgroundMode(BottomNavBgMode.BLACK_WHITE_AUTO)
-}
-```
-
-You can also customize icon/text theming behavior:
-
-```kotlin
-// The selected tab icon/text color will match your primary theme color.
-Aesthetic.config {
-    bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_PRIMARY)
-}
-
-// The selected tab icon/text color will match your accent theme color. This is the default.
-Aesthetic.config {
-    bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
-}
-
-// The selected tab icon/text color will be black or white depending on which is more visible 
-// over the background of the bottom tabs.
-Aesthetic.config {
-    bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
-}
-```
-
----
-
-# Collapsible Toolbar Layouts
-
-Collapsible Toolbar Layouts are automatically themed, as seen in the sample project.
-
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/5.jpg" width="600" />
-
-In the sample layout, we automatically set the accent color to the expanded view. The collapsed toolbar 
-color will match whatever color your toolbar uses, which is the primary theme color by default. You'll 
-also notice that the icons and title color are updated to be most visible over the background color.
-
----
-
-# Swipe Refresh Layouts
-
-Swipe Refresh Layouts from the Google Material library are automatically themed.
-
-<img src="https://raw.githubusercontent.com/afollestad/aesthetic/master/images/6.jpg" />
-
-```kotlin
-Aesthetic.config {
-    swipeRefreshLayoutColorsRes(R.color.md_blue, R.color.md_blue_grey, R.color.md_green)
-}
-```
-
-If you take the `Res` suffix off `swipeRefreshLayoutColors`, you can pass literal color integers.
-You aren't limited to 3, you can pass as little as 1 or as many as you want.
-
-By default, the accent color is used.
-
----
-
-# Custom View Subclasses
-
-If you have custom view subclasses in your app, such as:
-
-```kotlin
-class MyCustomTextView : TextView() {
-  ...
-}
-```
-
-You may want your view to be themable. You can do so by swapping out `TextView` with `AestheticTextView`,
-or any of Aesthetic's other view classes beginning with "Aesthetic". These views handle subscribing 
-and unsubscribing from theme property updates automatically; they also handle pulling out attributes 
-such as `android:textColor`. Note that all views support background color theming, you don't need to 
-extend any special views for background color support.
-
-```kotlin
-class MyCustomTextView : AestheticTextView() {
-  ...
-}
-```
-
-Otherwise, you can subscribe to theme properties (as seen in [Retrieving Current Values](https://github.com/afollestad/aesthetic#retrieving-current-values)) 
-such as `Aesthetic.get().primaryColor()` and manually update your custom view (text color or whatever else).
-
----
-
-# Activity Keys
-
-`AestheticActivity` has an optional override named `key()`:
-
-```kotlin
-class MyActivity : AestheticActivity() {
-    ...
-    override fun key() {
-      return "my_activity";
-    }
-}
-```
-
-You can return whatever you wish. If this key is specified, this specific Activity will save its 
-own version of the `activityTheme()`, `colorStatusBar()`, and `colorNavigationBar()` theme properties. 
-
-An example of where this can be useful: You have an Activity which displays a list of videos, this 
-main activity has a colored status bar and navigation bar. When you tap a video, it brings you to a 
-player Activity. This player Activity needs a different theme so that the status bar and nav bar 
-are transparent and hidden. You can use a separate key for this player Activity so that it doesn't 
-adopt the same window theme properties as the main activity.
-
-If you do not use `AestheticActivity`, your custom Activity can implement the `AestheticKeyProvider` 
-interface.

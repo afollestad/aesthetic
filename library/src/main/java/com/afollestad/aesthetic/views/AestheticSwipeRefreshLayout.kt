@@ -23,7 +23,6 @@ class AestheticSwipeRefreshLayout(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
     get().swipeRefreshLayoutColors()
         .distinctToMainThread()
         .subscribeTo(::setColorSchemeColors)

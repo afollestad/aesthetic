@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.M
+import android.os.Build.VERSION_CODES.O
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,6 +51,19 @@ internal fun Activity?.setLightStatusBarCompat(lightMode: Boolean) {
       flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     } else {
       flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+    }
+    view.systemUiVisibility = flags
+  }
+}
+
+internal fun Activity?.setLightNavBarCompat(lightMode: Boolean) {
+  val view = this?.window?.decorView ?: return
+  if (SDK_INT >= O) {
+    var flags = view.systemUiVisibility
+    flags = if (lightMode) {
+      flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+    } else {
+      flags and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
     }
     view.systemUiVisibility = flags
   }

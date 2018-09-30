@@ -21,7 +21,6 @@ internal class AestheticSnackBarButton(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
     get().snackbarActionTextColor()
         .distinctToMainThread()
         .subscribeTextColor(this)

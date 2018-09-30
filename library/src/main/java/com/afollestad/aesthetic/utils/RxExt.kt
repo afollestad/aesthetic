@@ -40,7 +40,7 @@ internal fun <T> Observable<T>.one(): Observable<T> {
   return take(1)
 }
 
-internal fun <T> Observable<T>.onMainThread(): Observable<T> {
+internal fun <T> Observable<T>.toMainThread(): Observable<T> {
   return observeOn(AndroidSchedulers.mainThread())
 }
 
@@ -51,27 +51,6 @@ internal inline fun <T> Observable<T>.subscribeTo(
       Consumer { subscriber(it) },
       onErrorLogAndRethrow()
   )
-}
-
-internal fun Observable<Int>.subscribeBackgroundColor(view: View): Disposable {
-  return subscribeTo {
-    when (view) {
-      is CardView -> view.setCardBackgroundColor(it)
-      else -> view.setBackgroundColor(it)
-    }
-  }
-}
-
-internal fun Observable<Int>.subscribeTextColor(view: TextView): Disposable {
-  return subscribeTo(view::setTextColor)
-}
-
-internal fun Observable<Int>.subscribeHintTextColor(view: TextView): Disposable {
-  return subscribeTo(view::setHintTextColor)
-}
-
-internal fun Observable<Int>.subscribeImageViewTint(view: ImageView): Disposable {
-  return subscribeTo(view::setColorFilter)
 }
 
 internal inline fun <T1, T2, R> allOf(
@@ -92,3 +71,24 @@ inline fun <T1, T2, T3, R> allOf(
   crossinline combineFunction: (T1, T2, T3) -> R
 ) = combineLatest(source1, source2, source3,
     Function3 { t1: T1, t2: T2, t3: T3 -> combineFunction(t1, t2, t3) })!!
+
+fun Observable<Int>.subscribeBackgroundColor(view: View): Disposable {
+  return subscribeTo {
+    when (view) {
+      is CardView -> view.setCardBackgroundColor(it)
+      else -> view.setBackgroundColor(it)
+    }
+  }
+}
+
+fun Observable<Int>.subscribeTextColor(view: TextView): Disposable {
+  return subscribeTo(view::setTextColor)
+}
+
+fun Observable<Int>.subscribeHintTextColor(view: TextView): Disposable {
+  return subscribeTo(view::setHintTextColor)
+}
+
+fun Observable<Int>.subscribeImageViewTint(view: ImageView): Disposable {
+  return subscribeTo(view::setColorFilter)
+}

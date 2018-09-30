@@ -5,6 +5,7 @@
  */
 package com.afollestad.aesthetic.utils
 
+import android.R.attr
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -16,7 +17,6 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
-import com.afollestad.aesthetic.ActiveInactiveColors
 import com.afollestad.aesthetic.R
 import com.google.android.material.textfield.TextInputLayout
 import io.reactivex.disposables.CompositeDisposable
@@ -41,14 +41,22 @@ internal fun Toolbar.setOverflowButtonColor(@ColorInt color: Int) {
 
 internal fun Toolbar.tintMenu(
   menu: Menu,
-  titleIconColors: ActiveInactiveColors
+  activeColor: Int,
+  inactiveColor: Int
 ) {
+  val colors = ColorStateList(
+      arrayOf(
+          intArrayOf(attr.state_enabled), intArrayOf(-attr.state_enabled)
+      ),
+      intArrayOf(activeColor, inactiveColor)
+  )
+
   // The collapse icon displays when action views are expanded (e.g. SearchView)
   try {
     val field = Toolbar::class.findField("mCollapseIcon")
     val collapseIcon = field.get(this) as? Drawable
     if (collapseIcon != null) {
-      field.set(this, collapseIcon.tint(titleIconColors.toEnabledSl()))
+      field.set(this, collapseIcon.tint(colors))
     }
   } catch (e: Exception) {
     e.printStackTrace()
@@ -59,22 +67,32 @@ internal fun Toolbar.tintMenu(
     val menuItem = menu.getItem(i)
     val actionView = menuItem.actionView
     if (actionView is SearchView) {
-      actionView.setColors(titleIconColors)
+      actionView.setColors(activeColor, inactiveColor)
     }
     if (menu.getItem(i).icon != null) {
-      menuItem.icon = menuItem.icon.tint(titleIconColors.toEnabledSl())
+      menuItem.icon = menuItem.icon.tint(colors)
     }
   }
 }
 
-internal fun SearchView.setColors(tintColors: ActiveInactiveColors) {
+internal fun SearchView.setColors(
+  activeColor: Int,
+  inactiveColor: Int
+) {
+  val tintColors = ColorStateList(
+      arrayOf(
+          intArrayOf(attr.state_enabled), intArrayOf(-attr.state_enabled)
+      ),
+      intArrayOf(activeColor, inactiveColor)
+  )
+
   try {
     val mSearchSrcTextViewField = this::class.findField("mSearchSrcTextView")
     mSearchSrcTextViewField.isAccessible = true
     val mSearchSrcTextView = mSearchSrcTextViewField.get(this) as EditText
-    mSearchSrcTextView.setTextColor(tintColors.activeColor)
-    mSearchSrcTextView.setHintTextColor(tintColors.inactiveColor)
-    mSearchSrcTextView.setCursorTint(tintColors.activeColor)
+    mSearchSrcTextView.setTextColor(activeColor)
+    mSearchSrcTextView.setHintTextColor(inactiveColor)
+    mSearchSrcTextView.setCursorTint(activeColor)
 
     var field = this::class.findField("mSearchButton")
     tintImageView(this, field, tintColors)
@@ -88,19 +106,16 @@ internal fun SearchView.setColors(tintColors: ActiveInactiveColors) {
     field = this::class.findField("mSearchPlate")
     (field.get(this) as View).apply {
       setTintAuto(
-          color = tintColors.activeColor,
+          color = activeColor,
           requestBackground = true,
-          isDark = !tintColors.activeColor.isColorLight()
+          isDark = !activeColor.isColorLight()
       )
     }
 
     field = this::class.findField("mSearchHintIcon")
 
     (field.get(this) as Drawable).apply {
-      field.set(
-          this@setColors,
-          this@apply.tint(tintColors.toEnabledSl())
-      )
+      field.set(this@setColors, this@apply.tint(tintColors))
     }
   } catch (e: Exception) {
     e.printStackTrace()
@@ -111,12 +126,12 @@ internal fun SearchView.setColors(tintColors: ActiveInactiveColors) {
 internal fun tintImageView(
   target: Any,
   field: Field,
-  tintColors: ActiveInactiveColors
+  colors: ColorStateList
 ) {
   field.isAccessible = true
   val imageView = field.get(target) as ImageView
   if (imageView.drawable != null) {
-    imageView.setImageDrawable(imageView.drawable.tint(tintColors.toEnabledSl()))
+    imageView.setImageDrawable(imageView.drawable.tint(colors))
   }
 }
 

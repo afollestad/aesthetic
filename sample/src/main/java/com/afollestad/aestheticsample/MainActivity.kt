@@ -52,6 +52,7 @@ class MainActivity : AestheticActivity() {
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
         bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
         swipeRefreshLayoutColorsRes(R.color.md_blue, R.color.md_blue_grey, R.color.md_green)
+        attributeRes(R.attr.my_custom_attr, R.color.md_red)
       }
     }
 

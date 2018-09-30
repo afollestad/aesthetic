@@ -11,15 +11,16 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
+import com.afollestad.aesthetic.R
+import com.afollestad.aesthetic.internal.AttrWizard
 import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.distinctToMainThread
+import com.afollestad.aesthetic.utils.observableForAttrName
 import com.afollestad.aesthetic.utils.setTintAuto
 import com.afollestad.aesthetic.utils.subscribeHintTextColor
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
-import com.afollestad.aesthetic.utils.watchColor
-import io.reactivex.disposables.CompositeDisposable
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressLint("ResourceType")
@@ -28,28 +29,10 @@ class AestheticEditText(
   attrs: AttributeSet? = null
 ) : AppCompatEditText(context, attrs) {
 
-  private var subs: CompositeDisposable? = null
-  private var backgroundResId: Int = 0
-  private var textColorResId: Int = 0
-  private var textColorHintResId: Int = 0
-
-  init {
-    if (attrs != null) {
-      val attrsArray = intArrayOf(
-          android.R.attr.background,
-          android.R.attr.textColor,
-          android.R.attr.textColorHint
-      )
-      val ta = context.obtainStyledAttributes(attrs, attrsArray)
-      try {
-        backgroundResId = ta.getResourceId(0, 0)
-        textColorResId = ta.getResourceId(1, 0)
-        textColorHintResId = ta.getResourceId(2, 0)
-      } finally {
-        ta.recycle()
-      }
-    }
-  }
+  private val wizard = AttrWizard(context, attrs)
+  private val tintColorValue = wizard.getRawValue(R.attr.tint)
+  private val textColorValue = wizard.getRawValue(android.R.attr.textColor)
+  private val textColorHintValue = wizard.getRawValue(android.R.attr.textColorHint)
 
   private fun invalidateColors(state: ColorIsDarkState) =
     setTintAuto(state.color, true, state.isDark)
@@ -58,38 +41,30 @@ class AestheticEditText(
     super.onAttachedToWindow()
 
     allOf(
-        watchColor(
-            context,
-            backgroundResId,
+        get().observableForAttrName(
+            tintColorValue,
             get().colorAccent()
-        ),
+        )!!,
         get().isDark
     ) { color, isDark -> ColorIsDarkState(color, isDark) }
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
         .unsubscribeOnDetach(this)
 
-    watchColor(
-        context,
-        textColorResId,
+    get().observableForAttrName(
+        textColorValue,
         get().textColorPrimary()
-    )
+    )!!
         .distinctToMainThread()
         .subscribeTextColor(this)
         .unsubscribeOnDetach(this)
 
-    watchColor(
-        context,
-        textColorHintResId,
+    get().observableForAttrName(
+        textColorHintValue,
         get().textColorSecondary()
-    )
+    )!!
         .distinctToMainThread()
         .subscribeHintTextColor(this)
         .unsubscribeOnDetach(this)
-  }
-
-  override fun onDetachedFromWindow() {
-    subs?.clear()
-    super.onDetachedFromWindow()
   }
 }

@@ -21,7 +21,6 @@ internal class AestheticDialogButton(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
     get().colorAccent()
         .distinctToMainThread()
         .subscribeTextColor(this)

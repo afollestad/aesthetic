@@ -11,15 +11,13 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.appcompat.view.menu.ActionMenuItemView
-import com.afollestad.aesthetic.ActiveInactiveColors
-import com.afollestad.aesthetic.Aesthetic
-import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.onMainThread
+import com.afollestad.aesthetic.Aesthetic.Companion.get
+import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.one
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.tint
+import com.afollestad.aesthetic.utils.toMainThread
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
-import io.reactivex.annotations.NonNull
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressLint("RestrictedApi")
@@ -28,25 +26,37 @@ internal class AestheticActionMenuItemView(
   attrs: AttributeSet? = null
 ) : ActionMenuItemView(context, attrs) {
 
+  companion object {
+    const val UNFOCUSED_ALPHA = 0.5f
+  }
+
   private var icon: Drawable? = null
 
-  private fun invalidateColors(@NonNull colors: ActiveInactiveColors) {
+  private fun invalidateColors(color: Int) {
+    val sl = ColorStateList(
+        arrayOf(
+            intArrayOf(-android.R.attr.state_selected),
+            intArrayOf(android.R.attr.state_selected)
+        ),
+        intArrayOf(
+            color.adjustAlpha(UNFOCUSED_ALPHA),
+            color
+        )
+    )
     if (icon != null) {
-      setIcon(icon!!, colors.toEnabledSl())
+      setIcon(icon!!, sl)
     }
-    setTextColor(colors.activeColor)
+    setTextColor(color)
   }
 
   override fun setIcon(icon: Drawable) {
     super.setIcon(icon)
-
     // We need to retrieve the color again here.
     // For some reason, without this, a transparent color is used and the icon disappears
     // when the overflow menu opens.
-    Aesthetic.get()
-        .colorIconTitle()
-        .onMainThread()
+    get().toolbarIconColor()
         .one()
+        .toMainThread()
         .subscribeTo(::invalidateColors)
         .unsubscribeOnDetach(this)
   }
@@ -62,10 +72,9 @@ internal class AestheticActionMenuItemView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
-    Aesthetic.get()
-        .colorIconTitle()
-        .distinctToMainThread()
+    get().toolbarIconColor()
+        .one()
+        .toMainThread()
         .subscribeTo(::invalidateColors)
         .unsubscribeOnDetach(this)
   }

@@ -25,12 +25,6 @@ data class ActiveInactiveColors(
 }
 
 /** @author Aidan Follestad (afollestad) */
-internal data class BgIconColorState(
-  @field:ColorInt val bgColor: Int,
-  val iconTitleColor: ActiveInactiveColors?
-)
-
-/** @author Aidan Follestad (afollestad) */
 internal data class ColorIsDarkState(
   @field:ColorInt val color: Int,
   val isDark: Boolean

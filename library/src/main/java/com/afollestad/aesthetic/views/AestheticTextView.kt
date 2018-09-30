@@ -9,11 +9,11 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import com.afollestad.aesthetic.Aesthetic.Companion.get
+import com.afollestad.aesthetic.internal.AttrWizard
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.observableForAttrName
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
-import com.afollestad.aesthetic.utils.watchColor
 
 /** @author Aidan Follestad (afollestad) */
 class AestheticTextView(
@@ -21,13 +21,8 @@ class AestheticTextView(
   attrs: AttributeSet? = null
 ) : AppCompatTextView(context, attrs) {
 
-  private var textColorResId: Int = 0
-
-  init {
-    if (attrs != null) {
-      textColorResId = context.resId(attrs, android.R.attr.textColor)
-    }
-  }
+  private val wizard = AttrWizard(context, attrs)
+  private val textColorValue = wizard.getRawValue(android.R.attr.textColor)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -37,9 +32,9 @@ class AestheticTextView(
     } else {
       get().textColorSecondary()
     }
-    watchColor(context, textColorResId, defaultObs)
-        .distinctToMainThread()
-        .subscribeTextColor(this)
-        .unsubscribeOnDetach(this)
+    get().observableForAttrName(textColorValue, defaultObs)
+        ?.distinctToMainThread()
+        ?.subscribeTextColor(this)
+        ?.unsubscribeOnDetach(this)
   }
 }

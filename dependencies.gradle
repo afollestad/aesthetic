@@ -16,5 +16,9 @@ ext.versions = [
     rxJava            : '2.2.2',
     rxAndroid         : '2.1.0',
     rxkPrefs          : '1.0.1',
-    leakCanary        : '1.6.1'
+    leakCanary        : '1.6.1',
+
+    junit             : '4.12',
+    androidxTest      : '1.1.0-alpha4',
+    androidxEspresso  : '3.1.0-alpha4',
 ]
