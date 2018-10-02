@@ -31,7 +31,7 @@ You can download an <a href="https://raw.githubusercontent.com/afollestad/aesthe
     5. [BottomNavigationViews](#bottomnavigationviews)
     6. [NavigationViews](#navigationviews)
     7. [SwipeRefreshLayouts](#swiperefreshlayouts)
-6. [Custom Views and Manual Application][#custom-views-and-manual-application]
+6. [Custom Views and Manual Application](#custom-views-and-manual-application)
 7. [Ignoring Views](#ignoring-views)
 
 ---
