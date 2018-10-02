@@ -11,39 +11,44 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.graphics.Color.BLACK
+import android.graphics.Color.WHITE
 import android.graphics.drawable.ColorDrawable
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.O
+import androidx.annotation.AttrRes
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatActivity
-import com.afollestad.aesthetic.internal.KEY_ACCENT_COLOR
+import com.afollestad.aesthetic.AutoSwitchMode.OFF
 import com.afollestad.aesthetic.internal.KEY_ACTIVITY_THEME
 import com.afollestad.aesthetic.internal.KEY_BOTTOM_NAV_BG_MODE
 import com.afollestad.aesthetic.internal.KEY_BOTTOM_NAV_ICONTEXT_MODE
 import com.afollestad.aesthetic.internal.KEY_CARD_VIEW_BG_COLOR
 import com.afollestad.aesthetic.internal.KEY_FIRST_TIME
-import com.afollestad.aesthetic.internal.KEY_ICON_TITLE_ACTIVE_COLOR
-import com.afollestad.aesthetic.internal.KEY_ICON_TITLE_INACTIVE_COLOR
 import com.afollestad.aesthetic.internal.KEY_IS_DARK
+import com.afollestad.aesthetic.internal.KEY_LIGHT_NAV_MODE
 import com.afollestad.aesthetic.internal.KEY_LIGHT_STATUS_MODE
-import com.afollestad.aesthetic.internal.KEY_NAV_BAR_COLOR
 import com.afollestad.aesthetic.internal.KEY_NAV_VIEW_MODE
-import com.afollestad.aesthetic.internal.KEY_PRIMARY_COLOR
-import com.afollestad.aesthetic.internal.KEY_PRIMARY_DARK_COLOR
-import com.afollestad.aesthetic.internal.KEY_PRIMARY_TEXT_COLOR
-import com.afollestad.aesthetic.internal.KEY_PRIMARY_TEXT_INVERSE_COLOR
-import com.afollestad.aesthetic.internal.KEY_SECONDARY_TEXT_COLOR
-import com.afollestad.aesthetic.internal.KEY_SECONDARY_TEXT_INVERSE_COLOR
 import com.afollestad.aesthetic.internal.KEY_SNACKBAR_ACTION_TEXT
 import com.afollestad.aesthetic.internal.KEY_SNACKBAR_TEXT
-import com.afollestad.aesthetic.internal.KEY_STATUS_BAR_COLOR
 import com.afollestad.aesthetic.internal.KEY_SWIPEREFRESH_COLORS
 import com.afollestad.aesthetic.internal.KEY_TAB_LAYOUT_BG_MODE
 import com.afollestad.aesthetic.internal.KEY_TAB_LAYOUT_INDICATOR_MODE
-import com.afollestad.aesthetic.internal.KEY_WINDOW_BG_COLOR
+import com.afollestad.aesthetic.internal.KEY_TOOLBAR_ICON_COLOR
+import com.afollestad.aesthetic.internal.KEY_TOOLBAR_SUBTITLE_COLOR
+import com.afollestad.aesthetic.internal.KEY_TOOLBAR_TITLE_COLOR
+import com.afollestad.aesthetic.internal.attrKey
+import com.afollestad.aesthetic.internal.deInitPrefs
+import com.afollestad.aesthetic.internal.initPrefs
+import com.afollestad.aesthetic.internal.invalidateStatusBar
+import com.afollestad.aesthetic.internal.navBarColorKey
+import com.afollestad.aesthetic.internal.statusBarColorKey
+import com.afollestad.aesthetic.internal.waitForAttach
+import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.colorAttr
@@ -54,20 +59,18 @@ import com.afollestad.aesthetic.utils.mutableArrayMap
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.save
 import com.afollestad.aesthetic.utils.setInflaterFactory
+import com.afollestad.aesthetic.utils.setLightNavBarCompat
 import com.afollestad.aesthetic.utils.setNavBarColorCompat
 import com.afollestad.aesthetic.utils.setTaskDescriptionColor
 import com.afollestad.aesthetic.utils.splitToInts
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.rxkprefs.RxkPrefs
 import io.reactivex.Observable
-import io.reactivex.Observable.zip
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.BehaviorSubject
-import java.lang.String.format
 
 /** @author Aidan Follestad (afollestad) */
-class Aesthetic private constructor(private var ctxt: Context?) {
+class Aesthetic private constructor(private var context: Context?) {
 
   internal val onAttached = BehaviorSubject.create<Boolean>()
   internal var rxkPrefs: RxkPrefs? = null
@@ -85,9 +88,9 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   // The 4 fields below allow us to avoid using !!, and provide indication if we access them
   // before we should.
-  internal val context
+  internal val safeContext
     @CheckResult
-    get() = ctxt ?: throw IllegalStateException("Not attached")
+    get() = context ?: throw IllegalStateException("Not attached")
   internal val safePrefs
     @CheckResult
     get() = prefs ?: throw IllegalStateException("Not attached")
@@ -97,195 +100,51 @@ class Aesthetic private constructor(private var ctxt: Context?) {
 
   val isDark: Observable<Boolean>
     @CheckResult
-    get() = waitForAttach().flatMap {
-      it.boolean(KEY_IS_DARK)
+    get() = textColorPrimary().flatMap {
+      rxkPrefs!!.boolean(KEY_IS_DARK, it.isColorLight())
           .asObservable()
     }
-
-  @CheckResult fun activityTheme(@StyleRes theme: Int): Aesthetic {
-    val key = format(KEY_ACTIVITY_THEME, key(context))
-    safePrefsEditor.putInt(key, theme)
-    return this
-  }
-
-  @CheckResult fun activityTheme() = waitForAttach().flatMap { rxPrefs ->
-    val key = format(KEY_ACTIVITY_THEME, key(context))
-    rxPrefs
-        .integer(key, 0)
-        .asObservable()
-        .filter { it != 0 && it != getLastActivityTheme(context) }
-  }!!
 
   @CheckResult fun isDark(isDark: Boolean): Aesthetic {
     safePrefsEditor.save { putBoolean(KEY_IS_DARK, isDark) }
     return this
   }
 
-  @CheckResult fun colorPrimary(@ColorInt color: Int): Aesthetic {
-    // needs to be committed immediately so that for statusBarColorAuto() and other auto methods
-    safePrefsEditor.save { putInt(KEY_PRIMARY_COLOR, color) }
+  @CheckResult fun activityTheme(@StyleRes theme: Int): Aesthetic {
+    safePrefsEditor.putInt(KEY_ACTIVITY_THEME, theme)
     return this
   }
 
-  @CheckResult fun colorPrimaryRes(@ColorRes color: Int) = colorPrimary(context.color(color))
-
-  @CheckResult fun colorPrimary() = waitForAttach().flatMap { rxPrefs ->
-    val primaryDefault = context.colorAttr(R.attr.colorPrimary)
+  @CheckResult fun activityTheme() = waitForAttach().flatMap { rxPrefs ->
     rxPrefs
-        .integer(KEY_PRIMARY_COLOR, primaryDefault)
+        .integer(KEY_ACTIVITY_THEME, 0)
         .asObservable()
+        .filter { it != 0 && it != getLastActivityTheme(safeContext) }
   }!!
 
-  @CheckResult fun colorPrimaryDark(@ColorInt color: Int): Aesthetic {
-    // needs to be committed immediately so that for statusBarColorAuto() and other auto methods
-    safePrefsEditor.save { putInt(KEY_PRIMARY_DARK_COLOR, color) }
+  @CheckResult
+  fun attribute(@AttrRes attrId: Int, @ColorInt color: Int, applyNow: Boolean = false): Aesthetic {
+    safePrefsEditor.putInt(attrKey(attrId), color)
+    if (applyNow) safePrefsEditor.commit()
     return this
   }
 
-  @CheckResult fun colorPrimaryDarkRes(@ColorRes color: Int) =
-    colorPrimaryDark(context.color(color))
+  @CheckResult fun attributeRes(@AttrRes attrId: Int, @ColorRes color: Int) =
+    attribute(attrId, safeContext.color(color))
 
-  @CheckResult fun colorPrimaryDark() = colorPrimary().flatMap { primary ->
-    rxkPrefs!!
-        .integer(KEY_PRIMARY_DARK_COLOR, primary.darkenColor())
-        .asObservable()
-  }!!
-
-  @CheckResult fun colorAccent(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.save { putInt(KEY_ACCENT_COLOR, color) }
-    return this
-  }
-
-  @CheckResult fun colorAccentRes(@ColorRes color: Int) =
-    colorAccent(context.color(color))
-
-  @CheckResult fun colorAccent() = waitForAttach().flatMap { rxPrefs ->
-    val accentDefault = context.colorAttr(R.attr.colorAccent)
+  @CheckResult fun attribute(@AttrRes attrId: Int) = waitForAttach().flatMap { rxPrefs ->
+    val defaultValue = safeContext.colorAttr(attr = attrId)
     rxPrefs
-        .integer(KEY_ACCENT_COLOR, accentDefault)
+        .integer(attrKey(attrId), defaultValue)
         .asObservable()
   }!!
 
-  @CheckResult fun textColorPrimary(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.putInt(KEY_PRIMARY_TEXT_COLOR, color)
-    return this
-  }
-
-  @CheckResult fun textColorPrimaryRes(@ColorRes color: Int) =
-    textColorPrimary(context.color(color))
-
-  @CheckResult fun textColorPrimary() = waitForAttach().flatMap { rxPrefs ->
-    val primaryTextDefault = context.colorAttr(android.R.attr.textColorPrimary)
+  @CheckResult internal fun attribute(name: String) = waitForAttach().flatMap { rxPrefs ->
+    val key = attrKey(name)
     rxPrefs
-        .integer(KEY_PRIMARY_TEXT_COLOR, primaryTextDefault)
+        .integer(key, 0)
         .asObservable()
-  }!!
-
-  @CheckResult fun textColorSecondary(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.putInt(KEY_SECONDARY_TEXT_COLOR, color)
-    return this
-  }
-
-  @CheckResult fun textColorSecondaryRes(@ColorRes color: Int) =
-    textColorSecondary(context.color(color))
-
-  @CheckResult fun textColorSecondary() = waitForAttach().flatMap { rxPrefs ->
-    val secondaryTextDefault = context.colorAttr(android.R.attr.textColorSecondary)
-    rxPrefs
-        .integer(KEY_SECONDARY_TEXT_COLOR, secondaryTextDefault)
-        .asObservable()
-  }!!
-
-  @CheckResult fun textColorPrimaryInverse(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.putInt(KEY_PRIMARY_TEXT_INVERSE_COLOR, color)
-    return this
-  }
-
-  @CheckResult fun textColorPrimaryInverseRes(@ColorRes color: Int) =
-    textColorPrimaryInverse(context.color(color))
-
-  @CheckResult fun textColorPrimaryInverse() = waitForAttach().flatMap { rxPrefs ->
-    val primaryInverseDefault = context.colorAttr(android.R.attr.textColorPrimaryInverse)
-    rxPrefs
-        .integer(KEY_PRIMARY_TEXT_INVERSE_COLOR, primaryInverseDefault)
-        .asObservable()
-  }!!
-
-  @CheckResult fun textColorSecondaryInverse(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.putInt(KEY_SECONDARY_TEXT_INVERSE_COLOR, color)
-    return this
-  }
-
-  @CheckResult fun textColorSecondaryInverseRes(@ColorRes color: Int) =
-    textColorSecondaryInverse(context.color(color))
-
-  @CheckResult fun textColorSecondaryInverse() = waitForAttach().flatMap { rxPrefs ->
-    val secondaryInverseDefault = context.colorAttr(android.R.attr.textColorSecondaryInverse)
-    rxPrefs
-        .integer(KEY_SECONDARY_TEXT_INVERSE_COLOR, secondaryInverseDefault)
-        .asObservable()
-  }!!
-
-  @CheckResult fun colorWindowBackground(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.save { putInt(KEY_WINDOW_BG_COLOR, color) }
-    return this
-  }
-
-  @CheckResult fun colorWindowBackgroundRes(@ColorRes color: Int) =
-    colorWindowBackground(context.color(color))
-
-  @CheckResult fun colorWindowBackground() = waitForAttach().flatMap { rxPrefs ->
-    val windowBackgroundDefault = context.colorAttr(android.R.attr.windowBackground)
-    rxPrefs
-        .integer(KEY_WINDOW_BG_COLOR, windowBackgroundDefault)
-        .asObservable()
-  }!!
-
-  @CheckResult fun colorStatusBar(@ColorInt color: Int): Aesthetic {
-    val key = format(KEY_STATUS_BAR_COLOR, key(context))
-    safePrefsEditor.putInt(key, color)
-    return this
-  }
-
-  @CheckResult fun colorStatusBarRes(@ColorRes color: Int) =
-    colorStatusBar(context.color(color))
-
-  @CheckResult fun colorStatusBarAuto(): Aesthetic {
-    val key = format(KEY_STATUS_BAR_COLOR, key(context))
-    val colorPrimaryDefault = context.colorAttr(R.attr.colorPrimary)
-    val primary = safePrefs.getInt(KEY_PRIMARY_COLOR, colorPrimaryDefault)
-        .darkenColor()
-    safePrefsEditor.putInt(key, primary)
-    return this
-  }
-
-  @CheckResult fun colorStatusBar() = colorPrimaryDark().flatMap {
-    val key = format(KEY_STATUS_BAR_COLOR, key(context))
-    rxkPrefs!!.integer(key, it)
-        .asObservable()
-  }!!
-
-  @CheckResult fun colorNavigationBar(@ColorInt color: Int): Aesthetic {
-    val key = format(KEY_NAV_BAR_COLOR, key(context))
-    safePrefsEditor.putInt(key, color)
-    return this
-  }
-
-  @CheckResult fun colorNavigationBarRes(@ColorRes color: Int) =
-    colorNavigationBar(context.color(color))
-
-  @CheckResult fun colorNavigationBarAuto(): Aesthetic {
-    val primaryDefault = context.colorAttr(R.attr.colorPrimary)
-    val color = safePrefs.getInt(KEY_PRIMARY_COLOR, primaryDefault)
-    val key = format(KEY_NAV_BAR_COLOR, key(context))
-    safePrefsEditor.putInt(key, if (color.isColorLight()) BLACK else color)
-    return this
-  }
-
-  @CheckResult fun colorNavigationBar() = waitForAttach().flatMap { rxPrefs ->
-    val key = format(KEY_NAV_BAR_COLOR, key(context))
-    rxPrefs.integer(key, Color.BLACK)
-        .asObservable()
+        .filter { safePrefs.contains(key) }
   }!!
 
   @CheckResult fun lightStatusBarMode(mode: AutoSwitchMode): Aesthetic {
@@ -294,44 +153,283 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   }
 
   @CheckResult fun lightStatusBarMode() = waitForAttach().flatMap { rxPrefs ->
-    rxPrefs.integer(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
+    rxPrefs
+        .integer(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
         .asObservable()
   }!!
 
-  @CheckResult fun tabLayoutIndicatorMode(mode: TabLayoutIndicatorMode): Aesthetic {
+  @CheckResult fun lightNavigationBarMode(mode: AutoSwitchMode): Aesthetic {
+    safePrefsEditor.putInt(KEY_LIGHT_NAV_MODE, mode.value)
+        .commit()
+    return this
+  }
+
+  @CheckResult fun lightNavigationBarMode() = waitForAttach().flatMap { rxPrefs ->
+    rxPrefs
+        .integer(KEY_LIGHT_NAV_MODE, AutoSwitchMode.AUTO.value)
+        .asObservable()
+  }!!
+
+  // Main Colors
+
+  @SuppressLint("CheckResult")
+  @CheckResult
+  fun colorPrimary(@ColorInt color: Int): Aesthetic {
+    attribute(R.attr.colorPrimary, color, applyNow = true)
+    if (!safePrefs.contains(attrKey(R.attr.colorPrimaryDark))) {
+      colorPrimaryDark(color.darkenColor())
+    }
+    return this
+  }
+
+  @SuppressLint("CheckResult")
+  @CheckResult
+  fun colorPrimaryRes(@ColorRes color: Int): Aesthetic {
+    val primary = safeContext.color(color)
+    colorPrimary(primary)
+    colorPrimaryDark(primary.darkenColor())
+    return this
+  }
+
+  @CheckResult fun colorPrimary() = attribute(R.attr.colorPrimary)
+
+  @SuppressLint("CheckResult")
+  @CheckResult
+  fun colorPrimaryDark(@ColorInt color: Int): Aesthetic {
+    attribute(R.attr.colorPrimaryDark, color, applyNow = true)
+    if (!safePrefs.contains(statusBarColorKey())) {
+      colorStatusBar(color.darkenColor())
+    }
+    return this
+  }
+
+  @CheckResult fun colorPrimaryDarkRes(@ColorRes color: Int) =
+    colorPrimaryDark(safeContext.color(color))
+
+  @CheckResult fun colorPrimaryDark() = attribute(R.attr.colorPrimaryDark)
+
+  @CheckResult fun colorAccent(@ColorInt color: Int) =
+    attribute(R.attr.colorAccent, color)
+
+  @CheckResult fun colorAccentRes(@ColorRes color: Int) =
+    colorAccent(safeContext.color(color))
+
+  @CheckResult fun colorAccent() = attribute(R.attr.colorAccent)
+
+  @CheckResult fun colorStatusBar(@ColorInt color: Int): Aesthetic {
+    safePrefsEditor.putInt(statusBarColorKey(), color)
+    return this
+  }
+
+  @CheckResult fun colorStatusBarRes(@ColorRes color: Int) =
+    colorStatusBar(safeContext.color(color))
+
+  @CheckResult fun colorStatusBarAuto(): Aesthetic {
+    val defaultValue = safeContext.colorAttr(R.attr.colorPrimaryDark)
+    val primaryDark = safePrefs.getInt(attrKey(R.attr.colorPrimaryDark), defaultValue)
+    safePrefsEditor.putInt(statusBarColorKey(), primaryDark)
+    return this
+  }
+
+  @CheckResult fun colorStatusBar() = colorPrimaryDark().flatMap {
+    rxkPrefs!!
+        .integer(statusBarColorKey(), it)
+        .asObservable()
+  }!!
+
+  @CheckResult fun colorNavigationBar(@ColorInt color: Int): Aesthetic {
+    safePrefsEditor.putInt(navBarColorKey(), color)
+    return this
+  }
+
+  @CheckResult fun colorNavigationBarRes(@ColorRes color: Int) =
+    colorNavigationBar(safeContext.color(color))
+
+  @CheckResult fun colorNavigationBarAuto(): Aesthetic {
+    val defaultValue = safeContext.colorAttr(attr = R.attr.colorPrimaryDark)
+    val primaryDark = safePrefs.getInt(attrKey(R.attr.colorPrimaryDark), defaultValue)
+    val navBarMode =
+      AutoSwitchMode.fromInt(safePrefs.getInt(KEY_LIGHT_NAV_MODE, AutoSwitchMode.AUTO.value))
+    val canUseLightMode = SDK_INT >= O && navBarMode != OFF
+    safePrefsEditor.putInt(
+        navBarColorKey(),
+        if (!canUseLightMode && primaryDark.isColorLight()) BLACK else primaryDark
+    )
+    return this
+  }
+
+  @CheckResult fun colorNavigationBar() = waitForAttach().flatMap { rxPrefs ->
+    val defaultValue =
+      if (SDK_INT >= LOLLIPOP) safeContext.colorAttr(android.R.attr.navigationBarColor)
+      else BLACK
+    rxPrefs
+        .integer(navBarColorKey(), defaultValue)
+        .asObservable()
+  }!!
+
+  @CheckResult fun colorWindowBackground(@ColorInt color: Int) =
+    attribute(android.R.attr.windowBackground, color)
+
+  @CheckResult fun colorWindowBackgroundRes(@ColorRes color: Int) =
+    colorWindowBackground(safeContext.color(color))
+
+  @CheckResult fun colorWindowBackground() = attribute(android.R.attr.windowBackground)
+
+  // Text Colors
+
+  @CheckResult fun textColorPrimary(@ColorInt color: Int) =
+    attribute(android.R.attr.textColorPrimary, color)
+
+  @CheckResult fun textColorPrimaryRes(@ColorRes color: Int) =
+    textColorPrimary(safeContext.color(color))
+
+  @CheckResult fun textColorPrimary() = attribute(android.R.attr.textColorPrimary)
+
+  @CheckResult fun textColorSecondary(@ColorInt color: Int) =
+    attribute(android.R.attr.textColorSecondary, color)
+
+  @CheckResult fun textColorSecondaryRes(@ColorRes color: Int) =
+    textColorSecondary(safeContext.color(color))
+
+  @CheckResult fun textColorSecondary() = attribute(android.R.attr.textColorSecondary)
+
+  @CheckResult fun textColorPrimaryInverse(@ColorInt color: Int) =
+    attribute(android.R.attr.textColorPrimaryInverse, color)
+
+  @CheckResult fun textColorPrimaryInverseRes(@ColorRes color: Int) =
+    textColorPrimaryInverse(safeContext.color(color))
+
+  @CheckResult fun textColorPrimaryInverse() =
+    attribute(android.R.attr.textColorPrimaryInverse)
+
+  @CheckResult fun textColorSecondaryInverse(@ColorInt color: Int) =
+    attribute(android.R.attr.textColorSecondaryInverse, color)
+
+  @CheckResult fun textColorSecondaryInverseRes(@ColorRes color: Int) =
+    textColorSecondaryInverse(safeContext.color(color))
+
+  @CheckResult fun textColorSecondaryInverse() =
+    attribute(android.R.attr.textColorSecondaryInverse)
+
+  // View Support
+
+  @CheckResult fun toolbarIconColor(@ColorInt color: Int): Aesthetic {
+    safePrefsEditor.putInt(KEY_TOOLBAR_ICON_COLOR, color)
+    return this
+  }
+
+  @CheckResult fun toolbarIconColorRes(@ColorRes color: Int) =
+    toolbarIconColor(safeContext.color(color))
+
+  @CheckResult fun toolbarIconColor() = colorPrimary().flatMap {
+    val defaultValue = if (it.isColorLight()) BLACK else WHITE
+    rxkPrefs!!
+        .integer(KEY_TOOLBAR_ICON_COLOR, defaultValue)
+        .asObservable()
+  }!!
+
+  @CheckResult fun toolbarTitleColor(@ColorInt color: Int): Aesthetic {
+    safePrefsEditor.putInt(KEY_TOOLBAR_TITLE_COLOR, color)
+    return this
+  }
+
+  @CheckResult fun toolbarTitleColorRes(@ColorRes color: Int) =
+    toolbarIconColor(safeContext.color(color))
+
+  @CheckResult fun toolbarTitleColor() = colorPrimary().flatMap {
+    val defaultValue = if (it.isColorLight()) BLACK else WHITE
+    rxkPrefs!!
+        .integer(KEY_TOOLBAR_TITLE_COLOR, defaultValue)
+        .asObservable()
+  }!!
+
+  @CheckResult fun toolbarSubtitleColor(@ColorInt color: Int): Aesthetic {
+    safePrefsEditor.putInt(KEY_TOOLBAR_SUBTITLE_COLOR, color)
+    return this
+  }
+
+  @CheckResult fun toolbarSubtitleColorRes(@ColorRes color: Int) =
+    toolbarIconColor(safeContext.color(color))
+
+  @CheckResult fun toolbarSubtitleColor() = toolbarTitleColor().flatMap {
+    rxkPrefs!!
+        .integer(KEY_TOOLBAR_SUBTITLE_COLOR, it.adjustAlpha(.87f))
+        .asObservable()
+  }!!
+
+  @CheckResult fun snackbarTextColor() = isDark.flatMap { isDark ->
+    if (isDark) {
+      textColorPrimary()
+    } else {
+      textColorPrimaryInverse().flatMap {
+        rxkPrefs!!.integer(KEY_SNACKBAR_TEXT, it)
+            .asObservable()
+      }
+    }
+  }!!
+
+  @CheckResult fun snackbarTextColor(@ColorInt color: Int): Aesthetic {
+    safePrefsEditor.putInt(KEY_SNACKBAR_TEXT, color)
+    return this
+  }
+
+  @CheckResult fun snackbarTextColorRes(@ColorRes color: Int) =
+    colorCardViewBackground(safeContext.color(color))
+
+  @CheckResult fun snackbarActionTextColor() = colorAccent().flatMap {
+    rxkPrefs!!
+        .integer(KEY_SNACKBAR_ACTION_TEXT, it)
+        .asObservable()
+  }!!
+
+  @CheckResult fun snackbarActionTextColor(@ColorInt color: Int): Aesthetic {
+    safePrefsEditor.putInt(KEY_SNACKBAR_ACTION_TEXT, color)
+    return this
+  }
+
+  @CheckResult fun snackbarActionTextColorRes(@ColorRes color: Int) =
+    colorCardViewBackground(safeContext.color(color))
+
+  @CheckResult fun colorCardViewBackground() = isDark.flatMap { dark ->
+    val cardBackgroundDefault = safeContext.color(
+        if (dark) R.color.ate_cardview_bg_dark
+        else R.color.ate_cardview_bg_light
+    )
+    rxkPrefs!!
+        .integer(KEY_CARD_VIEW_BG_COLOR, cardBackgroundDefault)
+        .asObservable()
+  }!!
+
+  @CheckResult fun colorCardViewBackground(@ColorInt color: Int): Aesthetic {
+    safePrefsEditor.putInt(KEY_CARD_VIEW_BG_COLOR, color)
+    return this
+  }
+
+  @CheckResult fun colorCardViewBackgroundRes(@ColorRes color: Int) =
+    colorCardViewBackground(safeContext.color(color))
+
+  @CheckResult fun tabLayoutIndicatorMode(mode: ColorMode): Aesthetic {
     safePrefsEditor.save { putInt(KEY_TAB_LAYOUT_INDICATOR_MODE, mode.value) }
     return this
   }
 
   @CheckResult fun tabLayoutIndicatorMode() = waitForAttach().flatMap { rxPrefs ->
     rxPrefs
-        .integer(KEY_TAB_LAYOUT_INDICATOR_MODE, TabLayoutIndicatorMode.ACCENT.value)
+        .integer(KEY_TAB_LAYOUT_INDICATOR_MODE, ColorMode.ACCENT.value)
         .asObservable()
-        .map { TabLayoutIndicatorMode.fromInt(it) }
+        .map { ColorMode.fromInt(it) }
   }!!
 
-  @CheckResult fun tabLayoutBackgroundMode(mode: TabLayoutBgMode): Aesthetic {
+  @CheckResult fun tabLayoutBackgroundMode(mode: ColorMode): Aesthetic {
     safePrefsEditor.save { putInt(KEY_TAB_LAYOUT_BG_MODE, mode.value) }
     return this
   }
 
   @CheckResult fun tabLayoutBackgroundMode() = waitForAttach().flatMap { rxPrefs ->
     rxPrefs
-        .integer(KEY_TAB_LAYOUT_BG_MODE, TabLayoutBgMode.PRIMARY.value)
+        .integer(KEY_TAB_LAYOUT_BG_MODE, ColorMode.PRIMARY.value)
         .asObservable()
-        .map { TabLayoutBgMode.fromInt(it) }
-  }!!
-
-  @CheckResult fun navigationViewMode(mode: NavigationViewMode): Aesthetic {
-    safePrefsEditor.save { putInt(KEY_NAV_VIEW_MODE, mode.value) }
-    return this
-  }
-
-  @CheckResult fun navigationViewMode() = waitForAttach().flatMap { rxPrefs ->
-    rxPrefs
-        .integer(KEY_NAV_VIEW_MODE, NavigationViewMode.SELECTED_PRIMARY.value)
-        .asObservable()
-        .map { NavigationViewMode.fromInt(it) }
+        .map { ColorMode.fromInt(it) }
   }!!
 
   @CheckResult fun bottomNavigationBackgroundMode(mode: BottomNavBgMode): Aesthetic {
@@ -358,101 +456,17 @@ class Aesthetic private constructor(private var ctxt: Context?) {
         .map { BottomNavIconTextMode.fromInt(it) }
   }!!
 
-  @CheckResult fun colorCardViewBackground() = isDark.flatMap { dark ->
-    val cardBackgroundDefault = context.color(
-        if (dark) R.color.ate_cardview_bg_dark
-        else R.color.ate_cardview_bg_light
-    )
-    rxkPrefs!!
-        .integer(KEY_CARD_VIEW_BG_COLOR, cardBackgroundDefault)
+  @CheckResult fun navigationViewMode(mode: NavigationViewMode): Aesthetic {
+    safePrefsEditor.save { putInt(KEY_NAV_VIEW_MODE, mode.value) }
+    return this
+  }
+
+  @CheckResult fun navigationViewMode() = waitForAttach().flatMap { rxPrefs ->
+    rxPrefs
+        .integer(KEY_NAV_VIEW_MODE, NavigationViewMode.SELECTED_PRIMARY.value)
         .asObservable()
+        .map { NavigationViewMode.fromInt(it) }
   }!!
-
-  @CheckResult fun colorCardViewBackground(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.putInt(KEY_CARD_VIEW_BG_COLOR, color)
-    return this
-  }
-
-  @CheckResult fun colorCardViewBackgroundRes(@ColorRes color: Int) =
-    colorCardViewBackground(context.color(color))
-
-  @CheckResult fun colorIconTitle(
-    requestedBackgroundObservable: Observable<Int>? = null
-  ): Observable<ActiveInactiveColors> {
-    val backgroundObservable = requestedBackgroundObservable ?: colorPrimary()
-    val iconTitleObs = backgroundObservable.flatMap {
-      val isDark = !it.isColorLight()
-      val iconActiveDefault = context.color(
-          if (isDark) R.color.ate_icon_dark
-          else R.color.ate_icon_light
-      )
-      val iconInactiveDefault = context.color(
-          if (isDark) R.color.ate_icon_dark_inactive
-          else R.color.ate_icon_light_inactive
-      )
-      zip(
-          rxkPrefs!!
-              .integer(KEY_ICON_TITLE_ACTIVE_COLOR, iconActiveDefault)
-              .asObservable(),
-          rxkPrefs!!
-              .integer(KEY_ICON_TITLE_INACTIVE_COLOR, iconInactiveDefault)
-              .asObservable(),
-          BiFunction<Int, Int, ActiveInactiveColors> { active, inactive ->
-            ActiveInactiveColors(active, inactive)
-          })
-    }
-
-    return waitForAttach().flatMap { iconTitleObs }
-  }
-
-  @CheckResult fun colorIconTitleActive(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.putInt(KEY_ICON_TITLE_ACTIVE_COLOR, color)
-    return this
-  }
-
-  @CheckResult fun colorIconTitleActiveRes(@ColorRes color: Int) =
-    colorIconTitleActive(context.color(color))
-
-  @CheckResult fun colorIconTitleInactive(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.putInt(KEY_ICON_TITLE_INACTIVE_COLOR, color)
-    return this
-  }
-
-  @CheckResult fun colorIconTitleInactiveRes(@ColorRes color: Int) =
-    colorIconTitleActive(context.color(color))
-
-  @CheckResult fun snackbarTextColor() = isDark.flatMap { isDark ->
-    if (isDark) {
-      textColorPrimary()
-    } else {
-      textColorPrimaryInverse().flatMap {
-        rxkPrefs!!.integer(KEY_SNACKBAR_TEXT, it)
-            .asObservable()
-      }
-    }
-  }!!
-
-  @CheckResult fun snackbarTextColor(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.putInt(KEY_SNACKBAR_TEXT, color)
-    return this
-  }
-
-  @CheckResult fun snackbarTextColorRes(@ColorRes color: Int) =
-    colorCardViewBackground(context.color(color))
-
-  @CheckResult fun snackbarActionTextColor() = colorAccent().flatMap {
-    rxkPrefs!!
-        .integer(KEY_SNACKBAR_ACTION_TEXT, it)
-        .asObservable()
-  }!!
-
-  @CheckResult fun snackbarActionTextColor(@ColorInt color: Int): Aesthetic {
-    safePrefsEditor.putInt(KEY_SNACKBAR_ACTION_TEXT, color)
-    return this
-  }
-
-  @CheckResult fun snackbarActionTextColorRes(@ColorRes color: Int) =
-    colorCardViewBackground(context.color(color))
 
   @CheckResult fun swipeRefreshLayoutColors() = colorAccent().flatMap { accent ->
     rxkPrefs!!
@@ -469,10 +483,12 @@ class Aesthetic private constructor(private var ctxt: Context?) {
   @CheckResult fun swipeRefreshLayoutColorsRes(@ColorRes vararg colorsRes: Int): Aesthetic {
     safePrefsEditor.putString(
         KEY_SWIPEREFRESH_COLORS,
-        colorsRes.map { context.color(it) }.joinToString(",")
+        colorsRes.map { safeContext.color(it) }.joinToString(",")
     )
     return this
   }
+
+  // Etc.
 
   /** Notifies all listening views that theme properties have been updated.  */
   fun apply() = safePrefsEditor.putBoolean(KEY_FIRST_TIME, false).apply()
@@ -489,16 +505,15 @@ class Aesthetic private constructor(private var ctxt: Context?) {
       }
       with(instance!!) {
         isResumed = false
-        ctxt = whereAmI
+        context = whereAmI
         initPrefs()
 
         with(whereAmI as? Activity ?: return this) {
           val li = layoutInflater
           (this as? AppCompatActivity)?.setInflaterFactory(li)
 
-          val activityThemeKey = format(KEY_ACTIVITY_THEME, key(this))
-          val latestActivityTheme = safePrefs.getInt(activityThemeKey, 0)
-          lastActivityThemes[context.javaClass.name] = latestActivityTheme
+          val latestActivityTheme = safePrefs.getInt(KEY_ACTIVITY_THEME, 0)
+          lastActivityThemes[safeContext.javaClass.name] = latestActivityTheme
           if (latestActivityTheme != 0) {
             setTheme(latestActivityTheme)
           }
@@ -522,10 +537,11 @@ class Aesthetic private constructor(private var ctxt: Context?) {
       with(instance ?: return) {
         isResumed = false
         subs?.clear()
-        if (whereAmI is Activity && whereAmI.isFinishing &&
-            context.javaClass.name == whereAmI.javaClass.name
+        if (whereAmI is Activity &&
+            whereAmI.isFinishing &&
+            safeContext == whereAmI
         ) {
-          ctxt = null
+          context = null
           deInitPrefs()
         }
       }
@@ -537,37 +553,48 @@ class Aesthetic private constructor(private var ctxt: Context?) {
         if (isResumed)
           throw IllegalStateException("Already resumed")
 
-        ctxt = whereAmI
+        context = whereAmI
         initPrefs()
         isResumed = true
 
         subs = CompositeDisposable()
-        if (context is Activity) {
+        if (safeContext is Activity) {
           subs += colorPrimary()
               .distinctToMainThread()
               .subscribeTo {
-                (context as? Activity)?.setTaskDescriptionColor(it)
+                (safeContext as? Activity)?.setTaskDescriptionColor(it)
               }
           subs += activityTheme()
               .distinctToMainThread()
               .subscribeTo {
-                lastActivityThemes[context.javaClass.name] = it
-                (context as? Activity)?.recreate()
+                lastActivityThemes[safeContext.javaClass.name] = it
+                (safeContext as? Activity)?.recreate()
               }
-          subs += allOf(colorStatusBar(), lightStatusBarMode())
-              .distinctToMainThread()
+          subs += allOf(
+              colorStatusBar().distinctToMainThread(),
+              lightStatusBarMode().distinctToMainThread()
+          )
               .subscribeTo { invalidateStatusBar() }
-          subs += colorNavigationBar()
+          subs += allOf(
+              colorNavigationBar().distinctToMainThread(),
+              lightNavigationBarMode().distinctUntilChanged().map { AutoSwitchMode.fromInt(it) }
+          ) { color, mode -> Pair(color, mode) }
               .distinctToMainThread()
               .subscribeTo {
-                (context as? Activity)?.setNavBarColorCompat(it)
-              }
-          subs += colorWindowBackground()
-              .distinctToMainThread()
-              .subscribeTo {
-                (context as? Activity)?.window?.setBackgroundDrawable(ColorDrawable(it))
+                (safeContext as? Activity)?.setNavBarColorCompat(it.first)
+                val useLightMode = when (it.second) {
+                  AutoSwitchMode.ON -> true
+                  AutoSwitchMode.OFF -> false
+                  else -> it.first.isColorLight()
+                }
+                (safeContext as? Activity)?.setLightNavBarCompat(useLightMode)
               }
         }
+        subs += colorWindowBackground()
+            .distinctToMainThread()
+            .subscribeTo {
+              (safeContext as? Activity)?.window?.setBackgroundDrawable(ColorDrawable(it))
+            }
       }
     }
 
@@ -581,7 +608,5 @@ class Aesthetic private constructor(private var ctxt: Context?) {
     private fun getLastActivityTheme(forContext: Context?): Int {
       return instance?.lastActivityThemes?.get(forContext?.javaClass?.name ?: "") ?: return 0
     }
-
-    internal fun key(whereAmI: Context?) = (whereAmI as? AestheticKeyProvider)?.key() ?: "default"
   }
 }

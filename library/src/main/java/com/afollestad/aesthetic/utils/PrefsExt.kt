@@ -13,3 +13,17 @@ internal fun PrefsEditor.save(exec: PrefsEditor.() -> Unit) {
   this.exec()
   this.apply()
 }
+
+internal fun SharedPreferences.edit(exec: PrefsEditor.() -> Unit) {
+  val editor = this.edit()
+  editor.exec()
+  editor.apply()
+}
+
+internal fun SharedPreferences.clear(vararg keys: String) {
+  edit {
+    for (key in keys) {
+      remove(key)
+    }
+  }
+}

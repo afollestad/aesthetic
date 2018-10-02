@@ -9,15 +9,15 @@ import android.content.Context
 import android.util.AttributeSet
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
+import com.afollestad.aesthetic.internal.AttrWizard
 import com.afollestad.aesthetic.utils.allOf
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.observableForAttrName
 import com.afollestad.aesthetic.utils.setTintAuto
 import com.afollestad.aesthetic.utils.subscribeHintTextColor
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
-import com.afollestad.aesthetic.utils.watchColor
 import com.google.android.material.textfield.TextInputEditText
 
 /** @author Aidan Follestad (afollestad) */
@@ -26,14 +26,9 @@ class AestheticTextInputEditText(
   attrs: AttributeSet? = null
 ) : TextInputEditText(context, attrs) {
 
-  private var backgroundResId: Int = 0
   private var lastState: ColorIsDarkState? = null
-
-  init {
-    if (attrs != null) {
-      backgroundResId = context.resId(attrs, android.R.attr.background)
-    }
-  }
+  private val wizard = AttrWizard(context, attrs)
+  private val backgroundColorValue = wizard.getRawValue(android.R.attr.background)
 
   private fun invalidateColors(state: ColorIsDarkState) {
     this.lastState = state
@@ -54,11 +49,10 @@ class AestheticTextInputEditText(
         .unsubscribeOnDetach(this)
 
     allOf(
-        watchColor(
-            context,
-            backgroundResId,
+        get().observableForAttrName(
+            backgroundColorValue,
             get().colorAccent()
-        ),
+        )!!,
         get().isDark
     ) { color, isDark -> ColorIsDarkState(color, isDark) }
         .distinctToMainThread()

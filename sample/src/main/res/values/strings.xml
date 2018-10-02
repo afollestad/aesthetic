@@ -64,5 +64,6 @@
   <string name="show_materialdialog">Show Dialog</string>
   <string name="swipe_refresh">Swipe Refresh</string>
   <string name="swipe_refresh_guide">Pull down the layout to refresh!</string>
+  <string name="non_attributes_are_ignored">\@resources and #hardcoded colors are not auto themed, only attributes.</string>
 
 </resources>

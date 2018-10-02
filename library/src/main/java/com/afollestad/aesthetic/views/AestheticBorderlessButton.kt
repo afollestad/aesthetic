@@ -9,7 +9,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
-import com.afollestad.aesthetic.Aesthetic
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.adjustAlpha
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.subscribeTo
@@ -41,9 +41,7 @@ class AestheticBorderlessButton(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
-    Aesthetic.get()
-        .colorAccent()
+    get().colorAccent()
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)
         .unsubscribeOnDetach(this)

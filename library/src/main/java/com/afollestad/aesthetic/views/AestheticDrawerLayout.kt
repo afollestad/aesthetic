@@ -10,7 +10,6 @@ import android.util.AttributeSet
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.drawerlayout.widget.DrawerLayout
-import com.afollestad.aesthetic.ActiveInactiveColors
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.subscribeTo
@@ -22,21 +21,20 @@ class AestheticDrawerLayout(
   attrs: AttributeSet? = null
 ) : DrawerLayout(context, attrs) {
 
-  private var lastState: ActiveInactiveColors? = null
+  private var lastColor: Int? = null
   private var arrowDrawable: DrawerArrowDrawable? = null
 
-  private fun invalidateColor(colors: ActiveInactiveColors?) {
-    if (colors == null) {
+  private fun invalidateColor(color: Int?) {
+    if (color == null) {
       return
     }
-    this.lastState = colors
-    this.arrowDrawable?.color = lastState!!.activeColor
+    this.lastColor = color
+    this.arrowDrawable?.color = color
   }
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
-    get().colorIconTitle()
+    get().toolbarIconColor()
         .distinctToMainThread()
         .subscribeTo(::invalidateColor)
         .unsubscribeOnDetach(this)
@@ -47,7 +45,7 @@ class AestheticDrawerLayout(
     if (listener is ActionBarDrawerToggle) {
       this.arrowDrawable = listener.drawerArrowDrawable
     }
-    invalidateColor(lastState)
+    invalidateColor(lastColor)
   }
 
   @Suppress("OverridingDeprecatedMember", "DEPRECATION")
@@ -56,6 +54,6 @@ class AestheticDrawerLayout(
     if (listener is ActionBarDrawerToggle) {
       this.arrowDrawable = listener.drawerArrowDrawable
     }
-    invalidateColor(lastState)
+    invalidateColor(lastColor)
   }
 }

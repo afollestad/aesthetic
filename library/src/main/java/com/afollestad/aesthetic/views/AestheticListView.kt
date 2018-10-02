@@ -25,7 +25,6 @@ class AestheticListView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
     get().colorAccent()
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)

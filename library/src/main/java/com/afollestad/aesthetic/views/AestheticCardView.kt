@@ -10,12 +10,12 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.cardview.widget.CardView
 import com.afollestad.aesthetic.Aesthetic.Companion.get
-import com.afollestad.aesthetic.R.attr
+import com.afollestad.aesthetic.R
+import com.afollestad.aesthetic.internal.AttrWizard
 import com.afollestad.aesthetic.utils.distinctToMainThread
-import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.observableForAttrName
 import com.afollestad.aesthetic.utils.subscribeBackgroundColor
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
-import com.afollestad.aesthetic.utils.watchColor
 
 /** @author Aidan Follestad (afollestad) */
 @SuppressLint("PrivateResource")
@@ -24,22 +24,16 @@ class AestheticCardView(
   attrs: AttributeSet? = null
 ) : CardView(context, attrs) {
 
-  private var backgroundResId: Int = 0
-
-  init {
-    if (attrs != null) {
-      backgroundResId = context.resId(attrs, attr.cardBackgroundColor)
-    }
-  }
+  private val wizard = AttrWizard(context, attrs)
+  private val backgroundColorValue = wizard.getRawValue(R.attr.cardBackgroundColor)
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    watchColor(
-        context,
-        backgroundResId,
+    get().observableForAttrName(
+        backgroundColorValue,
         get().colorCardViewBackground()
-    )
+    )!!
         .distinctToMainThread()
         .subscribeBackgroundColor(this)
         .unsubscribeOnDetach(this)

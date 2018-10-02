@@ -123,6 +123,7 @@ class MainFragment : Fragment() {
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
         bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
         swipeRefreshLayoutColorsRes(R.color.md_purple)
+        attributeRes(R.attr.my_custom_attr, R.color.md_amber)
       }
       R.id.btn_red -> Aesthetic.config {
         colorPrimaryRes(R.color.md_red)
@@ -132,6 +133,7 @@ class MainFragment : Fragment() {
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
         bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
         swipeRefreshLayoutColorsRes(R.color.md_red, R.color.md_amber)
+        attributeRes(R.attr.my_custom_attr, R.color.md_blue)
       }
       R.id.btn_purple -> Aesthetic.config {
         colorPrimaryRes(R.color.md_purple)
@@ -141,6 +143,7 @@ class MainFragment : Fragment() {
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
         bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
         swipeRefreshLayoutColorsRes(R.color.md_purple, R.color.md_lime)
+        attributeRes(R.attr.my_custom_attr, R.color.md_green)
       }
       R.id.btn_blue -> Aesthetic.config {
         colorPrimaryRes(R.color.md_blue)
@@ -150,6 +153,7 @@ class MainFragment : Fragment() {
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
         bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
         swipeRefreshLayoutColorsRes(R.color.md_blue, R.color.md_pink)
+        attributeRes(R.attr.my_custom_attr, R.color.md_purple)
       }
       R.id.btn_green -> Aesthetic.config {
         colorPrimaryRes(R.color.md_green)
@@ -159,6 +163,7 @@ class MainFragment : Fragment() {
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
         bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
         swipeRefreshLayoutColorsRes(R.color.md_green, R.color.md_blue_grey)
+        attributeRes(R.attr.my_custom_attr, R.color.md_pink)
       }
       R.id.btn_white -> Aesthetic.config {
         colorPrimaryRes(R.color.md_white)
@@ -168,6 +173,7 @@ class MainFragment : Fragment() {
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
         bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
         swipeRefreshLayoutColorsRes(R.color.md_blue)
+        attributeRes(R.attr.my_custom_attr, R.color.md_lime)
       }
     }
   }

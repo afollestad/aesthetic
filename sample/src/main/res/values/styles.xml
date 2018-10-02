@@ -1,7 +1,11 @@
 <resources>
 
-  <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
+  <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="my_custom_attr">#000</item>
+  </style>
 
-  <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar"/>
+  <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
+    <item name="my_custom_attr">#fff</item>
+  </style>
 
 </resources>

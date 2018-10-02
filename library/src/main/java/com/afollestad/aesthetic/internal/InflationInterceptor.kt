@@ -14,11 +14,11 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.R.id
-import com.afollestad.aesthetic.addBackgroundSubscriber
 import com.afollestad.aesthetic.utils.fixedLayoutInflater
+import com.afollestad.aesthetic.utils.observableForAttrName
 import com.afollestad.aesthetic.utils.resId
-import com.afollestad.aesthetic.utils.watchColor
 import com.afollestad.aesthetic.views.AestheticActionMenuItemView
 import com.afollestad.aesthetic.views.AestheticBorderlessButton
 import com.afollestad.aesthetic.views.AestheticBottomNavigationView
@@ -211,18 +211,20 @@ internal class InflationInterceptor(
         view = AestheticBottomNavigationView(context, attrs)
       "$GOOGLE_MATERIAL.floatingactionbutton.FloatingActionButton" ->
         view = AestheticFab(context, attrs)
+
       "androidx.coordinatorlayout.widget.CoordinatorLayout" ->
         view = AestheticCoordinatorLayout(context, attrs)
       "androidx.swiperefreshlayout.widget.SwipeRefreshLayout" ->
         view = AestheticSwipeRefreshLayout(context, attrs)
     }
 
-    var viewBackgroundRes = 0
+    var viewBackgroundValue: String = ""
     if (view != null && view.tag != null && ":aesthetic_ignore" == view.tag) {
       // Set view back to null so we can let AppCompat handle this view instead.
       view = null
     } else if (attrs != null) {
-      viewBackgroundRes = context.resId(attrs, android.R.attr.background)
+      val wizard = AttrWizard(context, attrs)
+      viewBackgroundValue = wizard.getRawValue(android.R.attr.background)
     }
 
     // If view is null, let the activity try to create it
@@ -283,9 +285,10 @@ internal class InflationInterceptor(
       return view
     }
 
-    if (viewBackgroundRes != 0) {
+    if (viewBackgroundValue.isNotEmpty()) {
       addBackgroundSubscriber(
-          view, watchColor(context, viewBackgroundRes)
+          view,
+          get().observableForAttrName(viewBackgroundValue)
       )
     }
 

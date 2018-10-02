@@ -24,7 +24,6 @@ class AestheticProgressBar(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
     get().colorAccent()
         .distinctToMainThread()
         .subscribeTo(::invalidateColors)

@@ -12,7 +12,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.AttributeSet
-import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
 import com.afollestad.aesthetic.NavigationViewMode.SELECTED_ACCENT
@@ -76,31 +75,23 @@ class AestheticNavigationView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
-    Aesthetic.get()
-        .navigationViewMode()
+    get().navigationViewMode()
         .distinctToMainThread()
-        .subscribeTo {
-          colorSubscription?.dispose()
+        .flatMap {
+          when (it) {
+            SELECTED_PRIMARY -> allOf(
+                get().colorPrimary(),
+                get().isDark
+            ) { color, isDark -> ColorIsDarkState(color, isDark) }
 
-          when (it!!) {
-            SELECTED_PRIMARY ->
-              colorSubscription = allOf(
-                  get().colorPrimary(),
-                  get().isDark
-              ) { color, isDark -> ColorIsDarkState(color, isDark) }
-                  .distinctToMainThread()
-                  .subscribeTo(::invalidateColors)
-
-            SELECTED_ACCENT ->
-              colorSubscription = allOf(
-                  get().colorAccent(),
-                  get().isDark
-              ) { color, isDark -> ColorIsDarkState(color, isDark) }
-                  .distinctToMainThread()
-                  .subscribeTo(::invalidateColors)
+            SELECTED_ACCENT -> allOf(
+                get().colorAccent(),
+                get().isDark
+            ) { color, isDark -> ColorIsDarkState(color, isDark) }
           }
         }
+        .distinctUntilChanged()
+        .subscribeTo(::invalidateColors)
         .unsubscribeOnDetach(this)
   }
 

@@ -9,7 +9,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 
 /** @author Aidan Follestad (afollestad) */
-open class AestheticActivity : AppCompatActivity(), AestheticKeyProvider {
+open class AestheticActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     Aesthetic.attach(this)
@@ -24,9 +24,5 @@ open class AestheticActivity : AppCompatActivity(), AestheticKeyProvider {
   override fun onPause() {
     Aesthetic.pause(this)
     super.onPause()
-  }
-
-  override fun key(): String? {
-    return null
   }
 }

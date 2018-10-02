@@ -22,7 +22,6 @@ internal class AestheticSnackBarTextView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
     get().snackbarTextColor()
         .distinctToMainThread()
         .subscribeTextColor(this)
