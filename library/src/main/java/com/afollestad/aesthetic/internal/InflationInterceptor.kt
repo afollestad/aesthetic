@@ -41,6 +41,7 @@ import com.afollestad.aesthetic.views.AestheticRadioButton
 import com.afollestad.aesthetic.views.AestheticRecyclerView
 import com.afollestad.aesthetic.views.AestheticScrollView
 import com.afollestad.aesthetic.views.AestheticSeekBar
+import com.afollestad.aesthetic.views.AestheticRatingBar
 import com.afollestad.aesthetic.views.AestheticSnackBarButton
 import com.afollestad.aesthetic.views.AestheticSnackBarTextView
 import com.afollestad.aesthetic.views.AestheticSpinner
@@ -177,6 +178,8 @@ internal class InflationInterceptor(
           AestheticSwitchCompat(context, attrs)
       "$APPCOMPAT_WIDGET.AppCompatSeekBar", "SeekBar" ->
         view = AestheticSeekBar(context, attrs)
+      "$APPCOMPAT_WIDGET.AppCompatRatingBar", "RatingBar" ->
+        view = AestheticRatingBar(context, attrs)
       "ProgressBar" ->
         view = AestheticProgressBar(context, attrs)
       "$APPCOMPAT_VIEW.ActionMenuItemView" ->
