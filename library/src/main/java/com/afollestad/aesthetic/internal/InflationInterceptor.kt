@@ -11,7 +11,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.aesthetic.Aesthetic.Companion.get
@@ -32,8 +32,6 @@ import com.afollestad.aesthetic.views.AestheticDialogButton
 import com.afollestad.aesthetic.views.AestheticDrawerLayout
 import com.afollestad.aesthetic.views.AestheticEditText
 import com.afollestad.aesthetic.views.AestheticFab
-import com.afollestad.aesthetic.views.AestheticImageButton
-import com.afollestad.aesthetic.views.AestheticImageView
 import com.afollestad.aesthetic.views.AestheticListView
 import com.afollestad.aesthetic.views.AestheticNavigationView
 import com.afollestad.aesthetic.views.AestheticNestedScrollView
@@ -51,7 +49,6 @@ import com.afollestad.aesthetic.views.AestheticSwitchCompat
 import com.afollestad.aesthetic.views.AestheticTabLayout
 import com.afollestad.aesthetic.views.AestheticTextInputEditText
 import com.afollestad.aesthetic.views.AestheticTextInputLayout
-import com.afollestad.aesthetic.views.AestheticTextView
 import com.afollestad.aesthetic.views.AestheticToolbar
 import com.afollestad.aesthetic.views.AestheticViewPager
 
@@ -130,11 +127,6 @@ internal class InflationInterceptor(
     val viewId = context.resId(attrs, android.R.attr.id)
 
     when (name) {
-      "ImageView", "$APPCOMPAT_WIDGET.AppCompatImageView" ->
-        view = AestheticImageView(context, attrs)
-      "ImageButton", "$APPCOMPAT_WIDGET.AppCompatImageButton" ->
-        view = AestheticImageButton(context, attrs)
-
       "androidx.drawerlayout.widget.DrawerLayout" ->
         view = AestheticDrawerLayout(context, attrs)
       "Toolbar", "$APPCOMPAT_WIDGET.Toolbar" ->
@@ -144,12 +136,9 @@ internal class InflationInterceptor(
         if (viewId == id.snackbar_text) {
           view = AestheticSnackBarTextView(context, attrs)
         } else {
-          view = AestheticTextView(context, attrs)
-          if (parent is LinearLayout && view.id == android.R.id.message) {
-            // This is for a toast message
-            view = null
-          }
+
         }
+
       "Button", "$APPCOMPAT_WIDGET.AppCompatButton" ->
         view =
             if (viewId == android.R.id.button1 ||
@@ -167,6 +156,7 @@ internal class InflationInterceptor(
             } else {
               AestheticButton(context, attrs)
             }
+
       "$APPCOMPAT_WIDGET.AppCompatCheckBox", "CheckBox" ->
         view = AestheticCheckBox(context, attrs)
       "$APPCOMPAT_WIDGET.AppCompatRadioButton", "RadioButton" ->
@@ -220,6 +210,9 @@ internal class InflationInterceptor(
     }
 
     var viewBackgroundValue = ""
+    var textColorValue = ""
+    var hintTextColorValue = ""
+    var tintValue = ""
 
     if (view.shouldIgnore()) {
       // Set view back to null so we can let AndroidX handle this view instead.
@@ -227,6 +220,9 @@ internal class InflationInterceptor(
     } else if (attrs != null) {
       val wizard = AttrWizard(context, attrs)
       viewBackgroundValue = wizard.getRawValue(android.R.attr.background)
+      textColorValue = wizard.getRawValue(android.R.attr.textColor)
+      hintTextColorValue = wizard.getRawValue(android.R.attr.textColorHint)
+      tintValue = wizard.getRawValue(R.attr.tint)
     }
 
     // If view is null, let the activity try to create it
@@ -291,6 +287,27 @@ internal class InflationInterceptor(
       addBackgroundSubscriber(
           view,
           get().observableForAttrName(viewBackgroundValue)
+      )
+    }
+    if (view is TextView) {
+      val textColorObs = get().observableForAttrName(
+          name = textColorValue,
+          fallback = get().textColorPrimary()
+      )
+      if (textColorValue.isNotEmpty()) {
+        addTextColorSubscriber(view, textColorObs)
+      }
+      if (hintTextColorValue.isNotEmpty()) {
+        addHintTextColorSubscriber(
+            view,
+            get().observableForAttrName(hintTextColorValue)
+        )
+      }
+    }
+    if (tintValue.isNotEmpty()) {
+      addImageTintSubscriber(
+          view,
+          get().observableForAttrName(tintValue)
       )
     }
 

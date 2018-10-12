@@ -28,6 +28,9 @@ import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.setLightStatusBarCompat
 import com.afollestad.aesthetic.utils.setStatusBarColorCompat
 import com.afollestad.aesthetic.utils.subscribeBackgroundColor
+import com.afollestad.aesthetic.utils.subscribeHintTextColor
+import com.afollestad.aesthetic.utils.subscribeImageViewTint
+import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.afollestad.rxkprefs.RxkPrefs
 import io.reactivex.Observable
@@ -60,12 +63,45 @@ internal fun addBackgroundSubscriber(
   view: View,
   colorObservable: Observable<Int>?
 ) {
+  if (colorObservable == null) return
+  colorObservable
+      .distinctToMainThread()
+      .subscribeBackgroundColor(view)
+      .unsubscribeOnDetach(view)
+}
+
+internal fun addTextColorSubscriber(
+  view: View,
+  colorObservable: Observable<Int>?
+) {
+  if (colorObservable == null) return
+  colorObservable
+      .distinctToMainThread()
+      .subscribeTextColor(view)
+      .unsubscribeOnDetach(view)
+}
+
+internal fun addHintTextColorSubscriber(
+  view: View,
+  colorObservable: Observable<Int>?
+) {
+  if (colorObservable == null) return
+  colorObservable
+      .distinctToMainThread()
+      .subscribeHintTextColor(view)
+      .unsubscribeOnDetach(view)
+}
+
+internal fun addImageTintSubscriber(
+  view: View,
+  colorObservable: Observable<Int>?
+) {
   if (colorObservable == null) {
     return
   }
   colorObservable
       .distinctToMainThread()
-      .subscribeBackgroundColor(view)
+      .subscribeImageViewTint(view)
       .unsubscribeOnDetach(view)
 }
 

@@ -14,6 +14,7 @@ import io.reactivex.Observable.combineLatest
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.Disposables.empty
 import io.reactivex.exceptions.Exceptions
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
@@ -81,14 +82,17 @@ fun Observable<Int>.subscribeBackgroundColor(view: View): Disposable {
   }
 }
 
-fun Observable<Int>.subscribeTextColor(view: TextView): Disposable {
+fun Observable<Int>.subscribeTextColor(view: View): Disposable {
+  if (view !is TextView) return empty()
   return subscribeTo(view::setTextColor)
 }
 
-fun Observable<Int>.subscribeHintTextColor(view: TextView): Disposable {
+fun Observable<Int>.subscribeHintTextColor(view: View): Disposable {
+  if (view !is TextView) return empty()
   return subscribeTo(view::setHintTextColor)
 }
 
-fun Observable<Int>.subscribeImageViewTint(view: ImageView): Disposable {
+fun Observable<Int>.subscribeImageViewTint(view: View): Disposable {
+  if (view !is ImageView) return empty()
   return subscribeTo(view::setColorFilter)
 }
