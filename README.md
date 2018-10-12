@@ -476,4 +476,11 @@ resubscribe when the view is attached. Ideally this would happen within the view
 
 # Ignoring Views
 
-You can make this library ignore views from being themed by setting the view's tag to `:aesthetic_ignore`.
+You can make this library ignore specific views from being themed with tags:
+
+```kotlin
+// Can also be set in you layout XML
+view.setTag(":aesthetic_ignore")
+
+view.setTag(R.id.aesthetic_ignore, "anything other than null")
+```

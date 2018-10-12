@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.aesthetic.Aesthetic.Companion.get
+import com.afollestad.aesthetic.R
 import com.afollestad.aesthetic.R.id
 import com.afollestad.aesthetic.utils.fixedLayoutInflater
 import com.afollestad.aesthetic.utils.observableForAttrName
@@ -218,9 +219,10 @@ internal class InflationInterceptor(
         view = AestheticSwipeRefreshLayout(context, attrs)
     }
 
-    var viewBackgroundValue: String = ""
-    if (view != null && view.tag != null && ":aesthetic_ignore" == view.tag) {
-      // Set view back to null so we can let AppCompat handle this view instead.
+    var viewBackgroundValue = ""
+
+    if (view.shouldIgnore()) {
+      // Set view back to null so we can let AndroidX handle this view instead.
       view = null
     } else if (attrs != null) {
       val wizard = AttrWizard(context, attrs)
@@ -302,4 +304,7 @@ internal class InflationInterceptor(
 
     return view
   }
+
+  private fun View?.shouldIgnore() =
+    this != null && (":aesthetic_ignore" == tag || getTag(R.id.aesthetic_ignore) != null)
 }
