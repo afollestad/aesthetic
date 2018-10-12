@@ -421,10 +421,7 @@ Aesthetic will not automatically theme most custom views, with some exceptions s
 color, text color, hint text color, an image view tint (these are handled without swapping view types).
 
 Aesthetic makes it easy to subscribe to color changes so that you can manually apply colors to 
-views that need them. This library also provides some useful extension methods to help with the
-application of these colors.
-
-For an example, you can subscribe to pre-defined attributes, such as `colorPrimary()`:
+views that need them.For an example, you can subscribe to pre-defined attributes, such as `colorPrimary()`:
 
 ```kotlin
 val subscription = Aesthetic.get()
@@ -450,27 +447,6 @@ Aesthetic.get()
 
 You can do the same with custom attributes by switching `colorPrimary()` with 
 `attribute(R.attr.your_attr)`.
-
----
-
-With that, you can apply this color to your views. If you wanted a custom TextView to always 
-have its text color set to your accent color:
-
-```kotlin
-val yourTextView: MySpecialTextView = // ...
-
-Aesthetic.get()
-  .colorAccent()
-  .distinctUntilChanged()
-  .subscribeTextColor(yourTextView)
-  .unsubscribeOnDetach(yourTextView)
-```
-
-The example here uses a few extension methods. `subscribeTextColor` wraps `subscribe { }` and 
-calls `setTextColor` on the text view passed as a parameter. `unsubscribeOnDetach` automatically
-manages the subscription and disposes of it when the view is detached from its window. You should
-resubscribe when the view is attached. Ideally this would happen within the views lifecycle method, 
-`onAttachedToWindow()`.
 
 ---
 
