@@ -418,7 +418,7 @@ Aesthetic.config {
 # Custom Views and Manual Application
 
 Aesthetic will not automatically theme most custom views, with some exceptions such as background
-color. 
+color, text color, hint text color, an image view tint (these are handled without swapping view types).
 
 Aesthetic makes it easy to subscribe to color changes so that you can manually apply colors to 
 views that need them. This library also provides some useful extension methods to help with the
@@ -471,6 +471,28 @@ calls `setTextColor` on the text view passed as a parameter. `unsubscribeOnDetac
 manages the subscription and disposes of it when the view is detached from its window. You should
 resubscribe when the view is attached. Ideally this would happen within the views lifecycle method, 
 `onAttachedToWindow()`.
+
+---
+
+If can even setup an inflation delegate to auto-swap views at inflation time, like Aesthetic does
+with a lot of stock/AndroidX views:
+
+```kotlin
+class MyInflationDelegate : InflationDelegate {
+
+  override fun createView(
+    context: Context,
+    attrs: AttributeSet?,
+    name: String,
+    viewId: Int
+  ): View? = when (name) {
+    "com.somelibrary.CustomView" -> ThemedCustomView(context, attrs)
+    else -> null
+  }
+}
+
+Aesthetic.setInflationDelegate(MyInflationDelegate())
+```
 
 ---
 

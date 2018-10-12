@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.aesthetic.Aesthetic.Companion.get
@@ -208,7 +209,7 @@ internal class InflationInterceptor(
   private fun String.viewForName(
     context: Context,
     attrs: AttributeSet?,
-    viewId: Int
+    @IdRes viewId: Int
   ): View? = when (this) {
     "androidx.drawerlayout.widget.DrawerLayout" ->
       AestheticDrawerLayout(context, attrs)
@@ -230,10 +231,7 @@ internal class InflationInterceptor(
         AestheticDialogButton(context, attrs)
       } else if (viewId == id.snackbar_action) {
         AestheticSnackBarButton(context, attrs)
-      } else if (isBorderlessButton(
-              context, attrs
-          )
-      ) {
+      } else if (isBorderlessButton(context, attrs)) {
         AestheticBorderlessButton(context, attrs)
       } else {
         AestheticButton(context, attrs)
@@ -293,7 +291,7 @@ internal class InflationInterceptor(
     "androidx.swiperefreshlayout.widget.SwipeRefreshLayout" ->
       AestheticSwipeRefreshLayout(context, attrs)
 
-    else -> null
+    else -> get().inflationDelegate?.createView(context, attrs, this@viewForName, viewId)
   }
 
   private fun View?.shouldIgnore() =

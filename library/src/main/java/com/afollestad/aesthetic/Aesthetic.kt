@@ -24,6 +24,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.aesthetic.AutoSwitchMode.OFF
+import com.afollestad.aesthetic.internal.InflationDelegate
 import com.afollestad.aesthetic.internal.KEY_ACTIVITY_THEME
 import com.afollestad.aesthetic.internal.KEY_BOTTOM_NAV_BG_MODE
 import com.afollestad.aesthetic.internal.KEY_BOTTOM_NAV_ICONTEXT_MODE
@@ -76,6 +77,7 @@ class Aesthetic private constructor(private var context: Context?) {
   internal var rxkPrefs: RxkPrefs? = null
   internal var prefs: SharedPreferences? = null
   internal var editor: SharedPreferences.Editor? = null
+  internal var inflationDelegate: InflationDelegate? = null
 
   private val lastActivityThemes = mutableArrayMap<String, Int>(2)
 
@@ -604,6 +606,17 @@ class Aesthetic private constructor(private var context: Context?) {
       get() = with(instance ?: throw IllegalStateException("Not attached")) {
         return safePrefs.getBoolean(KEY_FIRST_TIME, true)
       }
+
+    /**
+     * Sets an interface which can be used to auto swap views that are not swapped internally
+     * by Aesthetic, such as custom views from other libraries.
+     *
+     * You do not need to do this if you're just concerned about text color, background color, or
+     * tint, since that is handled by Aesthetic without view swapping.
+     */
+    fun setInflationDelegate(inflationDelegate: InflationDelegate) {
+      get().inflationDelegate = inflationDelegate
+    }
 
     private fun getLastActivityTheme(forContext: Context?): Int {
       return instance?.lastActivityThemes?.get(forContext?.javaClass?.name ?: "") ?: return 0
