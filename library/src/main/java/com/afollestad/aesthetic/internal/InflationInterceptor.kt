@@ -73,13 +73,6 @@ internal class InflationInterceptor(
       Log.d("InflationInterceptor", msg)
     }
 
-    private fun isBlackListedForApply(name: String): Boolean {
-      return ("com.google.android.material.internal.NavigationMenuItemView" == name ||
-          "ViewStub" == name ||
-          "fragment" == name ||
-          "include" == name)
-    }
-
     private fun isBorderlessButton(
       context: Context?,
       attrs: AttributeSet?
@@ -123,91 +116,8 @@ internal class InflationInterceptor(
     context: Context,
     attrs: AttributeSet?
   ): View? {
-    var view: View? = null
     val viewId = context.resId(attrs, android.R.attr.id)
-
-    when (name) {
-      "androidx.drawerlayout.widget.DrawerLayout" ->
-        view = AestheticDrawerLayout(context, attrs)
-      "Toolbar", "$APPCOMPAT_WIDGET.Toolbar" ->
-        view = AestheticToolbar(context, attrs)
-
-      "$APPCOMPAT_WIDGET.AppCompatTextView", "TextView" ->
-        if (viewId == id.snackbar_text) {
-          view = AestheticSnackBarTextView(context, attrs)
-        } else {
-
-        }
-
-      "Button", "$APPCOMPAT_WIDGET.AppCompatButton" ->
-        view =
-            if (viewId == android.R.id.button1 ||
-                viewId == android.R.id.button2 ||
-                viewId == android.R.id.button3
-            ) {
-              AestheticDialogButton(context, attrs)
-            } else if (viewId == id.snackbar_action) {
-              AestheticSnackBarButton(context, attrs)
-            } else if (isBorderlessButton(
-                    context, attrs
-                )
-            ) {
-              AestheticBorderlessButton(context, attrs)
-            } else {
-              AestheticButton(context, attrs)
-            }
-
-      "$APPCOMPAT_WIDGET.AppCompatCheckBox", "CheckBox" ->
-        view = AestheticCheckBox(context, attrs)
-      "$APPCOMPAT_WIDGET.AppCompatRadioButton", "RadioButton" ->
-        view = AestheticRadioButton(context, attrs)
-      "$APPCOMPAT_WIDGET.AppCompatEditText", "EditText" ->
-        view = AestheticEditText(context, attrs)
-      "Switch" -> view = AestheticSwitch(context, attrs)
-      "$APPCOMPAT_WIDGET.SwitchCompat" -> view =
-          AestheticSwitchCompat(context, attrs)
-      "$APPCOMPAT_WIDGET.AppCompatSeekBar", "SeekBar" ->
-        view = AestheticSeekBar(context, attrs)
-      "ProgressBar" ->
-        view = AestheticProgressBar(context, attrs)
-      "$APPCOMPAT_VIEW.ActionMenuItemView" ->
-        view = AestheticActionMenuItemView(context, attrs)
-      "CheckedTextView", "$APPCOMPAT_WIDGET.AppCompatCheckedTextView" ->
-        view = AestheticCheckedTextView(context, attrs)
-
-      "$APPCOMPAT_WIDGET.RecyclerView" ->
-        view = AestheticRecyclerView(context, attrs)
-      "$ANDROIDX_WIDGET.NestedScrollView" ->
-        view = AestheticNestedScrollView(context, attrs)
-      "ListView" -> view = AestheticListView(context, attrs)
-      "ScrollView" -> view = AestheticScrollView(context, attrs)
-      "androidx.viewpager.widget.ViewPager" -> view =
-          AestheticViewPager(context, attrs)
-
-      "Spinner", "$APPCOMPAT_WIDGET.AppCompatSpinner" ->
-        view = AestheticSpinner(context, attrs)
-
-      "$GOOGLE_MATERIAL.textfield.TextInputLayout" ->
-        view = AestheticTextInputLayout(context, attrs)
-      "$GOOGLE_MATERIAL.textfield.TextInputEditText" ->
-        view = AestheticTextInputEditText(context, attrs)
-
-      "$APPCOMPAT_WIDGET.CardView" -> view =
-          AestheticCardView(context, attrs)
-      "$GOOGLE_MATERIAL.tabs.TabLayout" -> view =
-          AestheticTabLayout(context, attrs)
-      "$GOOGLE_MATERIAL.navigation.NavigationView" ->
-        view = AestheticNavigationView(context, attrs)
-      "$GOOGLE_MATERIAL.bottomnavigation.BottomNavigationView" ->
-        view = AestheticBottomNavigationView(context, attrs)
-      "$GOOGLE_MATERIAL.floatingactionbutton.FloatingActionButton" ->
-        view = AestheticFab(context, attrs)
-
-      "androidx.coordinatorlayout.widget.CoordinatorLayout" ->
-        view = AestheticCoordinatorLayout(context, attrs)
-      "androidx.swiperefreshlayout.widget.SwipeRefreshLayout" ->
-        view = AestheticSwipeRefreshLayout(context, attrs)
-    }
+    var view = name.viewForName(context, attrs, viewId)
 
     var viewBackgroundValue = ""
     var textColorValue = ""
@@ -228,18 +138,9 @@ internal class InflationInterceptor(
     // If view is null, let the activity try to create it
     if (view == null) {
       try {
-        view = activity.onCreateView(
-            parent,
-            name,
-            context,
-            attrs
-        )
+        view = activity.onCreateView(parent, name, context, attrs)
         if (view == null) {
-          view = activity.onCreateView(
-              name,
-              context,
-              attrs
-          )
+          view = activity.onCreateView(name, context, attrs)
         }
       } catch (e: Throwable) {
         throw IllegalStateException("Unable to delegate inflation of $name to your Activity.", e)
@@ -248,12 +149,7 @@ internal class InflationInterceptor(
     // If it's still null, try the AppCompat delegate
     if (view == null && delegate != null && attrs != null) {
       try {
-        view = delegate.createView(
-            parent,
-            name,
-            context,
-            attrs
-        )
+        view = delegate.createView(parent, name, context, attrs)
       } catch (e: Throwable) {
         throw IllegalStateException("Unable to delegate inflation of $name to AppCompat.", e)
       }
@@ -262,11 +158,7 @@ internal class InflationInterceptor(
     if (view == null) {
       try {
         val layoutInflater = context.fixedLayoutInflater()
-        view = layoutInflater.createView(
-            name,
-            getViewPrefix(name),
-            attrs
-        )
+        view = layoutInflater.createView(name, getViewPrefix(name), attrs)
       } catch (e: Throwable) {
         throw IllegalStateException(
             "Unable to delegate inflation of $name to normal LayoutInflater.", e
@@ -279,15 +171,12 @@ internal class InflationInterceptor(
     }
 
     // If the view is blacklisted for apply, don't try to apply background theming, etc.
-    if (isBlackListedForApply(name)) {
+    if (name.isBlackListedForApply()) {
       return view
     }
 
     if (viewBackgroundValue.isNotEmpty()) {
-      addBackgroundSubscriber(
-          view,
-          get().observableForAttrName(viewBackgroundValue)
-      )
+      addBackgroundSubscriber(view, get().observableForAttrName(viewBackgroundValue))
     }
     if (view is TextView) {
       val textColorObs = get().observableForAttrName(
@@ -298,17 +187,11 @@ internal class InflationInterceptor(
         addTextColorSubscriber(view, textColorObs)
       }
       if (hintTextColorValue.isNotEmpty()) {
-        addHintTextColorSubscriber(
-            view,
-            get().observableForAttrName(hintTextColorValue)
-        )
+        addHintTextColorSubscriber(view, get().observableForAttrName(hintTextColorValue))
       }
     }
     if (tintValue.isNotEmpty()) {
-      addImageTintSubscriber(
-          view,
-          get().observableForAttrName(tintValue)
-      )
+      addImageTintSubscriber(view, get().observableForAttrName(tintValue))
     }
 
     var idName = ""
@@ -322,6 +205,103 @@ internal class InflationInterceptor(
     return view
   }
 
+  private fun String.viewForName(
+    context: Context,
+    attrs: AttributeSet?,
+    viewId: Int
+  ): View? = when (this) {
+    "androidx.drawerlayout.widget.DrawerLayout" ->
+      AestheticDrawerLayout(context, attrs)
+    "Toolbar", "$APPCOMPAT_WIDGET.Toolbar" ->
+      AestheticToolbar(context, attrs)
+
+    "$APPCOMPAT_WIDGET.AppCompatTextView", "TextView" ->
+      if (viewId == id.snackbar_text) {
+        AestheticSnackBarTextView(context, attrs)
+      } else {
+        null
+      }
+
+    "Button", "$APPCOMPAT_WIDGET.AppCompatButton" ->
+      if (viewId == android.R.id.button1 ||
+          viewId == android.R.id.button2 ||
+          viewId == android.R.id.button3
+      ) {
+        AestheticDialogButton(context, attrs)
+      } else if (viewId == id.snackbar_action) {
+        AestheticSnackBarButton(context, attrs)
+      } else if (isBorderlessButton(
+              context, attrs
+          )
+      ) {
+        AestheticBorderlessButton(context, attrs)
+      } else {
+        AestheticButton(context, attrs)
+      }
+
+    "$APPCOMPAT_WIDGET.AppCompatCheckBox", "CheckBox" ->
+      AestheticCheckBox(context, attrs)
+    "$APPCOMPAT_WIDGET.AppCompatRadioButton", "RadioButton" ->
+      AestheticRadioButton(context, attrs)
+    "$APPCOMPAT_WIDGET.AppCompatEditText", "EditText" ->
+      AestheticEditText(context, attrs)
+    "Switch" ->
+      AestheticSwitch(context, attrs)
+    "$APPCOMPAT_WIDGET.SwitchCompat" ->
+      AestheticSwitchCompat(context, attrs)
+    "$APPCOMPAT_WIDGET.AppCompatSeekBar", "SeekBar" ->
+      AestheticSeekBar(context, attrs)
+    "ProgressBar" ->
+      AestheticProgressBar(context, attrs)
+    "$APPCOMPAT_VIEW.ActionMenuItemView" ->
+      AestheticActionMenuItemView(context, attrs)
+    "CheckedTextView", "$APPCOMPAT_WIDGET.AppCompatCheckedTextView" ->
+      AestheticCheckedTextView(context, attrs)
+
+    "$APPCOMPAT_WIDGET.RecyclerView" ->
+      AestheticRecyclerView(context, attrs)
+    "$ANDROIDX_WIDGET.NestedScrollView" ->
+      AestheticNestedScrollView(context, attrs)
+    "ListView" ->
+      AestheticListView(context, attrs)
+    "ScrollView" ->
+      AestheticScrollView(context, attrs)
+    "androidx.viewpager.widget.ViewPager" ->
+      AestheticViewPager(context, attrs)
+
+    "Spinner", "$APPCOMPAT_WIDGET.AppCompatSpinner" ->
+      AestheticSpinner(context, attrs)
+
+    "$GOOGLE_MATERIAL.textfield.TextInputLayout" ->
+      AestheticTextInputLayout(context, attrs)
+    "$GOOGLE_MATERIAL.textfield.TextInputEditText" ->
+      AestheticTextInputEditText(context, attrs)
+
+    "$APPCOMPAT_WIDGET.CardView" ->
+      AestheticCardView(context, attrs)
+    "$GOOGLE_MATERIAL.tabs.TabLayout" ->
+      AestheticTabLayout(context, attrs)
+    "$GOOGLE_MATERIAL.navigation.NavigationView" ->
+      AestheticNavigationView(context, attrs)
+    "$GOOGLE_MATERIAL.bottomnavigation.BottomNavigationView" ->
+      AestheticBottomNavigationView(context, attrs)
+    "$GOOGLE_MATERIAL.floatingactionbutton.FloatingActionButton" ->
+      AestheticFab(context, attrs)
+
+    "androidx.coordinatorlayout.widget.CoordinatorLayout" ->
+      AestheticCoordinatorLayout(context, attrs)
+    "androidx.swiperefreshlayout.widget.SwipeRefreshLayout" ->
+      AestheticSwipeRefreshLayout(context, attrs)
+
+    else -> null
+  }
+
   private fun View?.shouldIgnore() =
     this != null && (":aesthetic_ignore" == tag || getTag(R.id.aesthetic_ignore) != null)
+
+  private fun String.isBlackListedForApply() =
+    ("com.google.android.material.internal.NavigationMenuItemView" == this ||
+        "ViewStub" == this ||
+        "fragment" == this ||
+        "include" == this)
 }
