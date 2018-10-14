@@ -450,8 +450,8 @@ You can do the same with custom attributes by switching `colorPrimary()` with
 
 ---
 
-If can even setup an inflation delegate to auto-swap views at inflation time, like Aesthetic does
-with a lot of stock/AndroidX views:
+You can even setup an inflation delegate to auto-swap views at inflation time, like Aesthetic does
+with a lot of stock/AndroidX views. This delegate is not called for views that Aesthetic already swaps internally. 
 
 ```kotlin
 class MyInflationDelegate : InflationDelegate {
