@@ -104,7 +104,7 @@ class Aesthetic private constructor(private var context: Context?) {
     @CheckResult
     get() = textColorPrimary().flatMap {
       rxkPrefs!!.boolean(KEY_IS_DARK, it.isColorLight())
-          .asObservable()
+          .observe()
     }
 
   @CheckResult fun isDark(isDark: Boolean): Aesthetic {
@@ -120,7 +120,7 @@ class Aesthetic private constructor(private var context: Context?) {
   @CheckResult fun activityTheme() = waitForAttach().flatMap { rxPrefs ->
     rxPrefs
         .integer(KEY_ACTIVITY_THEME, 0)
-        .asObservable()
+        .observe()
         .filter { it != 0 && it != getLastActivityTheme(safeContext) }
   }!!
 
@@ -138,14 +138,14 @@ class Aesthetic private constructor(private var context: Context?) {
     val defaultValue = safeContext.colorAttr(attr = attrId)
     rxPrefs
         .integer(attrKey(attrId), defaultValue)
-        .asObservable()
+        .observe()
   }!!
 
   @CheckResult internal fun attribute(name: String) = waitForAttach().flatMap { rxPrefs ->
     val key = attrKey(name)
     rxPrefs
         .integer(key, 0)
-        .asObservable()
+        .observe()
         .filter { safePrefs.contains(key) }
   }!!
 
@@ -157,7 +157,7 @@ class Aesthetic private constructor(private var context: Context?) {
   @CheckResult fun lightStatusBarMode() = waitForAttach().flatMap { rxPrefs ->
     rxPrefs
         .integer(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
-        .asObservable()
+        .observe()
   }!!
 
   @CheckResult fun lightNavigationBarMode(mode: AutoSwitchMode): Aesthetic {
@@ -169,7 +169,7 @@ class Aesthetic private constructor(private var context: Context?) {
   @CheckResult fun lightNavigationBarMode() = waitForAttach().flatMap { rxPrefs ->
     rxPrefs
         .integer(KEY_LIGHT_NAV_MODE, AutoSwitchMode.AUTO.value)
-        .asObservable()
+        .observe()
   }!!
 
   // Main Colors
@@ -236,7 +236,7 @@ class Aesthetic private constructor(private var context: Context?) {
   @CheckResult fun colorStatusBar() = colorPrimaryDark().flatMap {
     rxkPrefs!!
         .integer(statusBarColorKey(), it)
-        .asObservable()
+        .observe()
   }!!
 
   @CheckResult fun colorNavigationBar(@ColorInt color: Int): Aesthetic {
@@ -266,7 +266,7 @@ class Aesthetic private constructor(private var context: Context?) {
       else BLACK
     rxPrefs
         .integer(navBarColorKey(), defaultValue)
-        .asObservable()
+        .observe()
   }!!
 
   @CheckResult fun colorWindowBackground(@ColorInt color: Int) =
@@ -327,7 +327,7 @@ class Aesthetic private constructor(private var context: Context?) {
     val defaultValue = if (it.isColorLight()) BLACK else WHITE
     rxkPrefs!!
         .integer(KEY_TOOLBAR_ICON_COLOR, defaultValue)
-        .asObservable()
+        .observe()
   }!!
 
   @CheckResult fun toolbarTitleColor(@ColorInt color: Int): Aesthetic {
@@ -342,7 +342,7 @@ class Aesthetic private constructor(private var context: Context?) {
     val defaultValue = if (it.isColorLight()) BLACK else WHITE
     rxkPrefs!!
         .integer(KEY_TOOLBAR_TITLE_COLOR, defaultValue)
-        .asObservable()
+        .observe()
   }!!
 
   @CheckResult fun toolbarSubtitleColor(@ColorInt color: Int): Aesthetic {
@@ -356,7 +356,7 @@ class Aesthetic private constructor(private var context: Context?) {
   @CheckResult fun toolbarSubtitleColor() = toolbarTitleColor().flatMap {
     rxkPrefs!!
         .integer(KEY_TOOLBAR_SUBTITLE_COLOR, it.adjustAlpha(.87f))
-        .asObservable()
+        .observe()
   }!!
 
   @CheckResult fun snackbarTextColor() = isDark.flatMap { isDark ->
@@ -365,7 +365,7 @@ class Aesthetic private constructor(private var context: Context?) {
     } else {
       textColorPrimaryInverse().flatMap {
         rxkPrefs!!.integer(KEY_SNACKBAR_TEXT, it)
-            .asObservable()
+            .observe()
       }
     }
   }!!
@@ -381,7 +381,7 @@ class Aesthetic private constructor(private var context: Context?) {
   @CheckResult fun snackbarActionTextColor() = colorAccent().flatMap {
     rxkPrefs!!
         .integer(KEY_SNACKBAR_ACTION_TEXT, it)
-        .asObservable()
+        .observe()
   }!!
 
   @CheckResult fun snackbarActionTextColor(@ColorInt color: Int): Aesthetic {
@@ -399,7 +399,7 @@ class Aesthetic private constructor(private var context: Context?) {
     )
     rxkPrefs!!
         .integer(KEY_CARD_VIEW_BG_COLOR, cardBackgroundDefault)
-        .asObservable()
+        .observe()
   }!!
 
   @CheckResult fun colorCardViewBackground(@ColorInt color: Int): Aesthetic {
@@ -418,7 +418,7 @@ class Aesthetic private constructor(private var context: Context?) {
   @CheckResult fun tabLayoutIndicatorMode() = waitForAttach().flatMap { rxPrefs ->
     rxPrefs
         .integer(KEY_TAB_LAYOUT_INDICATOR_MODE, ColorMode.ACCENT.value)
-        .asObservable()
+        .observe()
         .map { ColorMode.fromInt(it) }
   }!!
 
@@ -430,7 +430,7 @@ class Aesthetic private constructor(private var context: Context?) {
   @CheckResult fun tabLayoutBackgroundMode() = waitForAttach().flatMap { rxPrefs ->
     rxPrefs
         .integer(KEY_TAB_LAYOUT_BG_MODE, ColorMode.PRIMARY.value)
-        .asObservable()
+        .observe()
         .map { ColorMode.fromInt(it) }
   }!!
 
@@ -442,7 +442,7 @@ class Aesthetic private constructor(private var context: Context?) {
   @CheckResult fun bottomNavigationBackgroundMode() = waitForAttach().flatMap { rxPrefs ->
     rxPrefs
         .integer(KEY_BOTTOM_NAV_BG_MODE, BottomNavBgMode.BLACK_WHITE_AUTO.value)
-        .asObservable()
+        .observe()
         .map { BottomNavBgMode.fromInt(it) }
   }!!
 
@@ -454,7 +454,7 @@ class Aesthetic private constructor(private var context: Context?) {
   @CheckResult fun bottomNavigationIconTextMode() = waitForAttach().flatMap { rxPrefs ->
     rxPrefs
         .integer(KEY_BOTTOM_NAV_ICONTEXT_MODE, BottomNavIconTextMode.SELECTED_ACCENT.value)
-        .asObservable()
+        .observe()
         .map { BottomNavIconTextMode.fromInt(it) }
   }!!
 
@@ -466,14 +466,14 @@ class Aesthetic private constructor(private var context: Context?) {
   @CheckResult fun navigationViewMode() = waitForAttach().flatMap { rxPrefs ->
     rxPrefs
         .integer(KEY_NAV_VIEW_MODE, NavigationViewMode.SELECTED_PRIMARY.value)
-        .asObservable()
+        .observe()
         .map { NavigationViewMode.fromInt(it) }
   }!!
 
   @CheckResult fun swipeRefreshLayoutColors() = colorAccent().flatMap { accent ->
     rxkPrefs!!
         .string(KEY_SWIPEREFRESH_COLORS, "$accent")
-        .asObservable()
+        .observe()
         .map { it.splitToInts() }
   }!!
 
