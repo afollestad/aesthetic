@@ -97,6 +97,7 @@ internal class InflationInterceptor(
       // Else we have a framework class
       return when (name) {
         "View", "ViewStub", "SurfaceView", "TextureView" -> "android.view."
+        "WebView" -> "android.webkit."
         else -> "android.widget."
       }
     }
