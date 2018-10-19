@@ -43,7 +43,7 @@ Add this to your app module's `build.gradle` file:
 ```gradle
 dependencies {
   
-  implementation 'com.afollestad:aesthetic:1.0.0-beta01'
+  implementation 'com.afollestad:aesthetic:1.0.0-beta02'
 }
 ```
 
@@ -371,6 +371,8 @@ Aesthetic.config {
   bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY_DARK)
   // The tabs' background will be the accent color.
   bottomNavigationBackgroundMode(BottomNavBgMode.ACCENT)
+  // This library will not do any automatic background color theming of bottom nav views.
+  bottomNavigationBackgroundMode(BottomNavBgMode.NONE)
   
   // The selected tab's icon will be tinted with the primary color.
   bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_PRIMARY)
@@ -379,6 +381,8 @@ Aesthetic.config {
   // The selected tab's icon will be tinted black or white based on 
   // the darkness of the overall theme.
   bottomNavigationIconTextMode(BottomNavIconTextMode.BLACK_WHITE_AUTO)
+  // This library will not do any automatic icon/text theming of bottom nav views.
+  bottomNavigationIconTextMode(BottomNavBgMode.NONE)
 }
 ```
 
