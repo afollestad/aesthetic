@@ -31,13 +31,15 @@ enum class ColorMode(val value: Int) {
 /** @author Aidan Follestad (afollestad) */
 enum class NavigationViewMode(val value: Int) {
   SELECTED_PRIMARY(0),
-  SELECTED_ACCENT(1);
+  SELECTED_ACCENT(1),
+  NONE(2);
 
   companion object {
     internal fun fromInt(value: Int): NavigationViewMode {
       return when (value) {
         0 -> SELECTED_PRIMARY
-        else -> SELECTED_ACCENT
+        1 -> SELECTED_ACCENT
+        else -> NONE
       }
     }
   }
@@ -65,7 +67,8 @@ enum class BottomNavBgMode(val value: Int) {
   BLACK_WHITE_AUTO(0),
   PRIMARY(1),
   PRIMARY_DARK(2),
-  ACCENT(3);
+  ACCENT(3),
+  NONE(4);
 
   companion object {
     internal fun fromInt(value: Int): BottomNavBgMode {
@@ -73,7 +76,8 @@ enum class BottomNavBgMode(val value: Int) {
         0 -> BLACK_WHITE_AUTO
         1 -> PRIMARY
         2 -> PRIMARY_DARK
-        else -> ACCENT
+        3 -> ACCENT
+        else -> NONE
       }
     }
   }
@@ -83,14 +87,16 @@ enum class BottomNavBgMode(val value: Int) {
 enum class BottomNavIconTextMode(val value: Int) {
   SELECTED_PRIMARY(0),
   SELECTED_ACCENT(1),
-  BLACK_WHITE_AUTO(2);
+  BLACK_WHITE_AUTO(2),
+  NONE(3);
 
   companion object {
     internal fun fromInt(value: Int): BottomNavIconTextMode {
       return when (value) {
         0 -> SELECTED_PRIMARY
         1 -> SELECTED_ACCENT
-        else -> BLACK_WHITE_AUTO
+        2 -> BLACK_WHITE_AUTO
+        else -> NONE
       }
     }
   }

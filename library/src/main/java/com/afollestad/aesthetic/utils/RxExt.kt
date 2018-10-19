@@ -8,9 +8,12 @@ package com.afollestad.aesthetic.utils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.CheckResult
 import androidx.cardview.widget.CardView
+import com.afollestad.aesthetic.blowUp
 import io.reactivex.Observable
 import io.reactivex.Observable.combineLatest
+import io.reactivex.ObservableSource
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -21,6 +24,8 @@ import io.reactivex.functions.Consumer
 import io.reactivex.functions.Function3
 
 typealias KotlinSubscriber<T> = (T) -> Unit
+
+internal typealias RxMapper<T, R> = (T) -> ObservableSource<out R>
 
 internal fun <T> Observable<T>.distinctToMainThread(): Observable<T> {
   return observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged()
@@ -96,3 +101,11 @@ fun Observable<Int>.subscribeImageViewTint(view: View): Disposable {
   if (view !is ImageView) return empty()
   return subscribeTo(view::setColorFilter)
 }
+
+/**
+ * We use this to we don't get lint warnings when using flatMap. Since Observable.flatMap is
+ * a Java function and does not have nullability annotations, it can "possibly be null"
+ * (it really cannot be).
+ */
+@CheckResult
+internal fun <T, R> Observable<T>.kFlatMap(mapper: RxMapper<T, R>) = flatMap(mapper) ?: blowUp()

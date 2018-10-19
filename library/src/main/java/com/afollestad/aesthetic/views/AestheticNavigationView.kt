@@ -14,6 +14,7 @@ import android.graphics.drawable.StateListDrawable
 import android.util.AttributeSet
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
+import com.afollestad.aesthetic.NavigationViewMode.NONE
 import com.afollestad.aesthetic.NavigationViewMode.SELECTED_ACCENT
 import com.afollestad.aesthetic.NavigationViewMode.SELECTED_PRIMARY
 import com.afollestad.aesthetic.R
@@ -24,6 +25,7 @@ import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.google.android.material.navigation.NavigationView
+import io.reactivex.Observable.never
 import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad) */
@@ -88,6 +90,8 @@ class AestheticNavigationView(
                 get().colorAccent(),
                 get().isDark
             ) { color, isDark -> ColorIsDarkState(color, isDark) }
+
+            NONE -> never()
           }
         }
         .distinctUntilChanged()

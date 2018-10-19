@@ -395,6 +395,9 @@ Aesthetic.config {
   
   // The selected drawer item will be tinted with the accent color. 
   navigationViewMode(NavigationViewMode.SELECTED_ACCENT)
+  
+  // This library will not apply any auto theming to NavigationViews. 
+  navigationViewMode(NavigationViewMode.NONE)
 }
 ```
 

@@ -37,11 +37,13 @@ class AestheticBottomNavigationView(
   private var colorSubs: CompositeDisposable? = null
   private var lastTextIconColor: Int = 0
   private var backgroundColor: Int? = null
+  private var iconTextMode = BottomNavIconTextMode.NONE
 
   private fun invalidateIconTextColor(
     backgroundColor: Int,
     selectedColor: Int
   ) {
+    if (iconTextMode == BottomNavIconTextMode.NONE) return
     val baseColor = context.color(
         if (backgroundColor.isColorLight()) R.color.ate_icon_light
         else R.color.ate_icon_dark
@@ -78,6 +80,7 @@ class AestheticBottomNavigationView(
   private fun onState(state: State) {
     colorSubs?.clear()
     colorSubs = CompositeDisposable()
+    this.iconTextMode = state.iconTextMode
 
     when (state.iconTextMode) {
       BottomNavIconTextMode.SELECTED_PRIMARY ->
@@ -100,6 +103,10 @@ class AestheticBottomNavigationView(
         // We will automatically set the icon/text color when the background color is set
         lastTextIconColor = Color.TRANSPARENT
         invalidateWithBackgroundColor()
+      }
+
+      BottomNavIconTextMode.NONE -> {
+        // no-op
       }
     }
 
@@ -126,6 +133,10 @@ class AestheticBottomNavigationView(
                 else R.color.ate_bottom_nav_default_light_bg
             )
         )
+
+      BottomNavBgMode.NONE -> {
+        // no-op
+      }
     }
   }
 
