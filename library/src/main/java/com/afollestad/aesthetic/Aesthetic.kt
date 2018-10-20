@@ -50,7 +50,7 @@ import com.afollestad.aesthetic.internal.navBarColorKey
 import com.afollestad.aesthetic.internal.statusBarColorKey
 import com.afollestad.aesthetic.internal.waitForAttach
 import com.afollestad.aesthetic.utils.adjustAlpha
-import com.afollestad.aesthetic.utils.allOf
+import com.afollestad.aesthetic.utils.combine
 import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.colorAttr
 import com.afollestad.aesthetic.utils.darkenColor
@@ -576,12 +576,12 @@ class Aesthetic private constructor(private var context: Context?) {
                 lastActivityThemes[safeContext.javaClass.name] = it
                 (safeContext as? Activity)?.recreate()
               }
-          subs += allOf(
+          subs += combine(
               colorStatusBar().distinctToMainThread(),
               lightStatusBarMode().distinctToMainThread()
           )
               .subscribeTo { invalidateStatusBar() }
-          subs += allOf(
+          subs += combine(
               colorNavigationBar().distinctToMainThread(),
               lightNavigationBarMode().distinctUntilChanged().map { AutoSwitchMode.fromInt(it) }
           ) { color, mode -> Pair(color, mode) }

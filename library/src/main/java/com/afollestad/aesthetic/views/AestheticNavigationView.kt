@@ -19,7 +19,7 @@ import com.afollestad.aesthetic.NavigationViewMode.SELECTED_ACCENT
 import com.afollestad.aesthetic.NavigationViewMode.SELECTED_PRIMARY
 import com.afollestad.aesthetic.R
 import com.afollestad.aesthetic.utils.adjustAlpha
-import com.afollestad.aesthetic.utils.allOf
+import com.afollestad.aesthetic.utils.combine
 import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.subscribeTo
@@ -81,12 +81,12 @@ class AestheticNavigationView(
         .distinctToMainThread()
         .flatMap {
           when (it) {
-            SELECTED_PRIMARY -> allOf(
+            SELECTED_PRIMARY -> combine(
                 get().colorPrimary(),
                 get().isDark
             ) { color, isDark -> ColorIsDarkState(color, isDark) }
 
-            SELECTED_ACCENT -> allOf(
+            SELECTED_ACCENT -> combine(
                 get().colorAccent(),
                 get().isDark
             ) { color, isDark -> ColorIsDarkState(color, isDark) }

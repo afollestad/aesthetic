@@ -17,7 +17,7 @@ import com.afollestad.aesthetic.BottomNavBgMode
 import com.afollestad.aesthetic.BottomNavIconTextMode
 import com.afollestad.aesthetic.R
 import com.afollestad.aesthetic.utils.adjustAlpha
-import com.afollestad.aesthetic.utils.allOf
+import com.afollestad.aesthetic.utils.combine
 import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
@@ -142,7 +142,7 @@ class AestheticBottomNavigationView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    allOf(
+    combine(
         get().bottomNavigationBackgroundMode(),
         get().bottomNavigationIconTextMode(),
         get().isDark

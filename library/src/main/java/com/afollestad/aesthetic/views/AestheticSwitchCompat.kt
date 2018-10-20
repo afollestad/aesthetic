@@ -11,7 +11,7 @@ import androidx.appcompat.widget.SwitchCompat
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
 import com.afollestad.aesthetic.internal.AttrWizard
-import com.afollestad.aesthetic.utils.allOf
+import com.afollestad.aesthetic.utils.combine
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.observableForAttrName
 import com.afollestad.aesthetic.utils.setTint
@@ -32,7 +32,7 @@ class AestheticSwitchCompat(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    allOf(
+    combine(
         get().observableForAttrName(
             backgroundColorValue,
             get().colorAccent()

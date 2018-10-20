@@ -10,7 +10,7 @@ import android.util.AttributeSet
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
 import com.afollestad.aesthetic.internal.AttrWizard
-import com.afollestad.aesthetic.utils.allOf
+import com.afollestad.aesthetic.utils.combine
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.observableForAttrName
 import com.afollestad.aesthetic.utils.setTintAuto
@@ -48,7 +48,7 @@ class AestheticTextInputEditText(
         .subscribeHintTextColor(this)
         .unsubscribeOnDetach(this)
 
-    allOf(
+    combine(
         get().observableForAttrName(
             backgroundColorValue,
             get().colorAccent()
