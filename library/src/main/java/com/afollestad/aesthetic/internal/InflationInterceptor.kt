@@ -52,6 +52,7 @@ import com.afollestad.aesthetic.views.AestheticTextInputEditText
 import com.afollestad.aesthetic.views.AestheticTextInputLayout
 import com.afollestad.aesthetic.views.AestheticToolbar
 import com.afollestad.aesthetic.views.AestheticViewPager
+import com.google.android.material.internal.NavigationMenuItemView
 
 /** @author Aidan Follestad (afollestad) */
 internal class InflationInterceptor(
@@ -119,7 +120,7 @@ internal class InflationInterceptor(
     attrs: AttributeSet?
   ): View? {
     val viewId = context.resId(attrs, android.R.attr.id)
-    var view = name.viewForName(context, attrs, viewId)
+    var view = name.viewForName(context, attrs, viewId, parent)
 
     var viewBackgroundValue = ""
     var textColorValue = ""
@@ -210,7 +211,8 @@ internal class InflationInterceptor(
   private fun String.viewForName(
     context: Context,
     attrs: AttributeSet?,
-    @IdRes viewId: Int
+    @IdRes viewId: Int,
+    parent: View?
   ): View? = when (this) {
     "androidx.drawerlayout.widget.DrawerLayout" ->
       AestheticDrawerLayout(context, attrs)
@@ -254,8 +256,10 @@ internal class InflationInterceptor(
       AestheticProgressBar(context, attrs)
     "$APPCOMPAT_VIEW.ActionMenuItemView" ->
       AestheticActionMenuItemView(context, attrs)
-    "CheckedTextView", "$APPCOMPAT_WIDGET.AppCompatCheckedTextView" ->
-      AestheticCheckedTextView(context, attrs)
+    "CheckedTextView", "$APPCOMPAT_WIDGET.AppCompatCheckedTextView" -> {
+      if (parent is NavigationMenuItemView) null
+      else AestheticCheckedTextView(context, attrs)
+    }
 
     "$APPCOMPAT_WIDGET.RecyclerView" ->
       AestheticRecyclerView(context, attrs)
