@@ -43,7 +43,7 @@ Add this to your app module's `build.gradle` file:
 ```gradle
 dependencies {
   
-  implementation 'com.afollestad:aesthetic:1.0.0-beta02'
+  implementation 'com.afollestad:aesthetic:1.0.0-beta03'
 }
 ```
 
