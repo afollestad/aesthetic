@@ -25,6 +25,7 @@ import com.afollestad.aesthetic.utils.clear
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.getRootView
 import com.afollestad.aesthetic.utils.isColorLight
+import com.afollestad.aesthetic.utils.safeResourceName
 import com.afollestad.aesthetic.utils.setLightStatusBarCompat
 import com.afollestad.aesthetic.utils.setStatusBarColorCompat
 import com.afollestad.aesthetic.utils.subscribeBackgroundColor
@@ -132,7 +133,7 @@ internal fun Aesthetic.invalidateStatusBar() {
 }
 
 @CheckResult internal fun Aesthetic.attrKey(@AttrRes attrId: Int): String {
-  var name = safeContext.resources.getResourceName(attrId)
+  var name = safeContext.resources.safeResourceName(attrId)
   if (!name.startsWith("android")) {
     name = name.substring(name.indexOf(':') + 1)
   }

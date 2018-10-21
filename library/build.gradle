@@ -2,7 +2,6 @@ apply from: '../dependencies.gradle'
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: "com.github.ben-manes.versions"
 
 apply from: '../bintrayconfig.gradle'
 
@@ -15,8 +14,6 @@ android {
     targetSdkVersion versions.compileSdk
     versionCode versions.publishVersionCode
     versionName versions.publishVersion
-
-    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
   }
 
   sourceSets {
@@ -52,11 +49,6 @@ dependencies {
   implementation 'com.afollestad:rxkprefs:' + versions.rxkPrefs
 
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
-
-  androidTestImplementation 'junit:junit:' + versions.junit
-  androidTestImplementation 'androidx.test:runner:' + versions.androidxTest
-  androidTestImplementation 'androidx.test:rules:' + versions.androidxTest
-  androidTestImplementation 'androidx.test.espresso:espresso-core:' + versions.androidxEspresso
 }
 
 apply from: '../spotless.gradle'

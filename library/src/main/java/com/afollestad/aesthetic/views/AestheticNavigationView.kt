@@ -19,13 +19,13 @@ import com.afollestad.aesthetic.NavigationViewMode.SELECTED_ACCENT
 import com.afollestad.aesthetic.NavigationViewMode.SELECTED_PRIMARY
 import com.afollestad.aesthetic.R
 import com.afollestad.aesthetic.utils.adjustAlpha
-import com.afollestad.aesthetic.utils.combine
 import com.afollestad.aesthetic.utils.color
+import com.afollestad.aesthetic.utils.combine
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
 import com.google.android.material.navigation.NavigationView
-import io.reactivex.Observable.never
+import io.reactivex.Observable.empty
 import io.reactivex.disposables.Disposable
 
 /** @author Aidan Follestad (afollestad) */
@@ -91,7 +91,7 @@ class AestheticNavigationView(
                 get().isDark
             ) { color, isDark -> ColorIsDarkState(color, isDark) }
 
-            NONE -> never()
+            NONE -> empty()
           }
         }
         .distinctUntilChanged()

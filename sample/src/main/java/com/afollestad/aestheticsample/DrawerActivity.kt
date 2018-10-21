@@ -27,12 +27,16 @@ class DrawerActivity : AestheticActivity() {
     drawerToggle = ActionBarDrawerToggle(
         this, drawer_layout, toolbar, R.string.open_drawer, R.string.close_drawer
     )
-    drawer_layout!!.addDrawerListener(drawerToggle)
+    drawer_layout.addDrawerListener(drawerToggle)
 
     supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     supportActionBar!!.setHomeButtonEnabled(true)
 
-    navigation_view!!.post { navigation_view!!.setCheckedItem(R.id.item_three) }
+    navigation_view.post { navigation_view.setCheckedItem(R.id.item_three) }
+    navigation_view.setNavigationItemSelectedListener {
+      navigation_view.setCheckedItem(it.itemId)
+      false
+    }
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {

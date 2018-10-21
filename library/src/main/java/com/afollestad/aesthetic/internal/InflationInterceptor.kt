@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.CheckedTextView
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,7 @@ import com.afollestad.aesthetic.R.id
 import com.afollestad.aesthetic.utils.fixedLayoutInflater
 import com.afollestad.aesthetic.utils.observableForAttrName
 import com.afollestad.aesthetic.utils.resId
+import com.afollestad.aesthetic.utils.safeResourceName
 import com.afollestad.aesthetic.views.AestheticActionMenuItemView
 import com.afollestad.aesthetic.views.AestheticBorderlessButton
 import com.afollestad.aesthetic.views.AestheticBottomNavigationView
@@ -197,12 +199,7 @@ internal class InflationInterceptor(
       addImageTintSubscriber(view, get().observableForAttrName(tintValue))
     }
 
-    var idName = ""
-    try {
-      idName = "${context.resources.getResourceName(view.id)} "
-    } catch (ignored: Throwable) {
-    }
-
+    val idName = "${context.resources.safeResourceName(view.id)} "
     log("Inflated -> $idName${view.javaClass.name}")
 
     return view
@@ -257,7 +254,7 @@ internal class InflationInterceptor(
     "$APPCOMPAT_VIEW.ActionMenuItemView" ->
       AestheticActionMenuItemView(context, attrs)
     "CheckedTextView", "$APPCOMPAT_WIDGET.AppCompatCheckedTextView" -> {
-      if (parent is NavigationMenuItemView) null
+      if (parent is NavigationMenuItemView) CheckedTextView(context, attrs)
       else AestheticCheckedTextView(context, attrs)
     }
 

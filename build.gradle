@@ -1,5 +1,5 @@
 apply from: './dependencies.gradle'
-apply plugin: 'com.github.ben-manes.versions'
+apply from: './versionsPlugin.gradle'
 
 buildscript {
   apply from: './dependencies.gradle'
@@ -8,6 +8,7 @@ buildscript {
     google()
     jcenter()
   }
+
   dependencies {
     classpath 'com.android.tools.build:gradle:' + versions.gradlePlugin
     classpath "com.diffplug.spotless:spotless-plugin-gradle:" + versions.spotlessPlugin

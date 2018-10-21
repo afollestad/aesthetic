@@ -10,7 +10,7 @@ import android.content.res.ColorStateList
 import androidx.annotation.ColorInt
 
 /** @author Aidan Follestad (afollestad) */
-data class ActiveInactiveColors(
+internal data class ActiveInactiveColors(
   @field:ColorInt val activeColor: Int,
   @field:ColorInt val inactiveColor: Int
 ) {
