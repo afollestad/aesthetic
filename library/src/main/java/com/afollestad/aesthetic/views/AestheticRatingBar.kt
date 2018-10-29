@@ -8,7 +8,6 @@ package com.afollestad.aesthetic.views
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatRatingBar
-import androidx.appcompat.widget.AppCompatSeekBar
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.ColorIsDarkState
 import com.afollestad.aesthetic.internal.AttrWizard
@@ -32,6 +31,7 @@ class AestheticRatingBar(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
+
     combine(
         get().observableForAttrName(
             backgroundColorValue,
