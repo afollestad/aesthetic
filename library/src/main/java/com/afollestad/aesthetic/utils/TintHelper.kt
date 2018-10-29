@@ -18,7 +18,16 @@ import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.M
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.RadioButton
+import android.widget.SeekBar
+import android.widget.AbsSeekBar
+import android.widget.Switch
+import android.widget.TextView
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatCheckedTextView
