@@ -32,7 +32,6 @@ class AestheticRatingBar(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
     combine(
         get().observableForAttrName(
             backgroundColorValue,
