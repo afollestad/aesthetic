@@ -505,6 +505,7 @@ class Aesthetic private constructor(private var context: Context?) {
     private var instance: Aesthetic? = null
 
     /** Should be called before super.onCreate() in each Activity.  */
+    @JvmStatic
     fun attach(whereAmI: Context): Aesthetic {
       if (instance == null) {
         instance = Aesthetic(whereAmI)
@@ -530,6 +531,7 @@ class Aesthetic private constructor(private var context: Context?) {
     }
 
     @CheckResult
+    @JvmStatic
     fun get() = instance ?: blowUp()
 
     inline fun config(func: Aesthetic.() -> Unit) {
@@ -539,6 +541,7 @@ class Aesthetic private constructor(private var context: Context?) {
     }
 
     /** Should be called in onPause() of each Activity or Service.  */
+    @JvmStatic
     fun pause(whereAmI: Context) {
       with(instance ?: return) {
         isResumed = false
@@ -554,6 +557,7 @@ class Aesthetic private constructor(private var context: Context?) {
     }
 
     /** Should be called in onResume() of each Activity.  */
+    @JvmStatic
     fun resume(whereAmI: Context) {
       with(instance ?: blowUp()) {
         if (isResumed)
@@ -618,6 +622,7 @@ class Aesthetic private constructor(private var context: Context?) {
      * You do not need to do this if you're just concerned about text color, background color, or
      * tint, since that is handled by Aesthetic without view swapping.
      */
+    @JvmStatic
     fun setInflationDelegate(inflationDelegate: InflationDelegate) {
       get().inflationDelegate = inflationDelegate
     }
