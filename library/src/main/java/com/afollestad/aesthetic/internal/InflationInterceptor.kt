@@ -25,6 +25,7 @@ import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.safeResourceName
 import com.afollestad.aesthetic.views.AestheticActionMenuItemView
 import com.afollestad.aesthetic.views.AestheticBorderlessButton
+import com.afollestad.aesthetic.views.AestheticSnackBarContentLayout
 import com.afollestad.aesthetic.views.AestheticBottomAppBar
 import com.afollestad.aesthetic.views.AestheticBottomNavigationView
 import com.afollestad.aesthetic.views.AestheticButton
@@ -168,7 +169,7 @@ internal class InflationInterceptor(
         view = layoutInflater.createView(name, getViewPrefix(name), attrs)
       } catch (e: Throwable) {
         throw IllegalStateException(
-            "Unable to delegate inflation of $name to normal LayoutInflater.", e
+          "Unable to delegate inflation of $name to normal LayoutInflater.", e
         )
       }
     }
@@ -187,8 +188,8 @@ internal class InflationInterceptor(
     }
     if (view is TextView) {
       val textColorObs = get().observableForAttrName(
-          name = textColorValue,
-          fallback = get().textColorPrimary()
+        name = textColorValue,
+        fallback = get().textColorPrimary()
       )
       if (textColorValue.isNotEmpty()) {
         addTextColorSubscriber(view, textColorObs)
@@ -217,18 +218,16 @@ internal class InflationInterceptor(
       AestheticDrawerLayout(context, attrs)
     "Toolbar", "$APPCOMPAT_WIDGET.Toolbar" ->
       AestheticToolbar(context, attrs)
-
     "$APPCOMPAT_WIDGET.AppCompatTextView", "TextView" ->
       if (viewId == id.snackbar_text) {
         AestheticSnackBarTextView(context, attrs)
       } else {
         null
       }
-
     "Button", "$APPCOMPAT_WIDGET.AppCompatButton" ->
       if (viewId == android.R.id.button1 ||
-          viewId == android.R.id.button2 ||
-          viewId == android.R.id.button3
+        viewId == android.R.id.button2 ||
+        viewId == android.R.id.button3
       ) {
         AestheticDialogButton(context, attrs)
       } else if (viewId == id.snackbar_action) {
@@ -238,7 +237,6 @@ internal class InflationInterceptor(
       } else {
         AestheticButton(context, attrs)
       }
-
     "$APPCOMPAT_WIDGET.AppCompatCheckBox", "CheckBox" ->
       AestheticCheckBox(context, attrs)
     "$APPCOMPAT_WIDGET.AppCompatRadioButton", "RadioButton" ->
@@ -261,7 +259,6 @@ internal class InflationInterceptor(
       if (parent is NavigationMenuItemView) CheckedTextView(context, attrs)
       else AestheticCheckedTextView(context, attrs)
     }
-
     "$APPCOMPAT_WIDGET.RecyclerView" ->
       AestheticRecyclerView(context, attrs)
     "$ANDROIDX_WIDGET.NestedScrollView" ->
@@ -272,33 +269,30 @@ internal class InflationInterceptor(
       AestheticScrollView(context, attrs)
     "androidx.viewpager.widget.ViewPager" ->
       AestheticViewPager(context, attrs)
-
     "Spinner", "$APPCOMPAT_WIDGET.AppCompatSpinner" ->
       AestheticSpinner(context, attrs)
-
     "$GOOGLE_MATERIAL.textfield.TextInputLayout" ->
       AestheticTextInputLayout(context, attrs)
     "$GOOGLE_MATERIAL.textfield.TextInputEditText" ->
       AestheticTextInputEditText(context, attrs)
-
     "$APPCOMPAT_WIDGET.CardView" ->
       AestheticCardView(context, attrs)
     "$GOOGLE_MATERIAL.tabs.TabLayout" ->
       AestheticTabLayout(context, attrs)
     "$GOOGLE_MATERIAL.bottomappbar.BottomAppBar" ->
       AestheticBottomAppBar(context, attrs)
+    "$GOOGLE_MATERIAL.snackbar.SnackbarContentLayout" ->
+      AestheticSnackBarContentLayout(context, attrs)
     "$GOOGLE_MATERIAL.navigation.NavigationView" ->
       AestheticNavigationView(context, attrs)
     "$GOOGLE_MATERIAL.bottomnavigation.BottomNavigationView" ->
       AestheticBottomNavigationView(context, attrs)
     "$GOOGLE_MATERIAL.floatingactionbutton.FloatingActionButton" ->
       AestheticFab(context, attrs)
-
     "androidx.coordinatorlayout.widget.CoordinatorLayout" ->
       AestheticCoordinatorLayout(context, attrs)
     "androidx.swiperefreshlayout.widget.SwipeRefreshLayout" ->
       AestheticSwipeRefreshLayout(context, attrs)
-
     else -> get().inflationDelegate?.createView(context, attrs, this@viewForName, viewId)
   }
 
@@ -307,7 +301,7 @@ internal class InflationInterceptor(
 
   private fun String.isBlackListedForApply() =
     ("com.google.android.material.internal.NavigationMenuItemView" == this ||
-        "ViewStub" == this ||
-        "fragment" == this ||
-        "include" == this)
+      "ViewStub" == this ||
+      "fragment" == this ||
+      "include" == this)
 }
