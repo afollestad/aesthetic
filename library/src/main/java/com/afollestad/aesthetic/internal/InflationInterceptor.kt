@@ -25,6 +25,7 @@ import com.afollestad.aesthetic.utils.resId
 import com.afollestad.aesthetic.utils.safeResourceName
 import com.afollestad.aesthetic.views.AestheticActionMenuItemView
 import com.afollestad.aesthetic.views.AestheticBorderlessButton
+import com.afollestad.aesthetic.views.AestheticBottomAppBar
 import com.afollestad.aesthetic.views.AestheticBottomNavigationView
 import com.afollestad.aesthetic.views.AestheticButton
 import com.afollestad.aesthetic.views.AestheticCardView
@@ -284,6 +285,8 @@ internal class InflationInterceptor(
       AestheticCardView(context, attrs)
     "$GOOGLE_MATERIAL.tabs.TabLayout" ->
       AestheticTabLayout(context, attrs)
+    "$GOOGLE_MATERIAL.bottomappbar.BottomAppBar" ->
+      AestheticBottomAppBar(context, attrs)
     "$GOOGLE_MATERIAL.navigation.NavigationView" ->
       AestheticNavigationView(context, attrs)
     "$GOOGLE_MATERIAL.bottomnavigation.BottomNavigationView" ->
