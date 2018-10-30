@@ -9,7 +9,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.O
+import android.os.Build.VERSION_CODES.P
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.AttrRes
@@ -62,20 +62,25 @@ internal fun Context.resId(
 private var mConstructorArgsField: Field? = null
 
 /**
- * Gets around an issue existing before API 16. See
- * https://github.com/afollestad/aesthetic/issues/101.
+ * Gets around an issue existing before API 16, or some weird 8.1 devices.
+ *
+ * See https://github.com/afollestad/aesthetic/issues/101 or
+ * https://github.com/afollestad/aesthetic/issues/113
  */
 internal fun Context.fixedLayoutInflater(): LayoutInflater {
   val inflater = LayoutInflater.from(this)
-  if (SDK_INT >= O) return inflater
-
+  if (SDK_INT >= P) {
+    // Don't apply fix to the latest Android versions.
+    return inflater
+  }
   if (mConstructorArgsField == null) {
     //mConstructorArgs
     mConstructorArgsField = LayoutInflater::class.findField("mConstructorArgs")
   }
   val constructorArgs = mConstructorArgsField!!.get(inflater)
-  Array.set(constructorArgs, 0, this)
-  mConstructorArgsField!!.set(inflater, constructorArgs)
-
+  if (Array.get(constructorArgs, 0) == null) {
+    Array.set(constructorArgs, 0, this)
+    mConstructorArgsField!!.set(inflater, constructorArgs)
+  }
   return inflater
 }
