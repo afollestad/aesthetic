@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.R
-import com.afollestad.aesthetic.R.id
 import com.afollestad.aesthetic.utils.fixedLayoutInflater
 import com.afollestad.aesthetic.utils.observableForAttrName
 import com.afollestad.aesthetic.utils.resId
@@ -40,12 +39,11 @@ import com.afollestad.aesthetic.views.AestheticNavigationView
 import com.afollestad.aesthetic.views.AestheticNestedScrollView
 import com.afollestad.aesthetic.views.AestheticProgressBar
 import com.afollestad.aesthetic.views.AestheticRadioButton
+import com.afollestad.aesthetic.views.AestheticRatingBar
 import com.afollestad.aesthetic.views.AestheticRecyclerView
 import com.afollestad.aesthetic.views.AestheticScrollView
 import com.afollestad.aesthetic.views.AestheticSeekBar
-import com.afollestad.aesthetic.views.AestheticRatingBar
-import com.afollestad.aesthetic.views.AestheticSnackBarButton
-import com.afollestad.aesthetic.views.AestheticSnackBarTextView
+import com.afollestad.aesthetic.views.AestheticSnackBarContentLayout
 import com.afollestad.aesthetic.views.AestheticSpinner
 import com.afollestad.aesthetic.views.AestheticSwipeRefreshLayout
 import com.afollestad.aesthetic.views.AestheticSwitch
@@ -217,21 +215,12 @@ internal class InflationInterceptor(
     "Toolbar", "$APPCOMPAT_WIDGET.Toolbar" ->
       AestheticToolbar(context, attrs)
 
-    "$APPCOMPAT_WIDGET.AppCompatTextView", "TextView" ->
-      if (viewId == id.snackbar_text) {
-        AestheticSnackBarTextView(context, attrs)
-      } else {
-        null
-      }
-
     "Button", "$APPCOMPAT_WIDGET.AppCompatButton" ->
       if (viewId == android.R.id.button1 ||
           viewId == android.R.id.button2 ||
           viewId == android.R.id.button3
       ) {
         AestheticDialogButton(context, attrs)
-      } else if (viewId == id.snackbar_action) {
-        AestheticSnackBarButton(context, attrs)
       } else if (isBorderlessButton(context, attrs)) {
         AestheticBorderlessButton(context, attrs)
       } else {
@@ -284,6 +273,8 @@ internal class InflationInterceptor(
       AestheticCardView(context, attrs)
     "$GOOGLE_MATERIAL.tabs.TabLayout" ->
       AestheticTabLayout(context, attrs)
+    "$GOOGLE_MATERIAL.snackbar.SnackbarContentLayout" ->
+      AestheticSnackBarContentLayout(context, attrs)
     "$GOOGLE_MATERIAL.navigation.NavigationView" ->
       AestheticNavigationView(context, attrs)
     "$GOOGLE_MATERIAL.bottomnavigation.BottomNavigationView" ->

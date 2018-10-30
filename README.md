@@ -315,10 +315,15 @@ default to the value of `?colorPrimary`.
 ```kotlin
 Aesthetic.config {
   // The color of the main text on a Snackbar
+  snackbarTextColorDefault()
   snackbarTextColorRes(R.color.white)
   
   // The color of the action on a Snackbar, if there is one.
   snackbarActionTextColorRes(R.color.blue)
+  
+  // The background color of Snackbar.
+  snackbarBackgroundColorDefault()
+  snackbarBackgroundColorRes(R.color.dark_gray)
 }
 ```
 

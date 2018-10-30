@@ -12,6 +12,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color.BLACK
+import android.graphics.Color.TRANSPARENT
 import android.graphics.Color.WHITE
 import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION.SDK_INT
@@ -35,6 +36,7 @@ import com.afollestad.aesthetic.internal.KEY_LIGHT_NAV_MODE
 import com.afollestad.aesthetic.internal.KEY_LIGHT_STATUS_MODE
 import com.afollestad.aesthetic.internal.KEY_NAV_VIEW_MODE
 import com.afollestad.aesthetic.internal.KEY_SNACKBAR_ACTION_TEXT
+import com.afollestad.aesthetic.internal.KEY_SNACKBAR_BG_COLOR
 import com.afollestad.aesthetic.internal.KEY_SNACKBAR_TEXT
 import com.afollestad.aesthetic.internal.KEY_SWIPEREFRESH_COLORS
 import com.afollestad.aesthetic.internal.KEY_TAB_LAYOUT_BG_MODE
@@ -50,9 +52,9 @@ import com.afollestad.aesthetic.internal.navBarColorKey
 import com.afollestad.aesthetic.internal.statusBarColorKey
 import com.afollestad.aesthetic.internal.waitForAttach
 import com.afollestad.aesthetic.utils.adjustAlpha
-import com.afollestad.aesthetic.utils.combine
 import com.afollestad.aesthetic.utils.color
 import com.afollestad.aesthetic.utils.colorAttr
+import com.afollestad.aesthetic.utils.combine
 import com.afollestad.aesthetic.utils.darkenColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
@@ -340,7 +342,7 @@ class Aesthetic private constructor(private var context: Context?) {
   }
 
   @CheckResult fun toolbarTitleColorRes(@ColorRes color: Int) =
-    toolbarIconColor(safeContext.color(color))
+    toolbarTitleColor(safeContext.color(color))
 
   @CheckResult fun toolbarTitleColor() = colorPrimary().kFlatMap {
     val defaultValue = if (it.isColorLight()) BLACK else WHITE
@@ -355,7 +357,7 @@ class Aesthetic private constructor(private var context: Context?) {
   }
 
   @CheckResult fun toolbarSubtitleColorRes(@ColorRes color: Int) =
-    toolbarIconColor(safeContext.color(color))
+    toolbarSubtitleColor(safeContext.color(color))
 
   @CheckResult fun toolbarSubtitleColor() = toolbarTitleColor().kFlatMap {
     safeRxkPrefs
@@ -365,7 +367,10 @@ class Aesthetic private constructor(private var context: Context?) {
 
   @CheckResult fun snackbarTextColor() = isDark.kFlatMap { isDark ->
     if (isDark) {
-      textColorPrimary()
+      textColorPrimary().kFlatMap {
+        safeRxkPrefs.integer(KEY_SNACKBAR_TEXT, it)
+            .observe()
+      }
     } else {
       textColorPrimaryInverse().kFlatMap {
         safeRxkPrefs.integer(KEY_SNACKBAR_TEXT, it)
@@ -374,13 +379,18 @@ class Aesthetic private constructor(private var context: Context?) {
     }
   }
 
+  @CheckResult fun snackbarTextColorDefault(): Aesthetic {
+    safePrefsEditor.remove(KEY_SNACKBAR_TEXT)
+    return this
+  }
+
   @CheckResult fun snackbarTextColor(@ColorInt color: Int): Aesthetic {
     safePrefsEditor.putInt(KEY_SNACKBAR_TEXT, color)
     return this
   }
 
   @CheckResult fun snackbarTextColorRes(@ColorRes color: Int) =
-    colorCardViewBackground(safeContext.color(color))
+    snackbarTextColor(safeContext.color(color))
 
   @CheckResult fun snackbarActionTextColor() = colorAccent().kFlatMap {
     safeRxkPrefs
@@ -394,7 +404,27 @@ class Aesthetic private constructor(private var context: Context?) {
   }
 
   @CheckResult fun snackbarActionTextColorRes(@ColorRes color: Int) =
-    colorCardViewBackground(safeContext.color(color))
+    snackbarActionTextColor(safeContext.color(color))
+
+  @CheckResult fun snackbarBackgroundColor() = waitForAttach().kFlatMap { rxPrefs ->
+    rxPrefs
+        .integer(KEY_SNACKBAR_BG_COLOR, TRANSPARENT)
+        .observe()
+        .filter { it != TRANSPARENT }
+  }
+
+  @CheckResult fun snackbarBackgroundColorDefault(): Aesthetic {
+    safePrefsEditor.remove(KEY_SNACKBAR_BG_COLOR)
+    return this
+  }
+
+  @CheckResult fun snackbarBackgroundColor(@ColorInt color: Int): Aesthetic {
+    safePrefsEditor.putInt(KEY_SNACKBAR_BG_COLOR, color)
+    return this
+  }
+
+  @CheckResult fun snackbarBackgroundColorRes(@ColorRes color: Int) =
+    snackbarBackgroundColor(safeContext.color(color))
 
   @CheckResult fun colorCardViewBackground() = isDark.kFlatMap { dark ->
     val cardBackgroundDefault = safeContext.color(
