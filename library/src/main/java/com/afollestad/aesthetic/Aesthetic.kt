@@ -379,8 +379,7 @@ class Aesthetic private constructor(private var context: Context?) {
     return this
   }
 
-  @CheckResult fun snackbarTextColorRes(@ColorRes color: Int) =
-    colorCardViewBackground(safeContext.color(color))
+  @CheckResult fun snackbarTextColorRes(@ColorRes color: Int) = snackbarTextColor(safeContext.color(color))
 
   @CheckResult fun snackbarActionTextColor() = colorAccent().kFlatMap {
     safeRxkPrefs
@@ -393,8 +392,7 @@ class Aesthetic private constructor(private var context: Context?) {
     return this
   }
 
-  @CheckResult fun snackbarActionTextColorRes(@ColorRes color: Int) =
-    colorCardViewBackground(safeContext.color(color))
+  @CheckResult fun snackbarActionTextColorRes(@ColorRes color: Int) = snackbarActionTextColor(safeContext.color(color))
 
   @CheckResult fun colorCardViewBackground() = isDark.kFlatMap { dark ->
     val cardBackgroundDefault = safeContext.color(
