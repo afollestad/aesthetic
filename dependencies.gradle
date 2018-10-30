@@ -2,8 +2,8 @@ ext.versions = [
     minSdk            : 16,
     compileSdk        : 28,
     buildTools        : '28.0.3',
-    publishVersion    : '1.0.0-beta03',
-    publishVersionCode: 31,
+    publishVersion    : '1.0.0-beta04',
+    publishVersionCode: 32,
 
     gradlePlugin      : '3.1.4',
     kotlin            : '1.3.0',
@@ -13,7 +13,7 @@ ext.versions = [
 
     androidx          : '1.0.0',
 
-    rxJava            : '2.2.2',
+    rxJava            : '2.2.3',
     rxAndroid         : '2.1.0',
     rxkPrefs          : '1.1.0',
     leakCanary        : '1.6.1'
