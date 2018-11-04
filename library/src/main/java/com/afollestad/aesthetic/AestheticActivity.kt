@@ -7,14 +7,17 @@ package com.afollestad.aesthetic
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.afollestad.aesthetic.internal.InflationDelegate
 
 /** @author Aidan Follestad (afollestad) */
 open class AestheticActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    Aesthetic.attach(this)
+    Aesthetic.attach(this, getInflationDelegate())
     super.onCreate(savedInstanceState)
   }
+
+  open fun getInflationDelegate(): InflationDelegate? = null
 
   override fun onResume() {
     super.onResume()

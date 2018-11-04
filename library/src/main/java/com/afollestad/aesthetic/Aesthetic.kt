@@ -534,9 +534,12 @@ class Aesthetic private constructor(private var context: Context?) {
     @SuppressLint("StaticFieldLeak")
     private var instance: Aesthetic? = null
 
+    @JvmStatic
+    fun attach(whereAmI: Context): Aesthetic = attach(whereAmI, null)
+
     /** Should be called before super.onCreate() in each Activity.  */
     @JvmStatic
-    fun attach(whereAmI: Context): Aesthetic {
+    fun attach(whereAmI: Context, inflationDelegate: InflationDelegate?): Aesthetic {
       if (instance == null) {
         instance = Aesthetic(whereAmI)
       }
@@ -547,7 +550,7 @@ class Aesthetic private constructor(private var context: Context?) {
 
         with(whereAmI as? Activity ?: return this) {
           val li = layoutInflater
-          (this as? AppCompatActivity)?.setInflaterFactory(li)
+          (this as? AppCompatActivity)?.setInflaterFactory(li, inflationDelegate)
 
           val latestActivityTheme = safePrefs.getInt(KEY_ACTIVITY_THEME, 0)
           lastActivityThemes[safeContext.javaClass.name] = latestActivityTheme
@@ -653,7 +656,7 @@ class Aesthetic private constructor(private var context: Context?) {
      * tint, since that is handled by Aesthetic without view swapping.
      */
     @JvmStatic
-    fun setInflationDelegate(inflationDelegate: InflationDelegate) {
+    fun setDefaultInflationDelegate(inflationDelegate: InflationDelegate?) {
       get().inflationDelegate = inflationDelegate
     }
 
