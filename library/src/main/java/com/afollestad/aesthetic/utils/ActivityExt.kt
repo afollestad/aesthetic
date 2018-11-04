@@ -21,10 +21,13 @@ import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.LayoutInflaterCompat.setFactory2
+import com.afollestad.aesthetic.internal.InflationDelegate
 import com.afollestad.aesthetic.internal.InflationInterceptor
 
-internal fun AppCompatActivity.setInflaterFactory(li: LayoutInflater) =
-  setFactory2(li, InflationInterceptor(this, delegate))
+internal fun AppCompatActivity.setInflaterFactory(
+  li: LayoutInflater,
+  aestheticDelegate: InflationDelegate?
+) = setFactory2(li, InflationInterceptor(this, aestheticDelegate, delegate))
 
 internal fun Activity.setStatusBarColorCompat(@ColorInt color: Int) {
   if (SDK_INT >= LOLLIPOP) {

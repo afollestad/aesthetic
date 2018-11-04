@@ -536,7 +536,11 @@ class Aesthetic private constructor(private var context: Context?) {
 
     /** Should be called before super.onCreate() in each Activity.  */
     @JvmStatic
-    fun attach(whereAmI: Context): Aesthetic {
+    @JvmOverloads
+    fun attach(
+      whereAmI: Context,
+      inflationDelegate: InflationDelegate? = null
+    ): Aesthetic {
       if (instance == null) {
         instance = Aesthetic(whereAmI)
       }
@@ -547,7 +551,7 @@ class Aesthetic private constructor(private var context: Context?) {
 
         with(whereAmI as? Activity ?: return this) {
           val li = layoutInflater
-          (this as? AppCompatActivity)?.setInflaterFactory(li)
+          (this as? AppCompatActivity)?.setInflaterFactory(li, inflationDelegate)
 
           val latestActivityTheme = safePrefs.getInt(KEY_ACTIVITY_THEME, 0)
           lastActivityThemes[safeContext.javaClass.name] = latestActivityTheme
@@ -571,8 +575,7 @@ class Aesthetic private constructor(private var context: Context?) {
     }
 
     /** Should be called in onPause() of each Activity or Service.  */
-    @JvmStatic
-    fun pause(whereAmI: Context) {
+    @JvmStatic fun pause(whereAmI: Context) {
       with(instance ?: return) {
         isResumed = false
         subs?.clear()
@@ -587,8 +590,7 @@ class Aesthetic private constructor(private var context: Context?) {
     }
 
     /** Should be called in onResume() of each Activity.  */
-    @JvmStatic
-    fun resume(whereAmI: Context) {
+    @JvmStatic fun resume(whereAmI: Context) {
       with(instance ?: blowUp()) {
         if (isResumed)
           throw IllegalStateException("Already resumed")
@@ -652,8 +654,7 @@ class Aesthetic private constructor(private var context: Context?) {
      * You do not need to do this if you're just concerned about text color, background color, or
      * tint, since that is handled by Aesthetic without view swapping.
      */
-    @JvmStatic
-    fun setInflationDelegate(inflationDelegate: InflationDelegate) {
+    @JvmStatic fun setInflationDelegate(inflationDelegate: InflationDelegate) {
       get().inflationDelegate = inflationDelegate
     }
 

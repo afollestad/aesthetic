@@ -58,7 +58,8 @@ import com.google.android.material.internal.NavigationMenuItemView
 /** @author Aidan Follestad (afollestad) */
 internal class InflationInterceptor(
   private val activity: AppCompatActivity,
-  private val delegate: AppCompatDelegate?
+  private val aestheticDelegate: InflationDelegate?,
+  private val appCompatDelegate: AppCompatDelegate?
 ) : LayoutInflater.Factory2 {
 
   companion object {
@@ -121,7 +122,10 @@ internal class InflationInterceptor(
     attrs: AttributeSet?
   ): View? {
     val viewId = context.resId(attrs, android.R.attr.id)
-    var view = get().inflationDelegate?.createView(context, attrs, name, viewId) ?: name.viewForName(context, attrs, viewId, parent)
+    var view =
+      aestheticDelegate?.createView(context, attrs, name, viewId)
+          ?: get().inflationDelegate?.createView(context, attrs, name, viewId)
+          ?: name.viewForName(context, attrs, viewId, parent)
 
     var viewBackgroundValue = ""
     var textColorValue = ""
@@ -151,9 +155,9 @@ internal class InflationInterceptor(
       }
     }
     // If it's still null, try the AppCompat delegate
-    if (view == null && delegate != null && attrs != null) {
+    if (view == null && appCompatDelegate != null && attrs != null) {
       try {
-        view = delegate.createView(parent, name, context, attrs)
+        view = appCompatDelegate.createView(parent, name, context, attrs)
       } catch (e: Throwable) {
         throw IllegalStateException("Unable to delegate inflation of $name to AppCompat.", e)
       }
