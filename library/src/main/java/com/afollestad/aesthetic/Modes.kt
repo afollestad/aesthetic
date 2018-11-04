@@ -9,10 +9,10 @@ package com.afollestad.aesthetic
 
 import io.reactivex.Observable
 
-@Deprecated(message = "Use ColorMode instead.")
+@Deprecated(message = "Use ColorMode instead.", replaceWith = ReplaceWith("ColorMode"))
 typealias TabLayoutBgMode = ColorMode
 
-@Deprecated(message = "Use ColorMode instead.")
+@Deprecated(message = "Use ColorMode instead.", replaceWith = ReplaceWith("ColorMode"))
 typealias TabLayoutIndicatorMode = ColorMode
 
 /** @author Aidan Follestad (afollestad)*/
