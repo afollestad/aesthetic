@@ -7,6 +7,8 @@
 
 package com.afollestad.aesthetic
 
+import io.reactivex.Observable
+
 @Deprecated(message = "Use ColorMode instead.")
 typealias TabLayoutBgMode = ColorMode
 
@@ -28,6 +30,10 @@ enum class ColorMode(val value: Int) {
   }
 }
 
+internal fun Observable<Int>.mapToColorMode(): Observable<ColorMode> {
+  return map { ColorMode.fromInt(it) }
+}
+
 /** @author Aidan Follestad (afollestad) */
 enum class NavigationViewMode(val value: Int) {
   SELECTED_PRIMARY(0),
@@ -45,6 +51,10 @@ enum class NavigationViewMode(val value: Int) {
   }
 }
 
+internal fun Observable<Int>.mapToNavigationViewMode(): Observable<NavigationViewMode> {
+  return map { NavigationViewMode.fromInt(it) }
+}
+
 /** @author Aidan Follestad (afollestad) */
 enum class AutoSwitchMode(val value: Int) {
   OFF(0),
@@ -60,6 +70,10 @@ enum class AutoSwitchMode(val value: Int) {
       }
     }
   }
+}
+
+internal fun Observable<Int>.mapToAutoSwitchMode(): Observable<AutoSwitchMode> {
+  return map { AutoSwitchMode.fromInt(it) }
 }
 
 /** @author Aidan Follestad (afollestad) */
@@ -83,6 +97,10 @@ enum class BottomNavBgMode(val value: Int) {
   }
 }
 
+internal fun Observable<Int>.mapToBottomNavBgMode(): Observable<BottomNavBgMode> {
+  return map { BottomNavBgMode.fromInt(it) }
+}
+
 /** @author Aidan Follestad (afollestad) */
 enum class BottomNavIconTextMode(val value: Int) {
   SELECTED_PRIMARY(0),
@@ -100,4 +118,8 @@ enum class BottomNavIconTextMode(val value: Int) {
       }
     }
   }
+}
+
+internal fun Observable<Int>.mapToBottomNavIconTextMode(): Observable<BottomNavIconTextMode> {
+  return map { BottomNavIconTextMode.fromInt(it) }
 }

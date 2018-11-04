@@ -59,6 +59,7 @@ import com.afollestad.aesthetic.utils.darkenColor
 import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.kFlatMap
+import com.afollestad.aesthetic.utils.mapToIntArray
 import com.afollestad.aesthetic.utils.mutableArrayMap
 import com.afollestad.aesthetic.utils.plusAssign
 import com.afollestad.aesthetic.utils.save
@@ -66,7 +67,6 @@ import com.afollestad.aesthetic.utils.setInflaterFactory
 import com.afollestad.aesthetic.utils.setLightNavBarCompat
 import com.afollestad.aesthetic.utils.setNavBarColorCompat
 import com.afollestad.aesthetic.utils.setTaskDescriptionColor
-import com.afollestad.aesthetic.utils.splitToInts
 import com.afollestad.aesthetic.utils.subscribeTo
 import com.afollestad.rxkprefs.RxkPrefs
 import io.reactivex.Observable
@@ -453,7 +453,7 @@ class Aesthetic private constructor(private var context: Context?) {
     rxPrefs
         .integer(KEY_TAB_LAYOUT_INDICATOR_MODE, ColorMode.ACCENT.value)
         .observe()
-        .map { ColorMode.fromInt(it) }
+        .mapToColorMode()
   }
 
   @CheckResult fun tabLayoutBackgroundMode(mode: ColorMode): Aesthetic {
@@ -465,7 +465,7 @@ class Aesthetic private constructor(private var context: Context?) {
     rxPrefs
         .integer(KEY_TAB_LAYOUT_BG_MODE, ColorMode.PRIMARY.value)
         .observe()
-        .map { ColorMode.fromInt(it) }
+        .mapToColorMode()
   }
 
   @CheckResult fun bottomNavigationBackgroundMode(mode: BottomNavBgMode): Aesthetic {
@@ -477,7 +477,7 @@ class Aesthetic private constructor(private var context: Context?) {
     rxPrefs
         .integer(KEY_BOTTOM_NAV_BG_MODE, BottomNavBgMode.BLACK_WHITE_AUTO.value)
         .observe()
-        .map { BottomNavBgMode.fromInt(it) }
+        .mapToBottomNavBgMode()
   }
 
   @CheckResult fun bottomNavigationIconTextMode(mode: BottomNavIconTextMode): Aesthetic {
@@ -489,7 +489,7 @@ class Aesthetic private constructor(private var context: Context?) {
     rxPrefs
         .integer(KEY_BOTTOM_NAV_ICONTEXT_MODE, BottomNavIconTextMode.SELECTED_ACCENT.value)
         .observe()
-        .map { BottomNavIconTextMode.fromInt(it) }
+        .mapToBottomNavIconTextMode()
   }
 
   @CheckResult fun navigationViewMode(mode: NavigationViewMode): Aesthetic {
@@ -501,14 +501,14 @@ class Aesthetic private constructor(private var context: Context?) {
     rxPrefs
         .integer(KEY_NAV_VIEW_MODE, NavigationViewMode.SELECTED_PRIMARY.value)
         .observe()
-        .map { NavigationViewMode.fromInt(it) }
+        .mapToNavigationViewMode()
   }
 
   @CheckResult fun swipeRefreshLayoutColors() = colorAccent().kFlatMap { accent ->
     safeRxkPrefs
         .string(KEY_SWIPEREFRESH_COLORS, "$accent")
         .observe()
-        .map { it.splitToInts() }
+        .mapToIntArray()
   }
 
   @CheckResult fun swipeRefreshLayoutColors(@ColorInt vararg colors: Int): Aesthetic {
@@ -617,7 +617,7 @@ class Aesthetic private constructor(private var context: Context?) {
               .subscribeTo { invalidateStatusBar() }
           subs += combine(
               colorNavigationBar().distinctToMainThread(),
-              lightNavigationBarMode().distinctUntilChanged().map { AutoSwitchMode.fromInt(it) }
+              lightNavigationBarMode().distinctUntilChanged().mapToAutoSwitchMode()
           ) { color, mode -> Pair(color, mode) }
               .distinctToMainThread()
               .subscribeTo {
