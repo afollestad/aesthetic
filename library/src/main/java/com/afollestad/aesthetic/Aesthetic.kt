@@ -550,9 +550,7 @@ class Aesthetic private constructor(private var context: Context?) {
         initPrefs()
 
         with(whereAmI as? Activity ?: return this) {
-          val li = layoutInflater
-          (this as? AppCompatActivity)?.setInflaterFactory(li, inflationDelegate)
-
+          (this as? AppCompatActivity)?.setInflaterFactory(layoutInflater, inflationDelegate)
           val latestActivityTheme = safePrefs.getInt(KEY_ACTIVITY_THEME, 0)
           lastActivityThemes[safeContext.javaClass.name] = latestActivityTheme
           if (latestActivityTheme != 0) {
