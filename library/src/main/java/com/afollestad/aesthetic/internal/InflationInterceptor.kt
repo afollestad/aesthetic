@@ -121,7 +121,7 @@ internal class InflationInterceptor(
     attrs: AttributeSet?
   ): View? {
     val viewId = context.resId(attrs, android.R.attr.id)
-    var view = name.viewForName(context, attrs, viewId, parent)
+    var view = get().inflationDelegate?.createView(context, attrs, name, viewId) ?: name.viewForName(context, attrs, viewId, parent)
 
     var viewBackgroundValue = ""
     var textColorValue = ""
@@ -287,7 +287,7 @@ internal class InflationInterceptor(
     "androidx.swiperefreshlayout.widget.SwipeRefreshLayout" ->
       AestheticSwipeRefreshLayout(context, attrs)
 
-    else -> get().inflationDelegate?.createView(context, attrs, this@viewForName, viewId)
+    else -> null
   }
 
   private fun View?.shouldIgnore() =
