@@ -11,11 +11,11 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.CheckedTextView
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.AppCompatCheckedTextView
 import com.afollestad.aesthetic.Aesthetic.Companion.get
 import com.afollestad.aesthetic.R
 import com.afollestad.aesthetic.utils.fixedLayoutInflater
@@ -246,7 +246,7 @@ internal class InflationInterceptor(
     "$APPCOMPAT_VIEW.ActionMenuItemView" ->
       AestheticActionMenuItemView(context, attrs)
     "CheckedTextView", "$APPCOMPAT_WIDGET.AppCompatCheckedTextView" -> {
-      if (parent is NavigationMenuItemView) CheckedTextView(context, attrs)
+      if (parent is NavigationMenuItemView) AppCompatCheckedTextView(context, attrs)
       else AestheticCheckedTextView(context, attrs)
     }
 
