@@ -172,6 +172,7 @@ class Aesthetic private constructor(private var context: Context?) {
     rxPrefs
         .integer(KEY_LIGHT_STATUS_MODE, AutoSwitchMode.AUTO.value)
         .observe()
+        .map { AutoSwitchMode.fromInt(it) }
   }
 
   @CheckResult fun lightNavigationBarMode(mode: AutoSwitchMode): Aesthetic {
@@ -184,6 +185,7 @@ class Aesthetic private constructor(private var context: Context?) {
     rxPrefs
         .integer(KEY_LIGHT_NAV_MODE, AutoSwitchMode.AUTO.value)
         .observe()
+        .map { AutoSwitchMode.fromInt(it) }
   }
 
   // Main Colors
@@ -281,7 +283,6 @@ class Aesthetic private constructor(private var context: Context?) {
   }
 
   @CheckResult fun colorNavigationBar() = combine(colorPrimaryDark(), lightNavigationBarMode())
-      .map { Pair(it.first, AutoSwitchMode.fromInt(it.second)) }
       .kFlatMap { primaryDarkAndLightMode ->
         val primaryDark = primaryDarkAndLightMode.first
         val navBarMode = primaryDarkAndLightMode.second
@@ -710,11 +711,12 @@ class Aesthetic private constructor(private var context: Context?) {
               colorStatusBar().distinctToMainThread(),
               lightStatusBarMode().distinctToMainThread()
           )
-              .subscribeTo { invalidateStatusBar() }
+              .distinctToMainThread()
+              .subscribeTo { invalidateStatusBar(it) }
           subs += combine(
               colorNavigationBar().distinctToMainThread(),
-              lightNavigationBarMode().distinctUntilChanged().mapToAutoSwitchMode()
-          ) { color, mode -> Pair(color, mode) }
+              lightNavigationBarMode().distinctUntilChanged()
+          )
               .distinctToMainThread()
               .subscribeTo {
                 (safeContext as? Activity)?.setNavBarColorCompat(it.first)

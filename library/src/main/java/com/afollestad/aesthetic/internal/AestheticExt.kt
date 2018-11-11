@@ -8,7 +8,6 @@ package com.afollestad.aesthetic.internal
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
-import android.graphics.Color.BLACK
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.view.View
@@ -17,7 +16,6 @@ import androidx.annotation.CheckResult
 import androidx.drawerlayout.widget.DrawerLayout
 import com.afollestad.aesthetic.Aesthetic
 import com.afollestad.aesthetic.AutoSwitchMode
-import com.afollestad.aesthetic.AutoSwitchMode.AUTO
 import com.afollestad.aesthetic.AutoSwitchMode.OFF
 import com.afollestad.aesthetic.AutoSwitchMode.ON
 import com.afollestad.aesthetic.R
@@ -106,11 +104,10 @@ internal fun addImageTintSubscriber(
       .unsubscribeOnDetach(view)
 }
 
-internal fun Aesthetic.invalidateStatusBar() {
+internal fun Aesthetic.invalidateStatusBar(colorAndMode: Pair<Int, AutoSwitchMode>) {
   with(safeContext as? Activity ?: return) {
-    val primary = safePrefs.getInt(attrKey(R.attr.colorPrimary), BLACK)
-    val primaryDark = safePrefs.getInt(attrKey(R.attr.colorPrimaryDark), primary)
-    val color = safePrefs.getInt(statusBarColorKey(), primaryDark)
+    val color = colorAndMode.first
+    val mode = colorAndMode.second
 
     val rootView = getRootView()
     if (rootView is DrawerLayout) {
@@ -122,8 +119,6 @@ internal fun Aesthetic.invalidateStatusBar() {
       setStatusBarColorCompat(color)
     }
 
-    val modeRaw = safePrefs.getInt(KEY_LIGHT_STATUS_MODE, AUTO.value)
-    val mode = AutoSwitchMode.fromInt(modeRaw)
     when (mode) {
       OFF -> setLightStatusBarCompat(false)
       ON -> setLightStatusBarCompat(true)
