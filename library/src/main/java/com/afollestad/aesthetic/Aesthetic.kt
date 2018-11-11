@@ -131,14 +131,24 @@ class Aesthetic private constructor(private var context: Context?) {
   }
 
   @CheckResult
-  fun attribute(@AttrRes attrId: Int, @ColorInt color: Int, applyNow: Boolean = false): Aesthetic {
+  fun attribute(
+    @AttrRes attrId: Int,
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null,
+    applyNow: Boolean = false
+  ): Aesthetic {
+    val color = givenColor(literal, res)
     safePrefsEditor.putInt(attrKey(attrId), color)
     if (applyNow) safePrefsEditor.commit()
     return this
   }
 
-  @CheckResult fun attributeRes(@AttrRes attrId: Int, @ColorRes color: Int) =
-    attribute(attrId, safeContext.color(color))
+  @CheckResult
+  @Deprecated(
+      message = "Use attribute() method with the res parameter instead,",
+      replaceWith = ReplaceWith("attribute(attrId, res = color)")
+  )
+  fun attributeRes(@AttrRes attrId: Int, @ColorRes color: Int) = attribute(attrId, res = color)
 
   @CheckResult fun attribute(@AttrRes attrId: Int) = waitForAttach().kFlatMap { rxPrefs ->
     val defaultValue = safeContext.colorAttr(attr = attrId)
@@ -182,57 +192,81 @@ class Aesthetic private constructor(private var context: Context?) {
 
   @SuppressLint("CheckResult")
   @CheckResult
-  fun colorPrimary(@ColorInt color: Int): Aesthetic {
-    attribute(R.attr.colorPrimary, color, applyNow = true)
+  fun colorPrimary(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ): Aesthetic {
+    val color = givenColor(literal, res)
+    attribute(R.attr.colorPrimary, literal = color, applyNow = true)
     if (!safePrefs.contains(attrKey(R.attr.colorPrimaryDark))) {
+      // TODO let colorPrimaryDark() observable use default instead
       colorPrimaryDark(color.darkenColor())
     }
     return this
   }
 
   @SuppressLint("CheckResult")
-  @CheckResult
-  fun colorPrimaryRes(@ColorRes color: Int): Aesthetic {
-    val primary = safeContext.color(color)
-    colorPrimary(primary)
-    colorPrimaryDark(primary.darkenColor())
-    return this
-  }
+  @Deprecated(
+      message = "Use colorPrimary() method with the res parameter instead,",
+      replaceWith = ReplaceWith("colorPrimary(res = color)")
+  )
+  fun colorPrimaryRes(@ColorRes color: Int) = colorPrimary(res = color)
 
   @CheckResult fun colorPrimary() = attribute(R.attr.colorPrimary)
 
   @SuppressLint("CheckResult")
   @CheckResult
-  fun colorPrimaryDark(@ColorInt color: Int): Aesthetic {
-    attribute(R.attr.colorPrimaryDark, color, applyNow = true)
+  fun colorPrimaryDark(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ): Aesthetic {
+    val color = givenColor(literal, res)
+    attribute(R.attr.colorPrimaryDark, literal = color, applyNow = true)
     if (!safePrefs.contains(statusBarColorKey())) {
+      // TODO let colorStatusBar() observable use default instead
       colorStatusBar(color.darkenColor())
     }
     return this
   }
 
-  @CheckResult fun colorPrimaryDarkRes(@ColorRes color: Int) =
-    colorPrimaryDark(safeContext.color(color))
-
   @CheckResult fun colorPrimaryDark() = attribute(R.attr.colorPrimaryDark)
 
-  @CheckResult fun colorAccent(@ColorInt color: Int) =
-    attribute(R.attr.colorAccent, color)
+  @Deprecated(
+      message = "Use colorPrimaryDark() method with the res parameter instead,",
+      replaceWith = ReplaceWith("colorPrimaryDark(res = color)")
+  )
+  fun colorPrimaryDarkRes(@ColorRes color: Int) = colorPrimaryDark(res = color)
 
-  @CheckResult fun colorAccentRes(@ColorRes color: Int) =
-    colorAccent(safeContext.color(color))
+  @CheckResult fun colorAccent(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ) = attribute(R.attr.colorAccent, literal = literal, res = res)
+
+  @Deprecated(
+      message = "Use colorAccent() method with the res parameter instead,",
+      replaceWith = ReplaceWith("colorAccent(res = color)")
+  )
+  fun colorAccentRes(@ColorRes color: Int) = colorAccent(res = color)
 
   @CheckResult fun colorAccent() = attribute(R.attr.colorAccent)
 
-  @CheckResult fun colorStatusBar(@ColorInt color: Int): Aesthetic {
+  @CheckResult fun colorStatusBar(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ): Aesthetic {
+    val color = givenColor(literal, res)
     safePrefsEditor.putInt(statusBarColorKey(), color)
     return this
   }
 
-  @CheckResult fun colorStatusBarRes(@ColorRes color: Int) =
-    colorStatusBar(safeContext.color(color))
+  @Deprecated(
+      message = "Use colorStatusBar() method with the res parameter instead,",
+      replaceWith = ReplaceWith("colorStatusBar(res = color)")
+  )
+  fun colorStatusBarRes(@ColorRes color: Int) = colorStatusBar(res = color)
 
   @CheckResult fun colorStatusBarAuto(): Aesthetic {
+    // TODO remove value instead, let colorStatusBar() observable use default
     val defaultValue = safeContext.colorAttr(R.attr.colorPrimaryDark)
     val primaryDark = safePrefs.getInt(attrKey(R.attr.colorPrimaryDark), defaultValue)
     safePrefsEditor.putInt(statusBarColorKey(), primaryDark)
@@ -245,13 +279,20 @@ class Aesthetic private constructor(private var context: Context?) {
         .observe()
   }
 
-  @CheckResult fun colorNavigationBar(@ColorInt color: Int): Aesthetic {
+  @CheckResult fun colorNavigationBar(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ): Aesthetic {
+    val color = givenColor(literal, res)
     safePrefsEditor.putInt(navBarColorKey(), color)
     return this
   }
 
-  @CheckResult fun colorNavigationBarRes(@ColorRes color: Int) =
-    colorNavigationBar(safeContext.color(color))
+  @Deprecated(
+      message = "Use colorNavigationBar() method with the res parameter instead,",
+      replaceWith = ReplaceWith("colorNavigationBar(res = color)")
+  )
+  fun colorNavigationBarRes(@ColorRes color: Int) = colorNavigationBar(res = color)
 
   @CheckResult fun colorNavigationBarAuto(): Aesthetic {
     val defaultValue = safeContext.colorAttr(attr = R.attr.colorPrimaryDark)
@@ -268,66 +309,100 @@ class Aesthetic private constructor(private var context: Context?) {
 
   @CheckResult fun colorNavigationBar() = waitForAttach().kFlatMap { rxPrefs ->
     val defaultValue =
-      if (SDK_INT >= LOLLIPOP) safeContext.colorAttr(android.R.attr.navigationBarColor)
-      else BLACK
+      if (SDK_INT >= LOLLIPOP) {
+        safeContext.colorAttr(android.R.attr.navigationBarColor)
+      } else {
+        BLACK
+      }
     rxPrefs
         .integer(navBarColorKey(), defaultValue)
         .observe()
   }
 
-  @CheckResult fun colorWindowBackground(@ColorInt color: Int) =
-    attribute(android.R.attr.windowBackground, color)
+  @CheckResult fun colorWindowBackground(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ) = attribute(android.R.attr.windowBackground, literal = literal, res = res)
 
-  @CheckResult fun colorWindowBackgroundRes(@ColorRes color: Int) =
-    colorWindowBackground(safeContext.color(color))
+  @Deprecated(
+      message = "Use colorWindowBackground() method with the res parameter instead,",
+      replaceWith = ReplaceWith("colorWindowBackground(res = color)")
+  )
+  fun colorWindowBackgroundRes(@ColorRes color: Int) = colorWindowBackground(res = color)
 
   @CheckResult fun colorWindowBackground() = attribute(android.R.attr.windowBackground)
 
   // Text Colors
 
-  @CheckResult fun textColorPrimary(@ColorInt color: Int) =
-    attribute(android.R.attr.textColorPrimary, color)
+  @CheckResult fun textColorPrimary(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ) = attribute(android.R.attr.textColorPrimary, literal = literal, res = res)
 
-  @CheckResult fun textColorPrimaryRes(@ColorRes color: Int) =
-    textColorPrimary(safeContext.color(color))
+  @Deprecated(
+      message = "Use textColorPrimary() method with the res parameter instead,",
+      replaceWith = ReplaceWith("textColorPrimary(res = color)")
+  )
+  fun textColorPrimaryRes(@ColorRes color: Int) = textColorPrimary(res = color)
 
   @CheckResult fun textColorPrimary() = attribute(android.R.attr.textColorPrimary)
 
-  @CheckResult fun textColorSecondary(@ColorInt color: Int) =
-    attribute(android.R.attr.textColorSecondary, color)
+  @CheckResult fun textColorSecondary(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ) = attribute(android.R.attr.textColorSecondary, literal = literal, res = res)
 
-  @CheckResult fun textColorSecondaryRes(@ColorRes color: Int) =
-    textColorSecondary(safeContext.color(color))
+  @Deprecated(
+      message = "Use textColorSecondary() method with the res parameter instead,",
+      replaceWith = ReplaceWith("textColorSecondary(res = color)")
+  )
+  fun textColorSecondaryRes(@ColorRes color: Int) = textColorSecondary(res = color)
 
   @CheckResult fun textColorSecondary() = attribute(android.R.attr.textColorSecondary)
 
-  @CheckResult fun textColorPrimaryInverse(@ColorInt color: Int) =
-    attribute(android.R.attr.textColorPrimaryInverse, color)
+  @CheckResult fun textColorPrimaryInverse(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ) = attribute(android.R.attr.textColorPrimaryInverse, literal = literal, res = res)
 
-  @CheckResult fun textColorPrimaryInverseRes(@ColorRes color: Int) =
-    textColorPrimaryInverse(safeContext.color(color))
+  @Deprecated(
+      message = "Use textColorPrimaryInverse() method with the res parameter instead,",
+      replaceWith = ReplaceWith("textColorPrimaryInverse(res = color)")
+  )
+  fun textColorPrimaryInverseRes(@ColorRes color: Int) = textColorPrimaryInverse(res = color)
 
-  @CheckResult fun textColorPrimaryInverse() =
-    attribute(android.R.attr.textColorPrimaryInverse)
+  @CheckResult fun textColorPrimaryInverse() = attribute(android.R.attr.textColorPrimaryInverse)
 
-  @CheckResult fun textColorSecondaryInverse(@ColorInt color: Int) =
-    attribute(android.R.attr.textColorSecondaryInverse, color)
+  @CheckResult fun textColorSecondaryInverse(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ) = attribute(android.R.attr.textColorSecondaryInverse, literal = literal, res = res)
 
-  @CheckResult fun textColorSecondaryInverseRes(@ColorRes color: Int) =
-    textColorSecondaryInverse(safeContext.color(color))
+  @Deprecated(
+      message = "Use textColorSecondaryInverse() method with the res parameter instead,",
+      replaceWith = ReplaceWith("textColorSecondaryInverse(res = color)")
+  )
+  fun textColorSecondaryInverseRes(@ColorRes color: Int) = textColorSecondaryInverse(res = color)
 
   @CheckResult fun textColorSecondaryInverse() =
     attribute(android.R.attr.textColorSecondaryInverse)
 
   // View Support
 
-  @CheckResult fun toolbarIconColor(@ColorInt color: Int): Aesthetic {
+  @CheckResult fun toolbarIconColor(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ): Aesthetic {
+    val color = givenColor(literal, res)
     safePrefsEditor.putInt(KEY_TOOLBAR_ICON_COLOR, color)
     return this
   }
 
-  @CheckResult fun toolbarIconColorRes(@ColorRes color: Int) =
-    toolbarIconColor(safeContext.color(color))
+  @Deprecated(
+      message = "Use toolbarIconColor() method with the res parameter instead,",
+      replaceWith = ReplaceWith("toolbarIconColor(res = color)")
+  )
+  fun toolbarIconColorRes(@ColorRes color: Int) = toolbarIconColor(res = color)
 
   @CheckResult fun toolbarIconColor() = colorPrimary().kFlatMap {
     val defaultValue = if (it.isColorLight()) BLACK else WHITE
@@ -336,13 +411,20 @@ class Aesthetic private constructor(private var context: Context?) {
         .observe()
   }
 
-  @CheckResult fun toolbarTitleColor(@ColorInt color: Int): Aesthetic {
+  @CheckResult fun toolbarTitleColor(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ): Aesthetic {
+    val color = givenColor(literal, res)
     safePrefsEditor.putInt(KEY_TOOLBAR_TITLE_COLOR, color)
     return this
   }
 
-  @CheckResult fun toolbarTitleColorRes(@ColorRes color: Int) =
-    toolbarTitleColor(safeContext.color(color))
+  @Deprecated(
+      message = "Use toolbarTitleColor() method with the res parameter instead,",
+      replaceWith = ReplaceWith("toolbarTitleColor(res = color)")
+  )
+  fun toolbarTitleColorRes(@ColorRes color: Int) = toolbarTitleColor(res = color)
 
   @CheckResult fun toolbarTitleColor() = colorPrimary().kFlatMap {
     val defaultValue = if (it.isColorLight()) BLACK else WHITE
@@ -351,13 +433,20 @@ class Aesthetic private constructor(private var context: Context?) {
         .observe()
   }
 
-  @CheckResult fun toolbarSubtitleColor(@ColorInt color: Int): Aesthetic {
+  @CheckResult fun toolbarSubtitleColor(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ): Aesthetic {
+    val color = givenColor(literal, res)
     safePrefsEditor.putInt(KEY_TOOLBAR_SUBTITLE_COLOR, color)
     return this
   }
 
-  @CheckResult fun toolbarSubtitleColorRes(@ColorRes color: Int) =
-    toolbarSubtitleColor(safeContext.color(color))
+  @Deprecated(
+      message = "Use toolbarSubtitleColor() method with the res parameter instead,",
+      replaceWith = ReplaceWith("toolbarSubtitleColor(res = color)")
+  )
+  fun toolbarSubtitleColorRes(@ColorRes color: Int) = toolbarSubtitleColor(res = color)
 
   @CheckResult fun toolbarSubtitleColor() = toolbarTitleColor().kFlatMap {
     safeRxkPrefs
@@ -384,13 +473,20 @@ class Aesthetic private constructor(private var context: Context?) {
     return this
   }
 
-  @CheckResult fun snackbarTextColor(@ColorInt color: Int): Aesthetic {
+  @CheckResult fun snackbarTextColor(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ): Aesthetic {
+    val color = givenColor(literal, res)
     safePrefsEditor.putInt(KEY_SNACKBAR_TEXT, color)
     return this
   }
 
-  @CheckResult fun snackbarTextColorRes(@ColorRes color: Int) =
-    snackbarTextColor(safeContext.color(color))
+  @Deprecated(
+      message = "Use snackbarTextColor() method with the res parameter instead,",
+      replaceWith = ReplaceWith("snackbarTextColor(res = color)")
+  )
+  fun snackbarTextColorRes(@ColorRes color: Int) = snackbarTextColor(res = color)
 
   @CheckResult fun snackbarActionTextColor() = colorAccent().kFlatMap {
     safeRxkPrefs
@@ -398,13 +494,20 @@ class Aesthetic private constructor(private var context: Context?) {
         .observe()
   }
 
-  @CheckResult fun snackbarActionTextColor(@ColorInt color: Int): Aesthetic {
+  @CheckResult fun snackbarActionTextColor(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ): Aesthetic {
+    val color = givenColor(literal, res)
     safePrefsEditor.putInt(KEY_SNACKBAR_ACTION_TEXT, color)
     return this
   }
 
-  @CheckResult fun snackbarActionTextColorRes(@ColorRes color: Int) =
-    snackbarActionTextColor(safeContext.color(color))
+  @Deprecated(
+      message = "Use snackbarActionTextColor() method with the res parameter instead,",
+      replaceWith = ReplaceWith("snackbarActionTextColor(res = color)")
+  )
+  fun snackbarActionTextColorRes(@ColorRes color: Int) = snackbarActionTextColor(res = color)
 
   @CheckResult fun snackbarBackgroundColor() = waitForAttach().kFlatMap { rxPrefs ->
     rxPrefs
@@ -418,31 +521,48 @@ class Aesthetic private constructor(private var context: Context?) {
     return this
   }
 
-  @CheckResult fun snackbarBackgroundColor(@ColorInt color: Int): Aesthetic {
+  @CheckResult fun snackbarBackgroundColor(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ): Aesthetic {
+    val color = givenColor(literal, res)
     safePrefsEditor.putInt(KEY_SNACKBAR_BG_COLOR, color)
     return this
   }
 
-  @CheckResult fun snackbarBackgroundColorRes(@ColorRes color: Int) =
-    snackbarBackgroundColor(safeContext.color(color))
+  @Deprecated(
+      message = "Use snackbarBackgroundColor() method with the res parameter instead,",
+      replaceWith = ReplaceWith("snackbarBackgroundColor(res = color)")
+  )
+  fun snackbarBackgroundColorRes(@ColorRes color: Int) = snackbarBackgroundColor(res = color)
 
   @CheckResult fun colorCardViewBackground() = isDark.kFlatMap { dark ->
     val cardBackgroundDefault = safeContext.color(
-        if (dark) R.color.ate_cardview_bg_dark
-        else R.color.ate_cardview_bg_light
+        if (dark) {
+          R.color.ate_cardview_bg_dark
+        } else {
+          R.color.ate_cardview_bg_light
+        }
     )
     safeRxkPrefs
         .integer(KEY_CARD_VIEW_BG_COLOR, cardBackgroundDefault)
         .observe()
   }
 
-  @CheckResult fun colorCardViewBackground(@ColorInt color: Int): Aesthetic {
+  @CheckResult fun colorCardViewBackground(
+    @ColorInt literal: Int? = null,
+    @ColorRes res: Int? = null
+  ): Aesthetic {
+    val color = givenColor(literal, res)
     safePrefsEditor.putInt(KEY_CARD_VIEW_BG_COLOR, color)
     return this
   }
 
-  @CheckResult fun colorCardViewBackgroundRes(@ColorRes color: Int) =
-    colorCardViewBackground(safeContext.color(color))
+  @Deprecated(
+      message = "Use colorCardViewBackground() method with the res parameter instead,",
+      replaceWith = ReplaceWith("colorCardViewBackground(res = color)")
+  )
+  fun colorCardViewBackgroundRes(@ColorRes color: Int) = colorCardViewBackground(res = color)
 
   @CheckResult fun tabLayoutIndicatorMode(mode: ColorMode): Aesthetic {
     safePrefsEditor.save { putInt(KEY_TAB_LAYOUT_INDICATOR_MODE, mode.value) }
@@ -665,4 +785,13 @@ class Aesthetic private constructor(private var context: Context?) {
 @Throws(IllegalStateException::class)
 internal fun <T> blowUp(msg: String = "Not attached"): T {
   throw IllegalStateException(msg)
+}
+
+internal fun Aesthetic.givenColor(@ColorInt literal: Int?, @ColorRes res: Int?): Int {
+  if (literal != null) {
+    return literal
+  } else if (res != null) {
+    return safeContext.color(res)
+  }
+  throw IllegalArgumentException("Expected literal or res parameter to be non-null.")
 }
