@@ -29,8 +29,10 @@ class DrawerActivity : AestheticActivity() {
     )
     drawer_layout.addDrawerListener(drawerToggle)
 
-    supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-    supportActionBar!!.setHomeButtonEnabled(true)
+    supportActionBar!!.apply {
+      setDisplayHomeAsUpEnabled(true)
+      setHomeButtonEnabled(true)
+    }
 
     navigation_view.post { navigation_view.setCheckedItem(R.id.item_three) }
     navigation_view.setNavigationItemSelectedListener {

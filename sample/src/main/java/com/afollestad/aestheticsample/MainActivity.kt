@@ -41,10 +41,10 @@ class MainActivity : AestheticActivity() {
     if (Aesthetic.isFirstTime) {
       Aesthetic.config {
         activityTheme(R.style.AppTheme)
-        textColorPrimaryRes(R.color.text_color_primary)
-        textColorSecondaryRes(R.color.text_color_secondary)
-        colorPrimaryRes(R.color.md_white)
-        colorAccentRes(R.color.md_blue)
+        textColorPrimary(res = R.color.text_color_primary)
+        textColorSecondary(res = R.color.text_color_secondary)
+        colorPrimary(res = R.color.md_white)
+        colorAccent(res = R.color.md_blue)
         colorStatusBarAuto()
         colorNavigationBarAuto()
         textColorPrimary(Color.BLACK)
@@ -52,7 +52,7 @@ class MainActivity : AestheticActivity() {
         bottomNavigationBackgroundMode(BottomNavBgMode.PRIMARY)
         bottomNavigationIconTextMode(BottomNavIconTextMode.SELECTED_ACCENT)
         swipeRefreshLayoutColorsRes(R.color.md_blue, R.color.md_blue_grey, R.color.md_green)
-        attributeRes(R.attr.my_custom_attr, R.color.md_red)
+        attribute(R.attr.my_custom_attr, res = R.color.md_red)
       }
     }
 
