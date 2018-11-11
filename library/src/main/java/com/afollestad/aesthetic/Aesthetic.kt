@@ -189,14 +189,12 @@ class Aesthetic private constructor(private var context: Context?) {
 
   // Main Colors
 
-  @SuppressLint("CheckResult")
   @CheckResult
   fun colorPrimary(
     @ColorInt literal: Int? = null,
     @ColorRes res: Int? = null
   ) = attribute(R.attr.colorPrimary, literal = literal, res = res)
 
-  @SuppressLint("CheckResult")
   @Deprecated(
       message = "Use colorPrimary() method with the res parameter instead,",
       replaceWith = ReplaceWith("colorPrimary(res = color)")
@@ -205,7 +203,6 @@ class Aesthetic private constructor(private var context: Context?) {
 
   @CheckResult fun colorPrimary() = attribute(R.attr.colorPrimary)
 
-  @SuppressLint("CheckResult")
   @CheckResult
   fun colorPrimaryDark(
     @ColorInt literal: Int? = null,
