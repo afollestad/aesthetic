@@ -76,7 +76,7 @@ import io.reactivex.subjects.BehaviorSubject
 class Aesthetic private constructor(private var context: Context?) {
 
   internal val onAttached = BehaviorSubject.create<Boolean>()
-  internal var rxkPrefs: RxkPrefs? = null
+  internal var rPrefs: RxkPrefs? = null
   internal var prefs: SharedPreferences? = null
   internal var editor: SharedPreferences.Editor? = null
   internal var inflationDelegate: InflationDelegate? = null
@@ -103,7 +103,7 @@ class Aesthetic private constructor(private var context: Context?) {
     get() = editor ?: blowUp()
   private val safeRxkPrefs
     @CheckResult
-    get() = rxkPrefs ?: blowUp()
+    get() = rPrefs ?: blowUp()
 
   val isDark: Observable<Boolean>
     @CheckResult
@@ -142,7 +142,6 @@ class Aesthetic private constructor(private var context: Context?) {
     return this
   }
 
-  @CheckResult
   @Deprecated(
       message = "Use attribute() method with the res parameter instead,",
       replaceWith = ReplaceWith("attribute(attrId, res = color)")

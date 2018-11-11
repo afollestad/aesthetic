@@ -33,14 +33,14 @@ import com.afollestad.aesthetic.utils.subscribeHintTextColor
 import com.afollestad.aesthetic.utils.subscribeImageViewTint
 import com.afollestad.aesthetic.utils.subscribeTextColor
 import com.afollestad.aesthetic.utils.unsubscribeOnDetach
-import com.afollestad.rxkprefs.RxkPrefs
+import com.afollestad.rxkprefs.rxkPrefs
 import io.reactivex.Observable
 import java.lang.String.format
 
 @SuppressLint("CommitPrefEdits")
 internal fun Aesthetic.initPrefs() {
-  rxkPrefs = RxkPrefs(safeContext, PREFS_NAME)
-  prefs = rxkPrefs!!.getSharedPrefs()
+  rPrefs = rxkPrefs(safeContext, PREFS_NAME)
+  prefs = rPrefs!!.getSharedPrefs()
   editor = safePrefs.edit()
   migratePrefs()
   onAttached.onNext(true)
@@ -50,7 +50,7 @@ internal fun Aesthetic.deInitPrefs() {
   onAttached.onNext(false)
   prefs = null
   editor = null
-  rxkPrefs = null
+  rPrefs = null
 }
 
 /**
@@ -58,7 +58,7 @@ internal fun Aesthetic.deInitPrefs() {
  * an Activity, when the preferences are actually initialized and populated. Without this,
  * we can get Kotlin null exceptions due the instance being unexpectedly null.
  */
-internal fun Aesthetic.waitForAttach() = onAttached.filter { it }.map { rxkPrefs!! }
+internal fun Aesthetic.waitForAttach() = onAttached.filter { it }.map { rPrefs!! }
 
 internal fun addBackgroundSubscriber(
   view: View,
