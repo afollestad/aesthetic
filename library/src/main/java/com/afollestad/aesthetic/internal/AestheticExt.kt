@@ -24,7 +24,9 @@ import com.afollestad.aesthetic.utils.distinctToMainThread
 import com.afollestad.aesthetic.utils.getRootView
 import com.afollestad.aesthetic.utils.isColorLight
 import com.afollestad.aesthetic.utils.safeResourceName
+import com.afollestad.aesthetic.utils.setLightNavBarCompat
 import com.afollestad.aesthetic.utils.setLightStatusBarCompat
+import com.afollestad.aesthetic.utils.setNavBarColorCompat
 import com.afollestad.aesthetic.utils.setStatusBarColorCompat
 import com.afollestad.aesthetic.utils.subscribeBackgroundColor
 import com.afollestad.aesthetic.utils.subscribeHintTextColor
@@ -124,6 +126,21 @@ internal fun Aesthetic.invalidateStatusBar(colorAndMode: Pair<Int, AutoSwitchMod
       ON -> setLightStatusBarCompat(true)
       else -> setLightStatusBarCompat(color.isColorLight())
     }
+  }
+}
+
+internal fun Aesthetic.invalidateNavBar(colorAndMode: Pair<Int, AutoSwitchMode>) {
+  with(safeContext as? Activity ?: return) {
+    val color = colorAndMode.first
+    val mode = colorAndMode.second
+
+    setNavBarColorCompat(color)
+    val useLightMode = when (mode) {
+      AutoSwitchMode.ON -> true
+      AutoSwitchMode.OFF -> false
+      else -> color.isColorLight()
+    }
+    setLightNavBarCompat(useLightMode)
   }
 }
 

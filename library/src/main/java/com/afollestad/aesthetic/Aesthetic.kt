@@ -46,6 +46,7 @@ import com.afollestad.aesthetic.internal.KEY_TOOLBAR_TITLE_COLOR
 import com.afollestad.aesthetic.internal.attrKey
 import com.afollestad.aesthetic.internal.deInitPrefs
 import com.afollestad.aesthetic.internal.initPrefs
+import com.afollestad.aesthetic.internal.invalidateNavBar
 import com.afollestad.aesthetic.internal.invalidateStatusBar
 import com.afollestad.aesthetic.internal.navBarColorKey
 import com.afollestad.aesthetic.internal.statusBarColorKey
@@ -712,21 +713,13 @@ class Aesthetic private constructor(private var context: Context?) {
               lightStatusBarMode().distinctToMainThread()
           )
               .distinctToMainThread()
-              .subscribeTo { invalidateStatusBar(it) }
+              .subscribe(::invalidateStatusBar)
           subs += combine(
               colorNavigationBar().distinctToMainThread(),
               lightNavigationBarMode().distinctUntilChanged()
           )
               .distinctToMainThread()
-              .subscribeTo {
-                (safeContext as? Activity)?.setNavBarColorCompat(it.first)
-                val useLightMode = when (it.second) {
-                  AutoSwitchMode.ON -> true
-                  AutoSwitchMode.OFF -> false
-                  else -> it.first.isColorLight()
-                }
-                (safeContext as? Activity)?.setLightNavBarCompat(useLightMode)
-              }
+              .subscribe(::invalidateNavBar)
         }
         subs += colorWindowBackground()
             .distinctToMainThread()
