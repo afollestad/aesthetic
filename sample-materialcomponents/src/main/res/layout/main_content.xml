@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:ignore="HardcodedText"
+    >
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      style="@style/MainContent"
+      >
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Black"
+        app:backgroundTint="@color/text_color_primary"
+        style="@style/MainContent.Button"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_blue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Blue"
+        app:backgroundTint="@color/md_blue"
+        style="@style/MainContent.Button"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_red"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Red"
+        app:backgroundTint="@color/md_red"
+        style="@style/MainContent.Button"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_green"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Green"
+        app:backgroundTint="@color/md_green"
+        style="@style/MainContent.Button"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_amber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Amber"
+        app:backgroundTint="@color/md_amber"
+        style="@style/MainContent.Button"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_purple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Purple"
+        app:backgroundTint="@color/md_purple"
+        style="@style/MainContent.Button"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="White"
+        android:textColor="#000"
+        app:backgroundTint="@color/md_white"
+        style="@style/MainContent.Button"
+        />
+
+  </LinearLayout>
+</androidx.core.widget.NestedScrollView>

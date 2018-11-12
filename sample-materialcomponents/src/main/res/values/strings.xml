@@ -1,0 +1,11 @@
+<resources>
+
+  <string name="app_name">Aesthetic MC</string>
+
+  <string name="blue">Blue</string>
+  <string name="red">Red</string>
+  <string name="purple">Purple</string>
+  <string name="green">Green</string>
+  <string name="white">White</string>
+
+</resources>

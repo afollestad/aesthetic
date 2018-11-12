@@ -1,1 +1,1 @@
-include ':sample', ':library'
+include ':sample-appcompat', ':sample-materialcomponents', ':library'

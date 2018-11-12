@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="HardcodedText"
+    >
+
+  <com.google.android.material.appbar.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/main_collapsing_toolbar_height"
+      app:elevation="16dp"
+      >
+
+    <com.google.android.material.appbar.CollapsingToolbarLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+        app:titleEnabled="false"
+        >
+
+      <FrameLayout
+          android:id="@+id/content"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          app:layout_collapseMode="parallax"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="Aesthetic + Material Components"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textColor="?android:textColorPrimaryInverse"
+            />
+      </FrameLayout>
+
+      <androidx.appcompat.widget.Toolbar
+          android:id="@+id/toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          app:layout_collapseMode="pin"
+          />
+    </com.google.android.material.appbar.CollapsingToolbarLayout>
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <include layout="@layout/main_content"/>
+
+  <com.google.android.material.bottomappbar.BottomAppBar
+      android:id="@+id/bar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom"
+      android:elevation="16dp"
+      app:backgroundTint="@color/text_color_primary"
+      app:navigationIcon="@drawable/ic_drawer_menu_24px"
+      tools:ignore="BottomAppBar,UnusedAttribute"
+      />
+
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:id="@+id/fab"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_anchor="@id/bar"
+      app:srcCompat="@drawable/ic_add_24px"
+      />
+
+  <FrameLayout
+      android:id="@+id/bottom_drawer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:elevation="16dp"
+      app:behavior_hideable="true"
+      app:layout_behavior="@string/bottom_sheet_behavior"
+      tools:ignore="UnusedAttribute"
+      >
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/demo_primary"
+        />
+  </FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

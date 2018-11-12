@@ -1,0 +1,71 @@
+<resources>
+
+  <string name="app_name">Aesthetic AC</string>
+
+  <string name="blue">Blue</string>
+  <string name="red">Red</string>
+  <string name="purple">Purple</string>
+  <string name="green">Green</string>
+  <string name="white">White</string>
+
+  <string name="hello_world">Hello, world!</string>
+  <string name="settings">Settings</string>
+
+  <string name="text_input_layout">Text Input Layout</string>
+  <string name="lorem_ipsum">Lorem ipsum dolor sit amet, sed massa wisi, id nisl, sed vitae nec.
+    Id wisi, sodales interdum auctor. Vestibulum sed.</string>
+  <string name="lorem_ipsum_long">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed magna et dolor luctus mollis.
+    Sed suscipit quam enim, in iaculis turpis finibus quis. Morbi fermentum ante quis magna tempus
+    suscipit. Sed rhoncus sed felis non elementum. Morbi porttitor molestie mauris, eget maximus
+    ante sagittis eget. Donec id congue mauris, quis pulvinar erat. Sed cursus est eu erat malesuada
+    vehicula. Fusce est dui, tempus a leo a, finibus accumsan tellus. Duis vitae sem ullamcorper,
+    hendrerit odio ac, vestibulum orci. Nunc et dui nec ligula semper congue eget in sapien.
+    Vestibulum consectetur vel lacus sed hendrerit. Interdum et malesuada fames ac ante ipsum
+    primis in faucibus. In justo mi, mollis eu leo non, malesuada consequat nisi. Vestibulum
+    euismod mauris dui, in volutpat est placerat et. In hac habitasse platea dictumst.  Cras vitae
+    suscipit quam. Ut orci enim, laoreet non mi in, convallis pretium quam. Donec lobortis nisi ut
+    malesuada auctor. Aenean vel porttitor velit. Cras tincidunt, purus ut volutpat mattis, magna
+    lectus sodales arcu, eget pretium nisi ex et nisi. Vivamus vel euismod nulla. Vivamus eget
+    metus sit amet lacus tempor faucibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Fusce sed magna et dolor luctus mollis. Sed suscipit quam enim, in iaculis turpis finibus quis.
+    Morbi fermentum ante quis magna tempus suscipit. Sed rhoncus sed felis non elementum. Morbi
+    porttitor molestie mauris, eget maximus ante sagittis eget. Donec id congue mauris, quis
+    pulvinar erat. Sed cursus est eu erat malesuada vehicula. Fusce est dui, tempus a leo a,
+    finibus accumsan tellus. Duis vitae sem ullamcorper, hendrerit odio ac, vestibulum orci.
+    Nunc et dui nec ligula semper congue eget in sapien. Vestibulum consectetur vel lacus sed
+    hendrerit. Interdum et malesuada fames ac ante ipsum primis in faucibus. In justo mi, mollis
+    eu leo non, malesuada consequat nisi. Vestibulum euismod mauris dui, in volutpat est placerat
+    et. In hac habitasse platea dictumst.  Cras vitae suscipit quam. Ut orci enim, laoreet non mi
+    in, convallis pretium quam. Donec lobortis nisi ut malesuada auctor. Aenean vel porttitor velit.
+    Cras tincidunt, purus ut volutpat mattis, magna lectus sodales arcu, eget pretium nisi ex et nisi.
+    Vivamus vel euismod nulla. Vivamus eget metus sit amet lacus tempor faucibus.
+  </string>
+
+  <string name="dark_theme">Dark theme</string>
+  <string name="dark_theme_on">Dark theme on</string>
+  <string name="dark_theme_off">Dark theme off</string>
+  <string name="info">Info</string>
+  <string name="other">Other</string>
+  <string name="main">Main</string>
+  <string name="black">Black</string>
+  <string name="drawer_layout">Drawer Layout</string>
+  <string name="one">One</string>
+  <string name="two">Two</string>
+  <string name="three">Three</string>
+  <string name="four">Four</string>
+  <string name="five">Five</string>
+  <string name="six">Six</string>
+  <string name="open_drawer">Open Drawer</string>
+  <string name="close_drawer">Close Drawer</string>
+  <string name="disabled_button">Disabled Button</string>
+  <string name="borderless_button">Borderless Button</string>
+  <string name="search">Search</string>
+  <string name="search_view_example">Search view example…</string>
+  <string name="recycler_view">Recycler View</string>
+  <string name="show_materialdialog">Show Dialog</string>
+  <string name="swipe_refresh">Swipe Refresh</string>
+  <string name="swipe_refresh_guide">Pull down the layout to refresh!</string>
+  <string name="non_attributes_are_ignored">\@resources and #hardcoded colors are not auto themed, only attributes.</string>
+
+</resources>

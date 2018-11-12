@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="HardcodedText">
+  <item
+      android:icon="@drawable/ic_search_24px"
+      android:title="Search"
+      app:showAsAction="ifRoom"/>
+  <item
+      android:icon="@drawable/ic_3d_rotation_24px"
+      android:title="3D"
+      app:showAsAction="ifRoom"/>
+  <item
+      android:icon="@drawable/ic_accelerator_24px"
+      android:title="Accelerator"
+      app:showAsAction="ifRoom"/>
+  <item
+      android:icon="@drawable/ic_dashboard_24px"
+      android:title="Dashboard"
+      app:showAsAction="ifRoom"/>
+</menu>

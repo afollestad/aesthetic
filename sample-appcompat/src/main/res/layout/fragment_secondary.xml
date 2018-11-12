@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/content_inset"
+    >
+
+  <Button
+      android:id="@+id/recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/recycler_view"
+      />
+
+  <Button
+      android:id="@+id/drawer_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/content_inset_quarter"
+      android:text="@string/drawer_layout"
+      />
+
+  <Button
+      android:id="@+id/swipe_refresh"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/content_inset_quarter"
+      android:text="@string/swipe_refresh"
+      />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="120dp"
+      android:layout_marginTop="@dimen/content_inset_more"
+      android:background="?my_custom_attr"
+      />
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/content_inset_more"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center"
+      android:text="@string/non_attributes_are_ignored"
+      android:textColor="@color/md_pink"
+      android:textSize="@dimen/text_size_title"
+      />
+
+</LinearLayout>

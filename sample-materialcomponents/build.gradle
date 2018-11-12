@@ -1,30 +1,25 @@
 apply from: '../dependencies.gradle'
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-
-apply from: '../bintrayconfig.gradle'
+apply plugin: 'kotlin-android-extensions'
 
 android {
   compileSdkVersion versions.compileSdk
   buildToolsVersion versions.buildTools
 
   defaultConfig {
+    applicationId "com.afollestad.aestheticsample.materialcomponents"
     minSdkVersion versions.minSdk
     targetSdkVersion versions.compileSdk
     versionCode versions.publishVersionCode
     versionName versions.publishVersion
-  }
-
-  sourceSets {
-    main.res.srcDirs = [
-        'src/main/res',
-        'src/main/res-public'
-    ]
+    vectorDrawables.useSupportLibrary = true
   }
 
   compileOptions {
-    kotlinOptions.freeCompilerArgs += ['-module-name', "com.afollestad.aesthetic"]
+    kotlinOptions.freeCompilerArgs +=
+        ['-module-name', "com.afollestad.aestheticsample.materialcomponents"]
   }
 
   packagingOptions {
@@ -38,15 +33,13 @@ repositories {
 }
 
 dependencies {
-  api 'androidx.appcompat:appcompat:' + versions.androidx
+  implementation project(':library')
 
-  implementation 'androidx.cardview:cardview:' + versions.androidx
-  implementation 'androidx.recyclerview:recyclerview:' + versions.androidx
+  implementation 'androidx.preference:preference:' + versions.androidx
   implementation 'com.google.android.material:material:' + versions.androidx
 
   implementation 'io.reactivex.rxjava2:rxjava:' + versions.rxJava
   implementation 'io.reactivex.rxjava2:rxandroid:' + versions.rxAndroid
-  implementation 'com.afollestad:rxkprefs:' + versions.rxkPrefs
 
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
 }
