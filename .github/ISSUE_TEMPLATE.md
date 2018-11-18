@@ -7,7 +7,7 @@
 
 ---
 
-**If this is a feature request, you can clear everything below.**
+If this is a improvement or feature request, you can remove everything below. Also, please consider making a pull request if you are capable of contributing.
 
 ##### Include the following:
 
