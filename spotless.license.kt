@@ -13,9 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.aesthetic.utils
-
-import androidx.annotation.CheckResult
-
-@CheckResult
-internal fun String.isNumber() = all { it.isDigit() }
