@@ -38,7 +38,7 @@ repositories {
 }
 
 dependencies {
-  api 'androidx.appcompat:appcompat:' + versions.androidx
+  api 'androidx.appcompat:appcompat:' + versions.androidxCore
 
   implementation 'androidx.cardview:cardview:' + versions.androidx
   implementation 'androidx.recyclerview:recyclerview:' + versions.androidx
