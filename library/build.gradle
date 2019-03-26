@@ -48,7 +48,7 @@ dependencies {
   implementation 'io.reactivex.rxjava2:rxandroid:' + versions.rxAndroid
   implementation 'com.afollestad:rxkprefs:' + versions.rxkPrefs
 
-  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
+  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + versions.kotlin
 }
 
 apply from: '../spotless.gradle'
