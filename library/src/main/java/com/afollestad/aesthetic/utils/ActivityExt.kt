@@ -46,7 +46,7 @@ internal fun Activity.setStatusBarColorCompat(@ColorInt color: Int) {
 }
 
 internal fun Activity.getRootView(): ViewGroup? {
-  val content = findViewById<ViewGroup>(android.R.id.content)
+  val content: ViewGroup? = findViewById<ViewGroup>(android.R.id.content) as? ViewGroup
   if (content != null && content.getChildAt(0) is ViewGroup) {
     return content.getChildAt(0) as ViewGroup
   }
